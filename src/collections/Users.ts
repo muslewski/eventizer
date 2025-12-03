@@ -1,3 +1,4 @@
+import { adminOnly } from '@/access/adminOnly'
 import type { CollectionConfig } from 'payload'
 
 /**
@@ -21,6 +22,12 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   auth: true,
+  access: {
+    read: adminOnly,
+    update: adminOnly,
+    delete: adminOnly,
+    create: adminOnly,
+  },
   fields: [
     {
       name: 'role',
