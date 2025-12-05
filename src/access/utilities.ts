@@ -1,9 +1,84 @@
+import { Role, roleParents } from '@/access/hierarchy'
 import type { User } from '@/payload-types'
+import { Access, FieldAccess } from 'payload'
 
-export const checkRole = (allRoles: User['role'][], user?: User | null): boolean => {
+/**
+ * @returns true if user.role in roles
+ */
+export const checkRole = (roles: User['role'][], user?: User | null): boolean => {
   if (user && user.role) {
-    return allRoles.includes(user.role)
+    return roles.includes(user.role)
   }
 
   return false
+}
+
+/**
+ * Get all roles at or above the given role in the hierarchy.
+ */
+export const getRolesAtOrAbove = (role: Role): Role[] => {
+  const roles: Role[] = [role] // Step 1: Start with the given role
+  let current: Role | null = role // Step 2: Set a "pointer" to track where we are
+
+  // Step 3: Keep going while there's a parent
+  while (current && roleParents[current]) {
+    current = roleParents[current] // Step 4: Move up to the parent
+    if (current) roles.push(current) // Step 5: Add parent to our list
+  }
+
+  return roles
+}
+
+// ============ Collection Access Factories ============
+
+/**
+ * Factory: Creates an access control for a role and all higher roles
+ */
+export const roleOrHigher = (role: User['role']): Access => {
+  const allowedRoles = getRolesAtOrAbove(role)
+  return ({ req: { user } }) => {
+    if (user) return checkRole(allowedRoles, user)
+    return false
+  }
+}
+
+/**
+ * Factory: Creates an access control for a role (or higher) OR if user owns the document.
+ */
+export const roleOrHigherOrSelf = (role: User['role']): Access => {
+  const allowedRoles = getRolesAtOrAbove(role)
+  return ({ req: { user } }) => {
+    if (user) {
+      if (checkRole(allowedRoles, user)) return true
+      return { id: { equals: user.id } }
+    }
+    return false
+  }
+}
+
+// ============ Field Access Factories ============
+
+/**
+ * Factory: Creates a field access control for a role and all higher roles
+ */
+export const fieldRoleOrHigher = (role: User['role']): FieldAccess => {
+  const allowedRoles = getRolesAtOrAbove(role)
+  return ({ req: { user } }) => {
+    if (user) return checkRole(allowedRoles, user)
+    return false
+  }
+}
+
+/**
+ * Factory Creates a field access control for a role (or higher) OR if user owns the document.
+ */
+export const fieldRoleOrHigherOrSelf = (role: User['role']): FieldAccess => {
+  const allowedRoles = getRolesAtOrAbove(role)
+  return ({ req: { user }, id }) => {
+    if (user) {
+      if (checkRole(allowedRoles, user)) return true
+      return id === user.id
+    }
+    return false
+  }
 }

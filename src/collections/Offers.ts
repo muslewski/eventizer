@@ -1,4 +1,9 @@
-import { adminOnly } from '@/access/adminOnly'
+import {
+  adminOrHigherOrSelf,
+  moderatorOrHigherOrSelf,
+  providerOrHigher,
+  publicAccess,
+} from '@/access'
 import type { CollectionConfig } from 'payload'
 
 export const Offers: CollectionConfig = {
@@ -6,10 +11,10 @@ export const Offers: CollectionConfig = {
 
   access: {
     // admin see everything
-    create: adminOnly,
-    read: adminOnly,
-    update: adminOnly,
-    delete: adminOnly,
+    create: providerOrHigher, // providers and highers can create
+    read: publicAccess, // everyone should be able to see the offer
+    update: moderatorOrHigherOrSelf, // mods, admins, and owners
+    delete: adminOrHigherOrSelf, // only admins or owners of document
   },
 
   fields: [
