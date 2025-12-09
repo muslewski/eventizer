@@ -15,6 +15,13 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    components: {
+      beforeNavLinks: ['@/components/payload/beforeNav'],
+      graphics: {
+        Logo: '@/components/payload/customLogo',
+        Icon: '@/components/payload/customIcon',
+      },
+    },
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),

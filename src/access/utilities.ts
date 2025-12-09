@@ -1,4 +1,4 @@
-import { Role, roleParents } from '@/access/hierarchy'
+import { Role, getRoleConfig } from '@/access/hierarchy'
 import type { User } from '@/payload-types'
 import { Access, FieldAccess } from 'payload'
 
@@ -20,10 +20,11 @@ export const getRolesAtOrAbove = (role: Role): Role[] => {
   const roles: Role[] = [role] // Step 1: Start with the given role
   let current: Role | null = role // Step 2: Set a "pointer" to track where we are
 
-  // Step 3: Keep going while there's a parent
-  while (current && roleParents[current]) {
-    current = roleParents[current] // Step 4: Move up to the parent
-    if (current) roles.push(current) // Step 5: Add parent to our list
+  // Step 3: Keep pulling parents until there are no more
+  while (current) {
+    const parent: Role | null = getRoleConfig(current).parent // Step 4: Move up to the parent
+    if (parent) roles.push(parent) // Step 5: Add parent to our list
+    current = parent // Step 6: Update pointer to the parent
   }
 
   return roles
