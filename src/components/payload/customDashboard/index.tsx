@@ -3,6 +3,7 @@ import { ServerProps } from 'payload'
 import { FC, Fragment } from 'react'
 import { DashboardBanner } from './DashboardBanner'
 import { DashboardGroup } from './DashboardGroup'
+import type { I18nClient } from '@payloadcms/translations'
 
 type DashboardProps = {
   navGroups: ReturnType<typeof groupNavItems>
@@ -31,7 +32,7 @@ const Dashboard: FC<DashboardProps> = (props) => {
               label={label}
               entities={entities}
               adminRoute={adminRoute}
-              i18n={i18n}
+              i18n={i18n as I18nClient}
               payload={payload}
             />
           ))}

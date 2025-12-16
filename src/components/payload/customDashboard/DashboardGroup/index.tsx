@@ -38,7 +38,7 @@ export const DashboardGroup: FC<Props> = async ({
     return docCounts
   }
 
-  const isFeaturedGroup = groupLabel === adminGroups.featured
+  const isFeaturedGroup = groupLabel === adminGroups.featured.en || groupLabel === adminGroups.featured.pl
   let counts: Record<string, number>
 
   if (isFeaturedGroup) {
