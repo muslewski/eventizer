@@ -86,7 +86,7 @@ export const NavClient: FC<Props> = ({ groups }) => {
                   {activeCollection && (
                     <motion.div
                       layoutId="activeIndicator"
-                      className={`${baseClass}__link-indicator absolute -left-4 top-1/2 -translate-y-1/2`}
+                      className={`${baseClass}__link-indicator absolute  -left-4 top-1/2 -translate-y-1/2`}
                       transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                     />
                   )}
