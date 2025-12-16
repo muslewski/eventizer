@@ -3,7 +3,7 @@
 
 /* Import the Tailwind theme styles */
 @import 'tailwindcss/theme.css' layer(theme);
-@import 'tw-animate-css';
+/* @import 'tw-animate-css'; */
 
 /* Skip the preflight reset to avoid conflicts with Payload's admin styles */
 /* @import 'tailwindcss/preflight.css' layer(base); */
@@ -119,6 +119,16 @@
   .file-details,
   .card {
     border-radius: var(--radius);
+  }
+
+  /* repair table after adding shadcn and tailwind */
+  .table {
+    width: 100%;
+  }
+
+  /* repair table cells to be vertically aligned middle */
+  .table td[class*='cell-'] {
+    vertical-align: middle;
   }
 }
 

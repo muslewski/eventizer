@@ -6,7 +6,11 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
-import { Users } from './collections/Users'
+import { Users } from './collections/auth/Users'
+import { Sessions } from './collections/auth/Sessions'
+import { Accounts } from './collections/auth/Accounts'
+import { Verifications } from './collections/auth/Verifications'
+
 import { Media } from './collections/Media'
 import { Offers } from '@/collections/Offers'
 
@@ -26,8 +30,24 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    routes: {
+      login: '/auth/sign-in',
+      createFirstUser: '/auth/sign-up',
+      forgot: '/auth/forgot-password',
+      reset: '/auth/reset-password',
+      logout: '/auth/sign-out',
+    },
   },
-  collections: [Users, Media, Offers],
+  collections: [
+    // Auth
+    Users,
+    Sessions,
+    Accounts,
+    Verifications,
+
+    Media,
+    Offers,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
