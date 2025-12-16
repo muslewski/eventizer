@@ -72,21 +72,31 @@ export interface Config {
     'user-accounts': UserAccount;
     'user-verifications': UserVerification;
     media: Media;
+    'profile-pictures': ProfilePicture;
+    'offer-uploads': OfferUpload;
     offers: Offer;
     'payload-kv': PayloadKv;
+    'payload-folders': FolderInterface;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    'payload-folders': {
+      documentsAndFolders: 'payload-folders' | 'media';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     'user-sessions': UserSessionsSelect<false> | UserSessionsSelect<true>;
     'user-accounts': UserAccountsSelect<false> | UserAccountsSelect<true>;
     'user-verifications': UserVerificationsSelect<false> | UserVerificationsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'profile-pictures': ProfilePicturesSelect<false> | ProfilePicturesSelect<true>;
+    'offer-uploads': OfferUploadsSelect<false> | OfferUploadsSelect<true>;
     offers: OffersSelect<false> | OffersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -130,22 +140,27 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
-  profilePicture?: (number | null) | Media;
-  role: 'admin' | 'moderator' | 'service-provider' | 'client';
+  profilePicture?: (number | null) | ProfilePicture;
+  role?: ('admin' | 'moderator' | 'service-provider' | 'client') | null;
   name: string;
   email: string;
   emailVerified: boolean;
+  /**
+   * Better Auth URL to the user profile image
+   */
   image?: string | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
+ * Upload and manage user profile pictures.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "profile-pictures".
  */
-export interface Media {
+export interface ProfilePicture {
   id: number;
-  alt: string;
+  user?: (number | null) | User;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -204,6 +219,78 @@ export interface UserVerification {
   createdAt: string;
 }
 /**
+ * Upload and manage media files used throughout the application.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  user?: (number | null) | User;
+  alt: string;
+  folder?: (number | null) | FolderInterface;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-folders".
+ */
+export interface FolderInterface {
+  id: number;
+  name: string;
+  folder?: (number | null) | FolderInterface;
+  documentsAndFolders?: {
+    docs?: (
+      | {
+          relationTo?: 'payload-folders';
+          value: number | FolderInterface;
+        }
+      | {
+          relationTo?: 'media';
+          value: number | Media;
+        }
+    )[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  folderType?: 'media'[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Upload and manage files related to offers.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offer-uploads".
+ */
+export interface OfferUpload {
+  id: number;
+  title: string;
+  description: string;
+  offer: number | Offer;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "offers".
  */
@@ -260,8 +347,20 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
+        relationTo: 'profile-pictures';
+        value: number | ProfilePicture;
+      } | null)
+    | ({
+        relationTo: 'offer-uploads';
+        value: number | OfferUpload;
+      } | null)
+    | ({
         relationTo: 'offers';
         value: number | Offer;
+      } | null)
+    | ({
+        relationTo: 'payload-folders';
+        value: number | FolderInterface;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -366,7 +465,47 @@ export interface UserVerificationsSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  user?: T;
   alt?: T;
+  folder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "profile-pictures_select".
+ */
+export interface ProfilePicturesSelect<T extends boolean = true> {
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offer-uploads_select".
+ */
+export interface OfferUploadsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  offer?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -397,6 +536,18 @@ export interface OffersSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-folders_select".
+ */
+export interface PayloadFoldersSelect<T extends boolean = true> {
+  name?: T;
+  folder?: T;
+  documentsAndFolders?: T;
+  folderType?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

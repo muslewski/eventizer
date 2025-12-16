@@ -21,16 +21,23 @@ const RoleSelectField = () => {
   const user = useAuth<User>()
   const userRole = user.user?.role
 
+  // Only admins can edit the role field
+  const isDisabled = userRole !== 'admin'
+
   // Only admins can see protected roles (like "Admin" and "Moderator")
   const visibleRoles =
     userRole === 'admin' ? userRoles : userRoles.filter((role) => !role.isProtected)
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 mb-4">
       <label className="text-sm font-medium text-stone-700 dark:text-stone-300" htmlFor={path}>
         Role
       </label>
-      <Select value={value} onValueChange={(val) => setValue(val as Role)}>
+      <Select
+        value={value ?? undefined}
+        onValueChange={(val) => setValue(val as Role)}
+        disabled={isDisabled}
+      >
         <SelectTrigger
           className={cn(
             'w-full h-11 px-3',

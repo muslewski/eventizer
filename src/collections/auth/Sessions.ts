@@ -5,6 +5,16 @@ import type { CollectionConfig } from 'payload'
 
 export const Sessions: CollectionConfig = {
   slug: 'user-sessions',
+  labels: {
+    singular: {
+      en: 'Session',
+      pl: 'Sesja',
+    },
+    plural: {
+      en: 'Sessions',
+      pl: 'Sesje',
+    },
+  },
   admin: {
     group: adminGroups.auth,
     hidden: ({ user }) => !isClientRoleEqual('admin', user),

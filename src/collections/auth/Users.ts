@@ -7,13 +7,23 @@ import {
   publicAccessField,
 } from '@/access'
 import { getRoleConfig, Role, userRoles } from '@/access/hierarchy'
-import { isClientRoleEqualOrHigher } from '@/access/utilities'
+import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { auth } from '@/auth/auth'
 import { adminGroups } from '@/lib/adminGroups'
 import { APIError, type CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  labels: {
+    singular: {
+      en: 'User',
+      pl: 'Użytkownik',
+    },
+    plural: {
+      en: 'Users',
+      pl: 'Użytkownicy',
+    },
+  },
   admin: {
     useAsTitle: 'email',
     group: adminGroups.auth,
@@ -80,23 +90,36 @@ export const Users: CollectionConfig = {
     read: moderatorOrHigherOrSelf(),
     update: adminOrHigherOrSelf(), // only admin or user can update its account
     delete: adminOrHigherOrSelf(), // only admin or user can delete its account
-    create: () => false, // everyone can create new account
+    create: () => false, // no one can create users directly (happens via Better Auth)
   },
-  hooks: {
-    beforeValidate: [
-      ({ req, data }) => {
-        const user = req.user
 
-        // Block protected roles for non-admins (API-level protection)
-        if (!user || user.role !== 'admin') {
-          if (data?.role && getRoleConfig(data.role).isProtected) {
-            throw new APIError(
-              'You do not have permission to assign this role.',
-              400,
-              undefined,
-              true,
-            )
+  hooks: {
+    beforeChange: [
+      async ({ req, data }) => {
+        // Sync image field with profilePicture media URL
+        if (data.profilePicture) {
+          try {
+            // Handle both ID and full object cases
+            const pfpId =
+              typeof data.profilePicture === 'object' ? data.profilePicture.id : data.profilePicture
+
+            const pfp = await req.payload.findByID({
+              collection: 'profile-pictures',
+              id: pfpId,
+            })
+
+            if (pfp?.url) {
+              data.image = pfp.url
+            }
+          } catch (error) {
+            req.payload.logger.error({
+              message: 'Error syncing profile image URL:',
+              error: error instanceof Error ? error.message : String(error),
+            })
           }
+        } else if (data.profilePicture === null) {
+          // Clear image when profilePicture is removed
+          data.image = null
         }
 
         return data
@@ -108,7 +131,11 @@ export const Users: CollectionConfig = {
     {
       name: 'profilePicture',
       type: 'upload',
-      relationTo: 'media',
+      relationTo: 'profile-pictures',
+      label: {
+        en: 'Profile Picture',
+        pl: 'Zdjęcie Profilowe',
+      },
     },
     {
       name: 'role',
@@ -116,25 +143,23 @@ export const Users: CollectionConfig = {
       options: [...userRoles],
       defaultValue: 'client',
       required: true,
+      label: {
+        en: 'Role',
+        pl: 'Rola',
+      },
       access: {
         read: publicAccessField,
         update: fieldAdminOrHigher,
       },
       admin: {
+        position: 'sidebar',
+        condition: (data, siblingData, { user }) => {
+          // Only show role field to moderators and higher
+          return isClientRoleEqualOrHigher('moderator', user)
+        },
         components: {
           Field: '/components/payload/fields/roleSelect',
         },
-      },
-      filterOptions: ({ req, options }) => {
-        // Admins can see all roles
-        if (req.user?.role === 'admin') {
-          return options
-        }
-        // Non-admins only see non-protected roles
-        return options.filter((option) => {
-          const roleValue = typeof option === 'string' ? option : option.value
-          return !getRoleConfig(roleValue as Role).isProtected
-        })
       },
     },
 
@@ -143,6 +168,10 @@ export const Users: CollectionConfig = {
       type: 'text',
       required: true,
       index: true,
+      label: {
+        en: 'Name',
+        pl: 'Imię',
+      },
     },
     {
       name: 'email',
@@ -150,15 +179,43 @@ export const Users: CollectionConfig = {
       required: true,
       unique: true,
       index: true,
+      label: 'Email',
     },
     {
       name: 'emailVerified',
       type: 'checkbox',
       required: true,
+      label: {
+        en: 'Email Verified',
+        pl: 'Email Zweryfikowany',
+      },
+      access: {
+        read: publicAccessField,
+        update: fieldAdminOrHigher,
+      },
     },
     {
       name: 'image',
       type: 'text',
+      label: {
+        en: 'Image',
+        pl: 'Obraz',
+      },
+      admin: {
+        position: 'sidebar',
+        description: {
+          en: 'Better Auth URL to the user profile image',
+          pl: 'URL Better Auth do zdjęcia profilowego użytkownika',
+        },
+        condition: (data, siblingsData, { user }) => {
+          // Only show image field to moderators and higher
+          return isClientRoleEqualOrHigher('moderator', user)
+        },
+      },
+      access: {
+        read: publicAccessField,
+        update: () => false, // prevent manual updates since it's auto-synced
+      },
     },
   ],
 }

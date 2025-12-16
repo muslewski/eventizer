@@ -11,8 +11,13 @@ import { Sessions } from './collections/auth/Sessions'
 import { Accounts } from './collections/auth/Accounts'
 import { Verifications } from './collections/auth/Verifications'
 
-import { Media } from './collections/Media'
+import { Media } from './collections/uploads/Media'
 import { Offers } from '@/collections/Offers'
+import { ProfilePictures } from '@/collections/uploads/ProfilePictures'
+import { OfferUploads } from '@/collections/uploads/OfferUploads'
+import { en } from '@payloadcms/translations/languages/en'
+import { pl } from '@payloadcms/translations/languages/pl'
+import { customTranslations } from '@/translations/custom-translations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -54,9 +59,18 @@ export default buildConfig({
     Accounts,
     Verifications,
 
+    // Uploads
     Media,
+    ProfilePictures,
+    OfferUploads,
+
     Offers,
   ],
+  i18n: {
+    fallbackLanguage: 'pl',
+    supportedLanguages: { en, pl },
+    translations: customTranslations,
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

@@ -10,6 +10,16 @@ import type { CollectionConfig } from 'payload'
 
 export const Offers: CollectionConfig = {
   slug: 'offers',
+  labels: {
+    singular: {
+      en: 'Offer',
+      pl: 'Oferta',
+    },
+    plural: {
+      en: 'Offers',
+      pl: 'Oferty',
+    },
+  },
   admin: {
     useAsTitle: 'title',
     group: adminGroups.featured,
@@ -43,9 +53,13 @@ export const Offers: CollectionConfig = {
       type: 'relationship',
       relationTo: 'users',
       required: true,
+      label: {
+        en: 'User',
+        pl: 'Użytkownik',
+      },
       access: {
-        read: fieldRoleOrHigher('moderator'), // Only mods and admins can see who created the offer
-        update: fieldRoleOrHigher('admin'), // Only admins can change the owner
+        read: fieldRoleOrHigher('moderator'),
+        update: fieldRoleOrHigher('admin'),
       },
       defaultValue: ({ req }) => req.user?.id,
       admin: {
@@ -57,6 +71,10 @@ export const Offers: CollectionConfig = {
       type: 'text',
       required: true,
       defaultValue: 'Nowa oferta',
+      label: {
+        en: 'Title',
+        pl: 'Tytuł',
+      },
     },
   ],
 }

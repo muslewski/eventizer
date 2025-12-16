@@ -1,12 +1,12 @@
 import { EntityToGroup, EntityType, groupNavItems } from '@payloadcms/ui/shared'
 import { ServerProps } from 'payload'
 import { FC } from 'react'
-import { getNavPrefs } from './getNavPrefs'
 import { NavWrapper } from './NavWrapper'
 import { RenderServerComponent } from '@payloadcms/ui/elements/RenderServerComponent'
 import { Logout } from '@payloadcms/ui'
 import { NavClient } from './index.client'
 import { NavHamburger } from './NavHamburger'
+// import { getNavPrefs } from './getNavPrefs'
 
 export const baseClass = 'nav'
 
@@ -61,7 +61,8 @@ const Nav: FC<ServerProps> = async (props) => {
     i18n,
   )
 
-  const navPreferences = await getNavPrefs({ payload, user })
+  // Get nav preferences server-side
+  // const navPreferences = user ? await getNavPrefs({ payload, user }) : null
 
   const LogoutComponent = RenderServerComponent({
     clientProps: {
@@ -102,7 +103,7 @@ const Nav: FC<ServerProps> = async (props) => {
             user,
           },
         })}
-        <NavClient groups={groups} navPreferences={navPreferences} />
+        <NavClient groups={groups} />
         {RenderServerComponent({
           clientProps: {
             documentSubViewType,

@@ -35,7 +35,6 @@ const CustomBeforeNav: React.FC = () => {
           <div
             className={`
               flex h-9 w-9 shrink-0 items-center justify-center rounded-full
-              ${roleConfig.color.bg} bg-opacity-15 dark:bg-opacity-20
             `}
           >
             {RoleIcon && <RoleIcon size={18} className={roleConfig.color.text} strokeWidth={2.5} />}

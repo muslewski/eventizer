@@ -5,6 +5,16 @@ import type { CollectionConfig } from 'payload'
 
 export const Verifications: CollectionConfig = {
   slug: 'user-verifications',
+  labels: {
+    singular: {
+      en: 'Verification',
+      pl: 'Weryfikacja',
+    },
+    plural: {
+      en: 'Verifications',
+      pl: 'Weryfikacje',
+    },
+  },
   admin: {
     group: adminGroups.auth,
     hidden: ({ user }) => !isClientRoleEqual('admin', user),
