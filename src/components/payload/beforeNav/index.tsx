@@ -49,6 +49,7 @@ const CustomBeforeNav: React.FC = () => {
             <span className={`text-sm font-semibold ${roleConfig.color.text}`}>
               {roleConfig.label}
             </span>
+            <span className="text-xs text-stone-500 dark:text-stone-400">{user.email}</span>
           </div>
         </div>
       </div>

@@ -94,6 +94,9 @@
   --theme-elevation-1000: var(--color-base-1000);
 
   /* Apply border-radius to all Payload UI elements */
+  input,
+  span,
+  .banner,
   .field-type input,
   .field-label,
   .field-type,
@@ -116,9 +119,18 @@
   .collection-edit__auth,
   .doc-controls__dots,
   .hamburger,
+  .popup-button,
+  .popup__content,
+  .react-datepicker,
+  .react-datepicker__day,
   .file-details,
   .card {
     border-radius: var(--radius);
+  }
+
+  .btn--withPopup {
+    display: flex;
+    gap: 0.2rem;
   }
 
   /* repair table after adding shadcn and tailwind */

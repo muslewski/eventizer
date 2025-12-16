@@ -209,9 +209,11 @@ export interface UserVerification {
  */
 export interface Offer {
   id: number;
+  user: number | User;
   title: string;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -382,9 +384,11 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "offers_select".
  */
 export interface OffersSelect<T extends boolean = true> {
+  user?: T;
   title?: T;
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

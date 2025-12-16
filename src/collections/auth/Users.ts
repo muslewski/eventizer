@@ -4,8 +4,10 @@ import {
   fieldModeratorOrHigher,
   moderatorOrHigherOrSelf,
   publicAccess,
+  publicAccessField,
 } from '@/access'
 import { getRoleConfig, Role, userRoles } from '@/access/hierarchy'
+import { isClientRoleEqualOrHigher } from '@/access/utilities'
 import { auth } from '@/auth/auth'
 import { APIError, type CollectionConfig } from 'payload'
 
@@ -14,6 +16,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     group: 'Auth',
+    hidden: ({ user }) => !isClientRoleEqualOrHigher('moderator', user),
   },
   auth: {
     disableLocalStrategy: true, // We should disable this since we use Better Auth now
@@ -73,9 +76,9 @@ export const Users: CollectionConfig = {
     },
   ],
   access: {
-    read: moderatorOrHigherOrSelf,
-    update: adminOrHigherOrSelf, // only admin or user can update its account
-    delete: adminOrHigherOrSelf, // only admin or user can delete its account
+    read: moderatorOrHigherOrSelf(),
+    update: adminOrHigherOrSelf(), // only admin or user can update its account
+    delete: adminOrHigherOrSelf(), // only admin or user can delete its account
     create: () => false, // everyone can create new account
   },
   hooks: {
@@ -113,7 +116,7 @@ export const Users: CollectionConfig = {
       defaultValue: 'client',
       required: true,
       access: {
-        read: fieldModeratorOrHigher,
+        read: publicAccessField,
         update: fieldAdminOrHigher,
       },
       admin: {

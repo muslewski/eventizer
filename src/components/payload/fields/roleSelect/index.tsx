@@ -18,11 +18,12 @@ const RoleSelectField = () => {
   const currentRole = value ? getRoleConfig(value) : null
   const RoleIcon = currentRole ? Icons[currentRole?.icon] : null
 
-  // if current user has access to read this field but not update it, render a non-editable view
   const user = useAuth<User>()
-  const canAccessAdmin = user.permissions?.collections?.users
+  const userRole = user.user?.role
 
-  console.log('canAccessAdmin', canAccessAdmin)
+  // Only admins can see protected roles (like "Admin" and "Moderator")
+  const visibleRoles =
+    userRole === 'admin' ? userRoles : userRoles.filter((role) => !role.isProtected)
 
   return (
     <div className="flex flex-col gap-2">
@@ -53,7 +54,7 @@ const RoleSelectField = () => {
         </SelectTrigger>
 
         <SelectContent className="border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 rounded-lg shadow-lg overflow-hidden p-1">
-          {userRoles.map((role) => {
+          {visibleRoles.map((role) => {
             const Icon = Icons[role.icon]
             const isSelected = value === role.value
 

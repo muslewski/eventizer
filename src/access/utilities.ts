@@ -1,6 +1,6 @@
 import { Role, getRoleConfig } from '@/access/hierarchy'
 import type { User } from '@/payload-types'
-import { Access, FieldAccess } from 'payload'
+import { Access, ClientUser, FieldAccess } from 'payload'
 
 /**
  * @returns true if user.role in roles
@@ -30,6 +30,32 @@ export const getRolesAtOrAbove = (role: Role): Role[] => {
   return roles
 }
 
+// ============ Client Role Checkers ============
+
+/**
+ * Checks if clientUser has a specific role
+ */
+export const isClientRoleEqual = (role: User['role'], clientUser?: ClientUser | null): boolean => {
+  if (clientUser && clientUser.role) {
+    return clientUser.role === role
+  }
+
+  return false
+}
+
+/** Check if client role equal or is higher */
+export const isClientRoleEqualOrHigher = (
+  role: User['role'],
+  clientUser?: ClientUser | null,
+): boolean => {
+  if (clientUser && clientUser.role) {
+    const allowedRoles = getRolesAtOrAbove(role)
+    return allowedRoles.includes(clientUser.role)
+  }
+
+  return false
+}
+
 // ============ Collection Access Factories ============
 
 /**
@@ -46,12 +72,12 @@ export const roleOrHigher = (role: User['role']): Access => {
 /**
  * Factory: Creates an access control for a role (or higher) OR if user owns the document.
  */
-export const roleOrHigherOrSelf = (role: User['role']): Access => {
+export const roleOrHigherOrSelf = (role: User['role'], field: string = 'id'): Access => {
   const allowedRoles = getRolesAtOrAbove(role)
   return ({ req: { user } }) => {
     if (user) {
       if (checkRole(allowedRoles, user)) return true
-      return { id: { equals: user.id } }
+      return { [field]: { equals: user.id } }
     }
     return false
   }

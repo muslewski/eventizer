@@ -1,7 +1,10 @@
-import { Access } from 'payload'
+import { Access, FieldAccess } from 'payload'
 import { roleOrHigher, roleOrHigherOrSelf, fieldRoleOrHigher } from './utilities'
 
 export const publicAccess: Access = () => true
+
+// Public field-level access (everyone can read/update the field)
+export const publicAccessField: FieldAccess = () => true
 
 // ============ Collection Access ============
 
@@ -18,7 +21,7 @@ export const providerOrHigher = roleOrHigher('service-provider')
 export const clientOrHigher = roleOrHigher('client')
 
 /** Admins and creators of documents */
-export const adminOrHigherOrSelf = roleOrHigherOrSelf('admin')
+export const adminOrHigherOrSelf = (field: string = 'id') => roleOrHigherOrSelf('admin', field)
 
 /**
  * Moderators and admins can access all documents.
@@ -27,8 +30,8 @@ export const adminOrHigherOrSelf = roleOrHigherOrSelf('admin')
  * @example Orders — mods see all, clients see only their own
  * @example Services — mods see all, providers see only their own
  */
-export const moderatorOrHigherOrSelf = roleOrHigherOrSelf('moderator')
-
+export const moderatorOrHigherOrSelf = (field: string = 'id') =>
+  roleOrHigherOrSelf('moderator', field)
 // ============ Field Access ============
 
 /** Only admins can read/update this field */
