@@ -1,17 +1,18 @@
 import { adminOrHigher, adminOrHigherOrSelf, moderatorOrHigherOrSelf } from '@/access'
 import { isClientRoleEqual } from '@/access/utilities'
+import { adminGroups } from '@/lib/adminGroups'
 import type { CollectionConfig } from 'payload'
 
 export const Accounts: CollectionConfig = {
   slug: 'user-accounts',
   admin: {
-    group: 'Auth',
+    group: adminGroups.auth,
     hidden: ({ user }) => !isClientRoleEqual('admin', user),
   },
   access: {
-    read: adminOrHigherOrSelf,
-    update: adminOrHigherOrSelf, // only admin or user can update its account
-    delete: adminOrHigherOrSelf, // only admin or user can delete its account
+    read: adminOrHigherOrSelf(),
+    update: adminOrHigherOrSelf(), // only admin or user can update its account
+    delete: adminOrHigherOrSelf(), // only admin or user can delete its account
     create: () => false, // everyone can create new account
   },
   fields: [

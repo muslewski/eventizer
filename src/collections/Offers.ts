@@ -5,13 +5,14 @@ import {
   providerOrHigher,
 } from '@/access'
 import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
+import { adminGroups } from '@/lib/adminGroups'
 import type { CollectionConfig } from 'payload'
 
 export const Offers: CollectionConfig = {
   slug: 'offers',
   admin: {
     useAsTitle: 'title',
-    group: 'Content',
+    group: adminGroups.featured,
     // Hide offers for clients
     hidden: ({ user }) => !isClientRoleEqualOrHigher('service-provider', user),
 

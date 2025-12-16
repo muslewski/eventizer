@@ -20,11 +20,20 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   admin: {
     components: {
+      views: {
+        dashboard: {
+          Component: '@/components/payload/customDashboard',
+        },
+      },
       beforeNavLinks: ['@/components/payload/beforeNav'],
       graphics: {
         Logo: '@/components/payload/customLogo',
         Icon: '@/components/payload/customIcon',
       },
+      Nav: '@/components/payload/customNav',
+    },
+    avatar: {
+      Component: '@/components/payload/customAvatar',
     },
     user: Users.slug,
     importMap: {

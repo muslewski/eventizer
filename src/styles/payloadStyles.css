@@ -11,42 +11,11 @@
 /* Import Tailwind utilities */
 @import 'tailwindcss/utilities.css' layer(utilities);
 
-/* Support Payload’s dark mode toggle by adding a custom variant */
+/* Support Payload's dark mode toggle by adding a custom variant */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.147 0.004 49.25);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.147 0.004 49.25);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.147 0.004 49.25);
-  --primary: oklch(0.216 0.006 56.043);
-  --primary-foreground: oklch(0.985 0.001 106.423);
-  --secondary: oklch(0.97 0.001 106.424);
-  --secondary-foreground: oklch(0.216 0.006 56.043);
-  --muted: oklch(0.97 0.001 106.424);
-  --muted-foreground: oklch(0.553 0.013 58.071);
-  --accent: oklch(0.97 0.001 106.424);
-  --accent-foreground: oklch(0.216 0.006 56.043);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.923 0.003 48.717);
-  --input: oklch(0.923 0.003 48.717);
-  --ring: oklch(0.709 0.01 56.259);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0.001 106.423);
-  --sidebar-foreground: oklch(0.147 0.004 49.25);
-  --sidebar-primary: oklch(0.216 0.006 56.043);
-  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
-  --sidebar-accent: oklch(0.97 0.001 106.424);
-  --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
-  --sidebar-border: oklch(0.923 0.003 48.717);
-  --sidebar-ring: oklch(0.709 0.01 56.259);
 
   /* Payload custom base colors */
   --color-base-0: rgb(255, 255, 253);
@@ -70,6 +39,39 @@
   --color-base-900: rgb(11, 11, 11);
   --color-base-950: rgb(8, 8, 8);
   --color-base-1000: rgb(5, 5, 5);
+
+  /* Shadcn UI colors synchronized with Payload base colors */
+  --background: var(--color-base-0);
+  --foreground: var(--color-base-900);
+  --card: var(--color-base-0);
+  --card-foreground: var(--color-base-900);
+  --popover: var(--color-base-0);
+  --popover-foreground: var(--color-base-900);
+  --primary: var(--color-base-900);
+  --primary-foreground: var(--color-base-0);
+  --secondary: var(--color-base-100);
+  --secondary-foreground: var(--color-base-900);
+  --muted: var(--color-base-100);
+  --muted-foreground: var(--color-base-550);
+  --accent: var(--color-base-100);
+  --accent-foreground: var(--color-base-900);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: var(--color-base-200);
+  --input: var(--color-base-200);
+  --ring: var(--color-base-700);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: var(--color-base-50);
+  --sidebar-foreground: var(--color-base-900);
+  --sidebar-primary: var(--color-base-900);
+  --sidebar-primary-foreground: var(--color-base-0);
+  --sidebar-accent: var(--color-base-100);
+  --sidebar-accent-foreground: var(--color-base-900);
+  --sidebar-border: var(--color-base-200);
+  --sidebar-ring: var(--color-base-700);
 
   --theme-elevation-0: var(--color-base-0);
   --theme-elevation-50: var(--color-base-50);
@@ -146,38 +148,38 @@
 
 /* Dark theme */
 :is(.dark, [data-theme='dark']) {
-  /* Shadcn UI Dark Theme Colors */
-  --background: oklch(0.147 0.004 49.25);
-  --foreground: oklch(0.985 0.001 106.423);
-  --card: oklch(0.216 0.006 56.043);
-  --card-foreground: oklch(0.985 0.001 106.423);
-  --popover: oklch(0.216 0.006 56.043);
-  --popover-foreground: oklch(0.985 0.001 106.423);
-  --primary: oklch(0.923 0.003 48.717);
-  --primary-foreground: oklch(0.216 0.006 56.043);
-  --secondary: oklch(0.268 0.007 34.298);
-  --secondary-foreground: oklch(0.985 0.001 106.423);
-  --muted: oklch(0.268 0.007 34.298);
-  --muted-foreground: oklch(0.709 0.01 56.259);
-  --accent: oklch(0.268 0.007 34.298);
-  --accent-foreground: oklch(0.985 0.001 106.423);
+  /* Shadcn UI Dark Theme Colors synchronized with Payload base colors */
+  --background: var(--color-base-900);
+  --foreground: var(--color-base-0);
+  --card: var(--color-base-800);
+  --card-foreground: var(--color-base-0);
+  --popover: var(--color-base-800);
+  --popover-foreground: var(--color-base-0);
+  --primary: var(--color-base-200);
+  --primary-foreground: var(--color-base-900);
+  --secondary: var(--color-base-800);
+  --secondary-foreground: var(--color-base-0);
+  --muted: var(--color-base-800);
+  --muted-foreground: var(--color-base-400);
+  --accent: var(--color-base-800);
+  --accent-foreground: var(--color-base-0);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.553 0.013 58.071);
+  --border: var(--color-base-750);
+  --input: var(--color-base-700);
+  --ring: var(--color-base-550);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.216 0.006 56.043);
-  --sidebar-foreground: oklch(0.985 0.001 106.423);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
-  --sidebar-accent: oklch(0.268 0.007 34.298);
-  --sidebar-accent-foreground: oklch(0.985 0.001 106.423);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.553 0.013 58.071);
+  --sidebar: var(--color-base-850);
+  --sidebar-foreground: var(--color-base-0);
+  --sidebar-primary: var(--color-base-300);
+  --sidebar-primary-foreground: var(--color-base-900);
+  --sidebar-accent: var(--color-base-800);
+  --sidebar-accent-foreground: var(--color-base-0);
+  --sidebar-border: var(--color-base-750);
+  --sidebar-ring: var(--color-base-550);
 
   /* Payload elevation colors inverted */
   --theme-elevation-0: var(--color-base-900);
@@ -219,6 +221,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

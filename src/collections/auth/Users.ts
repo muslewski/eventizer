@@ -9,13 +9,14 @@ import {
 import { getRoleConfig, Role, userRoles } from '@/access/hierarchy'
 import { isClientRoleEqualOrHigher } from '@/access/utilities'
 import { auth } from '@/auth/auth'
+import { adminGroups } from '@/lib/adminGroups'
 import { APIError, type CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
   admin: {
     useAsTitle: 'email',
-    group: 'Auth',
+    group: adminGroups.auth,
     hidden: ({ user }) => !isClientRoleEqualOrHigher('moderator', user),
   },
   auth: {

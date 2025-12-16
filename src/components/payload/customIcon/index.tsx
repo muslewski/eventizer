@@ -3,8 +3,8 @@ import Image from 'next/image'
 
 export default function Icon() {
   return (
-    <div>
-      <Image className="w-40 object-cover overflow-visible" src={logo} alt="eventizer icon" />
+    <div className="h-4.5">
+      <Image className=" object-cover" fill src={logo} alt="eventizer icon" />
     </div>
   )
 }
