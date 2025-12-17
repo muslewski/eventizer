@@ -23,7 +23,6 @@ import {
   pgEnum,
 } from '@payloadcms/db-vercel-postgres/drizzle/pg-core'
 import { sql, relations } from '@payloadcms/db-vercel-postgres/drizzle'
-export const enum__locales = pgEnum('enum__locales', ['pl', 'en'])
 export const enum_users_role = pgEnum('enum_users_role', [
   'admin',
   'moderator',
@@ -34,10 +33,6 @@ export const enum_offers_status = pgEnum('enum_offers_status', ['draft', 'publis
 export const enum__offers_v_version_status = pgEnum('enum__offers_v_version_status', [
   'draft',
   'published',
-])
-export const enum__offers_v_published_locale = pgEnum('enum__offers_v_published_locale', [
-  'pl',
-  'en',
 ])
 export const enum_payload_folders_folder_type = pgEnum('enum_payload_folders_folder_type', [
   'media',
@@ -326,8 +321,6 @@ export const _offers_v = pgTable(
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
-    snapshot: boolean('snapshot'),
-    publishedLocale: enum__offers_v_published_locale('published_locale'),
     latest: boolean('latest'),
     autosave: boolean('autosave'),
   },
@@ -339,8 +332,6 @@ export const _offers_v = pgTable(
     index('_offers_v_version_version__status_idx').on(columns.version__status),
     index('_offers_v_created_at_idx').on(columns.createdAt),
     index('_offers_v_updated_at_idx').on(columns.updatedAt),
-    index('_offers_v_snapshot_idx').on(columns.snapshot),
-    index('_offers_v_published_locale_idx').on(columns.publishedLocale),
     index('_offers_v_latest_idx').on(columns.latest),
     index('_offers_v_autosave_idx').on(columns.autosave),
   ],
@@ -744,11 +735,9 @@ export const relations_payload_preferences = relations(payload_preferences, ({ m
 export const relations_payload_migrations = relations(payload_migrations, () => ({}))
 
 type DatabaseSchema = {
-  enum__locales: typeof enum__locales
   enum_users_role: typeof enum_users_role
   enum_offers_status: typeof enum_offers_status
   enum__offers_v_version_status: typeof enum__offers_v_version_status
-  enum__offers_v_published_locale: typeof enum__offers_v_published_locale
   enum_payload_folders_folder_type: typeof enum_payload_folders_folder_type
   users: typeof users
   user_sessions: typeof user_sessions

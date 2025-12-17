@@ -24,6 +24,7 @@ export const Offers: CollectionConfig = {
       pl: 'Oferty',
     },
   },
+  orderable: true,
   admin: {
     useAsTitle: 'title',
     group: adminGroups.featured,

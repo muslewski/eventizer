@@ -220,5 +220,23 @@ export const Users: CollectionConfig = {
         update: () => false, // prevent manual updates since it's auto-synced
       },
     },
+    {
+      name: 'offers',
+      type: 'join',
+      collection: 'offers',
+      on: 'user',
+      label: false,
+      admin: {
+        description: {
+          en: 'Here you can see all offers you have created.',
+          pl: 'Tutaj możesz zobaczyć wszystkie oferty, które utworzyłeś.',
+        },
+        allowCreate: true,
+        condition: (data, siblingsData, { user }) => {
+          // show to mods, admins and service-providers
+          return isClientRoleEqualOrHigher('service-provider', user)
+        },
+      },
+    },
   ],
 }

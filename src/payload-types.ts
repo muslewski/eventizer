@@ -82,6 +82,12 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
+    users: {
+      offers: 'offers';
+    };
+    'profile-pictures': {
+      usedBy: 'users';
+    };
     'payload-folders': {
       documentsAndFolders: 'payload-folders' | 'media';
     };
@@ -149,6 +155,14 @@ export interface User {
    * Better Auth URL to the user profile image
    */
   image?: string | null;
+  /**
+   * Here you can see all offers you have created.
+   */
+  offers?: {
+    docs?: (number | Offer)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -160,7 +174,11 @@ export interface User {
  */
 export interface ProfilePicture {
   id: number;
-  user?: (number | null) | User;
+  usedBy?: {
+    docs?: (number | User)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -173,6 +191,19 @@ export interface ProfilePicture {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offers".
+ */
+export interface Offer {
+  id: number;
+  _order?: string | null;
+  user: number | User;
+  title: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -295,18 +326,6 @@ export interface OfferUpload {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "offers".
- */
-export interface Offer {
-  id: number;
-  user: number | User;
-  title: string;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -418,6 +437,7 @@ export interface UsersSelect<T extends boolean = true> {
   email?: T;
   emailVerified?: T;
   image?: T;
+  offers?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -489,7 +509,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "profile-pictures_select".
  */
 export interface ProfilePicturesSelect<T extends boolean = true> {
-  user?: T;
+  usedBy?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -529,6 +549,7 @@ export interface OfferUploadsSelect<T extends boolean = true> {
  * via the `definition` "offers_select".
  */
 export interface OffersSelect<T extends boolean = true> {
+  _order?: T;
   user?: T;
   title?: T;
   updatedAt?: T;

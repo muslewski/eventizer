@@ -127,6 +127,9 @@
   .react-datepicker__day,
   .localizer,
   .localizer-button,
+  .table-wrap,
+  .table,
+  .table--appearance-condensed,
   .popup,
   .file-details,
   .card {
@@ -136,6 +139,11 @@
   .btn--withPopup {
     display: flex;
     gap: 0.2rem;
+  }
+
+  table {
+    border-radius: var(--radius);
+    overflow: hidden;
   }
 
   /* repair table after adding shadcn and tailwind */

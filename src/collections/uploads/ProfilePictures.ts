@@ -28,6 +28,7 @@ export const ProfilePictures: CollectionConfig = {
       pl: 'Przesyłaj i zarządzaj zdjęciami profilowymi.',
     },
     group: adminGroups.uploads,
+    defaultColumns: ['filename', 'usedBy', 'updatedAt', 'createdAt'],
   },
   access: {
     read: publicAccess,
@@ -35,42 +36,24 @@ export const ProfilePictures: CollectionConfig = {
     delete: adminOrHigherOrSelf('user'),
     create: publicAccess,
   },
-
-  hooks: {
-    beforeValidate: [
-      ({ data, req }) => {
-        const maxSize = 5 * 1024 * 1024 // 5MB in bytes
-
-        if (data?.file?.size && data.file.size > maxSize) {
-          throw new APIError(
-            req.i18n.language === 'pl'
-              ? `Rozmiar pliku nie może przekraczać 5MB. Obecny rozmiar: ${(data.file.size / 1024 / 1024).toFixed(2)}MB`
-              : `File size cannot exceed 5MB. Current size: ${(data.file.size / 1024 / 1024).toFixed(2)}MB`,
-            400,
-          )
-        }
-
-        return data
-      },
-    ],
-  },
   fields: [
     {
-      name: 'user',
-      type: 'relationship',
-      relationTo: 'users',
-      required: true,
+      name: 'usedBy',
+      type: 'join',
+      collection: 'users',
+      on: 'profilePicture',
       label: {
-        en: 'User',
-        pl: 'Użytkownik',
+        en: 'Used By',
+        pl: 'Używane przez',
       },
-      access: {
-        read: fieldRoleOrHigher('moderator'),
-        update: fieldRoleOrHigher('admin'),
-      },
-      defaultValue: ({ req }) => req.user?.id,
+      hasMany: false,
+      defaultLimit: 1,
       admin: {
+        allowCreate: false,
+        // disableListFilter: true,
+        // position: 'sidebar',
         condition: (data, siblingsData, { user }) => {
+          // Only show image field to moderators and higher
           return isClientRoleEqualOrHigher('moderator', user)
         },
       },
