@@ -205,9 +205,6 @@ export const profile_pictures = pgTable(
   'profile_pictures',
   {
     id: serial('id').primaryKey(),
-    user: integer('user_id').references(() => users.id, {
-      onDelete: 'set null',
-    }),
     prefix: varchar('prefix').default('Profile Pictures'),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
@@ -226,7 +223,6 @@ export const profile_pictures = pgTable(
     focalY: numeric('focal_y', { mode: 'number' }),
   },
   (columns) => [
-    index('profile_pictures_user_idx').on(columns.user),
     index('profile_pictures_updated_at_idx').on(columns.updatedAt),
     index('profile_pictures_created_at_idx').on(columns.createdAt),
     uniqueIndex('profile_pictures_filename_idx').on(columns.filename),
@@ -273,6 +269,7 @@ export const offers = pgTable(
   'offers',
   {
     id: serial('id').primaryKey(),
+    _order: varchar('_order'),
     user: integer('user_id').references(() => users.id, {
       onDelete: 'set null',
     }),
@@ -286,6 +283,7 @@ export const offers = pgTable(
     _status: enum_offers_status('_status').default('draft'),
   },
   (columns) => [
+    index('offers__order_idx').on(columns._order),
     index('offers_user_idx').on(columns.user),
     index('offers_updated_at_idx').on(columns.updatedAt),
     index('offers_created_at_idx').on(columns.createdAt),
@@ -300,6 +298,7 @@ export const _offers_v = pgTable(
     parent: integer('parent_id').references(() => offers.id, {
       onDelete: 'set null',
     }),
+    version__order: varchar('version__order'),
     version_user: integer('version_user_id').references(() => users.id, {
       onDelete: 'set null',
     }),
@@ -326,6 +325,7 @@ export const _offers_v = pgTable(
   },
   (columns) => [
     index('_offers_v_parent_idx').on(columns.parent),
+    index('_offers_v_version_version__order_idx').on(columns.version__order),
     index('_offers_v_version_version_user_idx').on(columns.version_user),
     index('_offers_v_version_version_updated_at_idx').on(columns.version_updatedAt),
     index('_offers_v_version_version_created_at_idx').on(columns.version_createdAt),
@@ -595,13 +595,7 @@ export const relations_media = relations(media, ({ one }) => ({
     relationName: 'folder',
   }),
 }))
-export const relations_profile_pictures = relations(profile_pictures, ({ one }) => ({
-  user: one(users, {
-    fields: [profile_pictures.user],
-    references: [users.id],
-    relationName: 'user',
-  }),
-}))
+export const relations_profile_pictures = relations(profile_pictures, () => ({}))
 export const relations_offer_uploads = relations(offer_uploads, ({ one }) => ({
   offer: one(offers, {
     fields: [offer_uploads.offer],
