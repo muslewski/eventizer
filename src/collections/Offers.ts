@@ -8,6 +8,10 @@ import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities
 import { adminGroups } from '@/lib/adminGroups'
 import type { CollectionConfig } from 'payload'
 
+// TODO:
+// [] Add live preview feature for offers in the admin panel
+// [] Add ai payload plugin
+
 export const Offers: CollectionConfig = {
   slug: 'offers',
   labels: {
@@ -71,6 +75,7 @@ export const Offers: CollectionConfig = {
       type: 'text',
       required: true,
       defaultValue: 'Nowa oferta',
+      localized: true,
       label: {
         en: 'Title',
         pl: 'Tytuł',

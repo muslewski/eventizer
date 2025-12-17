@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import React from 'react'
 
 import config from '@/payload.config'
+import { ModeToggle } from '@/components/providers/Theme/ThemeSwitcher'
 
 export default async function HomePage() {
   const headers = await getHeaders()
@@ -47,6 +48,7 @@ export default async function HomePage() {
         <code className="rounded bg-neutral-200 px-2 py-1 dark:bg-neutral-800">
           app/(frontend)/page.tsx
         </code>
+        <ModeToggle />
       </footer>
     </div>
   )

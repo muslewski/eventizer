@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
 
-export function Providers({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
   return (

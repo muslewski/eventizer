@@ -12,6 +12,9 @@ import { auth } from '@/auth/auth'
 import { adminGroups } from '@/lib/adminGroups'
 import { APIError, type CollectionConfig } from 'payload'
 
+// TODO:
+// [] Add preview feature for offers in the admin panel
+
 export const Users: CollectionConfig = {
   slug: 'users',
   labels: {
@@ -109,8 +112,7 @@ export const Users: CollectionConfig = {
             })
 
             if (pfp?.url) {
-              // Use avatar size if available
-              data.image = pfp.sizes?.avatar?.url || pfp.thumbnailURL
+              data.image = pfp.url
             }
           } catch (error) {
             req.payload.logger.error({

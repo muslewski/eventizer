@@ -19,15 +19,7 @@ const NAV_PREFS_KEY = 'eventizer-nav-preferences'
 
 export const NavClient: FC<Props> = ({ groups }) => {
   const pathname = usePathname()
-  const [navPreferences, setNavPreferences] = useState<Record<string, boolean>>(() => {
-    if (typeof window === 'undefined') return {}
-    try {
-      const stored = localStorage.getItem(NAV_PREFS_KEY)
-      return stored ? JSON.parse(stored) : {}
-    } catch {
-      return {}
-    }
-  })
+  const [navPreferences, setNavPreferences] = useState<Record<string, boolean> | null>(null)
 
   const {
     config: {
@@ -38,7 +30,22 @@ export const NavClient: FC<Props> = ({ groups }) => {
   const { i18n } = useTranslation()
 
   useEffect(() => {
-    localStorage.setItem(NAV_PREFS_KEY, JSON.stringify(navPreferences))
+    try {
+      const stored = localStorage.getItem(NAV_PREFS_KEY)
+      if (stored) {
+        setNavPreferences(JSON.parse(stored))
+      } else {
+        setNavPreferences({})
+      }
+    } catch {
+      setNavPreferences({})
+    }
+  }, [])
+
+  useEffect(() => {
+    if (navPreferences !== null) {
+      localStorage.setItem(NAV_PREFS_KEY, JSON.stringify(navPreferences))
+    }
   }, [navPreferences])
 
   const handleGroupToggle = useCallback((groupLabel: string, isOpen: boolean) => {
@@ -47,6 +54,11 @@ export const NavClient: FC<Props> = ({ groups }) => {
       [groupLabel]: isOpen,
     }))
   }, [])
+
+  // Don't render until hydrated to prevent mismatch
+  if (navPreferences === null) {
+    return null
+  }
 
   return (
     <Fragment>

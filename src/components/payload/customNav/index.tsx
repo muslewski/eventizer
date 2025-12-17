@@ -6,7 +6,6 @@ import { RenderServerComponent } from '@payloadcms/ui/elements/RenderServerCompo
 import { Logout } from '@payloadcms/ui'
 import { NavClient } from './index.client'
 import { NavHamburger } from './NavHamburger'
-// import { getNavPrefs } from './getNavPrefs'
 
 export const baseClass = 'nav'
 

@@ -24,7 +24,7 @@ const Avatar: FC<ServerProps> = (props) => {
   if (user?.image) {
     imageUrl = user.image
   } else if (user?.profilePicture && isExpandedDoc<ProfilePicture>(user.profilePicture)) {
-    imageUrl = user.profilePicture.sizes?.avatar?.url || null
+    imageUrl = user.profilePicture.url || null
   }
 
   const greeting = t('avatar:greeting')

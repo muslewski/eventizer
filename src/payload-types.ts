@@ -161,6 +161,7 @@ export interface User {
 export interface ProfilePicture {
   id: number;
   user?: (number | null) | User;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -172,16 +173,6 @@ export interface ProfilePicture {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
-  sizes?: {
-    avatar?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -238,6 +229,7 @@ export interface Media {
   id: number;
   user?: (number | null) | User;
   alt: string;
+  prefix?: string | null;
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -288,6 +280,7 @@ export interface OfferUpload {
   title: string;
   description: string;
   offer: number | Offer;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -477,6 +470,7 @@ export interface UserVerificationsSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   user?: T;
   alt?: T;
+  prefix?: T;
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -496,6 +490,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProfilePicturesSelect<T extends boolean = true> {
   user?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -507,20 +502,6 @@ export interface ProfilePicturesSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
-  sizes?:
-    | T
-    | {
-        avatar?:
-          | T
-          | {
-              url?: T;
-              width?: T;
-              height?: T;
-              mimeType?: T;
-              filesize?: T;
-              filename?: T;
-            };
-      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -530,6 +511,7 @@ export interface OfferUploadsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   offer?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

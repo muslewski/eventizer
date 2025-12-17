@@ -19,24 +19,38 @@ import {
   timestamp,
   numeric,
   jsonb,
+  type AnyPgColumn,
   pgEnum,
 } from '@payloadcms/db-vercel-postgres/drizzle/pg-core'
 import { sql, relations } from '@payloadcms/db-vercel-postgres/drizzle'
+export const enum__locales = pgEnum('enum__locales', ['pl', 'en'])
 export const enum_users_role = pgEnum('enum_users_role', [
   'admin',
   'moderator',
   'service-provider',
   'client',
 ])
+export const enum_offers_status = pgEnum('enum_offers_status', ['draft', 'published'])
+export const enum__offers_v_version_status = pgEnum('enum__offers_v_version_status', [
+  'draft',
+  'published',
+])
+export const enum__offers_v_published_locale = pgEnum('enum__offers_v_published_locale', [
+  'pl',
+  'en',
+])
+export const enum_payload_folders_folder_type = pgEnum('enum_payload_folders_folder_type', [
+  'media',
+])
 
 export const users = pgTable(
   'users',
   {
     id: serial('id').primaryKey(),
-    profilePicture: integer('profile_picture_id').references(() => media.id, {
+    profilePicture: integer('profile_picture_id').references(() => profile_pictures.id, {
       onDelete: 'set null',
     }),
-    role: enum_users_role('role').notNull().default('client'),
+    role: enum_users_role('role').default('client'),
     name: varchar('name').notNull(),
     email: varchar('email').notNull(),
     emailVerified: boolean('email_verified').notNull().default(false),
@@ -159,7 +173,14 @@ export const media = pgTable(
   'media',
   {
     id: serial('id').primaryKey(),
+    user: integer('user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
     alt: varchar('alt').notNull(),
+    prefix: varchar('prefix').default('Media'),
+    folder: integer('folder_id').references(() => payload_folders.id, {
+      onDelete: 'set null',
+    }),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -177,9 +198,79 @@ export const media = pgTable(
     focalY: numeric('focal_y', { mode: 'number' }),
   },
   (columns) => [
+    index('media_user_idx').on(columns.user),
+    index('media_folder_idx').on(columns.folder),
     index('media_updated_at_idx').on(columns.updatedAt),
     index('media_created_at_idx').on(columns.createdAt),
     uniqueIndex('media_filename_idx').on(columns.filename),
+  ],
+)
+
+export const profile_pictures = pgTable(
+  'profile_pictures',
+  {
+    id: serial('id').primaryKey(),
+    user: integer('user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    prefix: varchar('prefix').default('Profile Pictures'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    url: varchar('url'),
+    thumbnailURL: varchar('thumbnail_u_r_l'),
+    filename: varchar('filename'),
+    mimeType: varchar('mime_type'),
+    filesize: numeric('filesize', { mode: 'number' }),
+    width: numeric('width', { mode: 'number' }),
+    height: numeric('height', { mode: 'number' }),
+    focalX: numeric('focal_x', { mode: 'number' }),
+    focalY: numeric('focal_y', { mode: 'number' }),
+  },
+  (columns) => [
+    index('profile_pictures_user_idx').on(columns.user),
+    index('profile_pictures_updated_at_idx').on(columns.updatedAt),
+    index('profile_pictures_created_at_idx').on(columns.createdAt),
+    uniqueIndex('profile_pictures_filename_idx').on(columns.filename),
+  ],
+)
+
+export const offer_uploads = pgTable(
+  'offer_uploads',
+  {
+    id: serial('id').primaryKey(),
+    title: varchar('title').notNull(),
+    description: varchar('description').notNull(),
+    offer: integer('offer_id')
+      .notNull()
+      .references(() => offers.id, {
+        onDelete: 'set null',
+      }),
+    prefix: varchar('prefix').default('Offer Uploads'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    url: varchar('url'),
+    thumbnailURL: varchar('thumbnail_u_r_l'),
+    filename: varchar('filename'),
+    mimeType: varchar('mime_type'),
+    filesize: numeric('filesize', { mode: 'number' }),
+    width: numeric('width', { mode: 'number' }),
+    height: numeric('height', { mode: 'number' }),
+    focalX: numeric('focal_x', { mode: 'number' }),
+    focalY: numeric('focal_y', { mode: 'number' }),
+  },
+  (columns) => [
+    index('offer_uploads_offer_idx').on(columns.offer),
+    index('offer_uploads_updated_at_idx').on(columns.updatedAt),
+    index('offer_uploads_created_at_idx').on(columns.createdAt),
+    uniqueIndex('offer_uploads_filename_idx').on(columns.filename),
   ],
 )
 
@@ -187,17 +278,71 @@ export const offers = pgTable(
   'offers',
   {
     id: serial('id').primaryKey(),
-    title: varchar('title').notNull(),
+    user: integer('user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    title: varchar('title').default('Nowa oferta'),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
     createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
+    _status: enum_offers_status('_status').default('draft'),
   },
   (columns) => [
+    index('offers_user_idx').on(columns.user),
     index('offers_updated_at_idx').on(columns.updatedAt),
     index('offers_created_at_idx').on(columns.createdAt),
+    index('offers__status_idx').on(columns._status),
+  ],
+)
+
+export const _offers_v = pgTable(
+  '_offers_v',
+  {
+    id: serial('id').primaryKey(),
+    parent: integer('parent_id').references(() => offers.id, {
+      onDelete: 'set null',
+    }),
+    version_user: integer('version_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    version_title: varchar('version_title').default('Nowa oferta'),
+    version_updatedAt: timestamp('version_updated_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version_createdAt: timestamp('version_created_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version__status: enum__offers_v_version_status('version__status').default('draft'),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    snapshot: boolean('snapshot'),
+    publishedLocale: enum__offers_v_published_locale('published_locale'),
+    latest: boolean('latest'),
+    autosave: boolean('autosave'),
+  },
+  (columns) => [
+    index('_offers_v_parent_idx').on(columns.parent),
+    index('_offers_v_version_version_user_idx').on(columns.version_user),
+    index('_offers_v_version_version_updated_at_idx').on(columns.version_updatedAt),
+    index('_offers_v_version_version_created_at_idx').on(columns.version_createdAt),
+    index('_offers_v_version_version__status_idx').on(columns.version__status),
+    index('_offers_v_created_at_idx').on(columns.createdAt),
+    index('_offers_v_updated_at_idx').on(columns.updatedAt),
+    index('_offers_v_snapshot_idx').on(columns.snapshot),
+    index('_offers_v_published_locale_idx').on(columns.publishedLocale),
+    index('_offers_v_latest_idx').on(columns.latest),
+    index('_offers_v_autosave_idx').on(columns.autosave),
   ],
 )
 
@@ -209,6 +354,48 @@ export const payload_kv = pgTable(
     data: jsonb('data').notNull(),
   },
   (columns) => [uniqueIndex('payload_kv_key_idx').on(columns.key)],
+)
+
+export const payload_folders_folder_type = pgTable(
+  'payload_folders_folder_type',
+  {
+    order: integer('order').notNull(),
+    parent: integer('parent_id').notNull(),
+    value: enum_payload_folders_folder_type('value'),
+    id: serial('id').primaryKey(),
+  },
+  (columns) => [
+    index('payload_folders_folder_type_order_idx').on(columns.order),
+    index('payload_folders_folder_type_parent_idx').on(columns.parent),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [payload_folders.id],
+      name: 'payload_folders_folder_type_parent_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const payload_folders = pgTable(
+  'payload_folders',
+  {
+    id: serial('id').primaryKey(),
+    name: varchar('name').notNull(),
+    folder: integer('folder_id').references((): AnyPgColumn => payload_folders.id, {
+      onDelete: 'set null',
+    }),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('payload_folders_name_idx').on(columns.name),
+    index('payload_folders_folder_idx').on(columns.folder),
+    index('payload_folders_updated_at_idx').on(columns.updatedAt),
+    index('payload_folders_created_at_idx').on(columns.createdAt),
+  ],
 )
 
 export const payload_locked_documents = pgTable(
@@ -242,7 +429,10 @@ export const payload_locked_documents_rels = pgTable(
     'user-accountsID': integer('user_accounts_id'),
     'user-verificationsID': integer('user_verifications_id'),
     mediaID: integer('media_id'),
+    'profile-picturesID': integer('profile_pictures_id'),
+    'offer-uploadsID': integer('offer_uploads_id'),
     offersID: integer('offers_id'),
+    'payload-foldersID': integer('payload_folders_id'),
   },
   (columns) => [
     index('payload_locked_documents_rels_order_idx').on(columns.order),
@@ -255,7 +445,12 @@ export const payload_locked_documents_rels = pgTable(
       columns['user-verificationsID'],
     ),
     index('payload_locked_documents_rels_media_id_idx').on(columns.mediaID),
+    index('payload_locked_documents_rels_profile_pictures_id_idx').on(
+      columns['profile-picturesID'],
+    ),
+    index('payload_locked_documents_rels_offer_uploads_id_idx').on(columns['offer-uploadsID']),
     index('payload_locked_documents_rels_offers_id_idx').on(columns.offersID),
+    index('payload_locked_documents_rels_payload_folders_id_idx').on(columns['payload-foldersID']),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [payload_locked_documents.id],
@@ -287,9 +482,24 @@ export const payload_locked_documents_rels = pgTable(
       name: 'payload_locked_documents_rels_media_fk',
     }).onDelete('cascade'),
     foreignKey({
+      columns: [columns['profile-picturesID']],
+      foreignColumns: [profile_pictures.id],
+      name: 'payload_locked_documents_rels_profile_pictures_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['offer-uploadsID']],
+      foreignColumns: [offer_uploads.id],
+      name: 'payload_locked_documents_rels_offer_uploads_fk',
+    }).onDelete('cascade'),
+    foreignKey({
       columns: [columns['offersID']],
       foreignColumns: [offers.id],
       name: 'payload_locked_documents_rels_offers_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['payload-foldersID']],
+      foreignColumns: [payload_folders.id],
+      name: 'payload_locked_documents_rels_payload_folders_fk',
     }).onDelete('cascade'),
   ],
 )
@@ -361,9 +571,9 @@ export const payload_migrations = pgTable(
 )
 
 export const relations_users = relations(users, ({ one }) => ({
-  profilePicture: one(media, {
+  profilePicture: one(profile_pictures, {
     fields: [users.profilePicture],
-    references: [media.id],
+    references: [profile_pictures.id],
     relationName: 'profilePicture',
   }),
 }))
@@ -382,9 +592,72 @@ export const relations_user_accounts = relations(user_accounts, ({ one }) => ({
   }),
 }))
 export const relations_user_verifications = relations(user_verifications, () => ({}))
-export const relations_media = relations(media, () => ({}))
-export const relations_offers = relations(offers, () => ({}))
+export const relations_media = relations(media, ({ one }) => ({
+  user: one(users, {
+    fields: [media.user],
+    references: [users.id],
+    relationName: 'user',
+  }),
+  folder: one(payload_folders, {
+    fields: [media.folder],
+    references: [payload_folders.id],
+    relationName: 'folder',
+  }),
+}))
+export const relations_profile_pictures = relations(profile_pictures, ({ one }) => ({
+  user: one(users, {
+    fields: [profile_pictures.user],
+    references: [users.id],
+    relationName: 'user',
+  }),
+}))
+export const relations_offer_uploads = relations(offer_uploads, ({ one }) => ({
+  offer: one(offers, {
+    fields: [offer_uploads.offer],
+    references: [offers.id],
+    relationName: 'offer',
+  }),
+}))
+export const relations_offers = relations(offers, ({ one }) => ({
+  user: one(users, {
+    fields: [offers.user],
+    references: [users.id],
+    relationName: 'user',
+  }),
+}))
+export const relations__offers_v = relations(_offers_v, ({ one }) => ({
+  parent: one(offers, {
+    fields: [_offers_v.parent],
+    references: [offers.id],
+    relationName: 'parent',
+  }),
+  version_user: one(users, {
+    fields: [_offers_v.version_user],
+    references: [users.id],
+    relationName: 'version_user',
+  }),
+}))
 export const relations_payload_kv = relations(payload_kv, () => ({}))
+export const relations_payload_folders_folder_type = relations(
+  payload_folders_folder_type,
+  ({ one }) => ({
+    parent: one(payload_folders, {
+      fields: [payload_folders_folder_type.parent],
+      references: [payload_folders.id],
+      relationName: 'folderType',
+    }),
+  }),
+)
+export const relations_payload_folders = relations(payload_folders, ({ one, many }) => ({
+  folder: one(payload_folders, {
+    fields: [payload_folders.folder],
+    references: [payload_folders.id],
+    relationName: 'folder',
+  }),
+  folderType: many(payload_folders_folder_type, {
+    relationName: 'folderType',
+  }),
+}))
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -418,10 +691,25 @@ export const relations_payload_locked_documents_rels = relations(
       references: [media.id],
       relationName: 'media',
     }),
+    'profile-picturesID': one(profile_pictures, {
+      fields: [payload_locked_documents_rels['profile-picturesID']],
+      references: [profile_pictures.id],
+      relationName: 'profile-pictures',
+    }),
+    'offer-uploadsID': one(offer_uploads, {
+      fields: [payload_locked_documents_rels['offer-uploadsID']],
+      references: [offer_uploads.id],
+      relationName: 'offer-uploads',
+    }),
     offersID: one(offers, {
       fields: [payload_locked_documents_rels.offersID],
       references: [offers.id],
       relationName: 'offers',
+    }),
+    'payload-foldersID': one(payload_folders, {
+      fields: [payload_locked_documents_rels['payload-foldersID']],
+      references: [payload_folders.id],
+      relationName: 'payload-folders',
     }),
   }),
 )
@@ -456,14 +744,24 @@ export const relations_payload_preferences = relations(payload_preferences, ({ m
 export const relations_payload_migrations = relations(payload_migrations, () => ({}))
 
 type DatabaseSchema = {
+  enum__locales: typeof enum__locales
   enum_users_role: typeof enum_users_role
+  enum_offers_status: typeof enum_offers_status
+  enum__offers_v_version_status: typeof enum__offers_v_version_status
+  enum__offers_v_published_locale: typeof enum__offers_v_published_locale
+  enum_payload_folders_folder_type: typeof enum_payload_folders_folder_type
   users: typeof users
   user_sessions: typeof user_sessions
   user_accounts: typeof user_accounts
   user_verifications: typeof user_verifications
   media: typeof media
+  profile_pictures: typeof profile_pictures
+  offer_uploads: typeof offer_uploads
   offers: typeof offers
+  _offers_v: typeof _offers_v
   payload_kv: typeof payload_kv
+  payload_folders_folder_type: typeof payload_folders_folder_type
+  payload_folders: typeof payload_folders
   payload_locked_documents: typeof payload_locked_documents
   payload_locked_documents_rels: typeof payload_locked_documents_rels
   payload_preferences: typeof payload_preferences
@@ -474,8 +772,13 @@ type DatabaseSchema = {
   relations_user_accounts: typeof relations_user_accounts
   relations_user_verifications: typeof relations_user_verifications
   relations_media: typeof relations_media
+  relations_profile_pictures: typeof relations_profile_pictures
+  relations_offer_uploads: typeof relations_offer_uploads
   relations_offers: typeof relations_offers
+  relations__offers_v: typeof relations__offers_v
   relations_payload_kv: typeof relations_payload_kv
+  relations_payload_folders_folder_type: typeof relations_payload_folders_folder_type
+  relations_payload_folders: typeof relations_payload_folders
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels
   relations_payload_locked_documents: typeof relations_payload_locked_documents
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels

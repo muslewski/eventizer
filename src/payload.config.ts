@@ -54,6 +54,7 @@ export default buildConfig({
       logout: '/auth/sign-out',
     },
   },
+
   collections: [
     // Auth
     Users,
@@ -73,6 +74,25 @@ export default buildConfig({
     supportedLanguages: { en, pl },
     translations: customTranslations,
   },
+  // localization: {
+  //   locales: [
+  //     {
+  //       label: {
+  //         pl: 'Polski',
+  //         en: 'Polish',
+  //       },
+  //       code: 'pl',
+  //     },
+  //     {
+  //       label: {
+  //         pl: 'Angielski',
+  //         en: 'English',
+  //       },
+  //       code: 'en',
+  //     },
+  //   ],
+  //   defaultLocale: 'pl',
+  // },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -84,15 +104,26 @@ export default buildConfig({
     },
   }),
   sharp,
+  upload: {
+    abortOnLimit: true,
+    responseOnLimit: 'File size exceeds the maximum limit of 5MB.',
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5MB in bytes
+    },
+  },
   plugins: [
     vercelBlobStorage({
-      enabled: true,
       collections: {
-        media: true,
-        'profile-pictures': true,
-        'offer-uploads': true,
+        media: {
+          prefix: 'Media',
+        },
+        'profile-pictures': {
+          prefix: 'Profile Pictures',
+        },
+        'offer-uploads': {
+          prefix: 'Offer Uploads',
+        },
       },
-      clientUploads: true,
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
   ],

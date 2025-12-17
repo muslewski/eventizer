@@ -125,6 +125,9 @@
   .popup__content,
   .react-datepicker,
   .react-datepicker__day,
+  .localizer,
+  .localizer-button,
+  .popup,
   .file-details,
   .card {
     border-radius: var(--radius);
@@ -144,6 +147,20 @@
   .table td[class*='cell-'] {
     vertical-align: middle;
   }
+
+  .popup__caret {
+    /* Modern, elegant caret arrow */
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid var(--theme-elevation-100);
+    border-top: 8px solid var(--theme-elevation-100);
+  }
+
+  /* .localizer {
+    right: 60px;
+    top: 110px;
+    radius: 100px;
+  } */
 }
 
 /* Dark theme */
