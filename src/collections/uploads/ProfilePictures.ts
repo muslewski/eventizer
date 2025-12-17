@@ -7,7 +7,9 @@ import {
 } from '@/access'
 import { fieldRoleOrHigher, isClientRoleEqual, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
-import type { CollectionConfig } from 'payload'
+import { APIError, type CollectionConfig } from 'payload'
+
+const MAX_PROFILE_PICTURE_BYTES = 1 * 1024 * 1024 // 1MB (adjust as needed)
 
 export const ProfilePictures: CollectionConfig = {
   slug: 'profile-pictures',
@@ -58,5 +60,27 @@ export const ProfilePictures: CollectionConfig = {
       },
     },
   ],
-  upload: true,
+  upload: {
+    mimeTypes: ['image/*'],
+    imageSizes: [
+      {
+        name: 'avatar',
+        width: 512,
+        height: 512,
+        crop: 'center',
+        formatOptions: {
+          format: 'webp',
+          options: {
+            quality: 80,
+          },
+        },
+      },
+    ],
+    formatOptions: {
+      format: 'webp',
+      options: {
+        quality: 80,
+      },
+    },
+  },
 }

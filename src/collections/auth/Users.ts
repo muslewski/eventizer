@@ -109,7 +109,8 @@ export const Users: CollectionConfig = {
             })
 
             if (pfp?.url) {
-              data.image = pfp.url
+              // Use avatar size if available
+              data.image = pfp.sizes?.avatar?.url || pfp.thumbnailURL
             }
           } catch (error) {
             req.payload.logger.error({
