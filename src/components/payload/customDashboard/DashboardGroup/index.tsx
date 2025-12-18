@@ -8,6 +8,7 @@ import { BasePayload, CollectionSlug, StaticLabel } from 'payload'
 import './index.scss'
 import { adminGroups } from '@/lib/adminGroups'
 import { FeatureCard } from '../DashboardFeatureCard'
+import { CustomCard } from '@/components/payload/customCard'
 
 type Props = {
   adminRoute: string
@@ -38,7 +39,8 @@ export const DashboardGroup: FC<Props> = async ({
     return docCounts
   }
 
-  const isFeaturedGroup = groupLabel === adminGroups.featured.en || groupLabel === adminGroups.featured.pl
+  const isFeaturedGroup =
+    groupLabel === adminGroups.featured.en || groupLabel === adminGroups.featured.pl
   let counts: Record<string, number>
 
   if (isFeaturedGroup) {
@@ -63,7 +65,7 @@ export const DashboardGroup: FC<Props> = async ({
                 count={counts[slug] ?? 0}
               />
             ) : (
-              <Card
+              <CustomCard
                 title={getTranslation(label, i18n)}
                 href={formatAdminURL({
                   adminRoute,

@@ -2,56 +2,160 @@
 
 @layer payload-default {
   .avatar {
-    padding: 4px 8px;
-    transition-property: border;
-    transition-duration: 100ms;
-    transition-timing-function: cubic-bezier(0, 0.2, 0.2, 1);
-    border: 1px solid var(--theme-elevation-50);
-    border-radius: 999px;
-    background-color: var(--theme-elevation-50);
+    padding: 6px 12px 6px 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--theme-elevation-100);
+    border-radius: (var(--radius));
+    background: linear-gradient(
+      135deg,
+      var(--theme-elevation-50) 0%,
+      var(--theme-elevation-100) 100%
+    );
+    top: 5px;
     display: inline-flex;
-    gap: 4px;
+    gap: 10px;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      0 0 0 0 rgba(212, 175, 55, 0);
 
-    &__greeting,
-    &__chevron {
-      color: var(--theme-elevation-300);
-    }
-
-    &__username {
-      color: var(--theme-elevation-700);
-      font-weight: 600;
+    // Subtle golden shimmer on hover
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+      transition: left 0.5s ease;
     }
 
     &:hover {
-      border: 1px solid var(--theme-elevation-450);
+      border-color: rgba(212, 175, 55, 0.4);
+      box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        0 0 0 3px rgba(212, 175, 55, 0.1);
+      transform: translateY(-1px);
+
+      &::before {
+        left: 100%;
+      }
+
+      .avatar__ring {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .avatar__chevron-wrap {
+        background-color: rgba(212, 175, 55, 0.15);
+      }
+
+      .avatar__chevron {
+        color: #d4af37;
+        transform: translateX(2px);
+      }
+
+      .avatar__username {
+        background: linear-gradient(135deg, #d4af37, #f0d875);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
+
+    &__image-container {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+
+    &__image {
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    &__ring {
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d4af37, #f0d875, #d4af37);
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.3s ease;
+      z-index: -1;
+    }
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      line-height: 1.2;
+    }
+
+    &__greeting {
+      color: var(--theme-elevation-400);
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    &__username {
+      color: var(--theme-elevation-800);
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+
+    &__chevron-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: var(--theme-elevation-100);
+      transition: all 0.3s ease;
+    }
+
+    &__chevron {
+      color: var(--theme-elevation-400);
+      transition: all 0.3s ease;
     }
   }
 
+  // Style the default account icon
   .graphic-account {
+    width: 32px;
+    height: 32px;
+
     &__bg {
-      fill: var(--theme-elevation-50);
-      stroke: var(--theme-elevation-300);
+      fill: var(--theme-elevation-100);
+      stroke: var(--theme-elevation-200);
       stroke-width: 1px;
+      transition: all 0.3s ease;
     }
 
     &__head,
     &__body {
-      fill: var(--theme-elevation-300);
+      fill: var(--theme-elevation-350);
+      transition: all 0.3s ease;
+    }
+  }
+
+  .avatar:hover .graphic-account {
+    &__bg {
+      fill: rgba(212, 175, 55, 0.1);
+      stroke: rgba(212, 175, 55, 0.4);
     }
 
-    &:hover:not(.graphic-account--active) {
-      .graphic-account {
-        &__bg {
-          fill: var(--theme-elevation-50);
-          stroke: var(--theme-elevation-300);
-        }
-
-        &__head,
-        &__body {
-          fill: var(--theme-elevation-300);
-        }
-      }
+    &__head,
+    &__body {
+      fill: #d4af37;
     }
   }
 }

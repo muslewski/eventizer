@@ -28,22 +28,25 @@ const Avatar: FC<ServerProps> = (props) => {
   const greeting = t('avatar:greeting')
 
   return (
-    <div className="avatar">
-      {imageUrl ? (
-        <div className="relative size-8">
-          <Image
-            src={imageUrl}
-            alt={username}
-            fill
-            className={`${baseClass}__image object-cover rounded-full`}
-          />
-        </div>
-      ) : (
-        <DefaultAccountIcon active={false} />
-      )}
-      <span className={`${baseClass}__greeting`}>{greeting}</span>
-      <span className={`${baseClass}__username`}>{username}</span>
-      <ChevronIcon direction="right" size="small" className={`${baseClass}__chevron`} />
+    <div className={baseClass}>
+      <div className={`${baseClass}__image-container`}>
+        {imageUrl ? (
+          <Image src={imageUrl} alt={username} fill className={`${baseClass}__image`} />
+        ) : (
+          <DefaultAccountIcon active={false} />
+        )}
+        {/* Golden ring accent */}
+        <div className={`${baseClass}__ring`} />
+      </div>
+
+      <div className={`${baseClass}__content`}>
+        <span className={`${baseClass}__greeting`}>{greeting}</span>
+        <span className={`${baseClass}__username`}>{username}</span>
+      </div>
+
+      <div className={`${baseClass}__chevron-wrap`}>
+        <ChevronIcon direction="right" size="small" className={`${baseClass}__chevron`} />
+      </div>
     </div>
   )
 }

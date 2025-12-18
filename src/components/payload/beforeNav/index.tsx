@@ -1,57 +1,87 @@
 'use client'
 
-import { useAuth } from '@payloadcms/ui'
-import { getRoleConfig } from '@/access/hierarchy'
-import * as Icons from '@/components/icons'
+import Image from 'next/image'
+import LogoDark from '@/assets/eventizer-logo-1-dark.png'
+import LogoLight from '@/assets/eventizer-logo-1-light.png'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
+import { useRef, useEffect } from 'react'
+
+import './index.scss'
+
+const baseClass = 'before-nav'
 
 const CustomBeforeNav: React.FC = () => {
-  const { user } = useAuth()
+  const hasAnimatedRef = useRef(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  if (!user) return null
-
-  const roleConfig = getRoleConfig(user.role)
-
-  // Don't render if no role config exists for this user
-  if (!roleConfig) return null
-
-  const RoleIcon = Icons[roleConfig.icon]
+  useEffect(() => {
+    if (!hasAnimatedRef.current && containerRef.current) {
+      hasAnimatedRef.current = true
+    } else if (containerRef.current) {
+      containerRef.current.classList.add(`${baseClass}--no-animation`)
+    }
+  }, [])
 
   return (
-    <div className="w-full px-1 mb-4">
-      <div
-        className={`
-          relative overflow-hidden rounded-lg border
-          bg-gradient-to-r from-white to-stone-50
-          dark:from-stone-900 dark:to-stone-800
-          ${roleConfig.color.border}
-          shadow-sm
-        `}
+    <div
+      ref={containerRef}
+      className={cn(
+        baseClass,
+        'relative w-full px-4 py-5 mb-6',
+        // Animated bottom border with shimmer
+        'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[1px]',
+        'after:bg-gradient-to-r after:from-transparent after:via-amber-500/40 after:to-transparent',
+      )}
+    >
+      <Link
+        href="/admin"
+        className={cn(
+          `${baseClass}__link`,
+          'relative block w-fit group',
+          'transition-transform duration-300 ease-out',
+          'hover:translate-x-0.5',
+        )}
       >
-        {/* Accent bar on the left */}
-        <div className={`absolute left-0 top-0 h-full w-1 ${roleConfig.color.bg}`} />
+        {/* Subtle glow effect on hover */}
+        <div
+          className={cn(
+            'absolute -inset-3 rounded-lg opacity-0 transition-opacity duration-300',
+            'bg-gradient-to-r from-amber-500/5 via-amber-500/10 to-amber-500/5',
+            'group-hover:opacity-100 blur-sm',
+          )}
+        />
 
-        <div className="flex items-center gap-3 py-3 pl-4 pr-3">
-          {/* Icon container with role color */}
-          <div
-            className={`
-              flex h-9 w-9 shrink-0 items-center justify-center rounded-full
-            `}
-          >
-            {RoleIcon && <RoleIcon size={18} className={roleConfig.color.text} strokeWidth={2.5} />}
-          </div>
-
-          {/* Text content */}
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-medium uppercase tracking-wider text-stone-500 dark:text-stone-400">
-              Twoja rola
-            </span>
-            <span className={`text-sm font-semibold ${roleConfig.color.text}`}>
-              {roleConfig.label}
-            </span>
-            <span className="text-xs text-stone-500 dark:text-stone-400">{user.email}</span>
-          </div>
+        {/* Logo wrapper with glow animation */}
+        <div className={cn(`${baseClass}__logo-wrapper`, 'relative rounded-lg')}>
+          <Image
+            src={LogoLight}
+            alt="Eventizer Logo"
+            width={120}
+            height={28}
+            className="dark:hidden transition-opacity duration-300 group-hover:opacity-90"
+            priority
+          />
+          <Image
+            src={LogoDark}
+            alt="Eventizer Logo"
+            width={120}
+            height={28}
+            className="hidden dark:block transition-opacity duration-300 group-hover:opacity-90"
+            priority
+          />
         </div>
-      </div>
+
+        {/* Animated underline accent */}
+        <div
+          className={cn(
+            'absolute -bottom-1 left-0 h-[2px] w-0',
+            'bg-gradient-to-r from-amber-500/60 to-amber-400/40',
+            'transition-all duration-300 ease-out',
+            'group-hover:w-full',
+          )}
+        />
+      </Link>
     </div>
   )
 }

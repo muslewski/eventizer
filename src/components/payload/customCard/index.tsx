@@ -1,5 +1,4 @@
 'use client'
-import type { ElementType } from 'react'
 
 import React from 'react'
 
@@ -12,17 +11,21 @@ export type Props = {
   buttonAriaLabel?: string
   href?: string
   id?: string
-  Link?: ElementType
+  /**
+   * @deprecated
+   * This prop is deprecated and will be removed in the next major version.
+   * Components now import their own `Link` directly from `next/link`.
+   */
+  Link?: React.ElementType
   onClick?: () => void
   title: string
-  titleAs?: ElementType
-  count?: number
+  titleAs?: React.ElementType
 }
 
-const baseClass = 'feature-card'
+const baseClass = 'card'
 
-export const FeatureCard: React.FC<Props> = (props) => {
-  const { id, actions, buttonAriaLabel, href, Link, onClick, title, titleAs, count } = props
+export const CustomCard: React.FC<Props> = (props) => {
+  const { id, actions, buttonAriaLabel, href, onClick, title, titleAs } = props
 
   const isClickable = onClick || href
 
@@ -73,22 +76,10 @@ export const FeatureCard: React.FC<Props> = (props) => {
           buttonStyle="none"
           className={`${baseClass}__click`}
           el="link"
-          Link={Link}
           onClick={onClick}
           to={href}
         />
       )}
-
-      <h2
-        className={cn(
-          `${baseClass}__count`,
-          'transition-colors duration-300',
-          'bg-gradient-to-r from-amber-600 to-amber-500 bg-clip-text',
-          isClickable && 'hover:from-amber-500 hover:to-amber-400',
-        )}
-      >
-        {count ?? 0}
-      </h2>
     </div>
   )
 }

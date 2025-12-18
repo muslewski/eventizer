@@ -101,110 +101,139 @@ export const Users: CollectionConfig = {
   },
   fields: [
     {
-      name: 'profilePicture',
-      type: 'upload',
-      relationTo: 'profile-pictures',
-      label: {
-        en: 'Profile Picture',
-        pl: 'Zdjęcie Profilowe',
-      },
-    },
-    {
-      name: 'role',
-      type: 'select',
-      options: [...userRoles],
-      defaultValue: 'client',
-      required: true,
-      label: {
-        en: 'Role',
-        pl: 'Rola',
-      },
-      access: {
-        read: publicAccessField,
-        update: fieldAdminOrHigher,
-      },
-      admin: {
-        position: 'sidebar',
-        condition: (data, siblingData, { user }) => {
-          return isClientRoleEqualOrHigher('moderator', user)
+      type: 'tabs',
+      tabs: [
+        {
+          fields: [
+            {
+              name: 'profilePicture',
+              type: 'upload',
+              relationTo: 'profile-pictures',
+              label: {
+                en: 'Profile Picture',
+                pl: 'Zdjęcie Profilowe',
+              },
+            },
+            {
+              name: 'role',
+              type: 'select',
+              options: [...userRoles],
+              defaultValue: 'client',
+              required: true,
+              label: {
+                en: 'Role',
+                pl: 'Rola',
+              },
+              access: {
+                read: publicAccessField,
+                update: fieldAdminOrHigher,
+              },
+              admin: {
+                position: 'sidebar',
+                condition: (data, siblingData, { user }) => {
+                  return isClientRoleEqualOrHigher('moderator', user)
+                },
+                components: {
+                  Field: '/components/payload/fields/roleSelect',
+                },
+              },
+            },
+            {
+              name: 'name',
+              type: 'text',
+              required: true,
+              index: true,
+              label: {
+                en: 'Name',
+                pl: 'Imię',
+              },
+            },
+            {
+              name: 'email',
+              type: 'text',
+              required: true,
+              unique: true,
+              index: true,
+              label: 'Email',
+              admin: {
+                readOnly: true,
+              },
+            },
+            {
+              name: 'emailVerified',
+              type: 'checkbox',
+              required: true,
+              label: {
+                en: 'Email Verified',
+                pl: 'Email Zweryfikowany',
+              },
+              access: {
+                read: publicAccessField,
+                update: fieldAdminOrHigher,
+              },
+            },
+            {
+              name: 'image',
+              type: 'text',
+              label: {
+                en: 'Image',
+                pl: 'Obraz',
+              },
+              admin: {
+                // Actually we will probably not use this one, it's for better auth
+                hidden: true,
+                readOnly: true,
+                position: 'sidebar',
+                description: {
+                  en: 'public URL to the user profile picture',
+                  pl: 'publiczny URL do zdjęcia profilowego użytkownika',
+                },
+                condition: (data, siblingsData, { user }) => {
+                  return isClientRoleEqualOrHigher('moderator', user)
+                },
+              },
+              access: {
+                read: publicAccessField,
+              },
+            },
+          ],
+          label: {
+            en: 'General',
+            pl: 'Ogólne',
+          },
         },
-        components: {
-          Field: '/components/payload/fields/roleSelect',
+        {
+          fields: [
+            {
+              name: 'offers',
+              type: 'join',
+              collection: 'offers',
+              on: 'user',
+              label: false,
+              admin: {
+                description: {
+                  en: 'Here you can see all offers you have created.',
+                  pl: 'Tutaj możesz zobaczyć wszystkie oferty, które utworzyłeś.',
+                },
+                allowCreate: true,
+                condition: (data, siblingsData, { user }) => {
+                  return isClientRoleEqualOrHigher('service-provider', user)
+                },
+              },
+            },
+          ],
+          label: {
+            en: 'My Portfolio',
+            pl: 'Moje Portfolio',
+          },
+          admin: {
+            // display only for service providers and higher
+            condition: (data, siblingsData, { user }) => {
+              return isClientRoleEqualOrHigher('service-provider', user)
+            },
+          },
         },
-      },
-    },
-    {
-      name: 'name',
-      type: 'text',
-      required: true,
-      index: true,
-      label: {
-        en: 'Name',
-        pl: 'Imię',
-      },
-    },
-    {
-      name: 'email',
-      type: 'text',
-      required: true,
-      unique: true,
-      index: true,
-      label: 'Email',
-      admin: {
-        readOnly: true,
-      },
-    },
-    {
-      name: 'emailVerified',
-      type: 'checkbox',
-      required: true,
-      label: {
-        en: 'Email Verified',
-        pl: 'Email Zweryfikowany',
-      },
-      access: {
-        read: publicAccessField,
-        update: fieldAdminOrHigher,
-      },
-    },
-    {
-      name: 'image',
-      type: 'text',
-      label: {
-        en: 'Image',
-        pl: 'Obraz',
-      },
-      admin: {
-        readOnly: true,
-        position: 'sidebar',
-        description: {
-          en: 'public URL to the user profile picture',
-          pl: 'publiczny URL do zdjęcia profilowego użytkownika',
-        },
-        condition: (data, siblingsData, { user }) => {
-          return isClientRoleEqualOrHigher('moderator', user)
-        },
-      },
-      access: {
-        read: publicAccessField,
-      },
-    },
-    {
-      name: 'offers',
-      type: 'join',
-      collection: 'offers',
-      on: 'user',
-      label: false,
-      admin: {
-        description: {
-          en: 'Here you can see all offers you have created.',
-          pl: 'Tutaj możesz zobaczyć wszystkie oferty, które utworzyłeś.',
-        },
-        allowCreate: true,
-        condition: (data, siblingsData, { user }) => {
-          return isClientRoleEqualOrHigher('service-provider', user)
-        },
-      },
+      ],
     },
   ],
 }

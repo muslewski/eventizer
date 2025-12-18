@@ -7,6 +7,9 @@ export const customTranslations = {
       welcomeTitle: 'Welcome Back',
       welcomeSubtitle: 'Manage your content efficiently',
     },
+    general: {
+      payloadSettings: 'Application Settings',
+    },
     avatar: {
       greeting: 'Hi,',
     },
@@ -18,6 +21,9 @@ export const customTranslations = {
     dashboard: {
       welcomeTitle: 'Witaj ponownie',
       welcomeSubtitle: 'Zarządzaj swoimi treściami efektywnie',
+    },
+    general: {
+      payloadSettings: 'Ustawienia aplikacji',
     },
     avatar: {
       greeting: 'Cześć,',

@@ -1,0 +1,86 @@
+@import '~@payloadcms/ui/scss';
+
+@layer payload-default {
+  .nav {
+    &__wrap {
+      padding: base(0.5);
+    }
+
+    &__link {
+      position: relative;
+      text-decoration: none;
+
+      // Remove default link styles
+      &:focus-visible {
+        outline: 2px solid rgba(245, 158, 11, 0.5);
+        outline-offset: 2px;
+        border-radius: var(--style-radius-s);
+      }
+
+      // Active state background glow
+      &.active {
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          background: linear-gradient(
+            90deg,
+            rgba(245, 158, 11, 0.08) 0%,
+            rgba(245, 158, 11, 0.03) 100%
+          );
+          pointer-events: none;
+        }
+      }
+    }
+
+    &__icon {
+      flex-shrink: 0;
+    }
+
+    &__link-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    &__controls {
+      margin-top: auto;
+      padding: base(1) base(0.5);
+      border-top: 1px solid transparent;
+      background-image: linear-gradient(
+        to right,
+        transparent,
+        rgba(245, 158, 11, 0.1),
+        transparent
+      );
+      background-size: 100% 1px;
+      background-repeat: no-repeat;
+      background-position: top;
+
+      // Style logout button
+      .btn {
+        width: 100%;
+        justify-content: flex-start;
+        gap: base(0.5);
+        padding: base(0.5) base(0.75);
+        border-radius: var(--style-radius-s);
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: rgba(245, 158, 11, 0.08);
+          color: #f59e0b;
+        }
+      }
+    }
+
+    &__header {
+      // Mobile header styling
+      @include mid-break {
+        background: linear-gradient(to bottom, var(--theme-elevation-50), transparent);
+      }
+    }
+  }
+}
