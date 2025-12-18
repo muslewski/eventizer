@@ -18,6 +18,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authClient={authClient}
       navigate={router.push}
       replace={router.replace}
+      social={{ providers: ['google'] }}
+      optimistic={true}
       onSessionChange={() => {
         // Clear router cache (protected routes)
         router.refresh()

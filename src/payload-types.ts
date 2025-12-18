@@ -85,9 +85,6 @@ export interface Config {
     users: {
       offers: 'offers';
     };
-    'profile-pictures': {
-      usedBy: 'users';
-    };
     'payload-folders': {
       documentsAndFolders: 'payload-folders' | 'media';
     };
@@ -152,7 +149,7 @@ export interface User {
   email: string;
   emailVerified: boolean;
   /**
-   * Better Auth URL to the user profile image
+   * public URL to the user profile picture
    */
   image?: string | null;
   /**
@@ -174,11 +171,10 @@ export interface User {
  */
 export interface ProfilePicture {
   id: number;
-  usedBy?: {
-    docs?: (number | User)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
+  /**
+   * Email of the user who uploaded the profile picture.
+   */
+  uploadedBy?: string | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -509,7 +505,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "profile-pictures_select".
  */
 export interface ProfilePicturesSelect<T extends boolean = true> {
-  usedBy?: T;
+  uploadedBy?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -205,6 +205,7 @@ export const profile_pictures = pgTable(
   'profile_pictures',
   {
     id: serial('id').primaryKey(),
+    uploadedBy: varchar('uploaded_by'),
     prefix: varchar('prefix').default('Profile Pictures'),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
@@ -223,6 +224,7 @@ export const profile_pictures = pgTable(
     focalY: numeric('focal_y', { mode: 'number' }),
   },
   (columns) => [
+    index('profile_pictures_uploaded_by_idx').on(columns.uploadedBy),
     index('profile_pictures_updated_at_idx').on(columns.updatedAt),
     index('profile_pictures_created_at_idx').on(columns.createdAt),
     uniqueIndex('profile_pictures_filename_idx').on(columns.filename),

@@ -83,6 +83,20 @@ export const roleOrHigherOrSelf = (role: User['role'], field: string = 'id'): Ac
   }
 }
 
+/**
+ * Factory: Creates an access control for a role (or higher) OR if the field mathes the user's email.
+ */
+export const roleOrHigherOrSelfByEmail = (role: User['role'], field: string = 'email'): Access => {
+  const allowedRoles = getRolesAtOrAbove(role)
+  return ({ req: { user } }) => {
+    if (user) {
+      if (checkRole(allowedRoles, user)) return true
+      return { [field]: { equals: user.email } }
+    }
+    return false
+  }
+}
+
 // ============ Field Access Factories ============
 
 /**

@@ -7,6 +7,10 @@ import { drizzle } from 'drizzle-orm/vercel-postgres'
 // Create a direct drizzle connection for Better Auth
 const db = drizzle(sql)
 
+if (!process.env.GOOGLE_PROVIDER_CLIENT_ID || !process.env.GOOGLE_PROVIDER_CLIENT_SECRET) {
+  throw new Error('Google OAuth credentials are not set in environment variables.')
+}
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
@@ -31,6 +35,9 @@ export const auth = betterAuth({
   */
   user: {
     modelName: 'users',
+    deleteUser: {
+      enabled: true,
+    },
   },
   account: {
     modelName: 'user_accounts',
@@ -47,12 +54,12 @@ export const auth = betterAuth({
   },
 
   /* Go ahead and adjust your Better Auth as needed like adding social providers */
-  // socialProviders: {
-  //   google: {
-  //     clientId: process.env.GOOGLE_PROVIDER_CLIENT_ID,
-  //     clientSecret: process.env.GOOGLE_PROVIDER_CLIENT_SECRET,
-  //   },
-  // },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_PROVIDER_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_PROVIDER_CLIENT_SECRET,
+    },
+  },
 
   /* And even plugins works too */
   // plugins: []

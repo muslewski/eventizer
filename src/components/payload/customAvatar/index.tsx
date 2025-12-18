@@ -21,9 +21,7 @@ const Avatar: FC<ServerProps> = (props) => {
 
   let imageUrl: string | null = null
 
-  if (user?.image) {
-    imageUrl = user.image
-  } else if (user?.profilePicture && isExpandedDoc<ProfilePicture>(user.profilePicture)) {
+  if (user?.profilePicture && isExpandedDoc<ProfilePicture>(user.profilePicture)) {
     imageUrl = user.profilePicture.url || null
   }
 

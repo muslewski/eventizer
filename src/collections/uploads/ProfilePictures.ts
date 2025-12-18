@@ -1,13 +1,15 @@
 import {
   adminOrHigher,
   adminOrHigherOrSelf,
+  adminOrHigherOrSelfByEmail,
   moderatorOrHigher,
   moderatorOrHigherOrSelf,
+  moderatorOrHigherOrSelfByEmail,
   publicAccess,
 } from '@/access'
 import { fieldRoleOrHigher, isClientRoleEqual, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
-import { APIError, type CollectionConfig } from 'payload'
+import { CollectionConfig } from 'payload'
 
 export const ProfilePictures: CollectionConfig = {
   slug: 'profile-pictures',
@@ -21,6 +23,17 @@ export const ProfilePictures: CollectionConfig = {
       pl: 'Zdjęcia Profilowe',
     },
   },
+  hooks: {
+    beforeChange: [
+      ({ req, operation, data }) => {
+        // Automatically set uploadedBy to the current user on create
+        if (operation === 'create' && req.user) {
+          data.uploadedBy = req.user.email
+        }
+        return data
+      },
+    ],
+  },
   admin: {
     hidden: ({ user }) => !isClientRoleEqualOrHigher('moderator', user),
     description: {
@@ -28,34 +41,48 @@ export const ProfilePictures: CollectionConfig = {
       pl: 'Przesyłaj i zarządzaj zdjęciami profilowymi.',
     },
     group: adminGroups.uploads,
-    defaultColumns: ['filename', 'usedBy', 'updatedAt', 'createdAt'],
+    defaultColumns: ['filename', 'uploadedBy', 'updatedAt', 'createdAt'],
   },
   access: {
-    read: publicAccess,
-    update: adminOrHigherOrSelf('user'),
-    delete: adminOrHigherOrSelf('user'),
+    // Public read access for viewing images, but query limits what appears in lists
+    read: ({ req: { user } }) => {
+      // If no user, allow public read (for viewing images)
+      if (!user) return true
+
+      // Moderators and above can see all
+      if (isClientRoleEqualOrHigher('moderator', user)) return true
+
+      // Regular users only see their own uploads in lists
+      return {
+        uploadedBy: {
+          equals: user.email,
+        },
+      }
+    },
+    update: adminOrHigherOrSelfByEmail('uploadedBy'),
+    delete: adminOrHigherOrSelfByEmail('uploadedBy'),
     create: publicAccess,
   },
   fields: [
     {
-      name: 'usedBy',
-      type: 'join',
-      collection: 'users',
-      on: 'profilePicture',
+      name: 'uploadedBy',
+      type: 'text',
       label: {
-        en: 'Used By',
-        pl: 'Używane przez',
+        en: 'Uploaded By',
+        pl: 'Przesłane przez',
       },
-      hasMany: false,
-      defaultLimit: 1,
+      required: true,
+      index: true,
+      access: {
+        read: fieldRoleOrHigher('moderator'),
+      },
       admin: {
-        allowCreate: false,
-        // disableListFilter: true,
-        // position: 'sidebar',
-        condition: (data, siblingsData, { user }) => {
-          // Only show image field to moderators and higher
-          return isClientRoleEqualOrHigher('moderator', user)
+        description: {
+          en: 'Email of the user who uploaded the profile picture.',
+          pl: 'Email użytkownika, który przesłał zdjęcie profilowe.',
         },
+        readOnly: true,
+        condition: ({ user }) => isClientRoleEqualOrHigher('moderator', user),
       },
     },
   ],
