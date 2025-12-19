@@ -8,14 +8,15 @@
     border-radius: (var(--radius));
     background: linear-gradient(
       135deg,
-      var(--theme-elevation-50) 0%,
-      var(--theme-elevation-100) 100%
+      color-mix(in srgb, var(--theme-elevation-50) 50%, transparent),
+      color-mix(in srgb, var(--theme-elevation-100) 50%, transparent)
     );
     top: 5px;
     display: inline-flex;
     gap: 10px;
     align-items: center;
     position: relative;
+    backdrop-filter: blur(10px);
     overflow: hidden;
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.06),
@@ -76,6 +77,55 @@
     &__image {
       object-fit: cover;
       border-radius: 50%;
+      transition: opacity 0.3s ease;
+    }
+
+    &__loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--theme-elevation-100);
+      border-radius: 50%;
+    }
+
+    &__loading-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--theme-elevation-200);
+      border-top-color: #d4af37;
+      border-radius: 50%;
+      animation: avatar-spin 0.8s linear infinite;
+    }
+
+    @keyframes avatar-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes avatar-skeleton-pulse {
+      0%,
+      100% {
+        opacity: 0.4;
+      }
+      50% {
+        opacity: 0.8;
+      }
+    }
+
+    &__skeleton {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(
+        135deg,
+        var(--theme-elevation-150) 0%,
+        var(--theme-elevation-200) 50%,
+        var(--theme-elevation-150) 100%
+      );
+      animation: avatar-skeleton-pulse 1.5s ease-in-out infinite;
     }
 
     &__ring {

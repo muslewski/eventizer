@@ -20,6 +20,7 @@ import { OfferUploads } from '@/collections/uploads/OfferUploads'
 import { en } from '@payloadcms/translations/languages/en'
 import { pl } from '@payloadcms/translations/languages/pl'
 import { customTranslations } from '@/translations/custom-translations'
+import { HelpTickets } from '@/collections/HelpTickets'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -56,6 +57,9 @@ export default buildConfig({
   },
 
   collections: [
+    // Marketplace
+    Offers,
+
     // Auth
     Users,
     Sessions,
@@ -67,7 +71,8 @@ export default buildConfig({
     ProfilePictures,
     OfferUploads,
 
-    Offers,
+    // Help
+    HelpTickets,
   ],
   i18n: {
     fallbackLanguage: 'pl',

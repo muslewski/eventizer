@@ -2,11 +2,11 @@ import { ChevronIcon } from '@payloadcms/ui'
 import { DefaultAccountIcon } from '@payloadcms/ui/graphics/Account/Default'
 import { ServerProps } from 'payload'
 import { FC } from 'react'
-import Image from 'next/image'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import { ProfilePicture } from '@/payload-types'
 import type { TFunction } from '@payloadcms/translations'
 import type { CustomTranslationsKeys } from '@/translations/custom-translations'
+import { AvatarImage } from './AvatarImage'
 
 import './index.scss'
 
@@ -23,6 +23,8 @@ const Avatar: FC<ServerProps> = (props) => {
 
   if (user?.profilePicture && isExpandedDoc<ProfilePicture>(user.profilePicture)) {
     imageUrl = user.profilePicture.url || null
+  } else if (user?.image) {
+    imageUrl = user.image
   }
 
   const greeting = t('avatar:greeting')
@@ -31,7 +33,7 @@ const Avatar: FC<ServerProps> = (props) => {
     <div className={baseClass}>
       <div className={`${baseClass}__image-container`}>
         {imageUrl ? (
-          <Image src={imageUrl} alt={username} fill className={`${baseClass}__image`} />
+          <AvatarImage imageUrl={imageUrl} username={username} baseClass={baseClass} />
         ) : (
           <DefaultAccountIcon active={false} />
         )}

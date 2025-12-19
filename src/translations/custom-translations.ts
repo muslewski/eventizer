@@ -5,7 +5,10 @@ export const customTranslations = {
   en: {
     dashboard: {
       welcomeTitle: 'Welcome Back',
-      welcomeSubtitle: 'Manage your content efficiently',
+      welcomeSubtitleAdmin: 'Full system control and administration',
+      welcomeSubtitleModerator: 'Review content and manage the community',
+      welcomeSubtitleServiceProvider: 'Manage your services and bookings',
+      welcomeSubtitleClient: 'Discover and book amazing services',
     },
     general: {
       payloadSettings: 'Application Settings',
@@ -20,7 +23,10 @@ export const customTranslations = {
   pl: {
     dashboard: {
       welcomeTitle: 'Witaj ponownie',
-      welcomeSubtitle: 'Zarządzaj swoimi treściami efektywnie',
+      welcomeSubtitleAdmin: 'Pełna kontrola i administracja systemu',
+      welcomeSubtitleModerator: 'Przeglądaj treści i zarządzaj społecznością',
+      welcomeSubtitleServiceProvider: 'Zarządzaj swoimi usługami i rezerwacjami',
+      welcomeSubtitleClient: 'Odkrywaj i rezerwuj niesamowite usługi',
     },
     general: {
       payloadSettings: 'Ustawienia aplikacji',

@@ -19,4 +19,8 @@ export const adminGroups = {
     en: 'Uploads',
     pl: 'Przesyłanie',
   },
+  help: {
+    en: 'Help Desk',
+    pl: 'Pomoc',
+  },
 }

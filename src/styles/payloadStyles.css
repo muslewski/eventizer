@@ -287,6 +287,10 @@
     background-color: #342907;
   }
 
+  .template-default__wrap {
+    @apply bg-linear-to-br from-[#f7f6f3] to-[#f0eeeb] dark:from-[var(--color-base-900)] dark:via-stone-950 dark:to-[#000000];
+  }
+
   @font-face {
     font-family: 'Bebas Neue';
     src: url('/fonts/BebasNeue-Regular.ttf') format('truetype');

@@ -62,11 +62,13 @@ export const DashboardGroup: FC<Props> = async ({
                     type === EntityType.collection ? `/collections/${slug}` : `/globals/${slug}`,
                 })}
                 Link={Link}
+                slug={slug}
                 count={counts[slug] ?? 0}
               />
             ) : (
               <CustomCard
                 title={getTranslation(label, i18n)}
+                slug={slug}
                 href={formatAdminURL({
                   adminRoute,
                   path:

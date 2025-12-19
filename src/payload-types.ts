@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    offers: Offer;
     users: User;
     'user-sessions': UserSession;
     'user-accounts': UserAccount;
@@ -74,7 +75,7 @@ export interface Config {
     media: Media;
     'profile-pictures': ProfilePicture;
     'offer-uploads': OfferUpload;
-    offers: Offer;
+    'help-tickets': HelpTicket;
     'payload-kv': PayloadKv;
     'payload-folders': FolderInterface;
     'payload-locked-documents': PayloadLockedDocument;
@@ -90,6 +91,7 @@ export interface Config {
     };
   };
   collectionsSelect: {
+    offers: OffersSelect<false> | OffersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'user-sessions': UserSessionsSelect<false> | UserSessionsSelect<true>;
     'user-accounts': UserAccountsSelect<false> | UserAccountsSelect<true>;
@@ -97,7 +99,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'profile-pictures': ProfilePicturesSelect<false> | ProfilePicturesSelect<true>;
     'offer-uploads': OfferUploadsSelect<false> | OfferUploadsSelect<true>;
-    offers: OffersSelect<false> | OffersSelect<true>;
+    'help-tickets': HelpTicketsSelect<false> | HelpTicketsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -136,6 +138,19 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offers".
+ */
+export interface Offer {
+  id: number;
+  _order?: string | null;
+  user: number | User;
+  title: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -187,19 +202,6 @@ export interface ProfilePicture {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "offers".
- */
-export interface Offer {
-  id: number;
-  _order?: string | null;
-  user: number | User;
-  title: string;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -322,6 +324,31 @@ export interface OfferUpload {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "help-tickets".
+ */
+export interface HelpTicket {
+  id: number;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -344,6 +371,10 @@ export interface PayloadKv {
 export interface PayloadLockedDocument {
   id: number;
   document?:
+    | ({
+        relationTo: 'offers';
+        value: number | Offer;
+      } | null)
     | ({
         relationTo: 'users';
         value: number | User;
@@ -373,8 +404,8 @@ export interface PayloadLockedDocument {
         value: number | OfferUpload;
       } | null)
     | ({
-        relationTo: 'offers';
-        value: number | Offer;
+        relationTo: 'help-tickets';
+        value: number | HelpTicket;
       } | null)
     | ({
         relationTo: 'payload-folders';
@@ -421,6 +452,18 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offers_select".
+ */
+export interface OffersSelect<T extends boolean = true> {
+  _order?: T;
+  user?: T;
+  title?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -542,15 +585,13 @@ export interface OfferUploadsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "offers_select".
+ * via the `definition` "help-tickets_select".
  */
-export interface OffersSelect<T extends boolean = true> {
-  _order?: T;
-  user?: T;
+export interface HelpTicketsSelect<T extends boolean = true> {
   title?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
-  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
