@@ -13,12 +13,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthUIProvider
-      basePath="/admin/auth"
-      redirectTo="/admin"
+      basePath="/app/auth"
+      redirectTo="/app"
       authClient={authClient}
       navigate={router.push}
       replace={router.replace}
-      social={{ providers: ['google'] }}
+      social={{ providers: ['google', 'facebook'] }}
+      emailVerification={true}
+      // additionalFields={}
       optimistic={true}
       onSessionChange={() => {
         // Clear router cache (protected routes)

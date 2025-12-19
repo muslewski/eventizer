@@ -42,7 +42,11 @@ const Avatar: FC<ServerProps> = (props) => {
       </div>
 
       <div className={`${baseClass}__content`}>
-        <span className={`${baseClass}__greeting`}>{greeting}</span>
+        <span
+          className={`${baseClass}__greeting text-(--theme-elevation-700) dark:text-(--theme-elevation-400)`}
+        >
+          {greeting}
+        </span>
         <span className={`${baseClass}__username`}>{username}</span>
       </div>
 

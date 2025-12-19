@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/Theme'
 
 export const metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
+  description: 'Eventizer - Event Management Platform',
+  title: 'Eventizer',
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {

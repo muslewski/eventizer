@@ -5,6 +5,7 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 // Collections
 import { Users } from './collections/auth/Users'
@@ -21,11 +22,16 @@ import { en } from '@payloadcms/translations/languages/en'
 import { pl } from '@payloadcms/translations/languages/pl'
 import { customTranslations } from '@/translations/custom-translations'
 import { HelpTickets } from '@/collections/HelpTickets'
+import { SubscriptionPlans } from '@/collections/SubscriptionPlans'
+import { ServiceCategories } from '@/collections/ServiceCategories'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  routes: {
+    admin: '/app',
+  },
   admin: {
     components: {
       views: {
@@ -66,6 +72,10 @@ export default buildConfig({
     Accounts,
     Verifications,
 
+    // Settings
+    SubscriptionPlans,
+    ServiceCategories,
+
     // Uploads
     Media,
     ProfilePictures,
@@ -98,6 +108,11 @@ export default buildConfig({
   //   ],
   //   defaultLocale: 'pl',
   // },
+  email: resendAdapter({
+    defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || '',
+    defaultFromName: process.env.EMAIL_FROM_NAME || '',
+    apiKey: process.env.RESEND_API_KEY || '',
+  }),
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

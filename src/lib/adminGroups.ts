@@ -15,6 +15,10 @@ export const adminGroups = {
     en: 'Authentication',
     pl: 'Uwierzytelnianie',
   },
+  settings: {
+    en: 'Settings',
+    pl: 'Ustawienia',
+  },
   uploads: {
     en: 'Uploads',
     pl: 'Przesyłanie',

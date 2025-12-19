@@ -3,6 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import * as schema from '@/payload-generated-schema'
 import { sql } from '@vercel/postgres'
 import { drizzle } from 'drizzle-orm/vercel-postgres'
+import { sendVerificationEmail } from '@/auth/email/sendEmail'
 
 // Create a direct drizzle connection for Better Auth
 const db = drizzle(sql)
@@ -11,11 +12,15 @@ if (!process.env.GOOGLE_PROVIDER_CLIENT_ID || !process.env.GOOGLE_PROVIDER_CLIEN
   throw new Error('Google OAuth credentials are not set in environment variables.')
 }
 
+if (!process.env.FACEBOOK_CLIENT_ID || !process.env.FACEBOOK_CLIENT_SECRET) {
+  throw new Error('Facebook OAuth credentials are not set in environment variables.')
+}
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema,
-    usePlural: false, // Should be false when having custom table name mapping as outlined below
+    usePlural: false,
   }),
   advanced: {
     generatedId: false,
@@ -25,14 +30,19 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    sendOnSignIn: true, // Added missing comma here
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      console.log('SEND VERIFICATION EMAIL')
+
+      void sendVerificationEmail(user, url)
+    },
   },
 
-  /* 
-  If needed, you can map the core schemas to the drizzle schema table names. When doing this, make sure to 
-  set usePlural to false to avoid errors like users table being searched as userss. You only ever need to
-  manually map when you use a different slug for the 4 core collections. For example your Users collections slug
-  is students, so you should set the user modelName to students.
-  */
   user: {
     modelName: 'users',
     deleteUser: {
@@ -53,14 +63,14 @@ export const auth = betterAuth({
     modelName: 'user_sessions',
   },
 
-  /* Go ahead and adjust your Better Auth as needed like adding social providers */
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_PROVIDER_CLIENT_ID,
       clientSecret: process.env.GOOGLE_PROVIDER_CLIENT_SECRET,
     },
+    facebook: {
+      clientId: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    },
   },
-
-  /* And even plugins works too */
-  // plugins: []
 })

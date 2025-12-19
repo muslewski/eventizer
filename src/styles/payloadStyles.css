@@ -134,6 +134,10 @@
   .popup,
   .upload,
   .file-details,
+  .field-type__wrap,
+  .textarea-outer,
+  button,
+  textarea,
   .card {
     border-radius: var(--radius);
   }

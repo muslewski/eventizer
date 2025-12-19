@@ -793,7 +793,7 @@ export const MyField: TextFieldClientComponent = (props) => {
 
 ### Import Map
 
-Payload auto-generates `app/(payload)/admin/importMap.js` to resolve component paths.
+Payload auto-generates `app/(payload)/app/importMap.js` to resolve component paths.
 
 **Regenerate manually:**
 

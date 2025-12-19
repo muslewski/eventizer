@@ -72,6 +72,8 @@ export interface Config {
     'user-sessions': UserSession;
     'user-accounts': UserAccount;
     'user-verifications': UserVerification;
+    'subscription-plans': SubscriptionPlan;
+    'service-categories': ServiceCategory;
     media: Media;
     'profile-pictures': ProfilePicture;
     'offer-uploads': OfferUpload;
@@ -96,6 +98,8 @@ export interface Config {
     'user-sessions': UserSessionsSelect<false> | UserSessionsSelect<true>;
     'user-accounts': UserAccountsSelect<false> | UserAccountsSelect<true>;
     'user-verifications': UserVerificationsSelect<false> | UserVerificationsSelect<true>;
+    'subscription-plans': SubscriptionPlansSelect<false> | SubscriptionPlansSelect<true>;
+    'service-categories': ServiceCategoriesSelect<false> | ServiceCategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'profile-pictures': ProfilePicturesSelect<false> | ProfilePicturesSelect<true>;
     'offer-uploads': OfferUploadsSelect<false> | OfferUploadsSelect<true>;
@@ -249,6 +253,75 @@ export interface UserVerification {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscription-plans".
+ */
+export interface SubscriptionPlan {
+  id: number;
+  name: string;
+  /**
+   * Unique identifier (e.g., 'basic', 'pro', 'enterprise')
+   */
+  slug: string;
+  description?: string | null;
+  price: number;
+  /**
+   * Defines the hierarchy of plans. Higher levels include access to lower level plans' features.
+   */
+  level: number;
+  highlighted?: boolean | null;
+  features?:
+    | {
+        feature: string;
+        included?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-categories".
+ */
+export interface ServiceCategory {
+  id: number;
+  name: string;
+  /**
+   * Unique identifier (e.g., 'dj', 'catering')
+   */
+  slug: string;
+  description?: string | null;
+  /**
+   * Select the subscription plan required to access services in this category.
+   */
+  requiredPlan?: (number | null) | SubscriptionPlan;
+  subcategory_level_1?:
+    | {
+        name: string;
+        /**
+         * Unique identifier (e.g., 'dj', 'catering')
+         */
+        slug: string;
+        description?: string | null;
+        subcategory_level_2?:
+          | {
+              name: string;
+              /**
+               * Unique identifier (e.g., 'dj', 'catering')
+               */
+              slug: string;
+              description?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Upload and manage media files used throughout the application.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -392,6 +465,14 @@ export interface PayloadLockedDocument {
         value: number | UserVerification;
       } | null)
     | ({
+        relationTo: 'subscription-plans';
+        value: number | SubscriptionPlan;
+      } | null)
+    | ({
+        relationTo: 'service-categories';
+        value: number | ServiceCategory;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
@@ -519,6 +600,55 @@ export interface UserVerificationsSelect<T extends boolean = true> {
   identifier?: T;
   value?: T;
   expiresAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscription-plans_select".
+ */
+export interface SubscriptionPlansSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  price?: T;
+  level?: T;
+  highlighted?: T;
+  features?:
+    | T
+    | {
+        feature?: T;
+        included?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-categories_select".
+ */
+export interface ServiceCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  requiredPlan?: T;
+  subcategory_level_1?:
+    | T
+    | {
+        name?: T;
+        slug?: T;
+        description?: T;
+        subcategory_level_2?:
+          | T
+          | {
+              name?: T;
+              slug?: T;
+              description?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
