@@ -1,4 +1,5 @@
 import { default as default_133738e3839d3dd2ada085fc82bb57a4 } from '../../../components/payload/fields/roleSelect'
+import { LinkToDoc as LinkToDoc_2e9be70cd13299dd4a11a5bd739a5a3c } from '@payloadcms/plugin-stripe/client'
 import { FolderTableCell as FolderTableCell_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 import { FolderField as FolderField_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -32,9 +33,11 @@ import { default as default_c43e5e25a4fa72cd697523960afa0cf5 } from '@/component
 import { default as default_1620fb7803fd36363b2821bb58d399ab } from '@/components/payload/beforeNav'
 import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
 import { default as default_926f33436ba186db76d111f683d197fc } from '@/components/payload/customDashboard'
+import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
   "/components/payload/fields/roleSelect#default": default_133738e3839d3dd2ada085fc82bb57a4,
+  "@payloadcms/plugin-stripe/client#LinkToDoc": LinkToDoc_2e9be70cd13299dd4a11a5bd739a5a3c,
   "@payloadcms/ui/rsc#FolderTableCell": FolderTableCell_ab83ff7e88da8d3530831f296ec4756a,
   "@payloadcms/ui/rsc#FolderField": FolderField_ab83ff7e88da8d3530831f296ec4756a,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -67,5 +70,6 @@ export const importMap = {
   "@/components/payload/customLogo#default": default_c43e5e25a4fa72cd697523960afa0cf5,
   "@/components/payload/beforeNav#default": default_1620fb7803fd36363b2821bb58d399ab,
   "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e,
-  "@/components/payload/customDashboard#default": default_926f33436ba186db76d111f683d197fc
+  "@/components/payload/customDashboard#default": default_926f33436ba186db76d111f683d197fc,
+  "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }

@@ -16,14 +16,19 @@ export const SubscriptionPlans: CollectionConfig = {
     },
   },
   admin: {
+    description: {
+      en: 'Manage subscription plan content and display settings. Plan pricing and billing logic should be configured in the Stripe Dashboard.',
+      pl: 'Zarządzaj treścią i ustawieniami wyświetlania planów subskrypcji. Ceny i logika rozliczeń powinny być konfigurowane w panelu Stripe.',
+    },
     useAsTitle: 'name',
     group: adminGroups.settings,
     hidden: ({ user }) => !isClientRoleEqualOrHigher('admin', user),
-    defaultColumns: ['name', 'price', 'createdAt'],
+    defaultColumns: ['name', 'price', 'level', 'createdAt'],
   },
   access: {
     read: publicAccess,
-    create: adminOrHigher,
+    // plans should be created via Stripe only throw api message
+    create: () => false,
     update: adminOrHigher,
     delete: adminOrHigher,
   },
@@ -58,19 +63,19 @@ export const SubscriptionPlans: CollectionConfig = {
         pl: 'Opis',
       },
     },
-    {
-      name: 'price',
-      type: 'number',
-      required: true,
-      min: 0,
-      label: {
-        en: 'Price (PLN/month)',
-        pl: 'Cena (PLN/miesiąc)',
-      },
-      admin: {
-        position: 'sidebar',
-      },
-    },
+    // {
+    //   name: 'price',
+    //   type: 'number',
+    //   required: true,
+    //   min: 0,
+    //   label: {
+    //     en: 'Price (PLN/month)',
+    //     pl: 'Cena (PLN/miesiąc)',
+    //   },
+    //   admin: {
+    //     position: 'sidebar',
+    //   },
+    // },
     {
       name: 'level',
       type: 'number',
@@ -98,9 +103,15 @@ export const SubscriptionPlans: CollectionConfig = {
     {
       name: 'features',
       type: 'array',
-      label: {
-        en: 'Features List',
-        pl: 'Lista Funkcji',
+      labels: {
+        singular: {
+          en: 'Feature',
+          pl: 'Funkcja',
+        },
+        plural: {
+          en: 'Features',
+          pl: 'Funkcje',
+        },
       },
       fields: [
         {

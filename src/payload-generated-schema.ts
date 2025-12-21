@@ -13,30 +13,102 @@ import {
   uniqueIndex,
   foreignKey,
   serial,
-  integer,
   varchar,
-  boolean,
+  integer,
   timestamp,
+  boolean,
   numeric,
   jsonb,
   type AnyPgColumn,
   pgEnum,
 } from '@payloadcms/db-vercel-postgres/drizzle/pg-core'
 import { sql, relations } from '@payloadcms/db-vercel-postgres/drizzle'
+export const enum_offers_status = pgEnum('enum_offers_status', ['draft', 'published'])
+export const enum__offers_v_version_status = pgEnum('enum__offers_v_version_status', [
+  'draft',
+  'published',
+])
 export const enum_users_role = pgEnum('enum_users_role', [
   'admin',
   'moderator',
   'service-provider',
   'client',
 ])
-export const enum_offers_status = pgEnum('enum_offers_status', ['draft', 'published'])
-export const enum__offers_v_version_status = pgEnum('enum__offers_v_version_status', [
-  'draft',
-  'published',
-])
 export const enum_payload_folders_folder_type = pgEnum('enum_payload_folders_folder_type', [
   'media',
 ])
+
+export const offers = pgTable(
+  'offers',
+  {
+    id: serial('id').primaryKey(),
+    _order: varchar('_order'),
+    user: integer('user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    title: varchar('title').default('Nowa oferta'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    _status: enum_offers_status('_status').default('draft'),
+  },
+  (columns) => [
+    index('offers__order_idx').on(columns._order),
+    index('offers_user_idx').on(columns.user),
+    index('offers_updated_at_idx').on(columns.updatedAt),
+    index('offers_created_at_idx').on(columns.createdAt),
+    index('offers__status_idx').on(columns._status),
+  ],
+)
+
+export const _offers_v = pgTable(
+  '_offers_v',
+  {
+    id: serial('id').primaryKey(),
+    parent: integer('parent_id').references(() => offers.id, {
+      onDelete: 'set null',
+    }),
+    version__order: varchar('version__order'),
+    version_user: integer('version_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    version_title: varchar('version_title').default('Nowa oferta'),
+    version_updatedAt: timestamp('version_updated_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version_createdAt: timestamp('version_created_at', {
+      mode: 'string',
+      withTimezone: true,
+      precision: 3,
+    }),
+    version__status: enum__offers_v_version_status('version__status').default('draft'),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    latest: boolean('latest'),
+    autosave: boolean('autosave'),
+  },
+  (columns) => [
+    index('_offers_v_parent_idx').on(columns.parent),
+    index('_offers_v_version_version__order_idx').on(columns.version__order),
+    index('_offers_v_version_version_user_idx').on(columns.version_user),
+    index('_offers_v_version_version_updated_at_idx').on(columns.version_updatedAt),
+    index('_offers_v_version_version_created_at_idx').on(columns.version_createdAt),
+    index('_offers_v_version_version__status_idx').on(columns.version__status),
+    index('_offers_v_created_at_idx').on(columns.createdAt),
+    index('_offers_v_updated_at_idx').on(columns.updatedAt),
+    index('_offers_v_latest_idx').on(columns.latest),
+    index('_offers_v_autosave_idx').on(columns.autosave),
+  ],
+)
 
 export const users = pgTable(
   'users',
@@ -164,6 +236,135 @@ export const user_verifications = pgTable(
   ],
 )
 
+export const subscription_plans_features = pgTable(
+  'subscription_plans_features',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    feature: varchar('feature').notNull(),
+    included: boolean('included').default(true),
+  },
+  (columns) => [
+    index('subscription_plans_features_order_idx').on(columns._order),
+    index('subscription_plans_features_parent_id_idx').on(columns._parentID),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [subscription_plans.id],
+      name: 'subscription_plans_features_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const subscription_plans = pgTable(
+  'subscription_plans',
+  {
+    id: serial('id').primaryKey(),
+    name: varchar('name').notNull(),
+    slug: varchar('slug').notNull(),
+    description: varchar('description'),
+    price: numeric('price', { mode: 'number' }).notNull(),
+    level: numeric('level', { mode: 'number' }).notNull(),
+    highlighted: boolean('highlighted'),
+    stripeID: varchar('stripe_i_d'),
+    skipSync: boolean('skip_sync'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    uniqueIndex('subscription_plans_slug_idx').on(columns.slug),
+    index('subscription_plans_updated_at_idx').on(columns.updatedAt),
+    index('subscription_plans_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const service_categories_subcategory_level_1_subcategory_level_2 = pgTable(
+  'service_categories_subcategory_level_1_subcategory_level_2',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: varchar('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
+    slug: varchar('slug').notNull(),
+    requiredPlan: integer('required_plan_id').references(() => subscription_plans.id, {
+      onDelete: 'set null',
+    }),
+    description: varchar('description'),
+  },
+  (columns) => [
+    index('service_categories_subcategory_level_1_subcategory_level_2_order_idx').on(
+      columns._order,
+    ),
+    index('service_categories_subcategory_level_1_subcategory_level_2_parent_id_idx').on(
+      columns._parentID,
+    ),
+    uniqueIndex('service_categories_subcategory_level_1_subcategory_level_idx').on(columns.slug),
+    index('service_categories_subcategory_level_1_subcategory_lev_1_idx').on(columns.requiredPlan),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [service_categories_subcategory_level_1.id],
+      name: 'service_categories_subcategory_level_1_subcategory_level_2_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const service_categories_subcategory_level_1 = pgTable(
+  'service_categories_subcategory_level_1',
+  {
+    _order: integer('_order').notNull(),
+    _parentID: integer('_parent_id').notNull(),
+    id: varchar('id').primaryKey(),
+    name: varchar('name').notNull(),
+    slug: varchar('slug').notNull(),
+    requiredPlan: integer('required_plan_id').references(() => subscription_plans.id, {
+      onDelete: 'set null',
+    }),
+    description: varchar('description'),
+  },
+  (columns) => [
+    index('service_categories_subcategory_level_1_order_idx').on(columns._order),
+    index('service_categories_subcategory_level_1_parent_id_idx').on(columns._parentID),
+    uniqueIndex('service_categories_subcategory_level_1_slug_idx').on(columns.slug),
+    index('service_categories_subcategory_level_1_required_plan_idx').on(columns.requiredPlan),
+    foreignKey({
+      columns: [columns['_parentID']],
+      foreignColumns: [service_categories.id],
+      name: 'service_categories_subcategory_level_1_parent_id_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
+export const service_categories = pgTable(
+  'service_categories',
+  {
+    id: serial('id').primaryKey(),
+    _order: varchar('_order'),
+    name: varchar('name').notNull(),
+    slug: varchar('slug').notNull(),
+    requiredPlan: integer('required_plan_id').references(() => subscription_plans.id, {
+      onDelete: 'set null',
+    }),
+    description: varchar('description'),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('service_categories__order_idx').on(columns._order),
+    uniqueIndex('service_categories_slug_idx').on(columns.slug),
+    index('service_categories_required_plan_idx').on(columns.requiredPlan),
+    index('service_categories_updated_at_idx').on(columns.updatedAt),
+    index('service_categories_created_at_idx').on(columns.createdAt),
+  ],
+)
+
 export const media = pgTable(
   'media',
   {
@@ -267,75 +468,22 @@ export const offer_uploads = pgTable(
   ],
 )
 
-export const offers = pgTable(
-  'offers',
+export const help_tickets = pgTable(
+  'help_tickets',
   {
     id: serial('id').primaryKey(),
-    _order: varchar('_order'),
-    user: integer('user_id').references(() => users.id, {
-      onDelete: 'set null',
-    }),
-    title: varchar('title').default('Nowa oferta'),
+    title: varchar('title').notNull(),
+    description: jsonb('description'),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
     createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
-    _status: enum_offers_status('_status').default('draft'),
   },
   (columns) => [
-    index('offers__order_idx').on(columns._order),
-    index('offers_user_idx').on(columns.user),
-    index('offers_updated_at_idx').on(columns.updatedAt),
-    index('offers_created_at_idx').on(columns.createdAt),
-    index('offers__status_idx').on(columns._status),
-  ],
-)
-
-export const _offers_v = pgTable(
-  '_offers_v',
-  {
-    id: serial('id').primaryKey(),
-    parent: integer('parent_id').references(() => offers.id, {
-      onDelete: 'set null',
-    }),
-    version__order: varchar('version__order'),
-    version_user: integer('version_user_id').references(() => users.id, {
-      onDelete: 'set null',
-    }),
-    version_title: varchar('version_title').default('Nowa oferta'),
-    version_updatedAt: timestamp('version_updated_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version_createdAt: timestamp('version_created_at', {
-      mode: 'string',
-      withTimezone: true,
-      precision: 3,
-    }),
-    version__status: enum__offers_v_version_status('version__status').default('draft'),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    latest: boolean('latest'),
-    autosave: boolean('autosave'),
-  },
-  (columns) => [
-    index('_offers_v_parent_idx').on(columns.parent),
-    index('_offers_v_version_version__order_idx').on(columns.version__order),
-    index('_offers_v_version_version_user_idx').on(columns.version_user),
-    index('_offers_v_version_version_updated_at_idx').on(columns.version_updatedAt),
-    index('_offers_v_version_version_created_at_idx').on(columns.version_createdAt),
-    index('_offers_v_version_version__status_idx').on(columns.version__status),
-    index('_offers_v_created_at_idx').on(columns.createdAt),
-    index('_offers_v_updated_at_idx').on(columns.updatedAt),
-    index('_offers_v_latest_idx').on(columns.latest),
-    index('_offers_v_autosave_idx').on(columns.autosave),
+    index('help_tickets_updated_at_idx').on(columns.updatedAt),
+    index('help_tickets_created_at_idx').on(columns.createdAt),
   ],
 )
 
@@ -417,37 +565,52 @@ export const payload_locked_documents_rels = pgTable(
     order: integer('order'),
     parent: integer('parent_id').notNull(),
     path: varchar('path').notNull(),
+    offersID: integer('offers_id'),
     usersID: integer('users_id'),
     'user-sessionsID': integer('user_sessions_id'),
     'user-accountsID': integer('user_accounts_id'),
     'user-verificationsID': integer('user_verifications_id'),
+    'subscription-plansID': integer('subscription_plans_id'),
+    'service-categoriesID': integer('service_categories_id'),
     mediaID: integer('media_id'),
     'profile-picturesID': integer('profile_pictures_id'),
     'offer-uploadsID': integer('offer_uploads_id'),
-    offersID: integer('offers_id'),
+    'help-ticketsID': integer('help_tickets_id'),
     'payload-foldersID': integer('payload_folders_id'),
   },
   (columns) => [
     index('payload_locked_documents_rels_order_idx').on(columns.order),
     index('payload_locked_documents_rels_parent_idx').on(columns.parent),
     index('payload_locked_documents_rels_path_idx').on(columns.path),
+    index('payload_locked_documents_rels_offers_id_idx').on(columns.offersID),
     index('payload_locked_documents_rels_users_id_idx').on(columns.usersID),
     index('payload_locked_documents_rels_user_sessions_id_idx').on(columns['user-sessionsID']),
     index('payload_locked_documents_rels_user_accounts_id_idx').on(columns['user-accountsID']),
     index('payload_locked_documents_rels_user_verifications_id_idx').on(
       columns['user-verificationsID'],
     ),
+    index('payload_locked_documents_rels_subscription_plans_id_idx').on(
+      columns['subscription-plansID'],
+    ),
+    index('payload_locked_documents_rels_service_categories_id_idx').on(
+      columns['service-categoriesID'],
+    ),
     index('payload_locked_documents_rels_media_id_idx').on(columns.mediaID),
     index('payload_locked_documents_rels_profile_pictures_id_idx').on(
       columns['profile-picturesID'],
     ),
     index('payload_locked_documents_rels_offer_uploads_id_idx').on(columns['offer-uploadsID']),
-    index('payload_locked_documents_rels_offers_id_idx').on(columns.offersID),
+    index('payload_locked_documents_rels_help_tickets_id_idx').on(columns['help-ticketsID']),
     index('payload_locked_documents_rels_payload_folders_id_idx').on(columns['payload-foldersID']),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [payload_locked_documents.id],
       name: 'payload_locked_documents_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['offersID']],
+      foreignColumns: [offers.id],
+      name: 'payload_locked_documents_rels_offers_fk',
     }).onDelete('cascade'),
     foreignKey({
       columns: [columns['usersID']],
@@ -470,6 +633,16 @@ export const payload_locked_documents_rels = pgTable(
       name: 'payload_locked_documents_rels_user_verifications_fk',
     }).onDelete('cascade'),
     foreignKey({
+      columns: [columns['subscription-plansID']],
+      foreignColumns: [subscription_plans.id],
+      name: 'payload_locked_documents_rels_subscription_plans_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['service-categoriesID']],
+      foreignColumns: [service_categories.id],
+      name: 'payload_locked_documents_rels_service_categories_fk',
+    }).onDelete('cascade'),
+    foreignKey({
       columns: [columns['mediaID']],
       foreignColumns: [media.id],
       name: 'payload_locked_documents_rels_media_fk',
@@ -485,9 +658,9 @@ export const payload_locked_documents_rels = pgTable(
       name: 'payload_locked_documents_rels_offer_uploads_fk',
     }).onDelete('cascade'),
     foreignKey({
-      columns: [columns['offersID']],
-      foreignColumns: [offers.id],
-      name: 'payload_locked_documents_rels_offers_fk',
+      columns: [columns['help-ticketsID']],
+      foreignColumns: [help_tickets.id],
+      name: 'payload_locked_documents_rels_help_tickets_fk',
     }).onDelete('cascade'),
     foreignKey({
       columns: [columns['payload-foldersID']],
@@ -563,6 +736,25 @@ export const payload_migrations = pgTable(
   ],
 )
 
+export const relations_offers = relations(offers, ({ one }) => ({
+  user: one(users, {
+    fields: [offers.user],
+    references: [users.id],
+    relationName: 'user',
+  }),
+}))
+export const relations__offers_v = relations(_offers_v, ({ one }) => ({
+  parent: one(offers, {
+    fields: [_offers_v.parent],
+    references: [offers.id],
+    relationName: 'parent',
+  }),
+  version_user: one(users, {
+    fields: [_offers_v.version_user],
+    references: [users.id],
+    relationName: 'version_user',
+  }),
+}))
 export const relations_users = relations(users, ({ one }) => ({
   profilePicture: one(profile_pictures, {
     fields: [users.profilePicture],
@@ -585,6 +777,64 @@ export const relations_user_accounts = relations(user_accounts, ({ one }) => ({
   }),
 }))
 export const relations_user_verifications = relations(user_verifications, () => ({}))
+export const relations_subscription_plans_features = relations(
+  subscription_plans_features,
+  ({ one }) => ({
+    _parentID: one(subscription_plans, {
+      fields: [subscription_plans_features._parentID],
+      references: [subscription_plans.id],
+      relationName: 'features',
+    }),
+  }),
+)
+export const relations_subscription_plans = relations(subscription_plans, ({ many }) => ({
+  features: many(subscription_plans_features, {
+    relationName: 'features',
+  }),
+}))
+export const relations_service_categories_subcategory_level_1_subcategory_level_2 = relations(
+  service_categories_subcategory_level_1_subcategory_level_2,
+  ({ one }) => ({
+    _parentID: one(service_categories_subcategory_level_1, {
+      fields: [service_categories_subcategory_level_1_subcategory_level_2._parentID],
+      references: [service_categories_subcategory_level_1.id],
+      relationName: 'subcategory_level_2',
+    }),
+    requiredPlan: one(subscription_plans, {
+      fields: [service_categories_subcategory_level_1_subcategory_level_2.requiredPlan],
+      references: [subscription_plans.id],
+      relationName: 'requiredPlan',
+    }),
+  }),
+)
+export const relations_service_categories_subcategory_level_1 = relations(
+  service_categories_subcategory_level_1,
+  ({ one, many }) => ({
+    _parentID: one(service_categories, {
+      fields: [service_categories_subcategory_level_1._parentID],
+      references: [service_categories.id],
+      relationName: 'subcategory_level_1',
+    }),
+    requiredPlan: one(subscription_plans, {
+      fields: [service_categories_subcategory_level_1.requiredPlan],
+      references: [subscription_plans.id],
+      relationName: 'requiredPlan',
+    }),
+    subcategory_level_2: many(service_categories_subcategory_level_1_subcategory_level_2, {
+      relationName: 'subcategory_level_2',
+    }),
+  }),
+)
+export const relations_service_categories = relations(service_categories, ({ one, many }) => ({
+  requiredPlan: one(subscription_plans, {
+    fields: [service_categories.requiredPlan],
+    references: [subscription_plans.id],
+    relationName: 'requiredPlan',
+  }),
+  subcategory_level_1: many(service_categories_subcategory_level_1, {
+    relationName: 'subcategory_level_1',
+  }),
+}))
 export const relations_media = relations(media, ({ one }) => ({
   user: one(users, {
     fields: [media.user],
@@ -605,25 +855,7 @@ export const relations_offer_uploads = relations(offer_uploads, ({ one }) => ({
     relationName: 'offer',
   }),
 }))
-export const relations_offers = relations(offers, ({ one }) => ({
-  user: one(users, {
-    fields: [offers.user],
-    references: [users.id],
-    relationName: 'user',
-  }),
-}))
-export const relations__offers_v = relations(_offers_v, ({ one }) => ({
-  parent: one(offers, {
-    fields: [_offers_v.parent],
-    references: [offers.id],
-    relationName: 'parent',
-  }),
-  version_user: one(users, {
-    fields: [_offers_v.version_user],
-    references: [users.id],
-    relationName: 'version_user',
-  }),
-}))
+export const relations_help_tickets = relations(help_tickets, () => ({}))
 export const relations_payload_kv = relations(payload_kv, () => ({}))
 export const relations_payload_folders_folder_type = relations(
   payload_folders_folder_type,
@@ -653,6 +885,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [payload_locked_documents.id],
       relationName: '_rels',
     }),
+    offersID: one(offers, {
+      fields: [payload_locked_documents_rels.offersID],
+      references: [offers.id],
+      relationName: 'offers',
+    }),
     usersID: one(users, {
       fields: [payload_locked_documents_rels.usersID],
       references: [users.id],
@@ -673,6 +910,16 @@ export const relations_payload_locked_documents_rels = relations(
       references: [user_verifications.id],
       relationName: 'user-verifications',
     }),
+    'subscription-plansID': one(subscription_plans, {
+      fields: [payload_locked_documents_rels['subscription-plansID']],
+      references: [subscription_plans.id],
+      relationName: 'subscription-plans',
+    }),
+    'service-categoriesID': one(service_categories, {
+      fields: [payload_locked_documents_rels['service-categoriesID']],
+      references: [service_categories.id],
+      relationName: 'service-categories',
+    }),
     mediaID: one(media, {
       fields: [payload_locked_documents_rels.mediaID],
       references: [media.id],
@@ -688,10 +935,10 @@ export const relations_payload_locked_documents_rels = relations(
       references: [offer_uploads.id],
       relationName: 'offer-uploads',
     }),
-    offersID: one(offers, {
-      fields: [payload_locked_documents_rels.offersID],
-      references: [offers.id],
-      relationName: 'offers',
+    'help-ticketsID': one(help_tickets, {
+      fields: [payload_locked_documents_rels['help-ticketsID']],
+      references: [help_tickets.id],
+      relationName: 'help-tickets',
     }),
     'payload-foldersID': one(payload_folders, {
       fields: [payload_locked_documents_rels['payload-foldersID']],
@@ -731,19 +978,25 @@ export const relations_payload_preferences = relations(payload_preferences, ({ m
 export const relations_payload_migrations = relations(payload_migrations, () => ({}))
 
 type DatabaseSchema = {
-  enum_users_role: typeof enum_users_role
   enum_offers_status: typeof enum_offers_status
   enum__offers_v_version_status: typeof enum__offers_v_version_status
+  enum_users_role: typeof enum_users_role
   enum_payload_folders_folder_type: typeof enum_payload_folders_folder_type
+  offers: typeof offers
+  _offers_v: typeof _offers_v
   users: typeof users
   user_sessions: typeof user_sessions
   user_accounts: typeof user_accounts
   user_verifications: typeof user_verifications
+  subscription_plans_features: typeof subscription_plans_features
+  subscription_plans: typeof subscription_plans
+  service_categories_subcategory_level_1_subcategory_level_2: typeof service_categories_subcategory_level_1_subcategory_level_2
+  service_categories_subcategory_level_1: typeof service_categories_subcategory_level_1
+  service_categories: typeof service_categories
   media: typeof media
   profile_pictures: typeof profile_pictures
   offer_uploads: typeof offer_uploads
-  offers: typeof offers
-  _offers_v: typeof _offers_v
+  help_tickets: typeof help_tickets
   payload_kv: typeof payload_kv
   payload_folders_folder_type: typeof payload_folders_folder_type
   payload_folders: typeof payload_folders
@@ -752,15 +1005,21 @@ type DatabaseSchema = {
   payload_preferences: typeof payload_preferences
   payload_preferences_rels: typeof payload_preferences_rels
   payload_migrations: typeof payload_migrations
+  relations_offers: typeof relations_offers
+  relations__offers_v: typeof relations__offers_v
   relations_users: typeof relations_users
   relations_user_sessions: typeof relations_user_sessions
   relations_user_accounts: typeof relations_user_accounts
   relations_user_verifications: typeof relations_user_verifications
+  relations_subscription_plans_features: typeof relations_subscription_plans_features
+  relations_subscription_plans: typeof relations_subscription_plans
+  relations_service_categories_subcategory_level_1_subcategory_level_2: typeof relations_service_categories_subcategory_level_1_subcategory_level_2
+  relations_service_categories_subcategory_level_1: typeof relations_service_categories_subcategory_level_1
+  relations_service_categories: typeof relations_service_categories
   relations_media: typeof relations_media
   relations_profile_pictures: typeof relations_profile_pictures
   relations_offer_uploads: typeof relations_offer_uploads
-  relations_offers: typeof relations_offers
-  relations__offers_v: typeof relations__offers_v
+  relations_help_tickets: typeof relations_help_tickets
   relations_payload_kv: typeof relations_payload_kv
   relations_payload_folders_folder_type: typeof relations_payload_folders_folder_type
   relations_payload_folders: typeof relations_payload_folders

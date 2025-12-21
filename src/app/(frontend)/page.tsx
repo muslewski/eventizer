@@ -21,10 +21,16 @@ export default async function HomePage() {
           <div className="text-2xl font-bold text-purple-900 dark:text-purple-300">Eventizer</div>
           <div className="flex items-center gap-4">
             <Link
-              href={payloadConfig.routes.admin}
+              href={user ? '/app' : '/app/auth/sign-in'}
               className="px-6 py-2 text-sm font-medium text-purple-900 dark:text-purple-300 hover:text-purple-700 dark:hover:text-purple-200 transition-colors"
             >
               Zaloguj się
+            </Link>
+            <Link
+              href={'/app/auth/sign-in#service-provider'}
+              className="px-6 py-2 bg-purple-900 dark:bg-purple-700 text-white rounded-lg text-sm font-medium hover:bg-purple-800 dark:hover:bg-purple-600 transition-colors"
+            >
+              Oferuj usługi
             </Link>
             <ModeToggle />
           </div>

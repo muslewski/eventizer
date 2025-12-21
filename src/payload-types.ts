@@ -72,8 +72,8 @@ export interface Config {
     'user-sessions': UserSession;
     'user-accounts': UserAccount;
     'user-verifications': UserVerification;
-    'subscription-plans': SubscriptionPlan;
     'service-categories': ServiceCategory;
+    'subscription-plans': SubscriptionPlan;
     media: Media;
     'profile-pictures': ProfilePicture;
     'offer-uploads': OfferUpload;
@@ -98,8 +98,8 @@ export interface Config {
     'user-sessions': UserSessionsSelect<false> | UserSessionsSelect<true>;
     'user-accounts': UserAccountsSelect<false> | UserAccountsSelect<true>;
     'user-verifications': UserVerificationsSelect<false> | UserVerificationsSelect<true>;
-    'subscription-plans': SubscriptionPlansSelect<false> | SubscriptionPlansSelect<true>;
     'service-categories': ServiceCategoriesSelect<false> | ServiceCategoriesSelect<true>;
+    'subscription-plans': SubscriptionPlansSelect<false> | SubscriptionPlansSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'profile-pictures': ProfilePicturesSelect<false> | ProfilePicturesSelect<true>;
     'offer-uploads': OfferUploadsSelect<false> | OfferUploadsSelect<true>;
@@ -254,6 +254,64 @@ export interface UserVerification {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-categories".
+ */
+export interface ServiceCategory {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Unique identifier (e.g., 'dj', 'catering')
+   */
+  slug: string;
+  /**
+   * Select the subscription plan required to access services in this category.
+   */
+  requiredPlan?: (number | null) | SubscriptionPlan;
+  description?: string | null;
+  /**
+   * Add subcategories to further organize services.
+   */
+  subcategory_level_1?:
+    | {
+        name: string;
+        /**
+         * Unique identifier (e.g., 'dj', 'catering')
+         */
+        slug: string;
+        /**
+         * Select the subscription plan required to access services in this category.
+         */
+        requiredPlan?: (number | null) | SubscriptionPlan;
+        description?: string | null;
+        /**
+         * Add subcategories to further organize services.
+         */
+        subcategory_level_2?:
+          | {
+              name: string;
+              /**
+               * Unique identifier (e.g., 'dj', 'catering')
+               */
+              slug: string;
+              /**
+               * Select the subscription plan required to access services in this category.
+               */
+              requiredPlan?: (number | null) | SubscriptionPlan;
+              description?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Manage subscription plan content and display settings. Plan pricing and billing logic should be configured in the Stripe Dashboard.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subscription-plans".
  */
 export interface SubscriptionPlan {
@@ -264,7 +322,6 @@ export interface SubscriptionPlan {
    */
   slug: string;
   description?: string | null;
-  price: number;
   /**
    * Defines the hierarchy of plans. Higher levels include access to lower level plans' features.
    */
@@ -277,47 +334,8 @@ export interface SubscriptionPlan {
         id?: string | null;
       }[]
     | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "service-categories".
- */
-export interface ServiceCategory {
-  id: number;
-  name: string;
-  /**
-   * Unique identifier (e.g., 'dj', 'catering')
-   */
-  slug: string;
-  description?: string | null;
-  /**
-   * Select the subscription plan required to access services in this category.
-   */
-  requiredPlan?: (number | null) | SubscriptionPlan;
-  subcategory_level_1?:
-    | {
-        name: string;
-        /**
-         * Unique identifier (e.g., 'dj', 'catering')
-         */
-        slug: string;
-        description?: string | null;
-        subcategory_level_2?:
-          | {
-              name: string;
-              /**
-               * Unique identifier (e.g., 'dj', 'catering')
-               */
-              slug: string;
-              description?: string | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
+  stripeID?: string | null;
+  skipSync?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -465,12 +483,12 @@ export interface PayloadLockedDocument {
         value: number | UserVerification;
       } | null)
     | ({
-        relationTo: 'subscription-plans';
-        value: number | SubscriptionPlan;
-      } | null)
-    | ({
         relationTo: 'service-categories';
         value: number | ServiceCategory;
+      } | null)
+    | ({
+        relationTo: 'subscription-plans';
+        value: number | SubscriptionPlan;
       } | null)
     | ({
         relationTo: 'media';
@@ -605,13 +623,43 @@ export interface UserVerificationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-categories_select".
+ */
+export interface ServiceCategoriesSelect<T extends boolean = true> {
+  _order?: T;
+  name?: T;
+  slug?: T;
+  requiredPlan?: T;
+  description?: T;
+  subcategory_level_1?:
+    | T
+    | {
+        name?: T;
+        slug?: T;
+        requiredPlan?: T;
+        description?: T;
+        subcategory_level_2?:
+          | T
+          | {
+              name?: T;
+              slug?: T;
+              requiredPlan?: T;
+              description?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subscription-plans_select".
  */
 export interface SubscriptionPlansSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   description?: T;
-  price?: T;
   level?: T;
   highlighted?: T;
   features?:
@@ -621,34 +669,8 @@ export interface SubscriptionPlansSelect<T extends boolean = true> {
         included?: T;
         id?: T;
       };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "service-categories_select".
- */
-export interface ServiceCategoriesSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  description?: T;
-  requiredPlan?: T;
-  subcategory_level_1?:
-    | T
-    | {
-        name?: T;
-        slug?: T;
-        description?: T;
-        subcategory_level_2?:
-          | T
-          | {
-              name?: T;
-              slug?: T;
-              description?: T;
-              id?: T;
-            };
-        id?: T;
-      };
+  stripeID?: T;
+  skipSync?: T;
   updatedAt?: T;
   createdAt?: T;
 }

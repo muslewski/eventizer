@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { resendAdapter } from '@payloadcms/email-resend'
+import { stripePlugin } from '@payloadcms/plugin-stripe'
 
 // Collections
 import { Users } from './collections/auth/Users'
@@ -73,8 +74,8 @@ export default buildConfig({
     Verifications,
 
     // Settings
-    SubscriptionPlans,
     ServiceCategories,
+    SubscriptionPlans,
 
     // Uploads
     Media,
@@ -145,6 +146,32 @@ export default buildConfig({
         },
       },
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
+    stripePlugin({
+      stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
+      stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_ENDPOINT_SECRET || '',
+      sync: [
+        {
+          collection: 'subscription-plans',
+          stripeResourceType: 'products',
+          stripeResourceTypeSingular: 'product',
+          fields: [
+            {
+              fieldPath: 'name',
+              stripeProperty: 'name',
+            },
+            {
+              fieldPath: 'description',
+              stripeProperty: 'description',
+            },
+          ],
+        },
+        // {
+        //   // some collection for customers
+        //   stripeResourceType: "customers",
+        //   stripeResourceTypeSingular: "customer",
+        // }
+      ],
     }),
   ],
 })

@@ -5,11 +5,36 @@ import { Toaster } from '@/components/ui/sonner'
 import { AuthUIProvider } from '@daveyplate/better-auth-ui'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
+  const [redirectTo, setRedirectTo] = useState('/app')
+
+  useEffect(() => {
+    // Read the hash on mount and on hash change
+    const updateRedirectFromHash = () => {
+      const hash = window.location.hash
+
+      if (hash === '#service-provider') {
+        setRedirectTo('/app#service-provider')
+      } else {
+        setRedirectTo('/app')
+      }
+    }
+
+    // Initial check
+    updateRedirectFromHash()
+
+    // Listen for hash changes (in case user navigates)
+    window.addEventListener('hashchange', updateRedirectFromHash)
+
+    // Cleanup listener on unmount
+    return () => {
+      window.removeEventListener('hashchange', updateRedirectFromHash)
+    }
+  }, [])
 
   return (
     <AuthUIProvider
@@ -20,7 +45,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       replace={router.replace}
       social={{ providers: ['google', 'facebook'] }}
       emailVerification={true}
-      // additionalFields={}
       optimistic={true}
       onSessionChange={() => {
         // Clear router cache (protected routes)

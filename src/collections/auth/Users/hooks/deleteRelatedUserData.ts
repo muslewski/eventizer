@@ -7,6 +7,10 @@ import type { CollectionBeforeDeleteHook } from 'payload'
  * - User verifications
  * - Profile pictures uploaded by the user
  */
+
+// TODO
+// - we should also delete offers associated with the user, maybe soft delete them instead?
+
 export const deleteRelatedUserData: CollectionBeforeDeleteHook = async ({ req, id }) => {
   const user = await req.payload.findByID({
     collection: 'users',

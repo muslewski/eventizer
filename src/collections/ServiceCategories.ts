@@ -20,9 +20,26 @@ const commonCategoryFields: Field[] = [
     unique: true,
     label: 'Slug',
     admin: {
+      position: 'sidebar',
       description: {
         en: "Unique identifier (e.g., 'dj', 'catering')",
         pl: "Unikalny identyfikator (np. 'dj', 'catering')",
+      },
+    },
+  },
+  {
+    name: 'requiredPlan',
+    type: 'relationship',
+    relationTo: 'subscription-plans',
+    label: {
+      en: 'Required Subscription Plan',
+      pl: 'Wymagany Plan Subskrypcji',
+    },
+    admin: {
+      position: 'sidebar',
+      description: {
+        en: 'Select the subscription plan required to access services in this category.',
+        pl: 'Wybierz plan subskrypcji wymagany do uzyskania dostępu do usług w tej kategorii',
       },
     },
   },
@@ -38,23 +55,7 @@ const commonCategoryFields: Field[] = [
 ]
 
 // Fields only for root categories
-const rootOnlyFields: Field[] = [
-  {
-    name: 'requiredPlan',
-    type: 'relationship',
-    relationTo: 'subscription-plans',
-    label: {
-      en: 'Required Subscription Plan',
-      pl: 'Wymagany Plan Subskrypcji',
-    },
-    admin: {
-      description: {
-        en: 'Select the subscription plan required to access services in this category.',
-        pl: 'Wybierz plan subskrypcji wymagany do uzyskania dostępu do usług w tej kategorii',
-      },
-    },
-  },
-]
+const rootOnlyFields: Field[] = []
 
 // Factory that adds subcategories to the same fields up to maxDepth
 const createCategoryFields = (maxDepth: number, currentDepth: number = 0): Field[] => {
@@ -68,10 +69,27 @@ const createCategoryFields = (maxDepth: number, currentDepth: number = 0): Field
 
     fields.push({
       name: subcategoryFieldName,
+
       type: 'array',
+      labels: {
+        singular: {
+          en: currentDepth === 0 ? 'Subcategory' : `Level ${currentDepth + 1} Subcategory`,
+          pl: currentDepth === 0 ? 'Podkategoria' : `Kategoria Poziomu ${currentDepth + 1}`,
+        },
+        plural: {
+          en: currentDepth === 0 ? 'Subcategories' : `Level ${currentDepth + 1} Subcategories`,
+          pl: currentDepth === 0 ? 'Podkategorie' : `Kategorie Poziomu ${currentDepth + 1}`,
+        },
+      },
       label: {
         en: currentDepth === 0 ? 'Subcategories' : `Level ${currentDepth + 1} Subcategories`,
         pl: currentDepth === 0 ? 'Podkategorie' : `Kategorie Poziomu ${currentDepth + 1}`,
+      },
+      admin: {
+        description: {
+          en: 'Add subcategories to further organize services.',
+          pl: 'Dodaj podkategorie, aby lepiej zorganizować usługi.',
+        },
       },
       fields: createCategoryFields(maxDepth, currentDepth + 1),
     })
@@ -92,11 +110,12 @@ export const ServiceCategories: CollectionConfig = {
       pl: 'Kategorie Usług',
     },
   },
+  orderable: true,
   admin: {
     useAsTitle: 'name',
     group: adminGroups.settings,
+    defaultColumns: ['name', 'slug', 'requiredPlan', 'createdAt'],
     hidden: ({ user }) => !isClientRoleEqualOrHigher('admin', user),
-    defaultColumns: ['name', 'requiredPlan', 'slug'],
   },
   fields: createCategoryFields(2), // Set maxDepth to 2 for subcategories
 }

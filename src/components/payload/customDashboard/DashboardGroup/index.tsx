@@ -1,12 +1,10 @@
 import { EntityType, formatAdminURL } from '@payloadcms/ui/shared'
 import { FC } from 'react'
 import { getTranslation, I18nClient } from '@payloadcms/translations'
-import { Card } from '@payloadcms/ui'
 import Link from 'next/link'
 import { BasePayload, CollectionSlug, StaticLabel } from 'payload'
 
 import './index.scss'
-import { adminGroups } from '@/lib/adminGroups'
 import { FeatureCard } from '../DashboardFeatureCard'
 import { CustomCard } from '@/components/payload/customCard'
 
@@ -20,6 +18,7 @@ type Props = {
     type: EntityType
   }[]
   payload: BasePayload
+  isFeatured?: boolean
 }
 
 export const DashboardGroup: FC<Props> = async ({
@@ -28,6 +27,7 @@ export const DashboardGroup: FC<Props> = async ({
   i18n,
   entities,
   payload,
+  isFeatured = false,
 }) => {
   const getCounts = async () => {
     const docCounts: Record<string, number> = {}
@@ -39,21 +39,27 @@ export const DashboardGroup: FC<Props> = async ({
     return docCounts
   }
 
-  const isFeaturedGroup =
-    groupLabel === adminGroups.featured.en || groupLabel === adminGroups.featured.pl
-  let counts: Record<string, number>
+  let counts: Record<string, number> = {}
 
-  if (isFeaturedGroup) {
+  if (isFeatured) {
     counts = await getCounts()
   }
 
   return (
-    <div className="dashboard__group">
-      <p className="dashboard__label">{groupLabel}</p>
-      <ul className="dashboard__card-list">
+    <div className="dashboard__group flex flex-col gap-4">
+      <p className="dashboard__label text-lg font-medium tracking-wide text-muted-foreground">
+        {groupLabel}
+      </p>
+      <ul
+        className={`p-0 list-none ${
+          isFeatured
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+            : 'flex flex-wrap gap-4'
+        }`}
+      >
         {entities.map(({ slug, type, label }, entityIndex) => (
           <li key={entityIndex}>
-            {isFeaturedGroup ? (
+            {isFeatured ? (
               <FeatureCard
                 title={getTranslation(label, i18n)}
                 href={formatAdminURL({
@@ -74,7 +80,6 @@ export const DashboardGroup: FC<Props> = async ({
                   path:
                     type === EntityType.collection ? `/collections/${slug}` : `/globals/${slug}`,
                 })}
-                // Link={Link}
               />
             )}
           </li>

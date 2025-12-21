@@ -49,7 +49,7 @@ export const CustomCard: React.FC<Props> = (props) => {
         'after:absolute after:top-0 after:left-0 after:right-0 after:h-[2px]',
         'after:bg-gradient-to-r after:from-transparent after:via-amber-500/10 after:to-transparent',
         'after:opacity-0 after:transition-opacity after:duration-300',
-        'hover:after:opacity-100',
+        'hover:after:opacity-100 bg-(--theme-elevation-100) dark:bg-(--theme-elevation-50)',
       )}
       id={id}
     >
