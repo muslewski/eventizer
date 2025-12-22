@@ -15,6 +15,7 @@ const Dashboard: FC<DashboardProps> = (props) => {
     navGroups,
     i18n,
     payload,
+    user,
     payload: {
       config: {
         routes: { admin: adminRoute },
@@ -46,6 +47,7 @@ const Dashboard: FC<DashboardProps> = (props) => {
                   adminRoute={adminRoute}
                   i18n={i18n as I18nClient}
                   payload={payload}
+                  user={user}
                   isFeatured
                 />
               ))}

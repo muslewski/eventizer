@@ -74,6 +74,7 @@ export interface Config {
     'user-verifications': UserVerification;
     'service-categories': ServiceCategory;
     'subscription-plans': SubscriptionPlan;
+    'stripe-customers': StripeCustomer;
     media: Media;
     'profile-pictures': ProfilePicture;
     'offer-uploads': OfferUpload;
@@ -85,9 +86,6 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    users: {
-      offers: 'offers';
-    };
     'payload-folders': {
       documentsAndFolders: 'payload-folders' | 'media';
     };
@@ -100,6 +98,7 @@ export interface Config {
     'user-verifications': UserVerificationsSelect<false> | UserVerificationsSelect<true>;
     'service-categories': ServiceCategoriesSelect<false> | ServiceCategoriesSelect<true>;
     'subscription-plans': SubscriptionPlansSelect<false> | SubscriptionPlansSelect<true>;
+    'stripe-customers': StripeCustomersSelect<false> | StripeCustomersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'profile-pictures': ProfilePicturesSelect<false> | ProfilePicturesSelect<true>;
     'offer-uploads': OfferUploadsSelect<false> | OfferUploadsSelect<true>;
@@ -171,14 +170,6 @@ export interface User {
    * public URL to the user profile picture
    */
   image?: string | null;
-  /**
-   * Here you can see all offers you have created.
-   */
-  offers?: {
-    docs?: (number | Offer)[];
-    hasNextPage?: boolean;
-    totalDocs?: number;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -340,6 +331,33 @@ export interface SubscriptionPlan {
   createdAt: string;
 }
 /**
+ * Read customer data here, but logic should be configured in the Stripe Dashboard.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stripe-customers".
+ */
+export interface StripeCustomer {
+  id: number;
+  email?: string | null;
+  name?: string | null;
+  business_name?: string | null;
+  phone?: string | null;
+  user?: (number | null) | User;
+  metadata?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  stripeID?: string | null;
+  skipSync?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Upload and manage media files used throughout the application.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -420,7 +438,11 @@ export interface OfferUpload {
 export interface HelpTicket {
   id: number;
   title: string;
-  description?: {
+  /**
+   * The email address where the response will be sent.
+   */
+  email: string;
+  description: {
     root: {
       type: string;
       children: {
@@ -434,7 +456,12 @@ export interface HelpTicket {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
+  };
+  user: number | User;
+  /**
+   * Moderators check this box when the ticket will be resolved.
+   */
+  isSolved: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -489,6 +516,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'subscription-plans';
         value: number | SubscriptionPlan;
+      } | null)
+    | ({
+        relationTo: 'stripe-customers';
+        value: number | StripeCustomer;
       } | null)
     | ({
         relationTo: 'media';
@@ -575,7 +606,6 @@ export interface UsersSelect<T extends boolean = true> {
   email?: T;
   emailVerified?: T;
   image?: T;
-  offers?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -676,6 +706,22 @@ export interface SubscriptionPlansSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stripe-customers_select".
+ */
+export interface StripeCustomersSelect<T extends boolean = true> {
+  email?: T;
+  name?: T;
+  business_name?: T;
+  phone?: T;
+  user?: T;
+  metadata?: T;
+  stripeID?: T;
+  skipSync?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -741,7 +787,10 @@ export interface OfferUploadsSelect<T extends boolean = true> {
  */
 export interface HelpTicketsSelect<T extends boolean = true> {
   title?: T;
+  email?: T;
   description?: T;
+  user?: T;
+  isSolved?: T;
   updatedAt?: T;
   createdAt?: T;
 }

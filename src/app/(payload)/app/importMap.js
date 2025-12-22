@@ -1,4 +1,5 @@
 import { default as default_133738e3839d3dd2ada085fc82bb57a4 } from '../../../components/payload/fields/roleSelect'
+import { default as default_8b5e85c4e099e29728f1c533d7e2eb22 } from '../../../components/payload/fields/subscriptionDetails'
 import { LinkToDoc as LinkToDoc_2e9be70cd13299dd4a11a5bd739a5a3c } from '@payloadcms/plugin-stripe/client'
 import { FolderTableCell as FolderTableCell_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 import { FolderField as FolderField_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
@@ -32,11 +33,13 @@ import { default as default_727369734c27157ec5bf12367d91cb02 } from '@/component
 import { default as default_c43e5e25a4fa72cd697523960afa0cf5 } from '@/components/payload/customLogo'
 import { default as default_1620fb7803fd36363b2821bb58d399ab } from '@/components/payload/beforeNav'
 import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
-import { default as default_926f33436ba186db76d111f683d197fc } from '@/components/payload/customDashboard'
+import { default as default_6c69fe0c35c8d80fed80d44b1e65f59f } from '@/components/payload/views/serviceProviderOnboarding'
+import { default as default_a91e1f251e8fdc5827cd66f76f4d8293 } from '@/components/payload/views/customDashboard'
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
   "/components/payload/fields/roleSelect#default": default_133738e3839d3dd2ada085fc82bb57a4,
+  "/components/payload/fields/subscriptionDetails#default": default_8b5e85c4e099e29728f1c533d7e2eb22,
   "@payloadcms/plugin-stripe/client#LinkToDoc": LinkToDoc_2e9be70cd13299dd4a11a5bd739a5a3c,
   "@payloadcms/ui/rsc#FolderTableCell": FolderTableCell_ab83ff7e88da8d3530831f296ec4756a,
   "@payloadcms/ui/rsc#FolderField": FolderField_ab83ff7e88da8d3530831f296ec4756a,
@@ -70,6 +73,7 @@ export const importMap = {
   "@/components/payload/customLogo#default": default_c43e5e25a4fa72cd697523960afa0cf5,
   "@/components/payload/beforeNav#default": default_1620fb7803fd36363b2821bb58d399ab,
   "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e,
-  "@/components/payload/customDashboard#default": default_926f33436ba186db76d111f683d197fc,
+  "@/components/payload/views/serviceProviderOnboarding#default": default_6c69fe0c35c8d80fed80d44b1e65f59f,
+  "@/components/payload/views/customDashboard#default": default_a91e1f251e8fdc5827cd66f76f4d8293,
   "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }

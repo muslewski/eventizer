@@ -13,6 +13,7 @@ import type { CollectionConfig } from 'payload'
 import { deleteRelatedUserData, syncProfilePicture } from './hooks'
 
 // TODO:
+// [] Add field to chosen category
 // [] Add preview feature for offers in the admin panel
 
 export const Users: CollectionConfig = {
@@ -203,36 +204,61 @@ export const Users: CollectionConfig = {
           },
         },
         {
+          label: {
+            en: 'Subscription Management',
+            pl: 'Zarządzanie Subskrypcją',
+          },
           fields: [
             {
-              name: 'offers',
-              type: 'join',
-              collection: 'offers',
-              on: 'user',
-              label: false,
+              name: 'subscriptionDetails',
+              type: 'ui',
+              label: {
+                en: 'Subscription Details',
+                pl: 'Szczegóły Subskrypcji',
+              },
               admin: {
-                description: {
-                  en: 'Here you can see all offers you have created.',
-                  pl: 'Tutaj możesz zobaczyć wszystkie oferty, które utworzyłeś.',
-                },
-                allowCreate: true,
-                condition: (data, siblingsData, { user }) => {
-                  return isClientRoleEqualOrHigher('service-provider', user)
+                disableListColumn: true, // for now
+                components: {
+                  Field: '/components/payload/fields/subscriptionDetails',
                 },
               },
             },
           ],
-          label: {
-            en: 'My Portfolio',
-            pl: 'Moje Portfolio',
-          },
-          admin: {
-            // display only for service providers and higher
-            condition: (data, siblingsData, { user }) => {
-              return isClientRoleEqualOrHigher('service-provider', user)
-            },
-          },
         },
+        // {
+        //   fields: [
+        //     {
+        //       name: 'offers',
+        //       type: 'join',
+        //       collection: 'offers',
+        //       on: 'user',
+        //       hasMany: true,
+        //       label: false,
+        //       admin: {
+        //         description: {
+        //           en: 'Here you can see all offers you have created.',
+        //           pl: 'Tutaj możesz zobaczyć wszystkie oferty, które utworzyłeś.',
+        //         },
+        //         allowCreate: true,
+        //         condition: (data, siblingsData, { user }) => {
+        //           return isClientRoleEqualOrHigher('service-provider', user)
+        //         },
+        //         // Disable default columns to prevent version.user query issue
+        //         defaultColumns: ['title', 'updatedAt', '_status'],
+        //       },
+        //     },
+        //   ],
+        //   label: {
+        //     en: 'My Portfolio',
+        //     pl: 'Moje Portfolio',
+        //   },
+        //   admin: {
+        //     // display only for service providers and higher
+        //     condition: (data, siblingsData, { user }) => {
+        //       return isClientRoleEqualOrHigher('service-provider', user)
+        //     },
+        //   },
+        // },
       ],
     },
   ],

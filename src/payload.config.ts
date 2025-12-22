@@ -25,6 +25,7 @@ import { customTranslations } from '@/translations/custom-translations'
 import { HelpTickets } from '@/collections/HelpTickets'
 import { SubscriptionPlans } from '@/collections/SubscriptionPlans'
 import { ServiceCategories } from '@/collections/ServiceCategories'
+import { StripeCustomers } from '@/collections/Customers'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -36,8 +37,12 @@ export default buildConfig({
   admin: {
     components: {
       views: {
+        'onboarding-service-provider': {
+          Component: '@/components/payload/views/serviceProviderOnboarding',
+          path: '/onboarding/service-provider',
+        },
         dashboard: {
-          Component: '@/components/payload/customDashboard',
+          Component: '@/components/payload/views/customDashboard',
         },
       },
       beforeNavLinks: ['@/components/payload/beforeNav'],
@@ -76,6 +81,7 @@ export default buildConfig({
     // Settings
     ServiceCategories,
     SubscriptionPlans,
+    StripeCustomers,
 
     // Uploads
     Media,
@@ -166,12 +172,70 @@ export default buildConfig({
             },
           ],
         },
-        // {
-        //   // some collection for customers
-        //   stripeResourceType: "customers",
-        //   stripeResourceTypeSingular: "customer",
-        // }
+        {
+          collection: 'stripe-customers',
+          stripeResourceType: 'customers',
+          stripeResourceTypeSingular: 'customer',
+          fields: [
+            {
+              fieldPath: 'email',
+              stripeProperty: 'email',
+            },
+            {
+              fieldPath: 'name',
+              stripeProperty: 'name',
+            },
+            {
+              fieldPath: 'business_name',
+              stripeProperty: 'business_name',
+            },
+            {
+              fieldPath: 'phone',
+              stripeProperty: 'phone',
+            },
+            {
+              fieldPath: 'metadata',
+              stripeProperty: 'metadata',
+            },
+          ],
+        },
       ],
+      webhooks: {
+        'customer.deleted': async ({ event, payload }) => {
+          const customer = event.data.object as { id: string }
+
+          try {
+            // First check if the customer exists in our database
+            const existingCustomer = await payload.db.findOne({
+              collection: 'stripe-customers',
+              where: {
+                stripeID: {
+                  equals: customer.id,
+                },
+              },
+            })
+
+            if (!existingCustomer) {
+              console.log('Stripe Customer already deleted from Payload:', customer.id)
+              return
+            }
+
+            // Use db adapter directly to bypass all hooks
+            const result = await payload.db.deleteOne({
+              collection: 'stripe-customers',
+              where: {
+                stripeID: {
+                  equals: customer.id,
+                },
+              },
+            })
+
+            console.log('Successfully deleted Stripe Customer from Payload:', customer.id, result)
+          } catch (error) {
+            console.error('Error deleting Stripe Customer from Payload:', error)
+          }
+        },
+      },
     }),
   ],
 })

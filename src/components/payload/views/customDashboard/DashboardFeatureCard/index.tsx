@@ -6,7 +6,7 @@ import React from 'react'
 import './index.scss'
 import { Button } from '@payloadcms/ui'
 import { cn } from '@/lib/utils'
-import { getNavIcon } from '../../customNav/navIconMap'
+import { getNavIcon } from '../../../customNav/navIconMap'
 
 export type Props = {
   actions?: React.ReactNode

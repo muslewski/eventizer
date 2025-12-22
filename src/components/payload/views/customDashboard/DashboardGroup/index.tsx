@@ -2,7 +2,7 @@ import { EntityType, formatAdminURL } from '@payloadcms/ui/shared'
 import { FC } from 'react'
 import { getTranslation, I18nClient } from '@payloadcms/translations'
 import Link from 'next/link'
-import { BasePayload, CollectionSlug, StaticLabel } from 'payload'
+import { BasePayload, CollectionSlug, StaticLabel, User } from 'payload'
 
 import './index.scss'
 import { FeatureCard } from '../DashboardFeatureCard'
@@ -19,6 +19,7 @@ type Props = {
   }[]
   payload: BasePayload
   isFeatured?: boolean
+  user?: User | null
 }
 
 export const DashboardGroup: FC<Props> = async ({
@@ -28,12 +29,17 @@ export const DashboardGroup: FC<Props> = async ({
   entities,
   payload,
   isFeatured = false,
+  user,
 }) => {
   const getCounts = async () => {
     const docCounts: Record<string, number> = {}
     for (let i = 0; i < entities.length; i++) {
       const slug = entities[i].slug as CollectionSlug
-      const { totalDocs } = await payload.count({ collection: slug })
+      const { totalDocs } = await payload.count({
+        collection: slug,
+        user,
+        overrideAccess: false, // CRITICAL: Respect access control
+      })
       docCounts[slug] = totalDocs
     }
     return docCounts
