@@ -30,6 +30,7 @@ export const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'email',
+    defaultColumns: ['email', 'profilePicture', 'role', 'subscriptionDetails'],
     group: adminGroups.auth,
     hidden: ({ user }) => !isClientRoleEqualOrHigher('moderator', user),
   },
@@ -217,9 +218,9 @@ export const Users: CollectionConfig = {
                 pl: 'Szczegóły Subskrypcji',
               },
               admin: {
-                disableListColumn: true, // for now
                 components: {
                   Field: '/components/payload/fields/subscriptionDetails',
+                  Cell: '/components/payload/cells/subscriptionDetails',
                 },
               },
             },

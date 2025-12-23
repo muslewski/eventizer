@@ -23,7 +23,7 @@ export const SubscriptionPlans: CollectionConfig = {
     useAsTitle: 'name',
     group: adminGroups.settings,
     hidden: ({ user }) => !isClientRoleEqualOrHigher('admin', user),
-    defaultColumns: ['name', 'price', 'level', 'createdAt'],
+    defaultColumns: ['name', 'ProductDetails', 'level'],
   },
   access: {
     read: publicAccess,
@@ -33,6 +33,16 @@ export const SubscriptionPlans: CollectionConfig = {
     delete: adminOrHigher,
   },
   fields: [
+    {
+      name: 'ProductDetails',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/payload/fields/stripeProductDetails',
+          Cell: '/components/payload/cells/stripeProductDetails',
+        },
+      },
+    },
     {
       name: 'name',
       type: 'text',

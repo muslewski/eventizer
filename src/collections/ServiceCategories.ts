@@ -114,7 +114,7 @@ export const ServiceCategories: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: adminGroups.settings,
-    defaultColumns: ['name', 'slug', 'requiredPlan', 'createdAt'],
+    defaultColumns: ['name', 'slug', 'requiredPlan'],
     hidden: ({ user }) => !isClientRoleEqualOrHigher('admin', user),
   },
   fields: createCategoryFields(2), // Set maxDepth to 2 for subcategories

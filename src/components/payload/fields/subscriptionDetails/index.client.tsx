@@ -41,9 +41,6 @@ interface SubscriptionDetailsClientProps {
 }
 
 function formatDate(dateString: string | null): string {
-  console.log('====================================')
-  console.log(dateString)
-  console.log('====================================')
   if (!dateString) return 'Brak daty'
   return new Date(dateString).toLocaleDateString('pl-PL', {
     year: 'numeric',
@@ -233,8 +230,12 @@ export function SubscriptionDetailsClient({
   // Use isCancelling for badge and button logic
   const isCancelling = localStatus.isCancelling
 
-  // For displaying the cancellation date, prefer cancelAt over currentPeriodEnd
-  const cancellationDate = localStatus.cancelAt || localStatus.currentPeriodEnd
+  // Determine if subscription will end (not renew)
+  const willEnd = isCancelling || localStatus.cancelAtPeriodEnd
+
+  // For displaying the date, prefer cancelAt over currentPeriodEnd when cancelling
+  const displayDate =
+    willEnd && localStatus.cancelAt ? localStatus.cancelAt : localStatus.currentPeriodEnd
 
   return (
     <Card className="border-[var(--theme-elevation-150)]">
@@ -260,15 +261,13 @@ export function SubscriptionDetailsClient({
           <div className="p-4 rounded-lg bg-[var(--theme-elevation-50)] border border-[var(--theme-elevation-150)]">
             <div className="flex items-center gap-2 mb-2 text-sm text-[var(--theme-elevation-600)]">
               <Calendar className="w-4 h-4" />
-              {localStatus.cancelAtPeriodEnd ? 'Data zakończenia' : 'Data odnowienia'}
+              {willEnd ? 'Data wygaśnięcia' : 'Data odnowienia'}
             </div>
             <div className="text-lg font-semibold text-[var(--theme-text)]">
-              {formatDate(localStatus.currentPeriodEnd)}
+              {formatDate(displayDate)}
             </div>
-            {localStatus.cancelAtPeriodEnd && (
-              <p className="mt-1 text-sm text-amber-600">
-                Subskrypcja zostanie anulowana po tej dacie
-              </p>
+            {willEnd && (
+              <p className="mt-1 text-sm text-amber-600">Subskrypcja wygaśnie po tej dacie</p>
             )}
           </div>
 
@@ -378,13 +377,6 @@ export function SubscriptionDetailsClient({
             </AlertDialog>
           )}
         </div>
-
-        {/* Show cancellation date when cancelling */}
-        {isCancelling && cancellationDate && (
-          <div className="text-sm text-amber-600">
-            Subskrypcja wygaśnie: {formatDate(cancellationDate)}
-          </div>
-        )}
       </CardContent>
     </Card>
   )

@@ -1,5 +1,8 @@
 import { default as default_133738e3839d3dd2ada085fc82bb57a4 } from '../../../components/payload/fields/roleSelect'
 import { default as default_8b5e85c4e099e29728f1c533d7e2eb22 } from '../../../components/payload/fields/subscriptionDetails'
+import { default as default_2744e170651c717afcd33ddf5639e43b } from '../../../components/payload/cells/subscriptionDetails'
+import { default as default_452285b1c20babd5c4679d3d9f40faa7 } from '../../../components/payload/fields/stripeProductDetails'
+import { default as default_a84f4c0406ded508d7c2f97180dc34b4 } from '../../../components/payload/cells/stripeProductDetails'
 import { LinkToDoc as LinkToDoc_2e9be70cd13299dd4a11a5bd739a5a3c } from '@payloadcms/plugin-stripe/client'
 import { FolderTableCell as FolderTableCell_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 import { FolderField as FolderField_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
@@ -40,6 +43,9 @@ import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } f
 export const importMap = {
   "/components/payload/fields/roleSelect#default": default_133738e3839d3dd2ada085fc82bb57a4,
   "/components/payload/fields/subscriptionDetails#default": default_8b5e85c4e099e29728f1c533d7e2eb22,
+  "/components/payload/cells/subscriptionDetails#default": default_2744e170651c717afcd33ddf5639e43b,
+  "/components/payload/fields/stripeProductDetails#default": default_452285b1c20babd5c4679d3d9f40faa7,
+  "/components/payload/cells/stripeProductDetails#default": default_a84f4c0406ded508d7c2f97180dc34b4,
   "@payloadcms/plugin-stripe/client#LinkToDoc": LinkToDoc_2e9be70cd13299dd4a11a5bd739a5a3c,
   "@payloadcms/ui/rsc#FolderTableCell": FolderTableCell_ab83ff7e88da8d3530831f296ec4756a,
   "@payloadcms/ui/rsc#FolderField": FolderField_ab83ff7e88da8d3530831f296ec4756a,

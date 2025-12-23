@@ -6,6 +6,7 @@ import type { UserSubscriptionData } from './index'
 
 const PATH_TO_SERVICE_PROVIDER_ONBOARDING = '/app/onboarding/service-provider'
 const PATH_TO_APP = '/app'
+const PATH_TO_ACCOUNT = '/app/account'
 
 export interface AdminLayoutClientProps {
   children: React.ReactNode
@@ -19,10 +20,17 @@ export function AdminLayoutClient({ children, userSubscriptionData }: AdminLayou
   const { role, subscriptionStatus } = userSubscriptionData
 
   useEffect(() => {
-    // Skip if not a service provider
+    const isOnOnboardingPath = pathname.startsWith(PATH_TO_SERVICE_PROVIDER_ONBOARDING)
+
+    // If on onboarding page but not a service provider, redirect to app
+    if (isOnOnboardingPath && role !== 'service-provider') {
+      router.replace(PATH_TO_ACCOUNT)
+      return
+    }
+
+    // Skip remaining logic if not a service provider
     if (role !== 'service-provider') return
 
-    const isOnOnboardingPath = pathname.startsWith(PATH_TO_SERVICE_PROVIDER_ONBOARDING)
     const hasActiveSubscription = subscriptionStatus?.hasActiveSubscription
 
     // If on onboarding page but already has active subscription, redirect to app
