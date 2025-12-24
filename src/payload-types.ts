@@ -151,6 +151,11 @@ export interface Offer {
   _order?: string | null;
   user: number | User;
   title: string;
+  /**
+   * Select the category for this offer based on your subscription plan.
+   */
+  category: string;
+  categoryName?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -163,6 +168,14 @@ export interface User {
   id: number;
   profilePicture?: (number | null) | ProfilePicture;
   role?: ('admin' | 'moderator' | 'service-provider' | 'client') | null;
+  /**
+   * The category of services offered by the service provider.
+   */
+  serviceCategory?: string | null;
+  /**
+   * Machine-readable slug for the service category (e.g., 'music/dj/wedding-dj').
+   */
+  serviceCategorySlug?: string | null;
   name: string;
   email: string;
   emailVerified: boolean;
@@ -591,6 +604,8 @@ export interface OffersSelect<T extends boolean = true> {
   _order?: T;
   user?: T;
   title?: T;
+  category?: T;
+  categoryName?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -602,6 +617,8 @@ export interface OffersSelect<T extends boolean = true> {
 export interface UsersSelect<T extends boolean = true> {
   profilePicture?: T;
   role?: T;
+  serviceCategory?: T;
+  serviceCategorySlug?: T;
   name?: T;
   email?: T;
   emailVerified?: T;

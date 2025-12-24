@@ -35,6 +35,44 @@ export default buildConfig({
     admin: '/app',
   },
   admin: {
+    meta: {
+      icons: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          fetchPriority: 'high',
+          url: '/my-favicon/favicon.ico',
+        },
+        {
+          rel: 'icon',
+          type: 'image/svg+xml',
+          fetchPriority: 'high',
+          url: '/my-favicon/icon0.svg',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '96x96',
+          fetchPriority: 'high',
+          url: '/my-favicon/icon1.png',
+        },
+        {
+          rel: 'apple-touch-icon',
+          sizes: '180x180',
+          fetchPriority: 'high',
+          url: '/my-favicon/apple-icon.png',
+        },
+        {
+          rel: 'manifest',
+          fetchPriority: 'high',
+          url: '/my-favicon/manifest.json',
+        },
+      ],
+      titleSuffix: ' - Eventizer App',
+      description:
+        'Eventizer - łączymy dostawców usług z klientami szukającymi niezapomnianych doświadczeń.',
+    },
+
     components: {
       views: {
         'onboarding-service-provider': {

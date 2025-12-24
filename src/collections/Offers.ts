@@ -1,16 +1,7 @@
-import {
-  adminOrHigherOrSelf,
-  moderatorOrHigher,
-  moderatorOrHigherOrSelf,
-  providerOrHigher,
-} from '@/access'
+import { adminOrHigherOrSelf, moderatorOrHigherOrSelf, providerOrHigher } from '@/access'
 import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
 import type { CollectionConfig } from 'payload'
-
-// TODO:
-// [] Add live preview feature for offers in the admin panel
-// [] Add ai payload plugin
 
 export const Offers: CollectionConfig = {
   slug: 'offers',
@@ -30,9 +21,7 @@ export const Offers: CollectionConfig = {
     group: adminGroups.featured,
     // Hide offers for clients
     hidden: ({ user }) => !isClientRoleEqualOrHigher('service-provider', user),
-
-    defaultColumns: ['title', 'updatedAt', '_status', 'user'],
-
+    defaultColumns: ['title', '_status', 'category', 'user'],
     // hide api url in admin panel
     hideAPIURL: true,
   },
@@ -64,6 +53,31 @@ export const Offers: CollectionConfig = {
     delete: adminOrHigherOrSelf('user'), // only admins or owners of document
   },
 
+  hooks: {
+    beforeValidate: [
+      async ({ data, req, operation }) => {
+        if (!data?.category || !req.user) return data
+
+        // Skip validation for admins/moderators
+        if (isClientRoleEqualOrHigher('moderator', req.user)) {
+          return data
+        }
+
+        // Validate category access for create/update
+        if (operation === 'create' || operation === 'update') {
+          const { validateOfferCategory } = await import('@/actions/getOfferCategories')
+          const validation = await validateOfferCategory(data.category)
+
+          if (!validation.valid) {
+            throw new Error(validation.error || 'Invalid category selection')
+          }
+        }
+
+        return data
+      },
+    ],
+  },
+
   fields: [
     // Admin fields
     {
@@ -93,6 +107,56 @@ export const Offers: CollectionConfig = {
       label: {
         en: 'Title',
         pl: 'Tytuł',
+      },
+    },
+    {
+      name: 'category',
+      type: 'text',
+      required: true,
+      label: {
+        en: 'Category',
+        pl: 'Kategoria',
+      },
+      admin: {
+        components: {
+          Field: '/components/payload/fields/offerCategorySelect',
+        },
+        description: {
+          en: 'Select the category for this offer based on your subscription plan.',
+          pl: 'Wybierz kategorię dla tej oferty na podstawie Twojego planu subskrypcji.',
+        },
+      },
+    },
+    // Display-friendly category name (auto-populated)
+    {
+      name: 'categoryName',
+      type: 'text',
+      label: {
+        en: 'Category Name',
+        pl: 'Nazwa Kategorii',
+      },
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        condition: (data, siblingData, { user }) => {
+          return isClientRoleEqualOrHigher('moderator', user)
+        },
+      },
+      hooks: {
+        beforeChange: [
+          async ({ value, siblingData, req }) => {
+            // Auto-populate category name from the category path
+            if (siblingData?.category) {
+              const { getOfferCategories } = await import('@/actions/getOfferCategories')
+              const result = await getOfferCategories()
+              const category = result.categories.find(
+                (cat) => cat.fullPath === siblingData.category,
+              )
+              return category?.fullName || value
+            }
+            return value
+          },
+        ],
       },
     },
   ],

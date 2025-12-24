@@ -33,7 +33,7 @@ export const CustomNavGroup: FC<Props> = ({ children, isOpen = true, label, onTo
         'relative',
         // Subtle separator
         'before:absolute before:bottom-0 before:left-2 before:right-2 before:h-[1px]',
-        'before:bg-gradient-to-r before:from-transparent before:via-amber-500/10 before:to-transparent',
+        'before:bg-gradient-to-r before:from-transparent before:via-amber-500/10 before:to-transparent rounded-2xl',
         'last:before:hidden',
       )}
       isCollapsed={collapsed}

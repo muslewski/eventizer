@@ -1,4 +1,7 @@
+import { default as default_d4bd505028530c1383bc60f48596a0c8 } from '../../../components/payload/fields/offerCategorySelect'
 import { default as default_133738e3839d3dd2ada085fc82bb57a4 } from '../../../components/payload/fields/roleSelect'
+import { default as default_23e76fb30bcf0ed97f8a1a994d9bc683 } from '../../../components/payload/fields/upgradeSubscription'
+import { default as default_748b6b240038a6900c9a0c51602bd414 } from '../../../components/payload/fields/becomeServiceProvider'
 import { default as default_8b5e85c4e099e29728f1c533d7e2eb22 } from '../../../components/payload/fields/subscriptionDetails'
 import { default as default_2744e170651c717afcd33ddf5639e43b } from '../../../components/payload/cells/subscriptionDetails'
 import { default as default_452285b1c20babd5c4679d3d9f40faa7 } from '../../../components/payload/fields/stripeProductDetails'
@@ -41,7 +44,10 @@ import { default as default_a91e1f251e8fdc5827cd66f76f4d8293 } from '@/component
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
+  "/components/payload/fields/offerCategorySelect#default": default_d4bd505028530c1383bc60f48596a0c8,
   "/components/payload/fields/roleSelect#default": default_133738e3839d3dd2ada085fc82bb57a4,
+  "/components/payload/fields/upgradeSubscription#default": default_23e76fb30bcf0ed97f8a1a994d9bc683,
+  "/components/payload/fields/becomeServiceProvider#default": default_748b6b240038a6900c9a0c51602bd414,
   "/components/payload/fields/subscriptionDetails#default": default_8b5e85c4e099e29728f1c533d7e2eb22,
   "/components/payload/cells/subscriptionDetails#default": default_2744e170651c717afcd33ddf5639e43b,
   "/components/payload/fields/stripeProductDetails#default": default_452285b1c20babd5c4679d3d9f40faa7,

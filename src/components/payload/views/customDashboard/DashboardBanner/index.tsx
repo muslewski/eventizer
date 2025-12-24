@@ -38,7 +38,10 @@ export const DashboardBanner = () => {
     <div className={baseClass}>
       <div className={`${baseClass}__wrap`}>
         <div className={`${baseClass}__image-wrap`}>
-          <Image src={dashboardBanner} className="object-cover" alt="" fill />
+          <div
+            className="absolute inset-0 bg-[center_10%] bg-cover bg-fixed"
+            style={{ backgroundImage: `url(${dashboardBanner.src})` }}
+          />
           {/* Elegant overlay with golden tint */}
           <div className="absolute inset-0 z-10 bg-black/30" />
           <div className="absolute inset-0 z-15 bg-gradient-to-r from-amber-900/40 via-transparent to-amber-900/40" />

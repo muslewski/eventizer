@@ -5,6 +5,7 @@ import { Gutter } from '@payloadcms/ui'
 import React from 'react'
 import { redirect } from 'next/navigation'
 import { ServiceProviderOnboardingClient } from '@/components/payload/views/serviceProviderOnboarding/index.client'
+import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
 
 const ServiceProviderOnboarding = async ({
   initPageResult,
@@ -15,6 +16,12 @@ const ServiceProviderOnboarding = async ({
     redirect('/app/auth/sign-in')
   }
 
+  const user = initPageResult.req.user
+
+  // Check if this is edit mode (user already has subscription)
+  const subscriptionDetails = await getCurrentSubscriptionDetails(user.id)
+  const isEditMode = subscriptionDetails.hasSubscription
+
   // Fetch service categories on server
   const categoriesResult = await initPageResult.req.payload.find({
     collection: 'service-categories',
@@ -22,6 +29,20 @@ const ServiceProviderOnboarding = async ({
     sort: 'name',
     limit: 100,
   })
+
+  // If edit mode, try to pre-populate the current category path
+  const initialCategoryPath: number[] = []
+  if (isEditMode && user.serviceCategorySlug) {
+    const slugParts = user.serviceCategorySlug.split('/')
+
+    // Find categories matching the slug path
+    for (const slug of slugParts) {
+      const category = categoriesResult.docs.find((cat) => cat.slug === slug)
+      if (category) {
+        initialCategoryPath.push(category.id)
+      }
+    }
+  }
 
   return (
     <DefaultTemplate
@@ -36,12 +57,19 @@ const ServiceProviderOnboarding = async ({
     >
       <Gutter>
         <div>
-          <h1>Wybierz kategorię oferowanych usług</h1>
-          <p>Zanim zaczniesz, prosimy o wybranie odpowiedniej kategorii.</p>
+          <h1>{isEditMode ? 'Zmień kategorię lub plan' : 'Wybierz kategorię oferowanych usług'}</h1>
+          <p>
+            {isEditMode
+              ? 'Możesz zmienić kategorię usług lub przejść na inny plan subskrypcji.'
+              : 'Zanim zaczniesz, prosimy o wybranie odpowiedniej kategorii.'}
+          </p>
 
           <ServiceProviderOnboardingClient
             categories={categoriesResult.docs}
             user={initPageResult.req.user}
+            isEditMode={isEditMode}
+            currentSubscription={subscriptionDetails}
+            initialCategoryPath={initialCategoryPath}
           />
         </div>
       </Gutter>

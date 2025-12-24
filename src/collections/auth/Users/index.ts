@@ -141,6 +141,74 @@ export const Users: CollectionConfig = {
               },
             },
             {
+              type: 'row',
+              fields: [
+                {
+                  name: 'serviceCategory',
+                  type: 'text',
+                  label: {
+                    en: 'Service Category',
+                    pl: 'Kategoria Usług',
+                  },
+                  admin: {
+                    position: 'sidebar',
+                    readOnly: true,
+                    description: {
+                      en: 'The category of services offered by the service provider.',
+                      pl: 'Kategoria usług oferowanych przez dostawcę usług.',
+                    },
+                    condition: (data) => {
+                      return data?.role === 'service-provider' || !!data?.ServiceCategory
+                    },
+                  },
+                  access: {
+                    read: publicAccessField,
+                    update: fieldAdminOrHigher,
+                  },
+                },
+                {
+                  name: 'changeCategory',
+                  type: 'ui',
+                  admin: {
+                    condition: (data, siblingData, { user }) => {
+                      // Show only for service providers viewing their own profile
+                      return (
+                        data?.role === 'service-provider' &&
+                        isClientRoleEqualOrHigher('service-provider', user)
+                      )
+                    },
+                    components: {
+                      Field: '/components/payload/fields/upgradeSubscription',
+                    },
+                  },
+                },
+              ],
+            },
+
+            {
+              name: 'serviceCategorySlug',
+              type: 'text',
+              label: {
+                en: 'Service Category Slug',
+                pl: 'Slug Kategorii Usług',
+              },
+              admin: {
+                position: 'sidebar',
+                readOnly: true,
+                description: {
+                  en: "Machine-readable slug for the service category (e.g., 'music/dj/wedding-dj').",
+                  pl: "Maszynowo czytelny slug dla kategorii usług (np. 'muzyka/dj/dj-na-wesele').",
+                },
+                condition: (data, siblingData, { user }) => {
+                  return isClientRoleEqualOrHigher('moderator', user)
+                },
+              },
+              access: {
+                read: publicAccessField,
+                update: fieldAdminOrHigher,
+              },
+            },
+            {
               name: 'name',
               type: 'text',
               required: true,
@@ -196,6 +264,20 @@ export const Users: CollectionConfig = {
               },
               access: {
                 read: publicAccessField,
+              },
+            },
+            {
+              name: 'becomeServiceProvider',
+              type: 'ui',
+              label: {
+                en: 'Become a Service Provider',
+                pl: 'Zostań usługodawcą',
+              },
+              admin: {
+                condition: (data) => data?.role === 'client',
+                components: {
+                  Field: '/components/payload/fields/becomeServiceProvider',
+                },
               },
             },
           ],

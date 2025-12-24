@@ -3,9 +3,12 @@ import {
   BookCopy,
   BookImageIcon,
   CircleUserRoundIcon,
+  CoinsIcon,
+  FileUserIcon,
   Footprints,
   Image,
   LayoutGrid,
+  LayoutListIcon,
   List,
   LucideProps,
   Menu,
@@ -24,7 +27,9 @@ import { ExoticComponent } from 'react'
 export const navIconMap: Partial<
   Record<CollectionSlug | GlobalSlug, ExoticComponent<LucideProps>>
 > = {
-  //   categories: List,
+  'service-categories': LayoutListIcon,
+  'subscription-plans': CoinsIcon,
+  'stripe-customers': FileUserIcon,
   //   customers: User,
   //   devices: TabletSmartphone,
   //   discountCodes: Percent,

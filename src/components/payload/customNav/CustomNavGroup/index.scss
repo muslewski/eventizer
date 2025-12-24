@@ -6,7 +6,7 @@
 
     &__header {
       padding: base(0.5) base(0.5);
-      border-radius: var(--style-radius-s);
+      border-radius: var(--radius);
       transition: background-color 0.2s ease;
 
       &:hover {
