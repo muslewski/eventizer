@@ -13,6 +13,9 @@ import {
   Sparkles,
   Star,
   Zap,
+  Tag,
+  ArrowUpRight,
+  CircleDot,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
@@ -29,7 +32,9 @@ import {
 } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Badge } from '@/components/ui/badge'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Card, CardContent } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 
 import type { CategoryOption, UserPlanInfo } from '@/actions/getOfferCategories'
 import type { TextFieldClientProps } from 'payload'
@@ -180,30 +185,49 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
 
   if (error) {
     return (
-      <div className="space-y-2">
-        <label className="text-sm font-medium">{label}</label>
-        <Alert variant="destructive">
-          <AlertDescription>Nie udało się załadować kategorii. Odśwież stronę.</AlertDescription>
-        </Alert>
-      </div>
+      <Card className="border-destructive/50 bg-destructive/5">
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-destructive/10">
+              <Tag className="h-5 w-5 text-destructive" />
+            </div>
+            <div className="space-y-1">
+              <p className="font-medium text-destructive">{label}</p>
+              <p className="text-sm text-muted-foreground">
+                Nie udało się załadować kategorii. Odśwież stronę, aby spróbować ponownie.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
   const getPlanIcon = (level: number) => {
-    if (level >= 3) return <Crown className="h-3 w-3" />
-    if (level >= 2) return <Zap className="h-3 w-3" />
-    if (level >= 1) return <Sparkles className="h-3 w-3" />
+    if (level >= 3) return <Crown className="h-3.5 w-3.5" />
+    if (level >= 2) return <Zap className="h-3.5 w-3.5" />
+    if (level >= 1) return <Sparkles className="h-3.5 w-3.5" />
     return null
   }
 
   const getPlanColor = (level: number) => {
     if (level >= 3)
-      return 'text-purple-600 bg-purple-50 border-purple-200 dark:bg-purple-950/50 dark:text-purple-400 dark:border-purple-800'
+      return 'text-purple-600 bg-gradient-to-r from-purple-50 to-violet-50 border-purple-200/80 dark:from-purple-950/60 dark:to-violet-950/60 dark:text-purple-300 dark:border-purple-700/50'
     if (level >= 2)
-      return 'text-blue-600 bg-blue-50 border-blue-200 dark:bg-blue-950/50 dark:text-blue-400 dark:border-blue-800'
+      return 'text-blue-600 bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200/80 dark:from-blue-950/60 dark:to-cyan-950/60 dark:text-blue-300 dark:border-blue-700/50'
     if (level >= 1)
-      return 'text-emerald-600 bg-emerald-50 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-400 dark:border-emerald-800'
+      return 'text-emerald-600 bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200/80 dark:from-emerald-950/60 dark:to-teal-950/60 dark:text-emerald-300 dark:border-emerald-700/50'
     return 'text-gray-600 bg-gray-50 border-gray-200 dark:bg-gray-950/50 dark:text-gray-400 dark:border-gray-800'
+  }
+
+  const getPlanBadgeStyle = (level: number) => {
+    if (level >= 3)
+      return 'bg-gradient-to-r from-purple-500 to-violet-500 text-white border-0 shadow-sm shadow-purple-500/25'
+    if (level >= 2)
+      return 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white border-0 shadow-sm shadow-blue-500/25'
+    if (level >= 1)
+      return 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white border-0 shadow-sm shadow-emerald-500/25'
+    return ''
   }
 
   // Render a category item with its children
@@ -221,77 +245,90 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
     const isFullyLocked = !category.isAvailable && !hasAvailableChildren
 
     return (
-      <div key={category.fullPath}>
+      <div key={category.fullPath} className="animate-in fade-in-50 duration-150">
         <CommandItem
           value={category.fullName}
           onSelect={() => handleSelect(category)}
           disabled={isFullyLocked}
           className={cn(
-            'flex items-center gap-2 py-2 cursor-pointer',
-            isFullyLocked && 'opacity-50 cursor-not-allowed',
-            !category.isAvailable && hasAvailableChildren && 'opacity-75',
-            isSelected && 'bg-primary/10',
-            category.isUserDefault && 'border-l-2 border-l-amber-500',
+            'group flex items-center gap-3 py-2.5 px-3 cursor-pointer rounded-lg mx-1 my-0.5 transition-all duration-200',
+            isFullyLocked && 'opacity-40 cursor-not-allowed',
+            !category.isAvailable && hasAvailableChildren && 'opacity-70',
+            isSelected &&
+              'bg-primary/10 ring-1 ring-primary/20 shadow-sm dark:bg-primary/20 dark:ring-primary/30',
+            !isSelected && 'hover:bg-accent/60',
+            category.isUserDefault && 'border-l-3 border-l-amber-400 rounded-l-none',
           )}
-          style={{ paddingLeft: `${category.depth * 16 + 8}px` }}
+          style={{ paddingLeft: `${category.depth * 20 + 12}px` }}
         >
           {/* Expand/Collapse button for categories with children that have available options */}
           {showExpandCollapse ? (
             <Button
               variant="outline"
               type="button"
-              size="icon-sm"
+              size="icon"
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
                 toggleExpand(e, category.fullPath)
               }}
-              className="p-0.5 rounded hover:bg-accent"
+              className="h-6 w-6 p-0 rounded-md hover:bg-accent transition-transform duration-200"
             >
-              {isExpanded ? (
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-              ) : (
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-              )}
+              <ChevronRight
+                className={cn(
+                  'h-4 w-4 text-muted-foreground transition-transform duration-200',
+                  isExpanded && 'rotate-90',
+                )}
+              />
             </Button>
           ) : hasChildren ? (
             // Has children but none are available - show disabled indicator
-            <span className="w-4 flex items-center justify-center">
-              <Lock className="h-3 w-3 text-muted-foreground/50" />
+            <span className="flex h-6 w-6 items-center justify-center">
+              <Lock className="h-3.5 w-3.5 text-muted-foreground/40" />
             </span>
           ) : (
-            <span className="w-4" /> // Spacer for alignment
+            <span className="w-6" /> // Spacer for alignment
           )}
 
-          {/* Folder icon */}
-          {hasChildren ? (
-            isExpanded ? (
-              <FolderOpen className="h-4 w-4 text-muted-foreground" />
+          {/* Folder/Item icon */}
+          <div
+            className={cn(
+              'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
+              hasChildren
+                ? isExpanded
+                  ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400'
+                  : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
+                : isSelected
+                  ? 'bg-primary/15 text-primary dark:bg-primary/25'
+                  : 'bg-muted text-muted-foreground group-hover:bg-accent',
+            )}
+          >
+            {hasChildren ? (
+              isExpanded ? (
+                <FolderOpen className="h-4 w-4" />
+              ) : (
+                <Folder className="h-4 w-4" />
+              )
             ) : (
-              <Folder className="h-4 w-4 text-muted-foreground" />
-            )
-          ) : (
-            <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/30" />
-          )}
+              <CircleDot className="h-4 w-4" />
+            )}
+          </div>
 
           {/* Category name and info */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 space-y-0.5">
             <div className="flex items-center gap-2">
               <span
                 className={cn(
-                  'font-medium truncate',
-                  isSelected && 'text-primary',
-                  !category.isAvailable && 'text-muted-foreground',
+                  'font-medium truncate transition-colors',
+                  isSelected && 'text-primary dark:text-primary',
+                  !category.isAvailable && !isSelected && 'text-muted-foreground',
                 )}
               >
                 {category.name}
               </span>
               {category.isUserDefault && (
-                <Badge
-                  variant="outline"
-                  className="text-[10px] px-1.5 py-0 h-4 bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-400 dark:border-amber-800"
-                >
-                  <Star className="h-2.5 w-2.5 mr-0.5 fill-amber-500" />
+                <Badge className="text-[10px] px-1.5 py-0 h-5 bg-gradient-to-r from-amber-400 to-orange-400 text-white border-0 shadow-sm">
+                  <Star className="h-2.5 w-2.5 mr-1 fill-white" />
                   Domyślna
                 </Badge>
               )}
@@ -299,9 +336,9 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
               {!category.isAvailable && hasAvailableChildren && (
                 <Badge
                   variant="outline"
-                  className="text-[10px] px-1.5 py-0 h-4 bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-400 dark:border-emerald-800"
+                  className="text-[10px] px-1.5 py-0 h-5 bg-emerald-50/80 text-emerald-600 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-700"
                 >
-                  <Sparkles className="h-2.5 w-2.5 mr-0.5" />
+                  <Sparkles className="h-2.5 w-2.5 mr-1" />
                   Dostępne opcje
                 </Badge>
               )}
@@ -313,8 +350,10 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
             <Badge
               variant="outline"
               className={cn(
-                'text-[10px] font-medium shrink-0 gap-1',
-                getPlanColor(category.requiredPlanLevel),
+                'text-[10px] font-semibold shrink-0 gap-1.5 px-2 py-0.5 h-5',
+                !category.isAvailable
+                  ? 'bg-muted/80 text-muted-foreground border-muted-foreground/20'
+                  : getPlanBadgeStyle(category.requiredPlanLevel),
               )}
             >
               {!category.isAvailable && <Lock className="h-2.5 w-2.5" />}
@@ -325,15 +364,15 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
 
           {/* Selection indicator */}
           {isSelected && category.isAvailable && (
-            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <Check className="h-3 w-3" />
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
+              <Check className="h-3.5 w-3.5" strokeWidth={3} />
             </div>
           )}
         </CommandItem>
 
         {/* Render children if expanded */}
         {hasChildren && isExpanded && (
-          <div className="border-l border-border/50 ml-4">
+          <div className="relative ml-6 pl-2 border-l-2 border-border/40 dark:border-border/30">
             {category.children.map((child) => renderCategory(child))}
           </div>
         )}
@@ -342,7 +381,7 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 mb-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
@@ -424,7 +463,7 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
           sideOffset={4}
         >
           <Command className="rounded-lg border-0">
-            <CommandInput placeholder="Szukaj kategorii..." className="border-b" />
+            <CommandInput placeholder="Szukaj kategorii..." className="border-none" />
             <CommandList className="max-h-[400px]">
               <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
                 Nie znaleziono kategorii.

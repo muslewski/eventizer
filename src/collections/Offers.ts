@@ -103,7 +103,7 @@ export const Offers: CollectionConfig = {
       type: 'text',
       required: true,
       defaultValue: 'Nowa oferta',
-      localized: true,
+      // localized: true,
       label: {
         en: 'Title',
         pl: 'Tytuł',
@@ -158,6 +158,15 @@ export const Offers: CollectionConfig = {
           },
         ],
       },
+    },
+    {
+      name: 'content',
+      type: 'richText',
+      label: {
+        en: 'Content',
+        pl: 'Treść',
+      },
+      required: true,
     },
   ],
 }

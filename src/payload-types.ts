@@ -156,6 +156,21 @@ export interface Offer {
    */
   category: string;
   categoryName?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -606,6 +621,7 @@ export interface OffersSelect<T extends boolean = true> {
   title?: T;
   category?: T;
   categoryName?: T;
+  content?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

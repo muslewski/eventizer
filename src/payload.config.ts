@@ -1,5 +1,4 @@
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -26,6 +25,7 @@ import { HelpTickets } from '@/collections/HelpTickets'
 import { SubscriptionPlans } from '@/collections/SubscriptionPlans'
 import { ServiceCategories } from '@/collections/ServiceCategories'
 import { StripeCustomers } from '@/collections/Customers'
+import { defaultLexical } from '@/fields/defaultLexical'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -74,6 +74,7 @@ export default buildConfig({
     },
 
     components: {
+      // header: ['@/components/payload/customHeader'],
       views: {
         'onboarding-service-provider': {
           Component: '@/components/payload/views/serviceProviderOnboarding',
@@ -158,7 +159,7 @@ export default buildConfig({
     defaultFromName: process.env.EMAIL_FROM_NAME || '',
     apiKey: process.env.RESEND_API_KEY || '',
   }),
-  editor: lexicalEditor(),
+  editor: defaultLexical,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

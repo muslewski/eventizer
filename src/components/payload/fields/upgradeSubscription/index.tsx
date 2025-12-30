@@ -28,10 +28,10 @@ function UpgradeSubscriptionField() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <p className="text-sm text-gray-600 dark:text-gray-400">
+    <div className="flex flex-col gap-3 justify-center">
+      {/* <p className="text-sm text-gray-600 dark:text-gray-400">
         Zmień kategorię usług lub przejdź na inny plan subskrypcji.
-      </p>
+      </p> */}
       <div className="flex gap-2">
         <Button variant="outline" onClick={handleChangePlan}>
           <Settings className="h-4 w-4 mr-2" />
