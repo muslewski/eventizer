@@ -21,14 +21,15 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { adminGroups } from '@/lib/adminGroups'
+import { adminOrHigher } from '@/access'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
   access: {
-    create: authenticated,
-    delete: authenticated,
+    create: adminOrHigher,
+    delete: adminOrHigher,
     read: authenticatedOrPublished,
-    update: authenticated,
+    update: adminOrHigher,
   },
   // This config controls what's populated by default when a page is referenced
   // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
@@ -67,7 +68,7 @@ export const Pages: CollectionConfig<'pages'> = {
       tabs: [
         {
           fields: [hero],
-          label: 'Hero',
+          label: 'Hero Section',
         },
         {
           fields: [

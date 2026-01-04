@@ -165,6 +165,10 @@ export interface Page {
   layout: (CallToActionBlock | ContentBlock | MediaBlock | BannerBlock)[];
   meta?: {
     title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
     description?: string | null;
   };
   publishedAt?: string | null;
@@ -430,9 +434,46 @@ export interface Offer {
     };
     [k: string]: unknown;
   };
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | OfferUpload;
+    description?: string | null;
+  };
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Upload and manage files related to offers.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offer-uploads".
+ */
+export interface OfferUpload {
+  id: number;
+  title: string;
+  description: string;
+  offer: number | Offer;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -592,30 +633,6 @@ export interface StripeCustomer {
   skipSync?: boolean | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * Upload and manage files related to offers.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "offer-uploads".
- */
-export interface OfferUpload {
-  id: number;
-  title: string;
-  description: string;
-  offer: number | Offer;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -888,6 +905,7 @@ export interface PagesSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
+        image?: T;
         description?: T;
       };
   publishedAt?: T;
@@ -977,6 +995,15 @@ export interface OffersSelect<T extends boolean = true> {
   category?: T;
   categoryName?: T;
   content?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  generateSlug?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

@@ -1,7 +1,14 @@
 import { adminOrHigherOrSelf, moderatorOrHigherOrSelf, providerOrHigher } from '@/access'
 import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
-import type { CollectionConfig } from 'payload'
+import {
+  MetaDescriptionField,
+  MetaImageField,
+  MetaTitleField,
+  OverviewField,
+  PreviewField,
+} from '@payloadcms/plugin-seo/fields'
+import { slugField, type CollectionConfig } from 'payload'
 
 export const Offers: CollectionConfig = {
   slug: 'offers',
@@ -32,6 +39,15 @@ export const Offers: CollectionConfig = {
       // schedulePublish: true,
     },
   },
+
+  defaultPopulate: {
+    title: true,
+    slug: true,
+    meta: {
+      image: true,
+    },
+  },
+
   access: {
     // admin see everything
     create: providerOrHigher, // providers and highers can create
@@ -160,13 +176,58 @@ export const Offers: CollectionConfig = {
       },
     },
     {
-      name: 'content',
-      type: 'richText',
-      label: {
-        en: 'Content',
-        pl: 'Treść',
-      },
-      required: true,
+      type: 'tabs',
+      tabs: [
+        {
+          fields: [
+            {
+              name: 'content',
+              type: 'richText',
+              label: {
+                en: 'Content',
+                pl: 'Treść',
+              },
+              required: true,
+            },
+          ],
+          label: {
+            en: 'Content',
+            pl: 'Treść',
+          },
+        },
+
+        {
+          name: 'meta',
+          label: {
+            pl: 'Pozycjonowanie w wyszukiwarkach',
+            en: 'Search Engine Optimization',
+          },
+          fields: [
+            OverviewField({
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+              imagePath: 'meta.image',
+            }),
+            MetaTitleField({
+              hasGenerateFn: true,
+            }),
+            MetaImageField({
+              relationTo: 'offer-uploads',
+            }),
+
+            MetaDescriptionField({}),
+            PreviewField({
+              // if the `generateUrl` function is configured
+              hasGenerateFn: true,
+
+              // field paths to match the target field for data
+              titlePath: 'meta.title',
+              descriptionPath: 'meta.description',
+            }),
+          ],
+        },
+      ],
     },
+    slugField(),
   ],
 }
