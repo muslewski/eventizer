@@ -6,6 +6,7 @@ import sharp from 'sharp'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { resendAdapter } from '@payloadcms/email-resend'
 import { stripePlugin } from '@payloadcms/plugin-stripe'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 
 // Collections
 import { Users } from './collections/auth/Users'
@@ -26,6 +27,7 @@ import { SubscriptionPlans } from '@/collections/SubscriptionPlans'
 import { ServiceCategories } from '@/collections/ServiceCategories'
 import { StripeCustomers } from '@/collections/Customers'
 import { defaultLexical } from '@/fields/defaultLexical'
+import { Pages } from '@/collections/Pages'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -108,6 +110,9 @@ export default buildConfig({
   },
 
   collections: [
+    // Website
+    Pages,
+
     // Marketplace
     Offers,
 
@@ -192,6 +197,7 @@ export default buildConfig({
       },
       token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
+    seoPlugin({ collections: ['pages'] }),
     stripePlugin({
       stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
       stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_ENDPOINT_SECRET || '',
