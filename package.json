@@ -50,6 +50,7 @@
     "next": "15.4.10",
     "next-themes": "^0.4.6",
     "payload": "3.69.0",
+    "payload-lucide-picker": "^1.6.2",
     "postcss": "^8.5.6",
     "prism-react-renderer": "^2.4.1",
     "react": "19.1.0",

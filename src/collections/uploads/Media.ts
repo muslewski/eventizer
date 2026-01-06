@@ -16,7 +16,7 @@ export const Media: CollectionConfig = {
     group: adminGroups.uploads,
   },
   access: {
-    read: moderatorOrHigherOrSelf('user'),
+    read: publicAccess,
     update: adminOrHigher,
     delete: adminOrHigher,
     create: adminOrHigher,

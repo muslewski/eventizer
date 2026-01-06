@@ -165,6 +165,7 @@ export interface Page {
     links?:
       | {
           link: {
+            icon?: (number | null) | Media;
             type?: ('reference' | 'custom') | null;
             newTab?: boolean | null;
             reference?: {
@@ -176,7 +177,7 @@ export interface Page {
             /**
              * Choose how the link should be rendered.
              */
-            appearance?: ('default' | 'outline') | null;
+            appearance?: ('default' | 'destructive' | 'cta' | 'outline' | 'secondary' | 'ghost' | 'link') | null;
           };
           id?: string | null;
         }[]
@@ -326,6 +327,7 @@ export interface CallToActionBlock {
   links?:
     | {
         link: {
+          icon?: (number | null) | Media;
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?: {
@@ -371,6 +373,7 @@ export interface ContentBlock {
         } | null;
         enableLink?: boolean | null;
         link?: {
+          icon?: (number | null) | Media;
           type?: ('reference' | 'custom') | null;
           newTab?: boolean | null;
           reference?: {
@@ -382,7 +385,7 @@ export interface ContentBlock {
           /**
            * Choose how the link should be rendered.
            */
-          appearance?: ('default' | 'outline') | null;
+          appearance?: ('default' | 'destructive' | 'cta' | 'outline' | 'secondary' | 'ghost' | 'link') | null;
         };
         id?: string | null;
       }[]
@@ -920,6 +923,7 @@ export interface PagesSelect<T extends boolean = true> {
               link?:
                 | T
                 | {
+                    icon?: T;
                     type?: T;
                     newTab?: T;
                     reference?: T;
@@ -965,6 +969,7 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
         link?:
           | T
           | {
+              icon?: T;
               type?: T;
               newTab?: T;
               reference?: T;
@@ -991,6 +996,7 @@ export interface ContentBlockSelect<T extends boolean = true> {
         link?:
           | T
           | {
+              icon?: T;
               type?: T;
               newTab?: T;
               reference?: T;

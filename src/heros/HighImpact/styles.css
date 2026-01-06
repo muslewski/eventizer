@@ -1,6 +1,68 @@
-/* Apply bg-fixed only on non-Safari browsers */
-@supports not (-webkit-overflow-scrolling: touch) {
-  .bg-fixed-not-safari {
-    background-attachment: fixed;
+/* Zoom-in effect for background image */
+@keyframes zoom-in {
+  0% {
+    transform: scale(1.15);
+    filter: blur(100px);
   }
+  100% {
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+.animate-zoom-in {
+  animation: zoom-in 3s ease-out forwards;
+}
+
+/* Traveling light animation for vertical lines */
+@keyframes travel {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(calc(100vh + 100%));
+    opacity: 0;
+  }
+}
+
+.animate-travel {
+  animation: travel 8s ease-in-out infinite;
+}
+
+/* Sliding indicator animation */
+@keyframes slide {
+  0%,
+  100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-slide {
+  animation: slide 2s ease-in-out infinite;
+}
+
+/* Smooth entrance for hero content */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.group\/hero > * {
+  animation: fadeInUp 0.8s ease-out forwards;
 }

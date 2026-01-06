@@ -3,6 +3,7 @@ import '@/styles/global.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/Theme'
 import { Bebas_Neue, Montserrat } from 'next/font/google'
+import { ModeToggle } from '@/components/providers/Theme/ThemeSwitcher'
 
 export const metadata = {
   description: 'Eventizer - Event Management Platform',
@@ -31,9 +32,10 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
     >
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className="bg-[#797890] dark:bg-[#0B0B0D] px-8 pt-8 -top-16 w-full relative">
-            <nav className="rounded-t-2xl h-16 relative z-20 top-16 w-full border-b border-white/50 bg-black/5 backdrop-blur-md flex items-center px-8">
+          <main className="bg-white dark:bg-[#0B0B0D] px-8 pt-8 -mt-16 w-full relative">
+            <nav className="rounded-t-2xl h-16 relative z-20 top-16 w-full border-b border-white/20 bg-black/5 backdrop-blur-md flex items-center px-8">
               Header
+              <ModeToggle />
             </nav>
             {children}
           </main>

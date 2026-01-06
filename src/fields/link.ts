@@ -1,17 +1,42 @@
 import type { Field } from 'payload'
 
 import { deepMerge } from '@/utilities/deepMerge'
+// import { LucideIconPicker } from 'payload-lucide-picker'
+import { buttonVariants } from '@/components/ui/button'
+import type { VariantProps } from 'class-variance-authority'
 
-export type LinkAppearances = 'default' | 'outline'
+type ButtonVariant = NonNullable<VariantProps<typeof buttonVariants>['variant']>
+
+export type LinkAppearances = ButtonVariant
 
 export const appearanceOptions: Record<LinkAppearances, { label: string; value: string }> = {
   default: {
     label: 'Default',
     value: 'default',
   },
+  destructive: {
+    label: 'Destructive',
+    value: 'destructive',
+  },
+  cta: {
+    label: 'Call to Action',
+    value: 'cta',
+  },
   outline: {
     label: 'Outline',
     value: 'outline',
+  },
+  secondary: {
+    label: 'Secondary',
+    value: 'secondary',
+  },
+  ghost: {
+    label: 'Ghost',
+    value: 'ghost',
+  },
+  link: {
+    label: 'Link',
+    value: 'link',
   },
 }
 
@@ -32,6 +57,12 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       {
         type: 'row',
         fields: [
+          {
+            name: 'icon',
+            type: 'upload',
+            relationTo: 'media',
+            label: 'Icon',
+          },
           {
             name: 'type',
             type: 'radio',
@@ -119,7 +150,10 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
   }
 
   if (appearances !== false) {
-    let appearanceOptionsToUse = [appearanceOptions.default, appearanceOptions.outline]
+    // let appearanceOptionsToUse = [appearanceOptions.default, appearanceOptions.outline]
+
+    // Default to all available appearances
+    let appearanceOptionsToUse = Object.values(appearanceOptions)
 
     if (appearances) {
       appearanceOptionsToUse = appearances.map((appearance) => appearanceOptions[appearance])
