@@ -1,0 +1,6 @@
+/* Apply bg-fixed only on non-Safari browsers */
+@supports not (-webkit-overflow-scrolling: touch) {
+  .bg-fixed-not-safari {
+    background-attachment: fixed;
+  }
+}

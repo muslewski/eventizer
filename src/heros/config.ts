@@ -1,3 +1,4 @@
+import { linkGroup } from '@/fields/linkGroup'
 import { Field } from 'payload'
 
 export const hero: Field = {
@@ -18,6 +19,29 @@ export const hero: Field = {
           value: 'highImpact',
         },
       ],
+    },
+    {
+      name: 'title',
+      type: 'text',
+      label: {
+        pl: 'Nagłówek',
+        en: 'Header',
+      },
+      required: true,
+    },
+    linkGroup({
+      overrides: {
+        maxRows: 2,
+      },
+    }),
+    {
+      name: 'backgroundImage',
+      type: 'upload',
+      relationTo: 'media',
+      label: {
+        pl: 'Tło',
+        en: 'Background Image',
+      },
     },
   ],
 }

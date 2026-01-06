@@ -40,6 +40,9 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-bebas: var(--font-bebas), sans-serif;
+  --font-montserrat: var(--font-montserrat), sans-serif;
 }
 
 :root {
@@ -115,7 +118,25 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Prevent text size adjustment on orientation change */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Better tab sizing */
+    tab-size: 4;
+  }
+  ,
   body {
     @apply bg-background text-foreground;
+
+    /* Font smoothing for better text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Improve text rendering */
+    text-rendering: optimizeLegibility;
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
   }
 }

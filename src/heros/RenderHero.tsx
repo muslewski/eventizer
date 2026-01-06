@@ -1,4 +1,5 @@
 import { HighImpactHero } from '@/heros/HighImpact'
+import { Page } from '@/payload-types'
 
 const heroes = {
   highImpact: HighImpactHero,

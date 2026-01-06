@@ -56,7 +56,7 @@ export default async function Page({ params }: Args) {
   const { hero, layout } = page
 
   return (
-    <article className="pt-16 pb-24">
+    <article className="pb-24">
       <RenderHero {...hero} />
       <RenderBlocks blocks={layout} />
     </article>
@@ -82,7 +82,7 @@ const queryPageBySlug = async ({ slug }: { slug: string }) => {
     collection: 'pages',
     draft,
     limit: 1,
-    overrideAccess: draft,
+    overrideAccess: true,
     pagination: false,
     where: {
       and: [
