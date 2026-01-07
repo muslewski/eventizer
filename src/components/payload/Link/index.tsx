@@ -68,7 +68,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
         variant={appearance}
       >
         <Link className={cn(className)} href={href} {...newTabProps}>
-          <div className="flex transition-all duration-300 ease-out items-center gap-2 bg-black/50 hover:bg-black/60 rounded-full border text-white border-black h-fit w-fit px-4 group-hover:px-5 py-2">
+          <div className="flex transition-all duration-300 ease-out items-center gap-2 bg-black/50 hover:bg-black/60 rounded-full border text-white border-black h-fit w-fit px-4 group-hover:px-5 py-2 backface-hidden">
             {label && label}
             {children && children}
             {icon && isExpandedDoc<Media>(icon) && (

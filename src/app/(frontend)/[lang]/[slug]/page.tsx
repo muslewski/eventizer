@@ -10,6 +10,9 @@ import React from 'react'
 
 import type { Page } from '@/payload-types'
 import { notFound } from 'next/navigation'
+import type { Config } from '@/payload-types'
+
+type Locale = Config['locale']
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -38,15 +41,17 @@ export async function generateStaticParams() {
 type Args = {
   params: Promise<{
     slug?: string
+    lang: Locale
   }>
 }
 
 export default async function Page({ params }: Args) {
-  const { slug = 'home' } = await params
+  const { slug = 'home', lang } = await params
   const url = '/' + slug
 
   const page = await queryPageBySlug({
     slug,
+    lang,
   })
 
   if (!page) {
@@ -64,16 +69,17 @@ export default async function Page({ params }: Args) {
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
-  const { slug = 'home' } = await params
+  const { slug = 'home', lang } = await params
 
   const page = await queryPageBySlug({
     slug,
+    lang,
   })
 
   return generateMeta({ doc: page })
 }
 
-const queryPageBySlug = async ({ slug }: { slug: string }) => {
+const queryPageBySlug = async ({ slug, lang }: { slug: string; lang: Locale }) => {
   const { isEnabled: draft } = await draftMode()
 
   const payload = await getPayload({ config: configPromise })
@@ -94,6 +100,8 @@ const queryPageBySlug = async ({ slug }: { slug: string }) => {
         ...(draft ? [] : [{ _status: { equals: 'published' } }]),
       ],
     },
+    locale: lang,
+    fallbackLocale: 'pl',
   })
 
   return result.docs?.[0] || null

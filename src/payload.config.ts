@@ -138,25 +138,25 @@ export default buildConfig({
     supportedLanguages: { en, pl },
     translations: customTranslations,
   },
-  // localization: {
-  //   locales: [
-  //     {
-  //       label: {
-  //         pl: 'Polski',
-  //         en: 'Polish',
-  //       },
-  //       code: 'pl',
-  //     },
-  //     {
-  //       label: {
-  //         pl: 'Angielski',
-  //         en: 'English',
-  //       },
-  //       code: 'en',
-  //     },
-  //   ],
-  //   defaultLocale: 'pl',
-  // },
+  localization: {
+    locales: [
+      {
+        label: {
+          pl: 'Polski',
+          en: 'Polish',
+        },
+        code: 'pl',
+      },
+      {
+        label: {
+          pl: 'Angielski',
+          en: 'English',
+        },
+        code: 'en',
+      },
+    ],
+    defaultLocale: 'pl',
+  },
   email: resendAdapter({
     defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || '',
     defaultFromName: process.env.EMAIL_FROM_NAME || '',

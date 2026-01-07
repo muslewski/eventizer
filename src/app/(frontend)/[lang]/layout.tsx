@@ -3,7 +3,10 @@ import '@/styles/global.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/Theme'
 import { Bebas_Neue, Montserrat } from 'next/font/google'
-import { ModeToggle } from '@/components/providers/Theme/ThemeSwitcher'
+import Header from '@/components/frontend/Header'
+import type { Config } from '@/payload-types'
+
+type Locale = Config['locale']
 
 export const metadata = {
   description: 'Eventizer - Event Management Platform',
@@ -21,22 +24,32 @@ const montserrat = Montserrat({
   variable: '--font-montserrat',
 })
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
-  const { children } = props
+export async function generateStaticParams() {
+  if (process.env.NODE_ENV === 'development') {
+    return []
+  }
+  return [{ lang: 'pl' }, { lang: 'en' }]
+}
+
+export default async function RootLayout({
+  children,
+  params,
+}: Readonly<{
+  children: React.ReactNode
+  params: Promise<{ lang: Locale }>
+}>) {
+  const { lang } = await params
 
   return (
     <html
-      lang="en"
+      lang={lang}
       suppressHydrationWarning
       className={`${bebasNeue.variable} ${montserrat.variable}`}
     >
-      <body>
+      <body className="bg-white dark:bg-[#0B0B0D]">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className="bg-white dark:bg-[#0B0B0D] px-8 pt-8 -mt-16 w-full relative">
-            <nav className="rounded-t-2xl h-16 relative z-20 top-16 w-full border-b border-white/20 bg-black/5 backdrop-blur-md flex items-center px-8">
-              Header
-              <ModeToggle />
-            </nav>
+          <main className=" -mt-8 px-8 w-full relative">
+            <Header />
             {children}
           </main>
           <Toaster />

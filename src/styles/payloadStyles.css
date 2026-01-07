@@ -170,11 +170,11 @@
     border-top: 8px solid var(--theme-elevation-100);
   }
 
-  /* .localizer {
+  .localizer {
     right: 60px;
     top: 110px;
     radius: 100px;
-  } */
+  }
 }
 
 /* Dark theme */
@@ -302,6 +302,7 @@
     font-style: normal;
     font-display: swap;
   }
+
   @font-face {
     font-family: 'Montserrat';
     src: url('/fonts/Montserrat-VariableFont_wght.ttf') format('truetype');

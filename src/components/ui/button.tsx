@@ -5,11 +5,13 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive font-montserrat",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 w-fit h-fit dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive font-montserrat",
   {
     variants: {
       variant: {
-        cta: 'border border-dashed border-white/15 p-1.5 bg-white/5 rounded-full hover:bg-white/10 group transition-all duration-300 ease-out sm:text-md text-sm shadow-lg shadow-white/5 hover:shadow-white/10',
+        cta: 'border border-dashed border-white/15 p-1.5 bg-white/5 rounded-full hover:bg-white/10 group transition-all duration-300 ease-out sm:text-md text-sm shadow-lg shadow-white/5 hover:shadow-white/10 backdrop-blur-sm transform-gpu',
+        golden: 'dark:bg-[#0B0B0D]/75 bg-white/75 border border-[#7D6F35]',
+        blend: 'bg-white/10 inset-shadow-xs inset-shadow-black/50 text-white',
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',

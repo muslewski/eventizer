@@ -116,10 +116,10 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('pl' | 'en') | ('pl' | 'en')[];
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'pl' | 'en';
   user: User & {
     collection: 'users';
   };
@@ -183,6 +183,7 @@ export interface Page {
         }[]
       | null;
     backgroundImage?: (number | null) | Media;
+    showScrollIndicator?: boolean | null;
   };
   layout: (CallToActionBlock | ContentBlock | MediaBlock | BannerBlock)[];
   meta?: {
@@ -934,6 +935,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
             };
         backgroundImage?: T;
+        showScrollIndicator?: T;
       };
   layout?:
     | T

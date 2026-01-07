@@ -22,6 +22,7 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { adminGroups } from '@/lib/adminGroups'
 import { adminOrHigher } from '@/access'
+import { isClientRoleEqualOrHigher } from '@/access/utilities'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -39,6 +40,8 @@ export const Pages: CollectionConfig<'pages'> = {
     slug: true,
   },
   admin: {
+    // Hide for non-admins
+    hidden: ({ user }) => !isClientRoleEqualOrHigher('admin', user),
     group: adminGroups.website,
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {

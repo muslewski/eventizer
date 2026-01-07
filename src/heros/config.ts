@@ -21,6 +21,7 @@ export const hero: Field = {
       ],
     },
     {
+      localized: true,
       name: 'title',
       type: 'text',
       label: {
@@ -31,6 +32,7 @@ export const hero: Field = {
     },
     linkGroup({
       overrides: {
+        localized: true,
         maxRows: 2,
       },
     }),
@@ -38,10 +40,20 @@ export const hero: Field = {
       name: 'backgroundImage',
       type: 'upload',
       relationTo: 'media',
+
       label: {
         pl: 'Tło',
         en: 'Background Image',
       },
+    },
+    {
+      name: 'showScrollIndicator',
+      type: 'checkbox',
+      label: {
+        pl: 'Pokaż wskaźnik przewijania',
+        en: 'Show Scroll Indicator',
+      },
+      defaultValue: false,
     },
   ],
 }
