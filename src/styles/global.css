@@ -129,7 +129,7 @@
   }
   ,
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-montserrat;
 
     /* Font smoothing for better text rendering */
     -webkit-font-smoothing: antialiased;

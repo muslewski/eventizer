@@ -160,7 +160,7 @@ export interface Page {
   id: number;
   title: string;
   hero: {
-    type?: ('none' | 'highImpact') | null;
+    type?: ('none' | 'highImpact' | 'mediumImpact') | null;
     title: string;
     links?:
       | {
@@ -186,6 +186,10 @@ export interface Page {
       | null;
     backgroundImage?: (number | null) | Media;
     showScrollIndicator?: boolean | null;
+    informationTitle1?: string | null;
+    informationValue1?: string | null;
+    informationTitle2?: string | null;
+    informationValue2?: string | null;
   };
   layout: (CallToActionBlock | ContentBlock | MediaBlock | BannerBlock)[];
   meta?: {
@@ -942,6 +946,10 @@ export interface PagesSelect<T extends boolean = true> {
             };
         backgroundImage?: T;
         showScrollIndicator?: T;
+        informationTitle1?: T;
+        informationValue1?: T;
+        informationTitle2?: T;
+        informationValue2?: T;
       };
   layout?:
     | T

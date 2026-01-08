@@ -1,9 +1,29 @@
 import { Media, type Page } from '@/payload-types'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
-import dynamic from 'next/dynamic'
 import BackgroundImage from '@/components/heros/BackgroundImage'
 import { HorizontalLines, LineConfig } from '@/components/heros/HorizontalLines'
 import NoiseTexture from '@/components/heros/NoiseTexture'
+import dynamic from 'next/dynamic'
+
+const lines: LineConfig[] = [
+  { direction: 'to-b', from: 35, blur: true, show: 'always' },
+  // { direction: 'to-t', from: 35, show: 'always' },
+  // { direction: 'to-b', from: 35, via: 35, show: 'md' },
+  { direction: 'to-t', from: 35, blur: true, show: 'md' },
+  { direction: 'to-b', from: 35, show: 'md' },
+  { direction: 'to-b', from: 35, via: 0, show: 'sm' },
+  // { direction: 'to-b', from: 35, via: 35, show: 'always' },
+  { direction: 'to-b', from: 35, via: 30, blur: true, show: 'always' },
+  { direction: 'to-t', from: 35, to: 0, show: 'sm' },
+  { direction: 'to-t', from: 35, via: 10, show: 'xl' },
+  // { direction: 'to-b', from: 35, via: 40, blur: true, show: 'sm' },
+  // { direction: 'to-b', from: 30, via: 0, show: 'xl' },
+  // { direction: 'to-t', from: 35, via: 10, show: 'always' },
+  // { direction: 'to-t', from: 35, via: 20, show: 'always' },
+  { direction: 'to-b', from: 35, via: 35, show: 'xl' },
+  { direction: 'to-b', from: 40, via: 0, show: 'xl' },
+]
+// import dynamic from 'next/dynamic'
 
 // Lazy load LightRays to prevent blocking initial render
 const LightRays = dynamic(() => import('@/components/react-bits/LightRays'))
@@ -11,25 +31,6 @@ const LightRays = dynamic(() => import('@/components/react-bits/LightRays'))
 interface BackgroundProps {
   backgroundImage: Page['hero']['backgroundImage']
 }
-
-const lines: LineConfig[] = [
-  { direction: 'to-b', from: 35, blur: true, show: 'always' },
-  { direction: 'to-t', from: 35, show: 'always' },
-  { direction: 'to-b', from: 35, via: 35, show: 'md' },
-  { direction: 'to-t', from: 35, blur: true, show: 'md' },
-  { direction: 'to-b', from: 35, show: 'md' },
-  { direction: 'to-b', from: 35, via: 0, show: 'sm' },
-  { direction: 'to-b', from: 35, via: 35, show: 'always' },
-  { direction: 'to-b', from: 35, via: 30, blur: true, show: 'always' },
-  { direction: 'to-t', from: 35, to: 0, show: 'sm' },
-  { direction: 'to-t', from: 35, via: 10, show: 'xl' },
-  { direction: 'to-b', from: 35, via: 40, blur: true, show: 'sm' },
-  { direction: 'to-b', from: 30, via: 0, show: 'xl' },
-  { direction: 'to-t', from: 35, via: 10, show: 'always' },
-  { direction: 'to-t', from: 35, via: 20, show: 'always' },
-  { direction: 'to-b', from: 35, via: 35, show: 'xl' },
-  { direction: 'to-b', from: 40, via: 0, show: 'xl' },
-]
 
 // TODO:
 // - Add parallax effect / fixed background

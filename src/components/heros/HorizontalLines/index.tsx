@@ -5,7 +5,7 @@ import React from 'react'
 type GradientDirection = 'to-b' | 'to-t'
 type Breakpoint = 'always' | 'sm' | 'md' | 'xl'
 
-interface LineConfig {
+export interface LineConfig {
   direction: GradientDirection
   from: number
   via?: number
@@ -14,24 +14,9 @@ interface LineConfig {
   show: Breakpoint
 }
 
-const lines: LineConfig[] = [
-  { direction: 'to-b', from: 35, blur: true, show: 'always' },
-  { direction: 'to-t', from: 35, show: 'always' },
-  { direction: 'to-b', from: 35, via: 35, show: 'md' },
-  { direction: 'to-t', from: 35, blur: true, show: 'md' },
-  { direction: 'to-b', from: 35, show: 'md' },
-  { direction: 'to-b', from: 35, via: 0, show: 'sm' },
-  { direction: 'to-b', from: 35, via: 35, show: 'always' },
-  { direction: 'to-b', from: 35, via: 30, blur: true, show: 'always' },
-  { direction: 'to-t', from: 35, to: 0, show: 'sm' },
-  { direction: 'to-t', from: 35, via: 10, show: 'xl' },
-  { direction: 'to-b', from: 35, via: 40, blur: true, show: 'sm' },
-  { direction: 'to-b', from: 30, via: 0, show: 'xl' },
-  { direction: 'to-t', from: 35, via: 10, show: 'always' },
-  { direction: 'to-t', from: 35, via: 20, show: 'always' },
-  { direction: 'to-b', from: 35, via: 35, show: 'xl' },
-  { direction: 'to-b', from: 40, via: 0, show: 'xl' },
-]
+interface HorizontalLinesProps {
+  lines: LineConfig[]
+}
 
 const breakpointClasses: Record<Breakpoint, string> = {
   always: 'flex',
@@ -53,7 +38,7 @@ function buildGradient(config: LineConfig, isDark: boolean): string {
   return `linear-gradient(${dir}, ${fromColor}, ${toColor})`
 }
 
-export const HorizontalLines: React.FC = () => {
+export const HorizontalLines: React.FC<HorizontalLinesProps> = ({ lines }) => {
   return (
     <div className="absolute inset-0 flex items-end justify-between pointer-events-none">
       {lines.map((line, index) => (
