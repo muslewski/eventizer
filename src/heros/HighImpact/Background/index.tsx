@@ -1,7 +1,11 @@
 import { Media, type Page } from '@/payload-types'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
-import Image from 'next/image'
 import { HorizontalLines } from '@/heros/HighImpact/Background/HorizontalLines/index'
+import BackgroundImage from '@/heros/HighImpact/Background/BackgroundImage'
+import dynamic from 'next/dynamic'
+
+// Lazy load LightRays to prevent blocking initial render
+const LightRays = dynamic(() => import('@/components/react-bits/LightRays'))
 
 interface BackgroundProps {
   backgroundImage: Page['hero']['backgroundImage']
@@ -15,22 +19,7 @@ export const Background: React.FC<BackgroundProps> = ({ backgroundImage }) => {
     <>
       {/* Background image */}
       {backgroundImage && isExpandedDoc<Media>(backgroundImage) && (
-        <div className="absolute inset-0 z-0 animate-zoom-in will-change-transform transform-gpu backface-hidden">
-          <Image
-            src={backgroundImage.url || ''}
-            alt={backgroundImage.alt || ''}
-            fill
-            priority
-            quality={90}
-            className="object-cover object-center"
-            sizes="100vw"
-          />
-          {/* Inset shadow overlay */}
-          <div
-            className="absolute inset-0"
-            style={{ boxShadow: 'inset 0 4px 61.4px rgba(0, 0, 0, 0.5)' }}
-          />
-        </div>
+        <BackgroundImage backgroundImage={backgroundImage} />
       )}
 
       {/* Animated noise texture overlay */}
@@ -44,6 +33,18 @@ export const Background: React.FC<BackgroundProps> = ({ backgroundImage }) => {
 
       {/* Accent color glow */}
       <div className="absolute bottom-0 left-5/6 sm:left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px] opacity-50 " />
+
+      <LightRays
+        raysOrigin="top-center"
+        raysColor="#ffffff"
+        raysSpeed={1.5}
+        lightSpread={0.8}
+        rayLength={1}
+        followMouse={true}
+        mouseInfluence={0.1}
+        noiseAmount={0.1}
+        distortion={0.05}
+      />
     </>
   )
 }

@@ -47,7 +47,7 @@ export function LanguageSwitcher() {
           <span className="mr-1">🇵🇱 </span>Polski
         </DropdownMenuItem>
         <DropdownMenuItem onClick={switchToEnglish} disabled={currentLocale === 'en'}>
-          <span className="mr-1">🇬🇧 </span>English
+          <span className="mr-1">🇬🇧 </span>English (Coming Soon)
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

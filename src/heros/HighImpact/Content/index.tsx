@@ -1,6 +1,7 @@
 import type { Page } from '@/payload-types'
 import { CMSLink } from '@/components/payload/Link'
 import { ArrowDown } from 'lucide-react'
+import Header from '@/heros/HighImpact/Content/Header'
 
 interface ContentProps {
   links: Page['hero']['links']
@@ -25,9 +26,7 @@ export const Content: React.FC<ContentProps> = ({ links, title, showScrollIndica
       )}
 
       {/* Header */}
-      <h1 className="xl:text-8xl md:text-6xl text-5xl font-bebas max-w-7xl text-white mix-blend-difference transform-gpu">
-        {title}
-      </h1>
+      <Header title={title} />
 
       <div className="w-full justify-between gap-6 flex border-white/10 border-t pt-8">
         <div className="flex gap-4">

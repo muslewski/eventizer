@@ -27,15 +27,15 @@ export function ModeToggle() {
 
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')}>
-          <Sun className="mr-1 h-4 w-4" />
+          <Sun className="mr-1 h-4 w-4 text-black/75 dark:invert" />
           Light
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>
-          <Moon className="mr-1 h-4 w-4" />
+          <Moon className="mr-1 h-4 w-4 text-black/75 dark:invert" />
           Dark
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')}>
-          <MonitorIcon className="mr-1 h-4 w-4" />
+          <MonitorIcon className="mr-1 h-4 w-4 text-black/75 dark:invert" />
           System
         </DropdownMenuItem>
       </DropdownMenuContent>

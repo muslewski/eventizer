@@ -177,7 +177,9 @@ export interface Page {
             /**
              * Choose how the link should be rendered.
              */
-            appearance?: ('default' | 'destructive' | 'cta' | 'outline' | 'secondary' | 'ghost' | 'link') | null;
+            appearance?:
+              | ('default' | 'destructive' | 'cta' | 'golden' | 'blend' | 'outline' | 'secondary' | 'ghost' | 'link')
+              | null;
           };
           id?: string | null;
         }[]
@@ -386,7 +388,9 @@ export interface ContentBlock {
           /**
            * Choose how the link should be rendered.
            */
-          appearance?: ('default' | 'destructive' | 'cta' | 'outline' | 'secondary' | 'ghost' | 'link') | null;
+          appearance?:
+            | ('default' | 'destructive' | 'cta' | 'golden' | 'blend' | 'outline' | 'secondary' | 'ghost' | 'link')
+            | null;
         };
         id?: string | null;
       }[]
