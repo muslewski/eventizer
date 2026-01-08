@@ -80,6 +80,10 @@ export default buildConfig({
           Component: '@/components/payload/views/serviceProviderOnboarding',
           path: '/onboarding/service-provider',
         },
+        'offers-limit-reached': {
+          Component: '@/components/payload/views/offersLimitReached',
+          path: '/offers-limit-reached',
+        },
         dashboard: {
           Component: '@/components/payload/views/customDashboard',
         },

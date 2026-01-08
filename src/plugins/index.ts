@@ -7,7 +7,7 @@ import { getServerSideURL } from '@/utilities/getURL'
 import { Page } from '@/payload-types'
 
 const generateTitle: GenerateTitle<Page> = ({ doc }) => {
-  return doc?.title ? `${doc.title} | Payload Ecommerce Template` : 'Payload Ecommerce Template'
+  return doc?.title ? `${doc.title} | Eventizer` : 'Eventizer'
 }
 
 const generateURL: GenerateURL<Page> = ({ doc }) => {

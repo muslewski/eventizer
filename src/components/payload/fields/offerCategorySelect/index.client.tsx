@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { useField } from '@payloadcms/ui'
 import {
   Check,
@@ -47,21 +47,57 @@ interface OfferCategorySelectClientProps extends TextFieldClientProps {
 
 export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps> = (props) => {
   const { path, field, categories, userPlanInfo, error } = props
-  const { value, setValue } = useField<string>({ path })
+  const { value, setValue, initialValue } = useField<string>({ path })
   const [open, setOpen] = useState(false)
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
+  const hasSetInitialValue = useRef(false)
 
-  // Set default value on mount if not already set
+  // Set default value on mount if not already set (only once)
   useEffect(() => {
-    if (!value && userPlanInfo?.userDefaultCategory) {
-      const defaultCat = categories.find(
-        (cat) => cat.fullPath === userPlanInfo.userDefaultCategory && cat.isAvailable,
-      )
-      if (defaultCat) {
-        setValue(defaultCat.fullPath)
-      }
+    // Only set default once
+    if (hasSetInitialValue.current) return
+
+    // Wait until categories are loaded
+    if (categories.length === 0) return
+
+    // If there's an existing value from the database (editing), don't override
+    if (initialValue) {
+      hasSetInitialValue.current = true
+      return
     }
-  }, [value, setValue, userPlanInfo, categories])
+
+    // If value is already set (somehow), don't override
+    if (value) {
+      hasSetInitialValue.current = true
+      return
+    }
+
+    // Use a microtask to ensure form is ready
+    const setDefaultValue = () => {
+      // Set the user's default category if available
+      if (userPlanInfo?.userDefaultCategory) {
+        const defaultCat = categories.find(
+          (cat) => cat.fullPath === userPlanInfo.userDefaultCategory && cat.isAvailable,
+        )
+        if (defaultCat) {
+          setValue(defaultCat.fullPath)
+          hasSetInitialValue.current = true
+          return
+        }
+      }
+
+      // Fallback: set first available category if no default
+      const firstAvailable = categories.find((cat) => cat.isAvailable)
+      if (firstAvailable) {
+        setValue(firstAvailable.fullPath)
+      }
+      hasSetInitialValue.current = true
+    }
+
+    // Small timeout to ensure form is initialized
+    const timeoutId = setTimeout(setDefaultValue, 0)
+    return () => clearTimeout(timeoutId)
+  }, [value, setValue, userPlanInfo, categories, initialValue])
 
   // Auto-expand parent paths of the selected category
   useEffect(() => {

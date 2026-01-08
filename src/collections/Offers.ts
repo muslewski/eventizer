@@ -8,7 +8,10 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
-import { slugField, type CollectionConfig } from 'payload'
+import { redirect } from 'next/navigation'
+import { APIError, slugField, type CollectionConfig } from 'payload'
+
+const MAX_OFFERS_PER_USER = 10
 
 export const Offers: CollectionConfig = {
   slug: 'offers',
@@ -31,11 +34,16 @@ export const Offers: CollectionConfig = {
     defaultColumns: ['title', '_status', 'category', 'user'],
     // hide api url in admin panel
     hideAPIURL: true,
+    description: {
+      en: `Manage and create service offers available to your clients. (limit ${MAX_OFFERS_PER_USER} offers)`,
+      pl: `Zarządzaj i twórz oferty usług dostępne dla Twoich klientów. (limit ${MAX_OFFERS_PER_USER} ofert)`,
+    },
   },
 
   versions: {
     drafts: {
       autosave: true,
+
       // schedulePublish: true,
     },
   },
@@ -70,6 +78,30 @@ export const Offers: CollectionConfig = {
   },
 
   hooks: {
+    beforeOperation: [
+      async ({ operation, req }) => {
+        // Enforce max offers per user
+        if (
+          operation === 'create' &&
+          req.user &&
+          !isClientRoleEqualOrHigher('moderator', req.user)
+        ) {
+          const existingOffers = await req.payload.find({
+            collection: 'offers',
+            where: {
+              user: {
+                equals: req.user.id,
+              },
+            },
+            limit: 0, // we only need the count
+          })
+
+          if (existingOffers.totalDocs >= MAX_OFFERS_PER_USER) {
+            redirect('/app/offers-limit-reached')
+          }
+        }
+      },
+    ],
     beforeValidate: [
       async ({ data, req, operation }) => {
         if (!data?.category || !req.user) return data
@@ -118,7 +150,15 @@ export const Offers: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
-      defaultValue: 'Nowa oferta',
+      defaultValue: () => {
+        const now = new Date()
+        const day = now.getDate().toString().padStart(2, '0')
+        const month = (now.getMonth() + 1).toString().padStart(2, '0')
+        const hour = now.getHours().toString().padStart(2, '0')
+        const minute = now.getMinutes().toString().padStart(2, '0')
+        const seconds = now.getSeconds().toString().padStart(2, '0')
+        return `Nowa oferta ${day}.${month} ${hour}:${minute}:${seconds}`
+      },
       // localized: true,
       label: {
         en: 'Title',
@@ -210,12 +250,22 @@ export const Offers: CollectionConfig = {
             }),
             MetaTitleField({
               hasGenerateFn: true,
+              overrides: {
+                localized: false,
+              },
             }),
             MetaImageField({
               relationTo: 'offer-uploads',
+              overrides: {
+                localized: false,
+              },
             }),
 
-            MetaDescriptionField({}),
+            MetaDescriptionField({
+              overrides: {
+                localized: false,
+              },
+            }),
             PreviewField({
               // if the `generateUrl` function is configured
               hasGenerateFn: true,
@@ -228,6 +278,6 @@ export const Offers: CollectionConfig = {
         },
       ],
     },
-    slugField(),
+    slugField({ useAsSlug: 'title' }),
   ],
 }

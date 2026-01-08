@@ -13,7 +13,8 @@ const ServiceProviderOnboarding = async ({
   searchParams,
 }: AdminViewServerProps) => {
   if (!initPageResult.req.user) {
-    redirect('/app/auth/sign-in')
+    // redirect('/app/auth/sign-in')
+    redirect('/app/sign-in')
   }
 
   const user = initPageResult.req.user

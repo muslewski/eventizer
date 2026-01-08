@@ -11,7 +11,7 @@ export default async function NotFound() {
     collection: 'media',
     where: {
       filename: {
-        equals: 'corridor-404.jpeg',
+        equals: '404-background-compressed.jpeg',
       },
     },
     limit: 1,

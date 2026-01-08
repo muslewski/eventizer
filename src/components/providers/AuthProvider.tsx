@@ -13,7 +13,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthUIProvider
-      basePath="/app/auth"
+      // basePath="/app/auth"
+      basePath="/auth"
       redirectTo="/app"
       authClient={authClient}
       navigate={router.push}

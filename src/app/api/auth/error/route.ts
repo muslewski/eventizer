@@ -10,5 +10,6 @@ export async function GET(request: NextRequest) {
   console.log('Auth error:', error)
 
   // Redirect to your desired page
-  redirect('/app/auth/sign-in')
+  // redirect('/app/auth/sign-in')
+  redirect('/auth/sign-in')
 }

@@ -46,6 +46,13 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={`${bebasNeue.variable} ${montserrat.variable}`}
     >
+      <head>
+        <link rel="icon" type="image/png" href="/my-favicon/icon-1.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/my-favicon/icon0.svg" />
+        <link rel="shortcut icon" href="/my-favicon/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/my-favicon/apple-icon.png" />
+        <link rel="manifest" href="/my-favicon/manifest.json" />
+      </head>
       <body className="bg-white dark:bg-[#0B0B0D]">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <main className=" -mt-8 px-8 w-full relative">

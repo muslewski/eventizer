@@ -35,7 +35,8 @@ export function AuthServiceProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthUIProvider
-      basePath="/app/auth"
+      // basePath="/app/auth"
+      basePath="/auth"
       viewPaths={{
         SIGN_UP: 'sign-up/service-provider',
         SIGN_IN: 'sign-in/service-provider',

@@ -191,6 +191,7 @@ export function ServiceProviderOnboardingClient({
           throw new Error(result.message)
         }
 
+        router.push('/app/account')
         setSuccessMessage(result.message)
 
         // Redirect after a short delay for upgrades/downgrades

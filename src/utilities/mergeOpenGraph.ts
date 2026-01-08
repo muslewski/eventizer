@@ -8,8 +8,8 @@ const defaultOpenGraph: Metadata['openGraph'] = {
       url: 'https://payloadcms.com/images/og-image.jpg',
     },
   ],
-  siteName: 'Payload Website Template',
-  title: 'Payload Website Template',
+  siteName: 'Eventizer',
+  title: 'Eventizer',
 }
 
 export const mergeOpenGraph = (og?: Partial<Metadata['openGraph']>): Metadata['openGraph'] => {
