@@ -22,6 +22,14 @@ export const appearanceOptions: Record<LinkAppearances, { label: string; value: 
     label: 'Call to Action',
     value: 'cta',
   },
+  golden: {
+    label: 'Golden',
+    value: 'golden',
+  },
+  blend: {
+    label: 'Blend',
+    value: 'blend',
+  },
   outline: {
     label: 'Outline',
     value: 'outline',
