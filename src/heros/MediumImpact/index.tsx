@@ -29,8 +29,10 @@ export const MediumImpactHero: React.FC<
           infoValue2={informationValue2}
         />
       </div>
-      {/* Empty right half */}
-      <div className="h-full w-1/2"></div>
+      {/* Right half */}
+      <div className="h-fit w-1/2 flex items-start justify-start mt-16 px-8 sm:px-16">
+        {customReactComponent}
+      </div>
     </MediumImpactHeroClient>
   )
 }

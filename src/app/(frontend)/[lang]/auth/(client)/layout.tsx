@@ -1,16 +1,41 @@
 import { AuthProvider } from '@/components/providers/AuthProvider'
 import { ReactNode } from 'react'
 
-import '@/styles/global.css'
+import { MediumImpactHero } from '@/heros/MediumImpact'
+
+import config from '@payload-config'
+import { getPayload } from 'payload'
+
 export interface LayoutProps {
   children: ReactNode
 }
 
-const Layout = ({ children }: LayoutProps) => {
+const Layout = async ({ children }: LayoutProps) => {
+  const payload = await getPayload({ config })
+
+  // find background image
+  const { docs } = await payload.find({
+    collection: 'media',
+    where: {
+      filename: {
+        equals: 'sign-in-client-background-compressed.jpg',
+      },
+    },
+    limit: 1,
+  })
+
+  const backgroundImage = docs[0] || null
+
   return (
-    <div className="flex items-center justify-center h-screen">
-      <AuthProvider>{children}</AuthProvider>
-    </div>
+    <MediumImpactHero
+      title="Zarządzaj swoim kontem usługodawcy"
+      backgroundImage={backgroundImage}
+      informationTitle1="70K+"
+      informationValue1="Aktywnych usług"
+      informationTitle2="120+"
+      informationValue2="Branż eventowych"
+      customReactComponent={<AuthProvider>{children}</AuthProvider>}
+    />
   )
 }
 

@@ -2,6 +2,7 @@ import type { Page } from '@/payload-types'
 import { CMSLink } from '@/components/payload/Link'
 import { ArrowDown } from 'lucide-react'
 import { Stats } from '@/heros/MediumImpact/Content/Stats'
+import BlurText from '@/components/react-bits/BlurText'
 // import Header from '@/heros/HighImpact/Content/Header'
 
 interface ContentProps {
@@ -48,7 +49,8 @@ export const Content: React.FC<ContentProps> = ({
       {/* Trusted Us */}
       <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 2xl:gap-12">
         <h3 className="xl:text-5xl md:text-4xl sm:text-3xl text-2xl font-bebas max-w-7xl text-white mix-blend-difference transform-gpu">
-          Zaufali nam najlepsi
+          {/* Zaufali nam najlepsi */}
+          <BlurText text="Zaufali nam najlepsi" animateBy="letters" direction="bottom" delay={50} />
         </h3>
 
         <div className="flex">

@@ -2,5 +2,27 @@
   "common": {
     "readMore": "Read more",
     "loadMore": "Load more"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "name": "Name",
+    "password": "Password",
+    "createAccount": "Create account",
+    "alreadyHaveAnAccount": "Already have an account?",
+    "dontHaveAnAccount": "Don't have an account?",
+    "orContinueWith": "Or continue with",
+    "signUp": "Sign up",
+    "serviceProviderSignUpPage": {
+      "description": "Enter your details to create a service provider account."
+    },
+    "clientSignUpPage": {
+      "description": "Enter your details to create a client account."
+    },
+    "serviceProviderSignInPage": {
+      "description": "Enter your details to sign in to your service provider account."
+    },
+    "clientSignInPage": {
+      "description": "Enter your details to sign in to your client account."
+    }
   }
 }

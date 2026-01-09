@@ -2,5 +2,27 @@
   "common": {
     "readMore": "Czytaj więcej",
     "loadMore": "Załaduj więcej"
+  },
+  "auth": {
+    "signIn": "Zaloguj się",
+    "name": "Nazwa",
+    "password": "Hasło",
+    "createAccount": "Utwórz konto",
+    "alreadyHaveAnAccount": "Masz już konto?",
+    "dontHaveAnAccount": "Nie masz konta?",
+    "orContinueWith": "Lub kontynuuj za pomocą",
+    "signUp": "Zarejestruj się",
+    "serviceProviderSignUpPage": {
+      "description": "Wprowadź swoje dane, aby utworzyć konto usługodawcy."
+    },
+    "clientSignUpPage": {
+      "description": "Wprowadź swoje dane, aby utworzyć konto klienta."
+    },
+    "serviceProviderSignInPage": {
+      "description": "Wprowadź swoje dane, aby zalogować się na konto usługodawcy."
+    },
+    "clientSignInPage": {
+      "description": "Wprowadź swoje dane, aby zalogować się na konto klienta."
+    }
   }
 }

@@ -1,9 +1,12 @@
 import { getDictionary } from '@/lib/dictionary'
+import type { Config } from '@/payload-types'
+
+type Locale = Config['locale']
 
 export default async function LocalizedUI({
   params,
 }: Readonly<{
-  params: Promise<{ lang: 'en' | 'pl' }>
+  params: Promise<{ lang: Locale }>
 }>) {
   const lang = (await params).lang
   const dict = await getDictionary(lang)
