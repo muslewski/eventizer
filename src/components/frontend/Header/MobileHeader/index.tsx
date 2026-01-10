@@ -54,17 +54,90 @@ export default function MobileHeader({
         <nav
           className={cn(
             'absolute top-16 sm:top-24 bottom-0 left-0 right-0 sm:left-8 sm:right-8 max-h-[calc(100vh-128px)] overflow-y-auto',
-            ' border border-white/10 bg-white dark:bg-[#0B0B0D]',
+            ' bg-white/96 dark:bg-[#0B0B0D]/99',
             'shadow-2xl shadow-black/20',
-            'transition-opacity duration-500 ease-out',
-            isOpen ? 'opacity-100 ' : 'opacity-0 pointer-events-none',
+            'transition-all duration-500 ease-out',
+            isOpen ? 'opacity-100 translate-y-0' : 'opacity-50 translate-y-100 pointer-events-none',
           )}
         >
+          {/* Subtle pattern overlay */}
+          {/* <div
+            className="absolute inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]"
+            style={{
+              backgroundImage: `repeating-linear-gradient(
+                -90deg,
+                transparent,
+                transparent 60px,
+                currentColor 60px,
+                currentColor 61px
+              )`,
+            }}
+          /> */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.05] dark:opacity-[0.1]"
+            style={{
+              backgroundImage: `
+                repeating-linear-gradient(
+                  -85deg,
+                  transparent 0px,
+                  transparent 28px,
+                  currentColor 28px,
+                  currentColor 29px,
+                  transparent 29px,
+                  transparent 95px,
+                  currentColor 95px,
+                  currentColor 97px,
+                  transparent 97px,
+                  transparent 180px
+                )
+              `,
+              maskImage: 'linear-gradient(to bottom, black 0%, transparent 60%, black 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 60%, black 100%)',
+            }}
+          />
+          {/* Scattered artistic lines */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div
+              className="absolute inset-0 opacity-[0.04] dark:opacity-[0.06]"
+              style={{
+                backgroundImage: `
+                  repeating-linear-gradient(
+                    -80deg,
+                    transparent 0px,
+                    transparent 35px,
+                    currentColor 35px,
+                    currentColor 36px,
+                    transparent 36px,
+                    transparent 89px,
+                    currentColor 89px,
+                    currentColor 90px,
+                    transparent 90px,
+                    transparent 167px
+                  )
+                `,
+              }}
+            />
+            <div
+              className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03]"
+              style={{
+                backgroundImage: `
+                  repeating-linear-gradient(
+                    80deg,
+                    transparent 0px,
+                    transparent 73px,
+                    currentColor 73px,
+                    currentColor 75px,
+                    transparent 75px,
+                    transparent 210px
+                  )
+                `,
+              }}
+            />
+          </div>
           {/* Header Section */}
           <div className="p-6 pb-4 border-b border-primary/10">
             <p className="text-xs font-medium uppercase tracking-widest text-primary/40">Menu</p>
           </div>
-
           {/* Nav Links */}
           <div className="p-4">
             <div className="flex flex-col gap-1">
@@ -91,21 +164,12 @@ export default function MobileHeader({
                   {normalizedPathname === link.href && (
                     <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-stone-400 to-stone-600 rounded-full" />
                   )}
-
-                  {/* Hover glow effect */}
-                  <span
-                    className={cn(
-                      'absolute inset-0 rounded-2xl bg-gradient-to-r from-white/5 to-transparent',
-                      'opacity-0 group-hover:opacity-100 transition-opacity duration-300',
-                    )}
-                  />
                 </Link>
               ))}
             </div>
           </div>
-
           {/* Settings Section */}
-          <div className="mx-4 px-5 py-4 rounded-2xl bg-primary/5 border border-primary/5">
+          <div className="mx-4 px-5 py-4 rounded-2xl bg-background border border-primary/5">
             <p className="text-xs font-medium uppercase tracking-widest text-primary/40 mb-4">
               Ustawienia
             </p>
@@ -114,7 +178,6 @@ export default function MobileHeader({
               <LanguageSwitcher />
             </div>
           </div>
-
           {/* CTA Section */}
           <div className="p-6 pt-4 mt-2">
             <div className="flex flex-col gap-3">
@@ -132,9 +195,9 @@ export default function MobileHeader({
                 </Link>
               </Button>
               <Button
-                variant="ghost"
+                variant="default"
                 asChild
-                className="w-full justify-center py-6 text-base text-primary font-medium rounded-2xl border border-primary/20"
+                className="w-full justify-center py-6 text-base font-medium rounded-2xl border border-primary/20"
               >
                 <Link href="/auth/sign-in" prefetch onClick={() => setIsOpen(false)}>
                   Zaloguj się
