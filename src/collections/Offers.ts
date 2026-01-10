@@ -306,6 +306,21 @@ export const Offers: CollectionConfig = {
               required: true,
             },
             {
+              name: 'shortDescription',
+              type: 'textarea',
+              label: {
+                en: 'Short Description',
+                pl: 'Krótki Opis',
+              },
+              admin: {
+                description: {
+                  en: 'A brief summary of the offer, shown in listings.',
+                  pl: 'Krótki opis oferty, wyświetlany na listach.',
+                },
+              },
+              required: true,
+            },
+            {
               name: 'phone',
               type: 'text',
               label: {

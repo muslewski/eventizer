@@ -505,6 +505,10 @@ export interface Offer {
     [k: string]: unknown;
   };
   /**
+   * A brief summary of the offer, shown in listings.
+   */
+  shortDescription: string;
+  /**
    * Phone number related to the offer.
    */
   phone?: string | null;
@@ -1121,6 +1125,7 @@ export interface OffersSelect<T extends boolean = true> {
   mainImage?: T;
   categoryName?: T;
   content?: T;
+  shortDescription?: T;
   phone?: T;
   email?: T;
   address?: T;
