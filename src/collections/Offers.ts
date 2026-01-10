@@ -184,6 +184,22 @@ export const Offers: CollectionConfig = {
       },
     },
     {
+      type: 'checkbox',
+      name: 'hasPriceRange',
+      label: {
+        en: 'Has Price Range',
+        pl: 'Posiada Zakres Cenowy',
+      },
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        description: {
+          en: 'Check if this offer has a price range instead of a fixed price.',
+          pl: 'Zaznacz, jeśli ta oferta posiada zakres cenowy zamiast stałej ceny.',
+        },
+      },
+    },
+    {
       type: 'number',
       name: 'price',
       label: {
@@ -194,10 +210,37 @@ export const Offers: CollectionConfig = {
       min: 0,
       admin: {
         position: 'sidebar',
+        condition: (data, siblingData) => !siblingData?.hasPriceRange,
         description: {
           en: 'Set the price for this offer in Polish Zloty (PLN).',
           pl: 'Ustaw cenę tej oferty w polskich złotych (PLN).',
         },
+      },
+    },
+    {
+      type: 'number',
+      name: 'priceFrom',
+      label: {
+        en: 'Price From (PLN)',
+        pl: 'Cena Od (PLN)',
+      },
+      min: 0,
+      admin: {
+        position: 'sidebar',
+        condition: (data, siblingData) => Boolean(siblingData?.hasPriceRange),
+      },
+    },
+    {
+      type: 'number',
+      name: 'priceTo',
+      label: {
+        en: 'Price To (PLN)',
+        pl: 'Cena Do (PLN)',
+      },
+      min: 0,
+      admin: {
+        position: 'sidebar',
+        condition: (data, siblingData) => Boolean(siblingData?.hasPriceRange),
       },
     },
     {

@@ -475,9 +475,15 @@ export interface Offer {
    */
   category: string;
   /**
+   * Check if this offer has a price range instead of a fixed price.
+   */
+  hasPriceRange?: boolean | null;
+  /**
    * Set the price for this offer in Polish Zloty (PLN).
    */
-  price: number;
+  price?: number | null;
+  priceFrom?: number | null;
+  priceTo?: number | null;
   /**
    * Upload the main image representing your offer.
    */
@@ -1092,7 +1098,10 @@ export interface OffersSelect<T extends boolean = true> {
   user?: T;
   title?: T;
   category?: T;
+  hasPriceRange?: T;
   price?: T;
+  priceFrom?: T;
+  priceTo?: T;
   mainImage?: T;
   categoryName?: T;
   content?: T;
