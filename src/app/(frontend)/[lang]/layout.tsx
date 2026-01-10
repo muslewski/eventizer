@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/providers/Theme'
 import { Bebas_Neue, Montserrat } from 'next/font/google'
 import Header from '@/components/frontend/Header/index.client'
 import type { Config } from '@/payload-types'
+import Footer from '@/components/frontend/Footer'
 
 type Locale = Config['locale']
 
@@ -58,6 +59,7 @@ export default async function RootLayout({
           <main className=" px-4 sm:px-8 w-full relative transition-[padding] duration-900 ease-in-out">
             <Header />
             {children}
+            <Footer />
           </main>
           <Toaster />
         </ThemeProvider>
