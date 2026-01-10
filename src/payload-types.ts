@@ -474,6 +474,10 @@ export interface Offer {
    * Select the category for this offer based on your subscription plan.
    */
   category: string;
+  /**
+   * Upload the main image representing your offer.
+   */
+  mainImage: number | OfferUpload;
   categoryName?: string | null;
   content: {
     root: {
@@ -1086,6 +1090,7 @@ export interface OffersSelect<T extends boolean = true> {
   user?: T;
   title?: T;
   category?: T;
+  mainImage?: T;
   categoryName?: T;
   content?: T;
   meta?:

@@ -183,6 +183,22 @@ export const Offers: CollectionConfig = {
         },
       },
     },
+    {
+      name: 'mainImage',
+      type: 'upload',
+      relationTo: 'offer-uploads',
+      required: true,
+      label: {
+        en: 'Main Image',
+        pl: 'Główne Zdjęcie',
+      },
+      admin: {
+        description: {
+          en: 'Upload the main image representing your offer.',
+          pl: 'Prześlij główne zdjęcie reprezentujące Twoją ofertę.',
+        },
+      },
+    },
     // Display-friendly category name (auto-populated)
     {
       name: 'categoryName',
