@@ -45,7 +45,12 @@ export function AuthServiceProvider({ children }: { children: ReactNode }) {
       authClient={authClient}
       navigate={router.push}
       replace={router.replace}
-      social={{ providers: ['google', 'facebook'] }}
+      social={{
+        providers: [
+          'google',
+          //  'facebook'
+        ],
+      }}
       emailVerification={true}
       optimistic={true}
       onSessionChange={handleSessionChange}

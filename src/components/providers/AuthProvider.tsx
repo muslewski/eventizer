@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation'
 import { type ReactNode } from 'react'
 import { toast } from 'sonner'
 
+// TODO Addd facebook login
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
@@ -19,7 +21,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       authClient={authClient}
       navigate={router.push}
       replace={router.replace}
-      social={{ providers: ['google', 'facebook'] }}
+      social={{
+        providers: [
+          'google',
+          // 'facebook'
+        ],
+      }}
       emailVerification={true}
       optimistic={true}
       onSessionChange={() => {
