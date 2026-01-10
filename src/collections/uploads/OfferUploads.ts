@@ -108,5 +108,19 @@ export const OfferUploads: CollectionConfig = {
     //   },
     // },
   ],
-  upload: true,
+  upload: {
+    mimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+    resizeOptions: {
+      width: 1920,
+      height: 1080,
+      fit: 'inside', // Maintains aspect ratio, fits within bounds
+      withoutEnlargement: true, // Don't upscale small images
+    },
+    formatOptions: {
+      format: 'webp',
+      options: {
+        quality: 80,
+      },
+    },
+  },
 }
