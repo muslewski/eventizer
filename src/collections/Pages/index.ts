@@ -4,6 +4,7 @@ import { authenticatedOrPublished } from '@/access/authenticatedOrPublished'
 import { Banner } from '@/blocks/Banner/config'
 // import { Archive } from '../../blocks/ArchiveBlock/config'
 import { CallToAction } from '../../blocks/CallToAction/config'
+import { ComingSoon } from '@/blocks/ComingSoon/config'
 import { Content } from '../../blocks/Content/config'
 // import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
@@ -78,7 +79,13 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Banner /* Archive, */ /* FormBlock */],
+              blocks: [
+                CallToAction,
+                Content,
+                MediaBlock,
+                Banner,
+                ComingSoon /* Archive, */ /* FormBlock */,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,

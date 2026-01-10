@@ -191,7 +191,7 @@ export interface Page {
     informationTitle2?: string | null;
     informationValue2?: string | null;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | BannerBlock)[];
+  layout: (CallToActionBlock | ContentBlock | MediaBlock | BannerBlock | ComingSoonBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -437,6 +437,27 @@ export interface BannerBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ComingSoonBlock".
+ */
+export interface ComingSoonBlock {
+  /**
+   * Main heading text (uses Bebas font)
+   */
+  heading: string;
+  /**
+   * Descriptive paragraph text
+   */
+  description: string;
+  /**
+   * Icon to display
+   */
+  icon?: ('construction' | 'clock' | 'rocket' | 'sparkles' | 'hammer') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'comingSoon';
 }
 /**
  * Manage and create service offers available to your clients. (limit 10 offers)
@@ -958,6 +979,7 @@ export interface PagesSelect<T extends boolean = true> {
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
+        comingSoon?: T | ComingSoonBlockSelect<T>;
       };
   meta?:
     | T
@@ -1041,6 +1063,17 @@ export interface MediaBlockSelect<T extends boolean = true> {
 export interface BannerBlockSelect<T extends boolean = true> {
   style?: T;
   content?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ComingSoonBlock_select".
+ */
+export interface ComingSoonBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  icon?: T;
   id?: T;
   blockName?: T;
 }

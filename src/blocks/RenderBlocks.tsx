@@ -2,6 +2,7 @@
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 // import { CarouselBlock } from '@/blocks/Carousel/Component'
+import { ComingSoonBlock } from '@/blocks/ComingSoon/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
 // import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
@@ -15,6 +16,7 @@ const blockComponents = {
   //   archive: ArchiveBlock,
   banner: BannerBlock,
   //   carousel: CarouselBlock,
+  comingSoon: ComingSoonBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   //   formBlock: FormBlock,
