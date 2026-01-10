@@ -475,6 +475,10 @@ export interface Offer {
    */
   category: string;
   /**
+   * Set the price for this offer in Polish Zloty (PLN).
+   */
+  price: number;
+  /**
    * Upload the main image representing your offer.
    */
   mainImage: number | OfferUpload;
@@ -1088,6 +1092,7 @@ export interface OffersSelect<T extends boolean = true> {
   user?: T;
   title?: T;
   category?: T;
+  price?: T;
   mainImage?: T;
   categoryName?: T;
   content?: T;

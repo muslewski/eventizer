@@ -184,6 +184,23 @@ export const Offers: CollectionConfig = {
       },
     },
     {
+      type: 'number',
+      name: 'price',
+      label: {
+        en: 'Price (PLN)',
+        pl: 'Cena (PLN)',
+      },
+      required: true,
+      min: 0,
+      admin: {
+        position: 'sidebar',
+        description: {
+          en: 'Set the price for this offer in Polish Zloty (PLN).',
+          pl: 'Ustaw cenę tej oferty w polskich złotych (PLN).',
+        },
+      },
+    },
+    {
       name: 'mainImage',
       type: 'upload',
       relationTo: 'offer-uploads',
