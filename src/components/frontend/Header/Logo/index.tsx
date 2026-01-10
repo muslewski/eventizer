@@ -14,7 +14,7 @@ export default function HeaderLogo() {
         <Image
           src={Logo}
           alt="Eventizer Logo"
-          className="h-full w-auto drop-shadow-lg transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(251,191,36,0.5)]"
+          className="!mix-blend-normal h-full w-auto drop-shadow-lg transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(251,191,36,0.5)]"
         />
       </div>
       <h3 className="text-3xl font-bebas tracking-wide text-white/10 text-shadow-sm text-shadow-white/20 transition-all duration-300 group-hover:from-amber-50 group-hover:via-yellow-200 group-hover:to-amber-400">

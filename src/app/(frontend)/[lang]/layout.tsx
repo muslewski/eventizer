@@ -56,9 +56,11 @@ export default async function RootLayout({
       </head>
       <body className="bg-white dark:bg-[#0B0B0D] min-h-screen h-full">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className=" px-4 sm:px-8 w-full relative transition-[padding] duration-900 ease-in-out">
-            <Header />
-            {children}
+          <main className="w-full">
+            <div className="px-4 sm:px-8 w-full relative transition-[padding] duration-900 ease-in-out">
+              <Header />
+              {children}
+            </div>
             <Footer />
           </main>
           <Toaster />

@@ -27,7 +27,7 @@ export default function MobileHeader({
       opacity: 0,
       transition: {
         type: 'spring',
-        stiffness: 400,
+        stiffness: 200,
         damping: 40,
       } as Transition,
     },
@@ -36,8 +36,8 @@ export default function MobileHeader({
       opacity: 1,
       transition: {
         type: 'spring',
-        stiffness: 300,
-        damping: 30,
+        stiffness: 200,
+        damping: 23,
         staggerChildren: 0.05,
         delayChildren: 0.1,
       } as Transition,
@@ -92,7 +92,7 @@ export default function MobileHeader({
           <div className="xl:hidden absolute rounded-b-2xl inset-0 z-40">
             {/* Backdrop */}
             <motion.div
-              className="absolute inset-0 bg-black/20"
+              className="absolute inset-0"
               variants={backdropVariants}
               initial="closed"
               animate="open"
@@ -103,8 +103,8 @@ export default function MobileHeader({
             {/* Menu Panel */}
             <motion.nav
               className={cn(
-                'absolute top-20 sm:top-24 rounded-b-2xl bottom-0 left-4 right-4 sm:left-8 sm:right-8 h-fit overflow-y-auto',
-                'bg-white/50 dark:bg-[#0B0B0D]/50',
+                'absolute top-20 sm:top-24 rounded-b-2xl bottom-0 left-4 right-4 sm:left-8 sm:right-8 sm:py-8 md:py-16 h-fit overflow-y-auto',
+                'bg-white/50 dark:bg-[#0B0B0D]/35',
                 'backdrop-blur-md',
                 'shadow-2xl shadow-black/20 ',
               )}
@@ -218,7 +218,7 @@ export default function MobileHeader({
 
               {/* Settings Section */}
               <motion.div
-                className="mx-4 px-5 py-4 rounded-2xl max-w-sm flex flex-col items-center bg-background border border-primary/5"
+                className="mx-4 px-5 py-4 rounded-2xl max-w-sm flex flex-col items-center bg-background/15 border border-primary/5"
                 variants={itemVariants}
               >
                 <p className="text-xs font-medium uppercase tracking-widest text-primary/40 mb-4">
