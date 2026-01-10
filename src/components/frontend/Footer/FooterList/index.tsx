@@ -20,10 +20,10 @@ export default function FooterList({
       <ul className="flex flex-col gap-2">
         {linkItems.map((item) => (
           <li key={item.href} className={cn(item.todo && 'opacity-50 cursor-not-allowed')}>
-            <Button variant="link" disabled={item.todo} asChild>
+            <Button variant="link" className="h-fit" disabled={item.todo} asChild>
               <Link href={item.href} prefetch>
                 {item.todo && <ConstructionIcon />}
-                <span className="max-w-2">{item.label}</span>
+                <span className="max-w-42 h-fit text-wrap">{item.label}</span>
               </Link>
             </Button>
           </li>
