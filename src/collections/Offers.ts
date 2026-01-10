@@ -305,6 +305,21 @@ export const Offers: CollectionConfig = {
               },
               required: true,
             },
+            {
+              name: 'address',
+              type: 'text',
+              label: {
+                en: 'Address',
+                pl: 'Adres',
+              },
+              admin: {
+                description: {
+                  en: 'Optional address related to the offer.',
+                  pl: 'Opcjonalny adres związany z ofertą.',
+                },
+              },
+              required: false,
+            },
           ],
           label: {
             en: 'Content',
