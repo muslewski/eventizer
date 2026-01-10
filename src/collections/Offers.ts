@@ -354,6 +354,8 @@ export const Offers: CollectionConfig = {
         },
       ],
     },
-    slugField({ useAsSlug: 'title' }),
+    slugField({
+      useAsSlug: 'title',
+    }),
   ],
 }

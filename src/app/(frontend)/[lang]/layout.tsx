@@ -55,7 +55,7 @@ export default async function RootLayout({
         <link rel="manifest" href="/my-favicon/manifest.json" />
       </head>
       <body className="bg-white dark:bg-[#0B0B0D] min-h-screen h-full">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <main className="w-full">
             <div className="px-4 sm:px-8 w-full relative transition-[padding] duration-900 ease-in-out">
               <Header />
