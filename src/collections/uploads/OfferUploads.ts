@@ -1,12 +1,6 @@
-import {
-  moderatorOrHigher,
-  moderatorOrHigherOrSelf,
-  providerOrHigher,
-  publicAccess,
-} from '@/access'
-import { isClientRoleEqual, isClientRoleEqualOrHigher } from '@/access/utilities'
+import { moderatorOrHigherOrSelf, publicAccess } from '@/access'
+import { isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
-import { meta } from 'better-auth'
 import { ClientUser } from 'node_modules/payload/dist/auth/types'
 import { CollectionConfig } from 'payload'
 

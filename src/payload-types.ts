@@ -520,8 +520,6 @@ export interface Offer {
 export interface OfferUpload {
   id: number;
   title: string;
-  description: string;
-  offer: number | Offer;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -1279,8 +1277,6 @@ export interface ProfilePicturesSelect<T extends boolean = true> {
  */
 export interface OfferUploadsSelect<T extends boolean = true> {
   title?: T;
-  description?: T;
-  offer?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
