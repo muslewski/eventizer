@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="w-full relative h-fit bg-linear-to-br from-stone-100 dark:from-[#1A1A1A] to-stone-300 dark:to-[#0A0A0A] flex flex-col gap-16 py-16 px-8 sm:px-16 shadow-inner shadow-stone-500 dark:shadow-stone-900">
+    <footer className="w-full relative h-fit bg-linear-to-br from-stone-100 dark:from-[#1A1A1A] to-stone-300 dark:to-[#0A0A0A] flex flex-col gap-16 py-16 mt-16 px-8 sm:px-16 shadow-inner shadow-stone-500 dark:shadow-stone-900">
       {/* Absolute line gradient top */}
       <div className="absolute top-0 left-0 w-full h-0.5 bg-linear-to-r from-stone-300/20 dark:from-stone-950 via-stone-200 dark:via-stone-400/50 to-stone-300/20 dark:to-stone-950 " />
 
