@@ -1,4 +1,5 @@
 import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
@@ -17,41 +18,36 @@ export interface UserSubscriptionData {
 }
 
 async function getUserSubscriptionData(): Promise<UserSubscriptionData> {
-  try {
-    const headersList = await headers()
-    const session = await auth.api.getSession({ headers: headersList })
+  const headersList = await headers()
+  const session = await auth.api.getSession({ headers: headersList })
 
-    if (!session?.user) {
-      return { userId: null, role: null, subscriptionStatus: null }
-    }
+  if (!session?.user) {
+    redirect('/auth/sign-in')
+  }
 
-    // Get user from Payload to get the role
-    const payload = await getPayload({ config })
-    const users = await payload.find({
-      collection: 'users',
-      where: { email: { equals: session.user.email } },
-      limit: 1,
-    })
+  // Get user from Payload to get the role
+  const payload = await getPayload({ config })
+  const users = await payload.find({
+    collection: 'users',
+    where: { email: { equals: session.user.email } },
+    limit: 1,
+  })
 
-    const user = users.docs[0]
-    if (!user) {
-      return { userId: null, role: null, subscriptionStatus: null }
-    }
+  const user = users.docs[0]
+  if (!user) {
+    redirect('/auth/sign-in')
+  }
 
-    // Only check subscription for service providers
-    let subscriptionStatus: SubscriptionStatus | null = null
-    if (user.role === 'service-provider') {
-      subscriptionStatus = await checkSubscription(user.id)
-    }
+  // Only check subscription for service providers
+  let subscriptionStatus: SubscriptionStatus | null = null
+  if (user.role === 'service-provider') {
+    subscriptionStatus = await checkSubscription(user.id)
+  }
 
-    return {
-      userId: user.id,
-      role: user.role,
-      subscriptionStatus,
-    }
-  } catch (error) {
-    console.error('Error getting user subscription data:', error)
-    return { userId: null, role: null, subscriptionStatus: null }
+  return {
+    userId: user.id,
+    role: user.role,
+    subscriptionStatus,
   }
 }
 

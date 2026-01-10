@@ -80,6 +80,10 @@ export const plugins: Plugin[] = [
       },
     ],
     webhooks: {
+      // Hey so sometimes we have already created customer in stripe yet we don't have him in payload, so then we should make sure to at least truck him by subscription. Or not.
+      // 'customer.subscription.created': async ({ event, payload }) => {
+      //   const subscription = event.data.object as { id: string; customer: string }
+      // },
       'customer.deleted': async ({ event, payload }) => {
         const customer = event.data.object as { id: string }
 

@@ -103,11 +103,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     routes: {
-      login: '/auth/sign-in',
-      createFirstUser: '/auth/sign-up',
-      forgot: '/auth/forgot-password',
-      reset: '/auth/reset-password',
-      logout: '/auth/sign-out',
+      login: '/redirect-to-sign-in',
+      createFirstUser: '/redirect-to-sign-in',
+      forgot: '/redirect-to-sign-in',
+      reset: '/redirect-to-sign-in',
+      logout: '/sign-out',
     },
   },
 

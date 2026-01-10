@@ -13,7 +13,7 @@ export const HighImpactHeroClient: React.FC<{ children: React.ReactNode }> = ({ 
 
   return (
     <div
-      className="h-[calc(100vh-64px)] rounded-2xl overflow-hidden py-16 px-8 sm:px-16 relative"
+      className="h-[calc(100vh-64px)] rounded-2xl overflow-hidden py-16 -mt-8 px-8 sm:px-16 relative"
       data-theme="dark"
     >
       {children}

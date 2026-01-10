@@ -35,7 +35,7 @@ export default function Header() {
   ]
 
   return (
-    <header className="rounded-t-2xl h-16 relative z-20 top-16 w-full border-b border-white/20 bg-black/5 backdrop-blur-md flex justify-between items-center px-8 gap-8">
+    <header className="rounded-t-2xl h-16 relative z-20 top-8 w-full border-b border-white/20 bg-black/5 backdrop-blur-md flex justify-between items-center px-8 gap-8">
       {/* Eventizer Logo */}
       <HeaderLogo />
 

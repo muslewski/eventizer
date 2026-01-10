@@ -1,4 +1,4 @@
-import { EmailVerificationTemplate } from '@/auth/email/email-verification-template'
+import { EmailPasswordResetTemplate, EmailVerificationTemplate } from '@/auth/email/email-template'
 import React from 'react'
 import { Resend } from 'resend'
 
@@ -44,5 +44,17 @@ export function sendVerificationEmail(
     subject: 'Zweryfikuj swój email',
     react: EmailVerificationTemplate({ userName: user.name || 'Użytkowniku', url }),
     text: `Witaj ${user.name || 'Użytkowniku'},\n\nKliknij poniższy link, aby zweryfikować swój adres email:\n\n${url}\n\nEventizer`,
+  })
+}
+
+export function sendResetPasswordEmail(
+  user: { email: string; name?: string | null },
+  url: string,
+): void {
+  sendEmail({
+    to: user.email,
+    subject: 'Resetuj swoje hasło',
+    react: EmailPasswordResetTemplate({ userName: user.name || 'Użytkowniku', url }),
+    text: `Witaj ${user.name || 'Użytkowniku'},\n\nKliknij poniższy link, aby zresetować swoje hasło:\n\n${url}\n\nEventizer`,
   })
 }

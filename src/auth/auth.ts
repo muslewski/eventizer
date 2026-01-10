@@ -3,7 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import * as schema from '@/payload-generated-schema'
 import { sql } from '@vercel/postgres'
 import { drizzle } from 'drizzle-orm/vercel-postgres'
-import { sendVerificationEmail } from '@/auth/email/sendEmail'
+import { sendResetPasswordEmail, sendVerificationEmail } from '@/auth/email/sendEmail'
 
 // Create a direct drizzle connection for Better Auth
 const db = drizzle(sql)
@@ -31,14 +31,15 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      void sendResetPasswordEmail(user, url)
+    },
   },
   emailVerification: {
     sendOnSignUp: true,
     sendOnSignIn: true, // Added missing comma here
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      console.log('SEND VERIFICATION EMAIL')
-
       void sendVerificationEmail(user, url)
     },
   },

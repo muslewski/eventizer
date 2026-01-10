@@ -18,7 +18,7 @@ export const MediumImpactHero: React.FC<
 }) => {
   return (
     <MediumImpactHeroClient>
-      <div className="h-full w-1/2 rounded-2xl overflow-hidden relative py-16 px-8 sm:px-16">
+      <div className="h-full w-1/2 rounded-2xl overflow-hidden relative py-16 px-8 sm:px-16 bg-[#0B0B0D]">
         <Background backgroundImage={backgroundImage} />
         <Content
           links={links}

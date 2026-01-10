@@ -53,9 +53,9 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/my-favicon/apple-icon.png" />
         <link rel="manifest" href="/my-favicon/manifest.json" />
       </head>
-      <body className="bg-white dark:bg-[#0B0B0D]">
+      <body className="bg-white dark:bg-[#0B0B0D] min-h-screen h-full">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className=" -mt-8 px-8 w-full relative">
+          <main className=" px-8 w-full relative">
             <Header />
             {children}
           </main>

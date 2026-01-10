@@ -1,12 +1,14 @@
 'use client'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { UserSubscriptionData } from './index'
 
 const PATH_TO_SERVICE_PROVIDER_ONBOARDING = '/app/onboarding/service-provider'
 const PATH_TO_APP = '/app'
 const PATH_TO_ACCOUNT = '/app/account'
+const PATH_TO_SIGN_IN = '/auth/sign-in'
+const PATH_REDIRECT_TO_SIGN_IN = '/app/redirect-to-sign-in'
 
 export interface AdminLayoutClientProps {
   children: React.ReactNode
@@ -17,15 +19,33 @@ export function AdminLayoutClient({ children, userSubscriptionData }: AdminLayou
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
+  const isRedirectingToSignIn = useRef(false)
 
-  const { role, subscriptionStatus } = userSubscriptionData
+  const { userId, role, subscriptionStatus } = userSubscriptionData
 
   useEffect(() => {
+    // If on redirect-to-sign-in page, just go to sign-in immediately
+    if (pathname.startsWith(PATH_REDIRECT_TO_SIGN_IN)) {
+      if (!isRedirectingToSignIn.current) {
+        isRedirectingToSignIn.current = true
+        window.location.href = PATH_TO_SIGN_IN
+      }
+      return
+    }
+
+    // If no user, redirect to sign-in
+    if (!userId) {
+      if (!isRedirectingToSignIn.current) {
+        isRedirectingToSignIn.current = true
+        window.location.href = PATH_TO_SIGN_IN
+      }
+      return
+    }
+
     const isOnOnboardingPath = pathname.startsWith(PATH_TO_SERVICE_PROVIDER_ONBOARDING)
     const isEditMode = searchParams.get('edit') === 'true'
 
     // If on onboarding page but a client, redirect to account
-    // (unless they're in the process of becoming a service provider - handled by the action)
     if (isOnOnboardingPath && role === 'client') {
       router.replace(PATH_TO_ACCOUNT)
       return
@@ -43,11 +63,15 @@ export function AdminLayoutClient({ children, userSubscriptionData }: AdminLayou
     }
 
     // If not on onboarding page and no active subscription, redirect to onboarding
-    // This catches new service providers who need to complete onboarding
     if (!isOnOnboardingPath && !hasActiveSubscription) {
       router.replace(PATH_TO_SERVICE_PROVIDER_ONBOARDING)
     }
-  }, [role, subscriptionStatus, pathname, router, searchParams])
+  }, [userId, role, subscriptionStatus, pathname, router, searchParams])
+
+  // Don't render anything while redirecting unauthenticated users
+  if (!userId || pathname.startsWith(PATH_REDIRECT_TO_SIGN_IN)) {
+    return null
+  }
 
   return <>{children}</>
 }

@@ -23,22 +23,16 @@ export default async function AuthPage({
 
   return (
     <AuthView
+      view="RESET_PASSWORD"
       path={path}
-      view="SIGN_IN"
-      redirectTo="/app#service-provider"
       socialLayout="horizontal"
       localization={{
-        SIGN_UP: dict.auth.signUp,
-        SIGN_IN_DESCRIPTION: dict.auth.serviceProviderSignInPage.description,
-        SIGN_UP_ACTION: dict.auth.createAccount,
-        NAME: dict.auth.name,
-        NAME_PLACEHOLDER: dict.auth.name,
-        DONT_HAVE_AN_ACCOUNT: dict.auth.dontHaveAnAccount,
-        SIGN_IN: dict.auth.signIn,
-        OR_CONTINUE_WITH: dict.auth.orContinueWith,
-        PASSWORD: dict.auth.password,
-        PASSWORD_PLACEHOLDER: dict.auth.password,
-        FORGOT_PASSWORD_LINK: dict.auth.forgotPasswordLink,
+        RESET_PASSWORD: dict.auth.resetPasswordTitle,
+        RESET_PASSWORD_DESCRIPTION: dict.auth.resetPasswordDescription,
+        NEW_PASSWORD: dict.auth.newPassword,
+        NEW_PASSWORD_PLACEHOLDER: dict.auth.newPassword,
+        RESET_PASSWORD_ACTION: dict.auth.resetPasswordAction,
+        GO_BACK: dict.auth.goBack,
       }}
       classNames={{
         base: 'bg-gradient-to-br from-white/15 via-stone-200 to-stone-100 dark:from-[#0B0B0D] dark:via-[#111114] dark:to-[#0B0B0D]',
