@@ -306,6 +306,34 @@ export const Offers: CollectionConfig = {
               required: true,
             },
             {
+              name: 'phone',
+              type: 'text',
+              label: {
+                en: 'Phone Number',
+                pl: 'Numer Telefonu',
+              },
+              admin: {
+                description: {
+                  en: 'Phone number related to the offer.',
+                  pl: 'Numer telefonu związany z ofertą.',
+                },
+              },
+            },
+            {
+              name: 'email',
+              type: 'text',
+              label: {
+                en: 'Email',
+                pl: 'Email',
+              },
+              admin: {
+                description: {
+                  en: 'Email address related to the offer.',
+                  pl: 'Adres email związany z ofertą.',
+                },
+              },
+            },
+            {
               name: 'address',
               type: 'text',
               label: {

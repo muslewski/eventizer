@@ -1,5 +1,5 @@
 import { moderatorOrHigherOrSelf, publicAccess } from '@/access'
-import { isClientRoleEqualOrHigher } from '@/access/utilities'
+import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
 import { ClientUser } from 'node_modules/payload/dist/auth/types'
 import { CollectionConfig } from 'payload'
@@ -16,21 +16,69 @@ export const OfferUploads: CollectionConfig = {
       pl: 'Pliki Ofert',
     },
   },
+  hooks: {
+    beforeChange: [
+      ({ req, operation, data }) => {
+        // Automatically set user to the current user on create
+        if (operation === 'create' && req.user) {
+          data.user = req.user.id
+        }
+        return data
+      },
+    ],
+  },
   admin: {
-    hidden: ({ user }: { user: ClientUser }) => !isClientRoleEqualOrHigher('moderator', user),
+    // hidden: ({ user }: { user: ClientUser }) => !isClientRoleEqualOrHigher('moderator', user),
     description: {
       en: 'Upload and manage files related to offers.',
       pl: 'Przesyłaj i zarządzaj plikami związanymi z ofertami.',
     },
     group: adminGroups.uploads,
+    defaultColumns: ['filename', 'user', 'updatedAt', 'createdAt'],
   },
   access: {
-    read: publicAccess,
-    create: moderatorOrHigherOrSelf('user'),
+    read: ({ req: { user } }) => {
+      // If no user, allow public read (for viewing images)
+      if (!user) return true
+
+      // Moderators and above can see all
+      if (isClientRoleEqualOrHigher('moderator', user)) return true
+
+      // Regular users only see their own uploads in lists
+      return {
+        user: {
+          equals: user.id,
+        },
+      }
+    },
+    create: publicAccess,
     update: moderatorOrHigherOrSelf('user'),
     delete: moderatorOrHigherOrSelf('user'),
   },
   fields: [
+    {
+      name: 'user',
+      type: 'relationship',
+      relationTo: 'users',
+      required: true,
+      index: true,
+      label: {
+        en: 'Uploaded By',
+        pl: 'Przesłane przez',
+      },
+      access: {
+        read: fieldRoleOrHigher('moderator'),
+        update: fieldRoleOrHigher('admin'),
+      },
+      admin: {
+        description: {
+          en: 'User who uploaded this file.',
+          pl: 'Użytkownik, który przesłał ten plik.',
+        },
+        readOnly: true,
+        condition: (data, siblingData, { user }) => isClientRoleEqualOrHigher('moderator', user),
+      },
+    },
     {
       name: 'title',
       type: 'text',

@@ -504,6 +504,18 @@ export interface Offer {
     };
     [k: string]: unknown;
   };
+  /**
+   * Phone number related to the offer.
+   */
+  phone?: string | null;
+  /**
+   * Email address related to the offer.
+   */
+  email?: string | null;
+  /**
+   * Optional address related to the offer.
+   */
+  address?: string | null;
   meta?: {
     title?: string | null;
     /**
@@ -529,6 +541,10 @@ export interface Offer {
  */
 export interface OfferUpload {
   id: number;
+  /**
+   * User who uploaded this file.
+   */
+  user?: (number | null) | User;
   title: string;
   prefix?: string | null;
   updatedAt: string;
@@ -1105,6 +1121,9 @@ export interface OffersSelect<T extends boolean = true> {
   mainImage?: T;
   categoryName?: T;
   content?: T;
+  phone?: T;
+  email?: T;
+  address?: T;
   meta?:
     | T
     | {
@@ -1290,6 +1309,7 @@ export interface ProfilePicturesSelect<T extends boolean = true> {
  * via the `definition` "offer-uploads_select".
  */
 export interface OfferUploadsSelect<T extends boolean = true> {
+  user?: T;
   title?: T;
   prefix?: T;
   updatedAt?: T;
