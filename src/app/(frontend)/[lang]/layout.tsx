@@ -3,7 +3,7 @@ import '@/styles/global.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/Theme'
 import { Bebas_Neue, Montserrat } from 'next/font/google'
-import Header from '@/components/frontend/Header'
+import Header from '@/components/frontend/Header/index.client'
 import type { Config } from '@/payload-types'
 
 type Locale = Config['locale']
@@ -55,7 +55,7 @@ export default async function RootLayout({
       </head>
       <body className="bg-white dark:bg-[#0B0B0D] min-h-screen h-full">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className=" px-8 w-full relative">
+          <main className=" px-4 sm:px-8 w-full relative transition-[padding] duration-900 ease-in-out">
             <Header />
             {children}
           </main>

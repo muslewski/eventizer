@@ -20,3 +20,7 @@
 .animate-zoom-in[style*='animation'] {
   will-change: auto;
 }
+
+.high-impact-hero {
+  transition: height 0.6s ease-in-out;
+}
