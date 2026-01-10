@@ -25,7 +25,7 @@ export default async function AuthPage({
     <AuthView
       path={path}
       view="SIGN_UP"
-      redirectTo="/app/service-provider"
+      redirectTo="/app/onboarding/service-provider"
       socialLayout="horizontal"
       localization={{
         SIGN_UP: dict.auth.signUp,
