@@ -55,16 +55,16 @@ export const OfferUploads: CollectionConfig = {
     //     pl: 'Opis',
     //   },
     // },
-    {
-      name: 'offer',
-      type: 'relationship',
-      relationTo: 'offers',
-      required: true,
-      label: {
-        en: 'Offer',
-        pl: 'Oferta',
-      },
-    },
+    // {
+    //   name: 'offer',
+    //   type: 'relationship',
+    //   relationTo: 'offers',
+    //   required: true,
+    //   label: {
+    //     en: 'Offer',
+    //     pl: 'Oferta',
+    //   },
+    // },
   ],
   upload: true,
 }
