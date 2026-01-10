@@ -46,15 +46,15 @@ export const OfferUploads: CollectionConfig = {
         pl: 'Tytuł',
       },
     },
-    {
-      name: 'description',
-      type: 'textarea',
-      required: true,
-      label: {
-        en: 'Description',
-        pl: 'Opis',
-      },
-    },
+    // {
+    //   name: 'description',
+    //   type: 'textarea',
+    //   required: true,
+    //   label: {
+    //     en: 'Description',
+    //     pl: 'Opis',
+    //   },
+    // },
     {
       name: 'offer',
       type: 'relationship',
