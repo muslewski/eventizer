@@ -24,32 +24,26 @@ export function LanguageSwitcher() {
   // Remove the current locale from the pathname
   const pathnameWithoutLocale = pathname.replace(/^\/(?:en|pl)/, '') || '/'
 
-  const switchToPolish = () => {
-    // Clear cookie to use default (Polish)
-    document.cookie = 'NEXT_LOCALE=; path=/; max-age=0'
+  const switchLocale = (locale: 'en' | 'pl') => {
+    const newPath = locale === 'en' ? `/en${pathnameWithoutLocale}` : pathnameWithoutLocale
 
-    router.push(pathnameWithoutLocale)
-    router.refresh()
+    // Set or clear cookie
+    if (locale === 'pl') {
+      document.cookie = 'NEXT_LOCALE=; path=/; max-age=0'
+    } else {
+      document.cookie = 'NEXT_LOCALE=en; path=/; max-age=31536000'
+    }
 
-    // Use window.location to trigger full navigation (runs middleware)
-    // window.location.href = pathnameWithoutLocale
-  }
-
-  const switchToEnglish = () => {
-    // Set cookie for English preference
-    document.cookie = 'NEXT_LOCALE=en; path=/; max-age=31536000'
-
-    router.push(`/en${pathnameWithoutLocale}`)
-    router.refresh()
-
-    // Use window.location to trigger full navigation (runs middleware)
-    // window.location.href = `/en${pathnameWithoutLocale}`
+    startTransition(() => {
+      router.push(newPath)
+      router.refresh()
+    })
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="blend" size="icon">
+        <Button variant="blend" size="icon" disabled={isPending}>
           <LanguagesIcon className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Switch language</span>
         </Button>
