@@ -296,6 +296,7 @@ export const Offers: CollectionConfig = {
       tabs: [
         {
           fields: [
+            // Add instruction - instrukcja przejrzystej oferty
             {
               name: 'content',
               type: 'richText',
@@ -348,6 +349,7 @@ export const Offers: CollectionConfig = {
                 },
               },
             },
+            // Disable address
             {
               name: 'address',
               type: 'text',

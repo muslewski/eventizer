@@ -24,14 +24,14 @@ export function AdminLayoutClient({ children, userSubscriptionData }: AdminLayou
   const { userId, role, subscriptionStatus } = userSubscriptionData
 
   // Set data-user-role on body for CSS targeting
-  useEffect(() => {
-    if (role) {
-      document.body.setAttribute('data-user-role', role)
-    }
-    return () => {
-      document.body.removeAttribute('data-user-role')
-    }
-  }, [role])
+  // useEffect(() => {
+  //   if (role) {
+  //     document.body.setAttribute('data-user-role', role)
+  //   }
+  //   return () => {
+  //     document.body.removeAttribute('data-user-role')
+  //   }
+  // }, [role])
 
   useEffect(() => {
     // If on redirect-to-sign-in page, just go to sign-in immediately

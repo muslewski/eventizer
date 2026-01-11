@@ -55,6 +55,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   const userSubscriptionData = await getUserSubscriptionData()
 
   return (
-    <AdminLayoutClient userSubscriptionData={userSubscriptionData}>{children}</AdminLayoutClient>
+    // <AdminLayoutClient userSubscriptionData={userSubscriptionData}>{children}</AdminLayoutClient>
+    <div id="admin-layout" data-user-role={userSubscriptionData.role ?? undefined}>
+      <AdminLayoutClient userSubscriptionData={userSubscriptionData}>{children}</AdminLayoutClient>
+    </div>
   )
 }

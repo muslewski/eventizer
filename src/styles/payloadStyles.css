@@ -178,8 +178,13 @@
     z-index: 1000;
   }
 
-  body[data-user-role='service-provider'] .localizer,
+  /* body[data-user-role='service-provider'] .localizer,
   body[data-user-role='client'] .localizer {
+    display: none;
+  } */
+
+  #admin-layout[data-user-role='service-provider'] .localizer,
+  #admin-layout[data-user-role='client'] .localizer {
     display: none;
   }
 }
