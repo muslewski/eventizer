@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useTransition } from 'react'
+import { switchLocaleAction } from '@/actions/switchLocale'
 
 import {
   DropdownMenu,
@@ -15,7 +16,6 @@ import { Button } from '@/components/ui/button'
 
 export function LanguageSwitcher() {
   const pathname = usePathname()
-  const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
   // Detect current locale from pathname
@@ -24,27 +24,10 @@ export function LanguageSwitcher() {
   // Remove the current locale from the pathname
   const pathnameWithoutLocale = pathname.replace(/^\/(?:en|pl)/, '') || '/'
 
-  const switchLocale = (locale: 'en' | 'pl') => {
-    const newPath = locale === 'en' ? `/en${pathnameWithoutLocale}` : pathnameWithoutLocale
-
-    // Set or clear cookie
-    if (locale === 'pl') {
-      document.cookie = 'NEXT_LOCALE=; path=/; max-age=0'
-    } else {
-      document.cookie = 'NEXT_LOCALE=en; path=/; max-age=31536000'
-    }
-
-    startTransition(() => {
-      router.push(newPath)
-      // router.refresh()
+  const handleSwitch = (locale: 'en' | 'pl') => {
+    startTransition(async () => {
+      await switchLocaleAction(locale, pathname)
     })
-
-    // Schedule refresh after navigation has started
-    setTimeout(() => {
-      startTransition(() => {
-        router.refresh()
-      })
-    }, 50)
   }
 
   return (
@@ -56,10 +39,10 @@ export function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => switchLocale('pl')} disabled={currentLocale === 'pl'}>
+        <DropdownMenuItem onClick={() => handleSwitch('pl')} disabled={currentLocale === 'pl'}>
           <span className="mr-1">🇵🇱 </span>Polski
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => switchLocale('en')} disabled={currentLocale === 'en'}>
+        <DropdownMenuItem onClick={() => handleSwitch('en')} disabled={currentLocale === 'en'}>
           <span className="mr-1">🇬🇧 </span>English (Coming Soon)
         </DropdownMenuItem>
       </DropdownMenuContent>
