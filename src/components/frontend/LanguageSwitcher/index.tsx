@@ -49,10 +49,10 @@ export function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={switchToPolish} disabled={currentLocale === 'pl'}>
+        <DropdownMenuItem onClick={() => switchLocale('pl')} disabled={currentLocale === 'pl'}>
           <span className="mr-1">🇵🇱 </span>Polski
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={switchToEnglish} disabled={currentLocale === 'en'}>
+        <DropdownMenuItem onClick={() => switchLocale('en')} disabled={currentLocale === 'en'}>
           <span className="mr-1">🇬🇧 </span>English (Coming Soon)
         </DropdownMenuItem>
       </DropdownMenuContent>
