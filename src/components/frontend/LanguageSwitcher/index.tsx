@@ -25,13 +25,17 @@ export function LanguageSwitcher() {
   const switchToPolish = () => {
     // Clear cookie to use default (Polish)
     document.cookie = 'NEXT_LOCALE=; path=/; max-age=0'
-    router.push(pathnameWithoutLocale)
+    // router.push(pathnameWithoutLocale)
+    // Use window.location to trigger full navigation (runs middleware)
+    window.location.href = pathnameWithoutLocale
   }
 
   const switchToEnglish = () => {
     // Set cookie for English preference
     document.cookie = 'NEXT_LOCALE=en; path=/; max-age=31536000'
-    router.push(`/en${pathnameWithoutLocale}`)
+    // router.push(`/en${pathnameWithoutLocale}`)
+    // Use window.location to trigger full navigation (runs middleware)
+    window.location.href = `/en${pathnameWithoutLocale}`
   }
 
   return (

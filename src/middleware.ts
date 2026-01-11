@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+// Tutorial about translation: https://bridger.to/payload-localization
 const LOCALES = ['pl', 'en']
 const DEFAULT_LOCALE = 'pl'
 
