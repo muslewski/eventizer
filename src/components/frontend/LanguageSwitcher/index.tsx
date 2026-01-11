@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { useTransition } from 'react'
 
 import {
   DropdownMenu,
@@ -15,6 +16,7 @@ import { Button } from '@/components/ui/button'
 export function LanguageSwitcher() {
   const pathname = usePathname()
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
 
   // Detect current locale from pathname
   const currentLocale = pathname.startsWith('/en') ? 'en' : 'pl'
@@ -25,32 +27,42 @@ export function LanguageSwitcher() {
   const switchToPolish = () => {
     // Clear cookie to use default (Polish)
     document.cookie = 'NEXT_LOCALE=; path=/; max-age=0'
-    // router.push(pathnameWithoutLocale)
+
+    startTransition(() => {
+      router.push(pathnameWithoutLocale)
+      router.refresh()
+    })
+
     // Use window.location to trigger full navigation (runs middleware)
-    window.location.href = pathnameWithoutLocale
+    // window.location.href = pathnameWithoutLocale
   }
 
   const switchToEnglish = () => {
     // Set cookie for English preference
     document.cookie = 'NEXT_LOCALE=en; path=/; max-age=31536000'
-    // router.push(`/en${pathnameWithoutLocale}`)
+
+    startTransition(() => {
+      router.push(`/en${pathnameWithoutLocale}`)
+      router.refresh()
+    })
+
     // Use window.location to trigger full navigation (runs middleware)
-    window.location.href = `/en${pathnameWithoutLocale}`
+    // window.location.href = `/en${pathnameWithoutLocale}`
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="blend" size="icon">
+        <Button variant="blend" size="icon" disabled={isPending}>
           <LanguagesIcon className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Switch language</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={switchToPolish} disabled={currentLocale === 'pl'}>
+        <DropdownMenuItem onClick={switchToPolish} disabled={currentLocale === 'pl' || isPending}>
           <span className="mr-1">🇵🇱 </span>Polski
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={switchToEnglish} disabled={currentLocale === 'en'}>
+        <DropdownMenuItem onClick={switchToEnglish} disabled={currentLocale === 'en' || isPending}>
           <span className="mr-1">🇬🇧 </span>English (Coming Soon)
         </DropdownMenuItem>
       </DropdownMenuContent>
