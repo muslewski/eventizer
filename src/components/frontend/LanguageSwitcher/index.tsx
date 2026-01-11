@@ -13,6 +13,8 @@ import {
 import { LanguagesIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 export function LanguageSwitcher() {
   const pathname = usePathname()
   const router = useRouter()
@@ -24,9 +26,12 @@ export function LanguageSwitcher() {
   // Remove the current locale from the pathname
   const pathnameWithoutLocale = pathname.replace(/^\/(?:en|pl)/, '') || '/'
 
-  const switchToPolish = () => {
+  const switchToPolish = async () => {
     // Clear cookie to use default (Polish)
     document.cookie = 'NEXT_LOCALE=; path=/; max-age=0'
+
+    // Wait for cookie to be set
+    await delay(50)
 
     startTransition(() => {
       router.push(pathnameWithoutLocale)
@@ -37,9 +42,12 @@ export function LanguageSwitcher() {
     // window.location.href = pathnameWithoutLocale
   }
 
-  const switchToEnglish = () => {
+  const switchToEnglish = async () => {
     // Set cookie for English preference
     document.cookie = 'NEXT_LOCALE=en; path=/; max-age=31536000'
+
+    // Wait for cookie to be set
+    await delay(50)
 
     startTransition(() => {
       router.push(`/en${pathnameWithoutLocale}`)
