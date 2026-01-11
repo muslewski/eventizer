@@ -36,8 +36,15 @@ export function LanguageSwitcher() {
 
     startTransition(() => {
       router.push(newPath)
-      router.refresh()
+      // router.refresh()
     })
+
+    // Schedule refresh after navigation has started
+    setTimeout(() => {
+      startTransition(() => {
+        router.refresh()
+      })
+    }, 50)
   }
 
   return (
