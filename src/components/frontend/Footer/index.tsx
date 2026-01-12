@@ -86,7 +86,7 @@ export default function Footer() {
       />
 
       {/* Subtle glow effect */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-32 bg-amber-500/5 blur-3xl pointer-events-none" />
+      {/* <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-32 bg-stone-500/5 blur-3xl pointer-events-none" /> */}
 
       {/* Main content */}
       <div className="flex flex-wrap gap-10 justify-between relative z-10">

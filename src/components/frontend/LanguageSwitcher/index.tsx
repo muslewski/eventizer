@@ -11,6 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { LanguagesIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -31,21 +32,30 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="blend" size="icon" disabled={isPending}>
-          <LanguagesIcon className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">Switch language</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => handleSwitch('pl')} disabled={currentLocale === 'pl'}>
-          <span className="mr-1">🇵🇱 </span>Polski
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => handleSwitch('en')} disabled={currentLocale === 'en'}>
-          <span className="mr-1">🇬🇧 </span>English (Coming Soon)
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <TooltipProvider>
+      <DropdownMenu>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <DropdownMenuTrigger asChild>
+              <Button variant="blend" size="icon" disabled={isPending}>
+                <LanguagesIcon className="h-[1.2rem] w-[1.2rem]" />
+                <span className="sr-only">Zmień język</span>
+              </Button>
+            </DropdownMenuTrigger>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Zmień język</p>
+          </TooltipContent>
+        </Tooltip>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => handleSwitch('pl')} disabled={currentLocale === 'pl'}>
+            <span className="mr-1">🇵🇱 </span>Polski
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => handleSwitch('en')} disabled={currentLocale === 'en'}>
+            <span className="mr-1">🇬🇧 </span>English (Coming Soon)
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </TooltipProvider>
   )
 }

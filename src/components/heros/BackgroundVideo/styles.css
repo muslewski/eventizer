@@ -3,3 +3,8 @@
     display: none;
   }
 }
+
+/* Hide video when reduce-motion class is toggled */
+.reduce-motion .hide-video-on-reduce video {
+  display: none;
+}

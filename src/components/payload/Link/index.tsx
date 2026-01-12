@@ -63,7 +63,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     return (
       <Button
         asChild
-        className={cn(className, 'h-fit')}
+        className={cn(className, 'h-fit group/cta-button')}
         size={size ?? undefined}
         variant={appearance}
       >
@@ -72,9 +72,9 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
             {label && label}
             {children && children}
             {icon && isExpandedDoc<Media>(icon) && (
-              <div className="bg-[#0B0B0D] p-3 rounded-full group-hover:scale-105 transition-transform duration-400 ease-out">
+              <div className="bg-[#0B0B0D] group-hover/cta-button:bg-stone-300/85 p-3 rounded-full group-hover:scale-105 transition-all duration-400 ease-out">
                 <Image
-                  className="invert"
+                  className="invert group-hover/cta-button:invert-0 transition-[filter] duration-400 ease-out"
                   width={20}
                   height={20}
                   src={icon.url || ''}

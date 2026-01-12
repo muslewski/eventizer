@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import type { Config } from '@/payload-types'
 import MobileHeader from '@/components/frontend/Header/MobileHeader'
+import { ReduceMotionToggle } from '@/components/frontend/Header/ReduceMotionToggle'
 
 type Locale = Config['locale']
 
@@ -71,9 +72,12 @@ export default function HeaderClient() {
             </div>
           ))}
           <div className="h-16 w-px bg-linear-to-t from-white/50 to-transparent" />
+
+          {/* Settings */}
           <div className="flex gap-6">
             <ModeToggle />
             <LanguageSwitcher />
+            <ReduceMotionToggle />
           </div>
         </nav>
 

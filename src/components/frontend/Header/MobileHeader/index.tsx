@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { ModeToggle } from '@/components/providers/Theme/ThemeSwitcher'
 import { LanguageSwitcher } from '@/components/frontend/LanguageSwitcher'
+import { ReduceMotionToggle } from '@/components/frontend/Header/ReduceMotionToggle'
 
 export default function MobileHeader({
   navLinks,
@@ -227,6 +228,7 @@ export default function MobileHeader({
                 <div className="flex items-center gap-3 *:text-primary">
                   <ModeToggle />
                   <LanguageSwitcher />
+                  <ReduceMotionToggle />
                 </div>
               </motion.div>
 
