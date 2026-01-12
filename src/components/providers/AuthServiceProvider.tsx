@@ -46,10 +46,7 @@ export function AuthServiceProvider({ children }: { children: ReactNode }) {
       navigate={router.push}
       replace={router.replace}
       social={{
-        providers: [
-          'google',
-          //  'facebook'
-        ],
+        providers: ['google', 'facebook'],
       }}
       emailVerification={true}
       optimistic={true}
