@@ -127,7 +127,7 @@
     /* Better tab sizing */
     tab-size: 4;
   }
-  ,
+
   body {
     @apply bg-background text-foreground font-montserrat;
 

@@ -31,6 +31,7 @@ const BackgroundVideo = dynamic(() => import('@/components/heros/BackgroundVideo
 
 interface BackgroundProps {
   backgroundImage: Page['hero']['backgroundImage']
+  backgroundVideo: Page['hero']['backgroundVideo']
 }
 
 // TODO:
@@ -46,7 +47,7 @@ export const Background: React.FC<BackgroundProps> = ({ backgroundImage, backgro
 
       {/* Background video that appears when loaded without bloating initial render */}
       {backgroundVideo && isExpandedDoc<Media>(backgroundVideo) && (
-        <BackgroundVideo backgroundVideo={backgroundVideo} poster={backgroundImage?.url} />
+        <BackgroundVideo backgroundVideo={backgroundVideo} />
       )}
 
       {/* Animated noise texture overlay */}
