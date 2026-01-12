@@ -85,7 +85,7 @@ export default function HeaderClient() {
         <div className="flex gap-4">
           <Button variant="golden" asChild>
             <Link href="/auth/sign-in/service-provider" prefetch>
-              Oferuj usługi
+              Panel usługodawcy
             </Link>
           </Button>
           <Button variant="blend" asChild>

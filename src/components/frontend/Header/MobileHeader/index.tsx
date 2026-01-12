@@ -245,7 +245,7 @@ export default function MobileHeader({
                       prefetch
                       onClick={() => setIsOpen(false)}
                     >
-                      Oferuj usługi
+                      Panel usługodawcy
                     </Link>
                   </Button>
                   <Button
