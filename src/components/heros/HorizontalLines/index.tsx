@@ -44,7 +44,7 @@ export const HorizontalLines: React.FC<HorizontalLinesProps> = ({ lines }) => {
       {lines.map((line, index) => (
         <div
           key={index}
-          className={`h-[calc(100%-64px)] w-full justify-end ${breakpointClasses[line.show]}`}
+          className={`h-[calc(100%-64px)]  w-full justify-end ${breakpointClasses[line.show]}`}
           style={{
             backdropFilter: line.blur ? 'blur(4px)' : undefined,
             WebkitBackdropFilter: line.blur ? 'blur(4px)' : undefined,

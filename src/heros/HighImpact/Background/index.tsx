@@ -7,6 +7,7 @@ import NoiseTexture from '@/components/heros/NoiseTexture'
 
 // Lazy load LightRays to prevent blocking initial render
 const LightRays = dynamic(() => import('@/components/react-bits/LightRays'))
+const BackgroundVideo = dynamic(() => import('@/components/heros/BackgroundVideo'))
 
 interface BackgroundProps {
   backgroundImage: Page['hero']['backgroundImage']
@@ -34,12 +35,17 @@ const lines: LineConfig[] = [
 // TODO:
 // - Add parallax effect / fixed background
 
-export const Background: React.FC<BackgroundProps> = ({ backgroundImage }) => {
+export const Background: React.FC<BackgroundProps> = ({ backgroundImage, backgroundVideo }) => {
   return (
     <>
       {/* Background image */}
       {backgroundImage && isExpandedDoc<Media>(backgroundImage) && (
         <BackgroundImage backgroundImage={backgroundImage} />
+      )}
+
+      {/* Background video that appears when loaded without bloating initial render */}
+      {backgroundVideo && isExpandedDoc<Media>(backgroundVideo) && (
+        <BackgroundVideo backgroundVideo={backgroundVideo} poster={backgroundImage?.url} />
       )}
 
       {/* Animated noise texture overlay */}

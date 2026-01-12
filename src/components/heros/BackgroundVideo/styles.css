@@ -1,0 +1,5 @@
+@media (prefers-reduced-motion: reduce) {
+  .hide-video-on-reduce video {
+    display: none;
+  }
+}

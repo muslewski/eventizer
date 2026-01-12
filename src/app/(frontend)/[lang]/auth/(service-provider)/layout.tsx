@@ -26,10 +26,24 @@ const Layout = async ({ children }: LayoutProps) => {
 
   const backgroundImage = docs[0] || null
 
+  // find background video
+  const { docs: videoDocs } = await payload.find({
+    collection: 'media',
+    where: {
+      filename: {
+        equals: 'sign-in-service-provider-background-video-compressed.mp4',
+      },
+    },
+    limit: 1,
+  })
+
+  const backgroundVideo = videoDocs[0] || null
+
   return (
     <MediumImpactHero
       title="Zarządzaj swoim kontem usługodawcy"
       backgroundImage={backgroundImage}
+      backgroundVideo={backgroundVideo}
       informationTitle1="200K+"
       informationValue1="Zarejestrowanych użytkowników"
       informationTitle2="5K+"

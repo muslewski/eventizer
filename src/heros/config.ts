@@ -60,6 +60,22 @@ export const hero: Field = {
       defaultValue: false,
     },
 
+    {
+      name: 'backgroundVideo',
+      type: 'upload',
+      relationTo: 'media',
+      label: {
+        pl: 'Wideo w tle',
+        en: 'Background Video',
+      },
+      admin: {
+        description: {
+          en: 'Optional background video to display behind the hero content. Will load after the background image to avoid impacting initial load performance.',
+          pl: 'Opcjonalne wideo w tle do wyświetlenia za treścią hero. Załaduje się po obrazie w tle, aby nie wpływać na wydajność początkowego ładowania.',
+        },
+      },
+    },
+
     // Specific for Medium Impact Hero
     {
       type: 'collapsible',

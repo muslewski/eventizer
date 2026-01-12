@@ -6,12 +6,13 @@ import { Content } from './Content'
 export const HighImpactHero: React.FC<Page['hero']> = ({
   links,
   backgroundImage,
+  backgroundVideo,
   title,
   showScrollIndicator,
 }) => {
   return (
     <HighImpactHeroClient>
-      <Background backgroundImage={backgroundImage} />
+      <Background backgroundImage={backgroundImage} backgroundVideo={backgroundVideo} />
       <Content links={links} title={title} showScrollIndicator={showScrollIndicator} />
     </HighImpactHeroClient>
   )

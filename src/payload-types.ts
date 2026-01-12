@@ -186,6 +186,10 @@ export interface Page {
       | null;
     backgroundImage?: (number | null) | Media;
     showScrollIndicator?: boolean | null;
+    /**
+     * Optional background video to display behind the hero content. Will load after the background image to avoid impacting initial load performance.
+     */
+    backgroundVideo?: (number | null) | Media;
     informationTitle1?: string | null;
     informationValue1?: string | null;
     informationTitle2?: string | null;
@@ -999,6 +1003,7 @@ export interface PagesSelect<T extends boolean = true> {
             };
         backgroundImage?: T;
         showScrollIndicator?: T;
+        backgroundVideo?: T;
         informationTitle1?: T;
         informationValue1?: T;
         informationTitle2?: T;
