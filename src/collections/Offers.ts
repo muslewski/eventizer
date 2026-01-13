@@ -51,6 +51,8 @@ export const Offers: CollectionConfig = {
   defaultPopulate: {
     title: true,
     slug: true,
+    mainImage: true,
+    categoryName: true,
     meta: {
       image: true,
     },

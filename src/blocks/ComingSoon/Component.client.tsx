@@ -4,6 +4,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { Construction, Clock, Rocket, Sparkles, Hammer, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { TitleH2 } from '@/components/frontend/Content/TitleH2'
 
 const iconMap: Record<string, LucideIcon> = {
   construction: Construction,
@@ -151,12 +152,9 @@ export const ComingSoonClient: React.FC<ComingSoonClientProps> = ({
         </motion.div>
 
         {/* Heading with Bebas font */}
-        <motion.h2
-          variants={itemVariants}
-          className="font-bebas text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-center tracking-wide leading-[0.9] mb-6"
-        >
-          {heading}
-        </motion.h2>
+        <motion.span variants={itemVariants}>
+          <TitleH2 title={heading} />
+        </motion.span>
 
         {/* Decorative line */}
         <motion.div

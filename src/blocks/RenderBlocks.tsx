@@ -11,12 +11,14 @@ import { toKebabCase } from '@/utilities/toKebabCase'
 import React, { Fragment } from 'react'
 
 import type { Page } from '../payload-types'
+import { FeaturedOffersBlock } from '@/blocks/FeaturedOffers/Component'
 
 const blockComponents = {
   //   archive: ArchiveBlock,
   banner: BannerBlock,
   //   carousel: CarouselBlock,
   comingSoon: ComingSoonBlock,
+  featuredOffers: FeaturedOffersBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   //   formBlock: FormBlock,

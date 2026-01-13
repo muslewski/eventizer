@@ -195,7 +195,7 @@ export interface Page {
     informationTitle2?: string | null;
     informationValue2?: string | null;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | BannerBlock | ComingSoonBlock)[];
+  layout: (CallToActionBlock | ContentBlock | MediaBlock | FeaturedOffersBlock | BannerBlock | ComingSoonBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -419,49 +419,18 @@ export interface MediaBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock".
+ * via the `definition` "FeaturedOffersBlock".
  */
-export interface BannerBlock {
-  style: 'info' | 'warning' | 'error' | 'success';
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ComingSoonBlock".
- */
-export interface ComingSoonBlock {
-  /**
-   * Main heading text (uses Bebas font)
-   */
+export interface FeaturedOffersBlock {
   heading: string;
-  /**
-   * Descriptive paragraph text
-   */
   description: string;
   /**
-   * Icon to display
+   * Select the offers to feature
    */
-  icon?: ('construction' | 'clock' | 'rocket' | 'sparkles' | 'hammer') | null;
+  offers: (number | Offer)[];
   id?: string | null;
   blockName?: string | null;
-  blockType: 'comingSoon';
+  blockType: 'featuredOffers';
 }
 /**
  * Manage and create service offers available to your clients. (limit 10 offers)
@@ -566,6 +535,52 @@ export interface OfferUpload {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock".
+ */
+export interface BannerBlock {
+  style: 'info' | 'warning' | 'error' | 'success';
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ComingSoonBlock".
+ */
+export interface ComingSoonBlock {
+  /**
+   * Main heading text (uses Bebas font)
+   */
+  heading: string;
+  /**
+   * Descriptive paragraph text
+   */
+  description: string;
+  /**
+   * Icon to display
+   */
+  icon?: ('construction' | 'clock' | 'rocket' | 'sparkles' | 'hammer') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'comingSoon';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1015,6 +1030,7 @@ export interface PagesSelect<T extends boolean = true> {
         cta?: T | CallToActionBlockSelect<T>;
         content?: T | ContentBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
+        featuredOffers?: T | FeaturedOffersBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
         comingSoon?: T | ComingSoonBlockSelect<T>;
       };
@@ -1090,6 +1106,17 @@ export interface ContentBlockSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturedOffersBlock_select".
+ */
+export interface FeaturedOffersBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  offers?: T;
   id?: T;
   blockName?: T;
 }
