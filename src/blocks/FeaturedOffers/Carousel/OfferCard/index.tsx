@@ -8,6 +8,8 @@ import { CMSLink } from '@/components/payload/Link'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import { useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 /**
  * Extracts the last segment from a category path.
@@ -26,6 +28,7 @@ interface OfferCardProps {
 }
 
 export default function OfferCarouselCard({ offer, isActive }: OfferCardProps) {
+  const [isLoaded, setIsLoaded] = useState(false)
   const mainImage = isExpandedDoc<OfferUpload>(offer.mainImage) ? offer.mainImage : null
   return (
     <Card
@@ -36,17 +39,19 @@ export default function OfferCarouselCard({ offer, isActive }: OfferCardProps) {
     >
       {/* Image wrapper with its own overflow hidden */}
       <div className="absolute inset-0 -z-10 overflow-hidden rounded-xl">
+        {/* Skeleton placeholder */}
+        {!isLoaded && <Skeleton className="absolute inset-0 w-full h-full rounded-xl" />}
         <Image
           src={mainImage?.url || '/placeholder-image.png'}
           alt={offer.title || 'Offer Image'}
           fill
           priority={isActive}
           sizes="(max-width: 768px) 66vw, (max-width: 1280px) 50vw, 33vw"
-          className="object-cover transition-all duration-500 ease-out transform-gpu
-                          group-hover/featured-offer:scale-110 
-                          group-hover/featured-offer:rotate-2 
-                          group-hover/featured-offer:contrast-110
-                          group-hover/featured-offer:hue-rotate-[-12deg]"
+          onLoad={() => setIsLoaded(true)}
+          className={cn(
+            'object-cover transition-all duration-500 ease-out transform-gpu group-hover/featured-offer:scale-110 group-hover/featured-offer:rotate-2 group-hover/featured-offer:contrast-110 group-hover/featured-offer:hue-rotate-[-12deg]',
+            isLoaded ? 'opacity-100 zoom-in' : 'opacity-0',
+          )}
         />
 
         {/* Gradient overlay with smoother blend */}

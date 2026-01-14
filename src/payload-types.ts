@@ -608,6 +608,11 @@ export interface HowItWorksBlock {
       description: string;
       media?: (number | null) | Media;
     };
+    step3: {
+      header: string;
+      description: string;
+      media?: (number | null) | Media;
+    };
   };
   serviceProvider: {
     step1: {
@@ -616,6 +621,11 @@ export interface HowItWorksBlock {
       media?: (number | null) | Media;
     };
     step2: {
+      header: string;
+      description: string;
+      media?: (number | null) | Media;
+    };
+    step3: {
       header: string;
       description: string;
       media?: (number | null) | Media;
@@ -1209,6 +1219,13 @@ export interface HowItWorksBlockSelect<T extends boolean = true> {
               description?: T;
               media?: T;
             };
+        step3?:
+          | T
+          | {
+              header?: T;
+              description?: T;
+              media?: T;
+            };
       };
   serviceProvider?:
     | T
@@ -1221,6 +1238,13 @@ export interface HowItWorksBlockSelect<T extends boolean = true> {
               media?: T;
             };
         step2?:
+          | T
+          | {
+              header?: T;
+              description?: T;
+              media?: T;
+            };
+        step3?:
           | T
           | {
               header?: T;

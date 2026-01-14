@@ -79,7 +79,7 @@ export const HowItWorks: Block = {
             en: 'Client',
             pl: 'Klient',
           },
-          fields: [createStepGroup(1), createStepGroup(2)],
+          fields: [createStepGroup(1), createStepGroup(2), createStepGroup(3)],
         },
         {
           name: 'serviceProvider',
@@ -87,7 +87,7 @@ export const HowItWorks: Block = {
             en: 'Service Provider',
             pl: 'Usługodawca',
           },
-          fields: [createStepGroup(1), createStepGroup(2)],
+          fields: [createStepGroup(1), createStepGroup(2), createStepGroup(3)],
         },
       ],
     },
