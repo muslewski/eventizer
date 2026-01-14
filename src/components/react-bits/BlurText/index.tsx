@@ -1,5 +1,6 @@
 'use client'
 
+import { cn } from '@/lib/utils'
 import { motion, Transition, Easing } from 'motion/react'
 import { useEffect, useRef, useState, useMemo } from 'react'
 
@@ -16,6 +17,7 @@ type BlurTextProps = {
   easing?: Easing | Easing[]
   onAnimationComplete?: () => void
   stepDuration?: number
+  align?: 'left' | 'center' | 'right'
 }
 
 const buildKeyframes = (
@@ -44,6 +46,7 @@ const BlurText: React.FC<BlurTextProps> = ({
   easing = (t: number) => t,
   onAnimationComplete,
   stepDuration = 0.35,
+  align,
 }) => {
   const words = text.split(' ')
   const [inView, setInView] = useState(false)
@@ -97,7 +100,14 @@ const BlurText: React.FC<BlurTextProps> = ({
   let letterIndex = 0
 
   return (
-    <p ref={ref} className={`blur-text ${className} flex flex-wrap`}>
+    <p
+      ref={ref}
+      className={cn(`blur-text ${className} flex flex-wrap`, {
+        'justify-center': align === 'center',
+        'justify-end': align === 'right',
+        'justify-start': align === 'left' || !align,
+      })}
+    >
       {words.map((word, wordIndex) => {
         const letters = word.split('')
 

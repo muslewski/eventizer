@@ -62,17 +62,20 @@ export const Background: React.FC<BackgroundProps> = ({ backgroundImage, backgro
       {/* Accent color glow */}
       <div className="absolute bottom-0 left-5/6 sm:left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px] opacity-50 " />
 
-      <LightRays
-        raysOrigin="top-center"
-        raysColor="#ffffff"
-        raysSpeed={1.5}
-        lightSpread={0.8}
-        rayLength={1}
-        followMouse={true}
-        mouseInfluence={0.1}
-        noiseAmount={0.1}
-        distortion={0.05}
-      />
+      {/* Light rays - hidden on mobile for performance */}
+      <div className="hidden md:block">
+        <LightRays
+          raysOrigin="top-center"
+          raysColor="#ffffff"
+          raysSpeed={1.5}
+          lightSpread={0.8}
+          rayLength={1}
+          followMouse={true}
+          mouseInfluence={0.1}
+          noiseAmount={0.1}
+          distortion={0.05}
+        />
+      </div>
     </>
   )
 }

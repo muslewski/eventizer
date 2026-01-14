@@ -1,7 +1,7 @@
 import type { Page } from '@/payload-types'
 import { CMSLink } from '@/components/payload/Link'
 import { ArrowDown } from 'lucide-react'
-import Header from '@/heros/HighImpact/Content/Header'
+import Header from '@/components/heros/Header'
 
 interface ContentProps {
   links: Page['hero']['links']

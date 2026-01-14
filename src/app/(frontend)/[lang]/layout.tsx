@@ -45,7 +45,7 @@ export default async function RootLayout({
     <html
       lang={lang}
       suppressHydrationWarning
-      className={`${bebasNeue.variable} ${montserrat.variable}`}
+      className={`${bebasNeue.variable} ${montserrat.variable} overflow-x-hidden`}
     >
       <head>
         <link rel="icon" type="image/png" href="/my-favicon/icon-1.png" sizes="96x96" />
@@ -54,7 +54,7 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/my-favicon/apple-icon.png" />
         <link rel="manifest" href="/my-favicon/manifest.json" />
       </head>
-      <body className="bg-white dark:bg-[#0B0B0D] min-h-screen h-full">
+      <body className="bg-background min-h-screen h-full">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <main className="w-full">
             <div className="px-4 sm:px-8 w-full relative transition-[padding] duration-900 ease-in-out">

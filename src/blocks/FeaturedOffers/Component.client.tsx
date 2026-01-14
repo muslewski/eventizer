@@ -1,35 +1,16 @@
-import { Offer, OfferUpload } from '@/payload-types'
+'use client'
 
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
+import { Offer } from '@/payload-types'
+
 import { TitleH2 } from '@/components/frontend/Content/TitleH2'
 import { Badge } from '@/components/ui/badge'
-import { isExpandedDoc } from '@/lib/isExpandedDoc'
-import Image from 'next/image'
-import { CMSLink } from '@/components/payload/Link'
+import OffersCarousel from '@/blocks/FeaturedOffers/Carousel/index'
 
 interface FeaturedOffersClientProps {
   heading: string
   description: string
   offers: Offer[]
   className?: string
-}
-
-/**
- * Extracts the last segment from a category path.
- * Example: "Muzyka i rozrywka → DJ" returns "DJ"
- */
-export function getCategoryLabel(categoryName: string | null | undefined): string {
-  if (!categoryName) return 'Brak kategorii'
-
-  const parts = categoryName.split('→')
-  return parts[parts.length - 1].trim()
 }
 
 export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
@@ -65,7 +46,7 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
         <div className="text-center flex flex-col items-center gap-6">
           <Badge variant="golden">Wyróżnione Oferty</Badge>
           <div className="flex flex-col items-center">
-            <TitleH2 title={heading} />
+            <TitleH2 align="center" title={heading} />
             <p>{description}</p>
           </div>
         </div>
@@ -80,48 +61,7 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
 
       {/* Carousel of Featured Offers */}
       <div className="w-full flex items-center justify-center relative">
-        <Carousel className="w-5/6">
-          <CarouselContent>
-            {offers.map((offer, index) => {
-              const mainImage = isExpandedDoc<OfferUpload>(offer.mainImage) ? offer.mainImage : null
-
-              return (
-                <CarouselItem key={`${offer.id}-${index}`} className="basis-1/2 lg:basis-1/3">
-                  <Card className="bg-transparent rounded-xl h-124 relative overflow-hidden group/featured-offer isolate will-change-transform transform-gpu">
-                    {/* Image wrapper with its own overflow hidden */}
-                    <div className="absolute inset-0 -z-10 overflow-hidden rounded-xl">
-                      <Image
-                        src={mainImage?.url || '/placeholder-image.png'}
-                        alt={'Offer Image'}
-                        fill
-                        className="object-cover transition-all duration-500 ease-out transform-gpu
-                          group-hover/featured-offer:scale-110 
-                          group-hover/featured-offer:rotate-2 
-                          //group-hover/featured-offer:blur-[10px] 
-                          group-hover/featured-offer:contrast-110 
-                          group-hover/featured-offer:saturate-110"
-                      />
-                      <div className="bg-linear-to-br from-transparent via-black/25 to-black/75 absolute inset-0 z-0" />
-                    </div>
-                    <CardHeader>
-                      <Badge variant="default">{getCategoryLabel(offer.categoryName)}</Badge>
-                      <p className="font-bebas mix-blend-overlay transition-all group-hover/featured-offer:mix-blend-lighten text-2xl sm:text-3xl lg:text-4xl xl:text-5xl">
-                        {offer.title}
-                      </p>
-                    </CardHeader>
-                    <CardFooter className="absolute bottom-6 left-0">
-                      <CMSLink type="custom" url={`/offers/${offer.slug}`} appearance="cta">
-                        Poznaj ofertę
-                      </CMSLink>
-                    </CardFooter>
-                  </Card>
-                </CarouselItem>
-              )
-            })}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+        <OffersCarousel offers={offers} />
       </div>
     </div>
   )

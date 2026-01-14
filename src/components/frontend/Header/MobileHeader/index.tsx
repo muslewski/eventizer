@@ -105,7 +105,7 @@ export default function MobileHeader({
             <motion.nav
               className={cn(
                 'absolute top-20 sm:top-24 rounded-b-2xl bottom-0 left-4 right-4 sm:left-8 sm:right-8 sm:py-8 md:py-16 h-fit overflow-y-auto',
-                'bg-white/50 dark:bg-[#0B0B0D]/35',
+                'bg-background/50 dark:bg-background/35',
                 'backdrop-blur-md',
                 'shadow-2xl shadow-black/20 ',
               )}
