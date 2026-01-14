@@ -6,6 +6,7 @@ import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
+import type { LinkProps } from 'next/link'
 
 type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
@@ -20,8 +21,9 @@ type CMSLinkType = {
   size?: ButtonProps['size'] | null
   icon?: Media | number | null
   type?: 'custom' | 'reference' | null
+  scrollToTop?: boolean
   url?: string | null
-}
+} & Omit<LinkProps, 'href'>
 
 export const CMSLink: React.FC<CMSLinkType> = (props) => {
   const {
@@ -35,6 +37,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     reference,
     size: sizeFromProps,
     url,
+    ...rest
   } = props
 
   const href =
@@ -52,7 +55,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   /* Ensure we don't break any styles set by richText */
   if (appearance === 'inline') {
     return (
-      <Link className={cn(className)} href={href} {...newTabProps}>
+      <Link className={cn(className)} href={href} {...newTabProps} {...rest}>
         {label && label}
         {children && children}
       </Link>
@@ -67,7 +70,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
         size={size ?? undefined}
         variant={appearance}
       >
-        <Link className={cn(className)} href={href} {...newTabProps}>
+        <Link className={cn(className)} href={href} {...newTabProps} {...rest}>
           <div
             className={cn(
               'flex transition-all duration-300 ease-out items-center gap-2 bg-black/50 group-hover/cta-button:bg-black/70 rounded-full border text-white border-black h-fit w-fit px-4 group-hover:px-5 py-2 backface-hidden',
@@ -100,7 +103,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
       size={size ?? undefined}
       variant={appearance}
     >
-      <Link className={cn(className)} href={href} {...newTabProps}>
+      <Link className={cn(className)} href={href} {...newTabProps} {...rest}>
         {label && label}
         {children && children}
         {icon && isExpandedDoc<Media>(icon) && (
