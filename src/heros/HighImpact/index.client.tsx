@@ -16,7 +16,7 @@ export const HighImpactHeroClient: React.FC<{ children: React.ReactNode }> = ({ 
     <div className="h-screen">
       {/* Bottom filler pattern - only visible on iOS when browser tools affect viewport */}
       <div
-        className="absolute block top-[calc(82vh)] left-0 right-0 h-32 bg-linear-to-t from-background to-transparent pointer-events-none"
+        className="absolute block sm:hidden top-[calc(82vh)] left-0 right-0 h-32 bg-linear-to-t from-background to-transparent pointer-events-none"
         aria-hidden="true"
       >
         <div className="absolute bottom-0 inset-0 opacity-20 bg-radial from-foreground via-transparent to-transparent" />
