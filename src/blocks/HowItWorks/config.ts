@@ -1,61 +1,42 @@
 import type { Block, Field } from 'payload'
 
-const stepFields: Field[] = [
-  {
-    name: 'stepOneHeader',
-    type: 'text',
-    required: true,
-    label: {
-      en: 'Step 1 Header',
-      pl: 'Nagłówek kroku 1',
-    },
+const createStepGroup = (stepNumber: number): Field => ({
+  name: `step${stepNumber}`,
+  type: 'group',
+  label: {
+    en: `Step ${stepNumber}`,
+    pl: `Krok ${stepNumber}`,
   },
-  {
-    name: 'stepOneDescription',
-    type: 'textarea',
-    required: true,
-    label: {
-      en: 'Step 1 Description',
-      pl: 'Opis kroku 1',
+  fields: [
+    {
+      name: 'header',
+      type: 'text',
+      required: true,
+      label: {
+        en: 'Header',
+        pl: 'Nagłówek',
+      },
     },
-  },
-  {
-    name: 'stepOneMedia',
-    type: 'upload',
-    relationTo: 'media',
-    label: {
-      en: 'Step 1 Media',
-      pl: 'Media kroku 1',
+    {
+      name: 'description',
+      type: 'textarea',
+      required: true,
+      label: {
+        en: 'Description',
+        pl: 'Opis',
+      },
     },
-  },
-  {
-    name: 'stepTwoHeader',
-    type: 'text',
-    required: true,
-    label: {
-      en: 'Step 2 Header',
-      pl: 'Nagłówek kroku 2',
+    {
+      name: 'media',
+      type: 'upload',
+      relationTo: 'media',
+      label: {
+        en: 'Media',
+        pl: 'Media',
+      },
     },
-  },
-  {
-    name: 'stepTwoDescription',
-    type: 'textarea',
-    required: true,
-    label: {
-      en: 'Step 2 Description',
-      pl: 'Opis kroku 2',
-    },
-  },
-  {
-    name: 'stepTwoMedia',
-    type: 'upload',
-    relationTo: 'media',
-    label: {
-      en: 'Step 2 Media',
-      pl: 'Media kroku 2',
-    },
-  },
-]
+  ],
+})
 
 export const HowItWorks: Block = {
   slug: 'howItWorks',
@@ -98,10 +79,7 @@ export const HowItWorks: Block = {
             en: 'Client',
             pl: 'Klient',
           },
-          fields: stepFields.map((field) => ({
-            ...field,
-            name: `client${field.name.charAt(0).toUpperCase()}${field.name.slice(1)}`,
-          })),
+          fields: [createStepGroup(1), createStepGroup(2)],
         },
         {
           name: 'serviceProvider',
@@ -109,10 +87,7 @@ export const HowItWorks: Block = {
             en: 'Service Provider',
             pl: 'Usługodawca',
           },
-          fields: stepFields.map((field) => ({
-            ...field,
-            name: `serviceProvider${field.name.charAt(0).toUpperCase()}${field.name.slice(1)}`,
-          })),
+          fields: [createStepGroup(1), createStepGroup(2)],
         },
       ],
     },

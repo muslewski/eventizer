@@ -9,7 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        cta: 'border border-dashed border-white/15 p-1.5 bg-white/5 rounded-full hover:bg-white/10 group transition-all duration-300 ease-out sm:text-md text-sm shadow-lg shadow-white/5 hover:shadow-white/10 backdrop-blur-sm transform-gpu',
+        cta: 'border border-dashed border-white/15 p-1.5 bg-white/5 rounded-full! hover:bg-white/10 group transition-all duration-300 ease-out sm:text-md text-sm shadow-lg shadow-white/5 hover:shadow-white/10 backdrop-blur-sm transform-gpu',
         golden:
           'dark:bg-[#0B0B0D]/75 bg-white/75 hover:bg-white dark:hover:bg-black/90 border border-[#7D6F35]',
         blend: 'bg-white/10 inset-shadow-xs inset-shadow-black/50 text-white hover:bg-white/20 ',

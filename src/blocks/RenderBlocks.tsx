@@ -12,6 +12,7 @@ import React, { Fragment } from 'react'
 
 import type { Page } from '../payload-types'
 import { FeaturedOffersBlock } from '@/blocks/FeaturedOffers/Component'
+import { HowItWorksBlock } from '@/blocks/HowItWorks/Component'
 
 const blockComponents = {
   //   archive: ArchiveBlock,
@@ -19,6 +20,7 @@ const blockComponents = {
   //   carousel: CarouselBlock,
   comingSoon: ComingSoonBlock,
   featuredOffers: FeaturedOffersBlock,
+  howItWorks: HowItWorksBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   //   formBlock: FormBlock,

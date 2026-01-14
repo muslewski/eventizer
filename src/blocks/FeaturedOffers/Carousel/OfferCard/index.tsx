@@ -30,7 +30,7 @@ export default function OfferCarouselCard({ offer, isActive }: OfferCardProps) {
   return (
     <Card
       className={cn(
-        'bg-transparent rounded-xl h-96 md:h-124 relative overflow-hidden group/featured-offer isolate will-change-transform transform-gpu duration-500 transition-all',
+        'bg-transparent rounded-xl h-80 sm:h-96 md:h-124 relative overflow-hidden group/featured-offer isolate will-change-transform transform-gpu duration-500 transition-all',
         isActive ? 'scale-100 opacity-100' : 'scale-95 opacity-70',
       )}
     >
@@ -63,7 +63,7 @@ export default function OfferCarouselCard({ offer, isActive }: OfferCardProps) {
         </Link>
       </CardHeader>
       <CardFooter className="absolute bottom-6 left-0">
-        <CMSLink type="custom" url={`/offers/${offer.slug}`} appearance="cta">
+        <CMSLink type="custom" url={`/offers/${offer.slug}`} appearance="cta" size="sm">
           Poznaj ofertę
         </CMSLink>
       </CardFooter>

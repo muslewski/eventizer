@@ -68,7 +68,12 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
         variant={appearance}
       >
         <Link className={cn(className)} href={href} {...newTabProps}>
-          <div className="flex transition-all duration-300 ease-out items-center gap-2 bg-black/50 group-hover/cta-button:bg-black/70 rounded-full border text-white border-black h-fit w-fit px-4 group-hover:px-5 py-2 backface-hidden">
+          <div
+            className={cn(
+              'flex transition-all duration-300 ease-out items-center gap-2 bg-black/50 group-hover/cta-button:bg-black/70 rounded-full border text-white border-black h-fit w-fit px-4 group-hover:px-5 py-2 backface-hidden',
+              size === 'sm' ? 'py-1.5 px-3' : '',
+            )}
+          >
             {label && label}
             {children && children}
             {icon && isExpandedDoc<Media>(icon) && (

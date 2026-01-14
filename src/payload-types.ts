@@ -195,7 +195,15 @@ export interface Page {
     informationTitle2?: string | null;
     informationValue2?: string | null;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | FeaturedOffersBlock | BannerBlock | ComingSoonBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | FeaturedOffersBlock
+    | BannerBlock
+    | ComingSoonBlock
+    | HowItWorksBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -581,6 +589,41 @@ export interface ComingSoonBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'comingSoon';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HowItWorksBlock".
+ */
+export interface HowItWorksBlock {
+  heading: string;
+  description: string;
+  client: {
+    step1: {
+      header: string;
+      description: string;
+      media?: (number | null) | Media;
+    };
+    step2: {
+      header: string;
+      description: string;
+      media?: (number | null) | Media;
+    };
+  };
+  serviceProvider: {
+    step1: {
+      header: string;
+      description: string;
+      media?: (number | null) | Media;
+    };
+    step2: {
+      header: string;
+      description: string;
+      media?: (number | null) | Media;
+    };
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'howItWorks';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1033,6 +1076,7 @@ export interface PagesSelect<T extends boolean = true> {
         featuredOffers?: T | FeaturedOffersBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
         comingSoon?: T | ComingSoonBlockSelect<T>;
+        howItWorks?: T | HowItWorksBlockSelect<T>;
       };
   meta?:
     | T
@@ -1138,6 +1182,52 @@ export interface ComingSoonBlockSelect<T extends boolean = true> {
   heading?: T;
   description?: T;
   icon?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HowItWorksBlock_select".
+ */
+export interface HowItWorksBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  client?:
+    | T
+    | {
+        step1?:
+          | T
+          | {
+              header?: T;
+              description?: T;
+              media?: T;
+            };
+        step2?:
+          | T
+          | {
+              header?: T;
+              description?: T;
+              media?: T;
+            };
+      };
+  serviceProvider?:
+    | T
+    | {
+        step1?:
+          | T
+          | {
+              header?: T;
+              description?: T;
+              media?: T;
+            };
+        step2?:
+          | T
+          | {
+              header?: T;
+              description?: T;
+              media?: T;
+            };
+      };
   id?: T;
   blockName?: T;
 }

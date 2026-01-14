@@ -121,7 +121,7 @@ export default function OffersCarousel({ offers }: { offers: Offer[] }) {
   return (
     <Carousel
       setApi={setApi}
-      className="w-5/6 select-none cursor-grab active:cursor-grabbing"
+      className="w-full sm:w-5/6 select-none cursor-grab active:cursor-grabbing"
       opts={{
         loop: true,
         align: 'center',
@@ -137,7 +137,7 @@ export default function OffersCarousel({ offers }: { offers: Offer[] }) {
         {offers.map((offer, index) => (
           <CarouselItem
             key={offer.id}
-            className="basis-2/3 md:basis-1/2 lg:basis-1/3 2xl:basis-1/4"
+            className="basis-3/4 md:basis-1/2 lg:basis-1/3 2xl:basis-1/4"
           >
             <OfferCarouselCard offer={offer} isActive={current === index} />
           </CarouselItem>
