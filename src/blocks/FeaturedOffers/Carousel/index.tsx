@@ -134,7 +134,7 @@ export default function OffersCarousel({ offers }: { offers: Offer[] }) {
       {/* <div className="absolute -left-24 top-0 bottom-0 w-16 md:w-52 bg-linear-to-r from-black sm:rounded-2xl to-transparent z-10 pointer-events-none" /> */}
       {/* Right fade gradient */}
       {/* <div className="absolute -right-24 top-0 bottom-0 w-16 md:w-52 bg-linear-to-l from-black sm:rounded-2xl to-transparent z-10 pointer-events-none" /> */}
-      <div className="absolute top-0 left-0 right-0 bottom-8 sm:rounded-2xl overflow-hidden to-transparent z-10 pointer-events-none">
+      <div className="absolute -top-4 left-0 right-0 bottom-4 sm:rounded-2xl overflow-hidden to-transparent z-10 pointer-events-none">
         <GradualBlurMemo
           preset="left"
           exponential
