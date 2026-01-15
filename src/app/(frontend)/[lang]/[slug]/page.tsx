@@ -61,7 +61,7 @@ export default async function Page({ params }: Args) {
   const { hero, layout } = page
 
   return (
-    <article className="pb-24 sm:pb-32">
+    <article>
       <RenderHero {...hero} />
       <div className="flex flex-col gap-24 sm:gap-32 xl:gap-36">
         <RenderBlocks blocks={layout} />

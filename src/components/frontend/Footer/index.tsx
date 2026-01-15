@@ -70,12 +70,12 @@ export default function Footer() {
       whileInView="visible"
       viewport={{ once: true, amount: 0.05 }}
       variants={containerVariants}
-      className="w-full relative h-fit bg-gradient-to-br from-stone-50 via-stone-100 to-stone-200 dark:from-stone-950 dark:via-stone-900 dark:to-stone-950 flex flex-col gap-12 py-20 px-8 sm:px-16 lg:px-24 overflow-hidden"
+      className="mt-24 sm:mt-32 w-full relative h-fit bg-linear-to-br from-stone-50 via-stone-100 to-stone-200 dark:from-stone-950 dark:via-stone-900 dark:to-stone-950 flex flex-col gap-12 py-20 px-8 sm:px-16 lg:px-24 overflow-hidden"
     >
       {/* Decorative top border with shimmer */}
       <motion.div
         variants={lineVariants}
-        className="absolute top-0 left-0 w-full h-px origin-left bg-gradient-to-r from-transparent via-amber-500/60 to-transparent"
+        className="absolute top-0 left-0 w-full h-px origin-left bg-linear-to-r from-transparent via-amber-500/60 to-transparent"
       />
       <motion.div
         initial={{ x: '-100%' }}
