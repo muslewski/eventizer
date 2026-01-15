@@ -20,12 +20,12 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
   className,
 }) => {
   return (
-    <div className="flex flex-col gap-16">
+    <div className="flex flex-col gap-16 -px-4 sm:px-8 -ml-4 sm:-ml-8 w-[calc(100%+2rem)] sm:w-[calc(100%+4rem)] bg-linear-to-b from-background via-black to-background">
       {/* Top of Featured Offers */}
       <div className="flex flex-col gap-16 relative">
         {/* Decorative accent bottom center */}
-        {/* <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-linear-to-r from-transparent via-yellow-400 blur-md to-transparent rounded-full" /> */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-1 bg-linear-to-r from-transparent via-stone-400 blur-md to-transparent rounded-full" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-linear-to-r from-transparent via-yellow-400 blur-md to-transparent rounded-full" />
+        {/* <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-1 bg-linear-to-r from-transparent via-stone-400 blur-md to-transparent rounded-full" /> */}
 
         {/* Decorative scroll indicator */}
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
@@ -34,10 +34,10 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
         </div>
 
         {/* Decorative scroll indicator */}
-        {/* <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
+        <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
           <div className="w-px h-4 bg-linear-to-b from-yellow-400/60 to-transparent" />
           <div className="w-2 h-2 rotate-45 border border-yellow-400/60 mt-1" />
-        </div> */}
+        </div>
 
         {/* Line */}
         <div className="bg-linear-to-r from-yellow-400/50 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />

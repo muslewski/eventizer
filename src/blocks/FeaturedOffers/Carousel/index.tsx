@@ -16,6 +16,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import SlideIndicators from '@/blocks/FeaturedOffers/Carousel/SlideIndicators'
 import OfferCarouselCard from '@/blocks/FeaturedOffers/Carousel/OfferCard'
+import GradualBlurMemo from '@/components/react-bits/GradualBlur'
 
 const AUTOPLAY_DELAY = 3300
 
@@ -130,15 +131,30 @@ export default function OffersCarousel({ offers }: { offers: Offer[] }) {
       aria-label="Featured offers carousel"
     >
       {/* Left fade gradient */}
-      <div className="absolute -left-px top-0 bottom-0 w-16 md:w-32 bg-linear-to-r from-background to-transparent z-10 pointer-events-none" />
+      {/* <div className="absolute -left-24 top-0 bottom-0 w-16 md:w-52 bg-linear-to-r from-black sm:rounded-2xl to-transparent z-10 pointer-events-none" /> */}
       {/* Right fade gradient */}
-      <div className="absolute -right-px top-0 bottom-0 w-16 md:w-32 bg-linear-to-l from-background to-transparent z-10 pointer-events-none" />
+      {/* <div className="absolute -right-24 top-0 bottom-0 w-16 md:w-52 bg-linear-to-l from-black sm:rounded-2xl to-transparent z-10 pointer-events-none" /> */}
+      <div className="absolute top-0 left-0 right-0 bottom-8 sm:rounded-2xl overflow-hidden to-transparent z-10 pointer-events-none">
+        <GradualBlurMemo
+          preset="left"
+          exponential
+          strength={3}
+          zIndex={10}
+          width="48px"
+          mobileWidth="32px"
+        />
+        <GradualBlurMemo
+          preset="right"
+          exponential
+          strength={3}
+          zIndex={10}
+          width="48px"
+          mobileWidth="32px"
+        />
+      </div>
       <CarouselContent>
         {offers.map((offer, index) => (
-          <CarouselItem
-            key={offer.id}
-            className="basis-3/4 md:basis-1/2 lg:basis-1/3 2xl:basis-1/4"
-          >
+          <CarouselItem key={offer.id} className="basis-3/4 md:basis-1/2 lg:basis-1/3">
             <OfferCarouselCard offer={offer} isActive={current === index} />
           </CarouselItem>
         ))}
