@@ -1,5 +1,6 @@
 'use client'
 
+import HowItWorksCard from '@/blocks/HowItWorks/HowItWorksCard'
 import { TitleH2 } from '@/components/frontend/Content/TitleH2'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -18,10 +19,11 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
   className,
 }) => {
   const [isSelectedClient, setIsSelectedClient] = useState(true)
+  const activeSteps = isSelectedClient ? client : serviceProvider
 
   return (
     <div className={cn('flex flex-col items-center gap-8', className)}>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center text-center">
         <TitleH2 align="center" title={heading} />
         <p>{description}</p>
       </div>
@@ -45,8 +47,13 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
       </div>
 
       {/* Display content based on selection */}
-      <div className="w-full max-w-4xl">
-        {isSelectedClient ? JSON.stringify(client) : JSON.stringify(serviceProvider)}
+      <div className="w-full flex flex-col gap-12 items-center justify-center">
+        {activeSteps &&
+          Object.values(activeSteps).map(
+            (step: HowItWorksProps['client']['step1'], index: number) => (
+              <HowItWorksCard key={index} {...step} stepNumber={index + 1} />
+            ),
+          )}
       </div>
     </div>
   )
