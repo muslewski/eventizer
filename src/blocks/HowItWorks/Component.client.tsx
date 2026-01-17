@@ -51,7 +51,12 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
         {activeSteps &&
           Object.values(activeSteps).map(
             (step: HowItWorksProps['client']['step1'], index: number) => (
-              <HowItWorksCard key={index} {...step} stepNumber={index + 1} />
+              <HowItWorksCard
+                key={index}
+                {...step}
+                stepNumber={index + 1}
+                isServiceProvider={!isSelectedClient}
+              />
             ),
           )}
       </div>
