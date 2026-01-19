@@ -82,7 +82,7 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
             {icon && isExpandedDoc<Media>(icon) && (
               <div className="bg-background group-hover/cta-button:bg-stone-300/85 p-3 rounded-full group-hover:scale-105 transition-all duration-400 ease-out">
                 <Image
-                  className="invert group-hover/cta-button:rotate-30 group-hover/cta-button:invert-0 transition-[filter, transform] duration-700 ease-in-out"
+                  className="dark:invert group-hover/cta-button:rotate-30 dark:group-hover/cta-button:invert-0 transition-[filter, transform] duration-700 ease-in-out"
                   width={20}
                   height={20}
                   src={icon.url || ''}

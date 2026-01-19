@@ -103,7 +103,13 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
       <div className="w-full px-8 flex items-center justify-center relative">
         {/* Background image */}
         <div className="top-0 bottom-0 w-[calc(100%+80px)] h-full -left-10 -right-10 absolute bg-yellow-500">
-          <Image src={backgroundImage} className="object-cover" alt="Background" fill priority />
+          <Image
+            src={backgroundImage}
+            className="object-cover invert dark:invert-0"
+            alt="Background"
+            fill
+            priority
+          />
           <div className="absolute top-0 left-0 right-0 bottom-0 bg-linear-to-b from-background via-background/50 to-background" />
         </div>
 

@@ -20,7 +20,7 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
   className,
 }) => {
   return (
-    <div className="flex flex-col gap-16 -px-4 sm:px-8 -ml-4 sm:-ml-8 w-[calc(100%+2rem)] sm:w-[calc(100%+4rem)] bg-linear-to-b from-background via-black to-background">
+    <div className="flex flex-col gap-16 -px-4 sm:px-8 -ml-4 sm:-ml-8 w-[calc(100%+2rem)] sm:w-[calc(100%+4rem)] bg-linear-to-b from-background dark:via-black to-background">
       {/* Top of Featured Offers */}
       <div className="flex flex-col gap-16 relative">
         {/* Decorative accent bottom center */}
@@ -35,7 +35,7 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
 
         {/* Decorative scroll indicator */}
         <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
-          <div className="w-px h-4 bg-linear-to-b from-yellow-400/60 to-transparent" />
+          <div className="w-px h-4 bg-linear-to-b from-yellow-400 dark:from-yellow-400/60 to-transparent" />
           <div className="w-2 h-2 rotate-45 border border-yellow-400/60 mt-1" />
         </div>
 

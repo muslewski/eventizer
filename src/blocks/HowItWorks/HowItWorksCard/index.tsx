@@ -32,8 +32,8 @@ export default function HowItWorksCard({
     >
       <Card
         className={cn(
-          'relative w-full border-white/50 inset-shadow-[2px_2px_8px_rgba(0,0,0,0.5)] bg-transparent bg-linear-to-br from-background/50 to-background/35 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl',
-          isServiceProvider ? 'via-purple-700/15' : 'via-blue-700/15',
+          'relative w-full border-white/50 inset-shadow-[2px_2px_8px_rgba(0,0,0,0.1)] dark:inset-shadow-[2px_2px_8px_rgba(0,0,0,0.5)] bg-transparent bg-linear-to-br from-background/50 to-background/35 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl',
+          isServiceProvider ? 'dark:via-purple-700/15' : 'dark:via-blue-700/15',
         )}
       >
         {/* Absolute number */}

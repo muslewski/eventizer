@@ -34,7 +34,7 @@ export default function OfferCarouselCard({ offer, isActive }: OfferCardProps) {
     <Card
       className={cn(
         'bg-transparent rounded-xl h-80 sm:h-96 md:h-124 relative overflow-hidden group/featured-offer isolate will-change-transform transform-gpu duration-500 transition-all',
-        isActive ? 'scale-100 opacity-100' : 'scale-95 opacity-70',
+        isActive ? 'scale-100 opacity-100' : 'scale-95 opacity-90 dark:opacity-70',
       )}
     >
       {/* Image wrapper with its own overflow hidden */}
