@@ -102,10 +102,10 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
       {/* Display content based on selection */}
       <div className="w-full px-8 flex items-center justify-center relative">
         {/* Background image */}
-        <div className="top-0 bottom-0 w-[calc(100%+80px)] h-full -left-10 -right-10 absolute bg-yellow-500">
+        <div className="top-0 bottom-0 w-[calc(100%+80px)] h-full -left-10 -right-10 absolute ">
           <Image
             src={backgroundImage}
-            className="object-cover invert dark:invert-0"
+            className="object-cover opacity-50 dark:opacity-100 invert dark:invert-0"
             alt="Background"
             fill
             priority
