@@ -5,6 +5,7 @@ import type { HowItWorksBlock, Media } from '@/payload-types'
 import Image from 'next/image'
 import arrowDown from '@/assets/howItWorks/line-down.png'
 import arrowDownSecond from '@/assets/howItWorks/line-down-2.png'
+import { HowItWorksImage } from './index.client'
 
 type Step = HowItWorksBlock['client']['step1']
 
@@ -40,14 +41,10 @@ export default function HowItWorksCard({
           <p>{stepNumber}</p>
         </div>
         <CardHeader className="w-full flex flex-col sm:flex-row gap-4 sm:gap-6 items-center">
-          <div className="rounded-xl w-full sm:w-48 md:w-56 lg:w-80 h-40 sm:h-48 shrink-0 overflow-hidden relative">
-            <Image
-              src={mainImage?.url || '/placeholder-image.png'}
-              alt={mainImage?.alt || 'How It Works Step Image'}
-              className="object-cover"
-              fill
-            />
-          </div>
+          <HowItWorksImage
+            src={mainImage?.url || '/placeholder-image.png'}
+            alt={mainImage?.alt || 'How It Works Step Image'}
+          />
           <div className="flex flex-col gap-2 h-full">
             <h3 className="font-bebas text-2xl sm:text-3xl lg:text-4xl xl:text-5xl">{header}</h3>
             <p className="text-sm sm:text-base">{description}</p>
