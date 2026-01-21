@@ -48,10 +48,17 @@ export function LanguageSwitcher() {
           </TooltipContent>
         </Tooltip>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => handleSwitch('pl')} disabled={currentLocale === 'pl'}>
+          <DropdownMenuItem
+            onClick={() => handleSwitch('pl')}
+            // disabled={currentLocale === 'pl'}
+          >
             <span className="mr-1">🇵🇱 </span>Polski
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleSwitch('en')} disabled={currentLocale === 'en'}>
+          <DropdownMenuItem
+            onClick={() => handleSwitch('en')}
+            // disabled={currentLocale === 'en'}
+            disabled
+          >
             <span className="mr-1">🇬🇧 </span>English (Coming Soon)
           </DropdownMenuItem>
         </DropdownMenuContent>
