@@ -60,9 +60,10 @@ export default function PaginationControls({
 
   if (totalPages <= 1)
     return (
-      <div className="w-full flex justify-start">
+      <div className="w-full flex justify-start gap-2">
         {/* Display just information stron 1 z 1 */}
         <Badge variant="secondary">{`Strona ${currentPage} z ${totalPages}`}</Badge>
+        <Badge>{`Łącznie ${pagination.totalDocs} ofert`}</Badge>
       </div>
     )
 
