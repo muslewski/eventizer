@@ -1,11 +1,10 @@
 'use client'
 
-import { TitleH3 } from '@/components/frontend/Content/TitleH3'
-import { Offer } from '@/payload-types'
-import { Search, Settings2Icon } from 'lucide-react'
+import { Offer, ServiceCategory } from '@/payload-types'
 import OffersView from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView'
 import { usePathname } from 'next/navigation'
 import SearchBar from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar'
+import CategorySelection from '@/app/(frontend)/[lang]/ogloszenia/ListView/CategorySelection'
 
 export interface PaginationInfo {
   currentPage: number
@@ -19,18 +18,17 @@ export interface PaginationInfo {
 
 interface ClientListViewProps {
   offers: Offer[] | null
+  categoryData?: ServiceCategory[]
   pagination: PaginationInfo
 }
 
-export default function ClientListView({ offers, pagination }: ClientListViewProps) {
+export default function ClientListView({ offers, categoryData, pagination }: ClientListViewProps) {
   const pathname = usePathname()
 
   return (
-    <div className="flex w-full gap-8 h-screen max-h-screen">
+    <div className="flex flex-col md:flex-row w-full gap-8 md:h-screen md:max-h-screen">
       {/* Category Selection */}
-      <div className="max-w-64 w-1/4 h-full border-r rounded-r-2xl p-8">
-        <TitleH3 title={'Kategorie'} />
-      </div>
+      <CategorySelection categoryData={categoryData} />
 
       {/* Main Search bar and offers */}
       <div className="w-full max-w-6xl h-full min-w-0 py-0 flex flex-col gap-8 ">

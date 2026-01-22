@@ -8,17 +8,17 @@ type Locale = Config['locale']
 
 type Args = {
   params: Promise<{ lang: Locale }>
-  searchParams: Promise<{ strona?: string }>
+  searchParams: Promise<{ strona?: string; kategoria?: string }>
 }
 
 export default async function Page({ params, searchParams }: Args) {
   const payload = await getPayload({ config })
-  const { strona } = await searchParams
+  const { strona, kategoria } = await searchParams
 
   return (
     <>
       <HeroView payload={payload} />
-      <ListView payload={payload} strona={strona} />
+      <ListView payload={payload} strona={strona} kategoria={kategoria} />
     </>
   )
 }

@@ -97,7 +97,7 @@ export default function OffersView({
       {/* Top fade overlay */}
       <div
         className={cn(
-          'pointer-events-none absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background to-transparent transition-opacity duration-300',
+          'pointer-events-none hidden md:block absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-background to-transparent transition-opacity duration-300',
           isAtTop ? 'opacity-0' : 'opacity-100',
         )}
       />
@@ -105,7 +105,7 @@ export default function OffersView({
       {/* Bottom fade overlay */}
       <div
         className={cn(
-          'pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent transition-opacity duration-300',
+          'pointer-events-none hidden md:block absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent transition-opacity duration-300',
           isAtBottom ? 'opacity-0' : 'opacity-100',
         )}
       />
