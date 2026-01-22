@@ -54,6 +54,7 @@ export const Offers: CollectionConfig = {
     slug: true,
     mainImage: true,
     categoryName: true,
+    categorySlug: true,
     shortDescription: true,
     priceFrom: true,
     priceTo: true,
@@ -129,6 +130,22 @@ export const Offers: CollectionConfig = {
           }
         }
 
+        return data
+      },
+    ],
+    beforeChange: [
+      async ({ data, req }) => {
+        // Auto-populate categoryName and categorySlug from the category path
+        if (data?.category) {
+          const { getOfferCategories } = await import('@/actions/getOfferCategories')
+          const result = await getOfferCategories()
+          const category = result.categories.find((cat) => cat.fullPath === data.category)
+
+          if (category) {
+            data.categoryName = category.fullName
+            data.categorySlug = category.fullPath
+          }
+        }
         return data
       },
     ],
@@ -282,22 +299,54 @@ export const Offers: CollectionConfig = {
           return isClientRoleEqualOrHigher('moderator', user)
         },
       },
-      hooks: {
-        beforeChange: [
-          async ({ value, siblingData, req }) => {
-            // Auto-populate category name from the category path
-            if (siblingData?.category) {
-              const { getOfferCategories } = await import('@/actions/getOfferCategories')
-              const result = await getOfferCategories()
-              const category = result.categories.find(
-                (cat) => cat.fullPath === siblingData.category,
-              )
-              return category?.fullName || value
-            }
-            return value
-          },
-        ],
+      // hooks: {
+      //   beforeChange: [
+      //     async ({ value, siblingData, req }) => {
+      //       // Auto-populate category name from the category path
+      //       if (siblingData?.category) {
+      //         const { getOfferCategories } = await import('@/actions/getOfferCategories')
+      //         const result = await getOfferCategories()
+      //         const category = result.categories.find(
+      //           (cat) => cat.fullPath === siblingData.category,
+      //         )
+      //         return category?.fullName || value
+      //       }
+      //       return value
+      //     },
+      //   ],
+      // },
+    },
+    // Category slug (auto-populated from category path)
+    {
+      name: 'categorySlug',
+      type: 'text',
+      label: {
+        en: 'Category Slug',
+        pl: 'Slug Kategorii',
       },
+      admin: {
+        readOnly: true,
+        position: 'sidebar',
+        condition: (data, siblingData, { user }) => {
+          return isClientRoleEqualOrHigher('moderator', user)
+        },
+      },
+      // hooks: {
+      //   beforeChange: [
+      //     async ({ value, siblingData, req }) => {
+      //       // Auto-populate category slug from the category path
+      //       if (siblingData?.category) {
+      //         const { getOfferCategories } = await import('@/actions/getOfferCategories')
+      //         const result = await getOfferCategories()
+      //         const category = result.categories.find(
+      //           (cat) => cat.fullPath === siblingData.category,
+      //         )
+      //         return category?.slug || value
+      //       }
+      //       return value
+      //     },
+      //   ],
+      // },
     },
     {
       type: 'tabs',

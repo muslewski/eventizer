@@ -35,7 +35,7 @@ export const OfferListCard = ({
 
   return (
     <Card className="w-full flex xl:flex-row flex-col py-0 sm:py-0 h-120 sm:h-130 xl:h-48  items-center bg-transparent bg-linear-to-r from-stone-900/60 to-background/35 rounded-2xl overflow-hidden">
-      <div className="w-full xl:max-w-3xs h-full bottom-0 top-0 rounded-2xl bg-white/10 relative overflow-hidden shadow-[6px_0px_32px_2px_rgba(10,10,10,1)]">
+      <div className="w-full xl:max-w-3xs h-full bottom-0 top-0 rounded-2xl bg-white/10 relative overflow-hidden shadow-[6px_0px_32px_2px_rgba(24,10,10,1)]">
         {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
       </div>
 
@@ -57,7 +57,7 @@ export const OfferListCard = ({
 
           {/* Price */}
           <div className="lg:w-42 max-w-xs p-4 bg-linear-to-r from-stone-950/60 to-background/35 rounded-2xl border border-foreground/10">
-            <p className="xl:text-2xl md:text-xl sm:text-md text-sm font-montserrat font-medium w-full text-foreground leading-[0.9] truncate whitespace-nowrap ">
+            <p className="md:text-xl sm:text-md text-sm font-montserrat font-medium w-full text-foreground leading-[0.9] truncate whitespace-nowrap ">
               {formatPrice(priceMin, priceMax)}
             </p>
           </div>

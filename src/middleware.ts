@@ -7,6 +7,7 @@ const DEFAULT_LOCALE = 'pl'
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
+  const search = request.nextUrl.search // Preserve query params
 
   // Check if pathname already has a locale prefix
   const pathnameLocale = LOCALES.find(
@@ -36,11 +37,11 @@ export function middleware(request: NextRequest) {
 
   // If user previously chose a non-default locale, redirect to it
   if (cookieLocale && cookieLocale !== DEFAULT_LOCALE && LOCALES.includes(cookieLocale)) {
-    return NextResponse.redirect(new URL(`/${cookieLocale}${pathname}`, request.url))
+    return NextResponse.redirect(new URL(`/${cookieLocale}${pathname}${search}`, request.url))
   }
 
   // Default: rewrite to Polish (URL stays clean)
-  return NextResponse.rewrite(new URL(`/${DEFAULT_LOCALE}${pathname}`, request.url))
+  return NextResponse.rewrite(new URL(`/${DEFAULT_LOCALE}${pathname}${search}`, request.url))
 }
 
 export const config = {

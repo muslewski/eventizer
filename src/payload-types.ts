@@ -470,6 +470,7 @@ export interface Offer {
    */
   mainImage: number | OfferUpload;
   categoryName?: string | null;
+  categorySlug?: string | null;
   content: {
     root: {
       type: string;
@@ -1270,6 +1271,7 @@ export interface OffersSelect<T extends boolean = true> {
   priceTo?: T;
   mainImage?: T;
   categoryName?: T;
+  categorySlug?: T;
   content?: T;
   shortDescription?: T;
   phone?: T;
