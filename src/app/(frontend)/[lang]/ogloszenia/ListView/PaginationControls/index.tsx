@@ -71,20 +71,21 @@ export default function PaginationControls({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={hasPrevPage ? `${pathname}?page=${prevPage}` : '#'}
+            href={hasPrevPage ? `${pathname}?strona=${prevPage}` : '#'}
             aria-disabled={!hasPrevPage}
             className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
+            text="Poprzednia"
           />
         </PaginationItem>
 
         {getPageNumbers().map((page, index) =>
           page === 'ellipsis' ? (
             <PaginationItem key={`ellipsis-${index}`}>
-              <PaginationEllipsis />
+              <PaginationEllipsis text="Więcej stron" />
             </PaginationItem>
           ) : (
             <PaginationItem key={page}>
-              <PaginationLink href={`${pathname}?page=${page}`} isActive={page === currentPage}>
+              <PaginationLink href={`${pathname}?strona=${page}`} isActive={page === currentPage}>
                 {page}
               </PaginationLink>
             </PaginationItem>
@@ -93,9 +94,10 @@ export default function PaginationControls({
 
         <PaginationItem>
           <PaginationNext
-            href={hasNextPage ? `${pathname}?page=${nextPage}` : '#'}
+            href={hasNextPage ? `${pathname}?strona=${nextPage}` : '#'}
             aria-disabled={!hasNextPage}
             className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
+            text="Następna"
           />
         </PaginationItem>
       </PaginationContent>
