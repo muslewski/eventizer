@@ -50,9 +50,15 @@ export const Offers: CollectionConfig = {
 
   defaultPopulate: {
     title: true,
+    _status: true,
     slug: true,
     mainImage: true,
     categoryName: true,
+    shortDescription: true,
+    priceFrom: true,
+    priceTo: true,
+    price: true,
+    hasPriceRange: true,
     meta: {
       image: true,
     },
