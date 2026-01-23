@@ -73,7 +73,8 @@
     "stripe": "^20.1.0",
     "tailwind": "^4.0.0",
     "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "use-debounce": "^10.1.0"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",
