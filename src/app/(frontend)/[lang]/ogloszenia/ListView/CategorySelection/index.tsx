@@ -5,7 +5,7 @@ import { ServiceCategory } from '@/payload-types'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useTransition, useCallback, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
@@ -20,6 +20,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
 
   const currentKategoria = searchParams.get('kategoria')
 
@@ -40,7 +41,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
     }
   }, [currentKategoria, categoryData])
 
-  const toggleCategory = (categoryId: number) => {
+  const toggleCategory = useCallback((categoryId: number) => {
     setOpenCategories((prev) => {
       const next = new Set(prev)
       if (next.has(categoryId)) {
@@ -50,45 +51,70 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
       }
       return next
     })
-  }
+  }, [])
 
-  const updateCategoryParam = (categorySlug: string | null) => {
-    const params = new URLSearchParams(searchParams.toString())
+  const updateCategoryParam = useCallback(
+    (categorySlug: string | null) => {
+      const params = new URLSearchParams(searchParams.toString())
 
-    if (categorySlug) {
-      params.set('kategoria', categorySlug)
-    } else {
-      params.delete('kategoria')
-    }
+      if (categorySlug) {
+        params.set('kategoria', categorySlug)
+      } else {
+        params.delete('kategoria')
+      }
 
-    // Reset to page 1 when changing category
-    params.delete('strona')
+      params.delete('strona')
 
-    const queryString = params.toString()
-    router.push(`${pathname}${queryString ? `?${queryString}` : ''}`, { scroll: false })
-  }
+      const queryString = params.toString()
+      startTransition(() => {
+        router.push(`${pathname}${queryString ? `?${queryString}` : ''}`, { scroll: false })
+      })
+    },
+    [searchParams, pathname, router],
+  )
 
-  const handleCategoryClick = (slug: string) => {
-    updateCategoryParam(slug)
-  }
+  const handleCategoryClick = useCallback(
+    (slug: string) => {
+      updateCategoryParam(slug)
+    },
+    [updateCategoryParam],
+  )
 
-  const handleSubcategoryClick = (categorySlug: string, subcategorySlug: string) => {
-    // Build the full category path: "parent-slug/child-slug"
-    updateCategoryParam(`${categorySlug}/${subcategorySlug}`)
-  }
+  const handleSubcategoryClick = useCallback(
+    (categorySlug: string, subcategorySlug: string) => {
+      updateCategoryParam(`${categorySlug}/${subcategorySlug}`)
+    },
+    [updateCategoryParam],
+  )
 
-  const handleAllCategoriesClick = () => {
+  const handleAllCategoriesClick = useCallback(() => {
     updateCategoryParam(null)
-  }
+  }, [updateCategoryParam])
 
-  // Check if current category matches
-  const isCategorySelected = (categorySlug: string) => {
-    return currentKategoria === categorySlug
-  }
+  const isCategorySelected = useCallback(
+    (categorySlug: string) => {
+      return currentKategoria === categorySlug
+    },
+    [currentKategoria],
+  )
 
-  const isSubcategorySelected = (categorySlug: string, subcategorySlug: string) => {
-    return currentKategoria === `${categorySlug}/${subcategorySlug}`
-  }
+  const isSubcategorySelected = useCallback(
+    (categorySlug: string, subcategorySlug: string) => {
+      return currentKategoria === `${categorySlug}/${subcategorySlug}`
+    },
+    [currentKategoria],
+  )
+
+  // Memoize button class to avoid recalculating on every render
+  const allCategoriesButtonClass = useMemo(
+    () =>
+      cn(
+        'w-full justify-start text-left font-medium mb-2',
+        !currentKategoria && 'bg-accent text-accent-foreground',
+        isPending && 'opacity-50 pointer-events-none',
+      ),
+    [currentKategoria, isPending],
+  )
 
   return (
     <div className="lg:max-w-64 w-full md:w-1/4 h-full border-r rounded-r-2xl py-8 pr-4">
@@ -99,13 +125,9 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
       </div>
 
       <ScrollArea className="h-[calc(100%-80px)] pr-7" type="hover">
-        {/* All categories button */}
         <Button
           variant="ghost"
-          className={cn(
-            'w-full justify-start text-left font-medium mb-2',
-            !currentKategoria && 'bg-accent text-accent-foreground',
-          )}
+          className={allCategoriesButtonClass}
           onClick={handleAllCategoriesClick}
         >
           Wszystkie kategorie
@@ -142,6 +164,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
                     className={cn(
                       'flex-1 justify-start text-left font-medium text-sm h-fit whitespace-normal',
                       isCategorySelected(category.slug) && 'bg-accent text-accent-foreground',
+                      isPending && 'opacity-50 pointer-events-none',
                     )}
                     onClick={() => handleCategoryClick(category.slug)}
                   >
@@ -158,6 +181,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
                           variant="ghost"
                           className={cn(
                             'justify-start text-left text-xs h-fit w-full whitespace-normal text-muted-foreground hover:text-foreground',
+                            isPending && 'opacity-50 pointer-events-none',
                             isSubcategorySelected(category.slug, subcategory.slug) &&
                               'bg-accent text-accent-foreground',
                           )}
