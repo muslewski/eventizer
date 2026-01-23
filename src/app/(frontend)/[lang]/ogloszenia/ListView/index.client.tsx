@@ -31,7 +31,7 @@ export default function ClientListView({ offers, categoryData, pagination }: Cli
       <CategorySelection categoryData={categoryData} />
 
       {/* Main Search bar and offers */}
-      <div className="w-full max-w-6xl h-full min-w-0 py-0 flex flex-col gap-8 ">
+      <div className="w-full max-w-375 h-full min-w-0 py-0 flex flex-col gap-8 ">
         {/* Search Bar */}
         <SearchBar />
 

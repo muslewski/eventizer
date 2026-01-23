@@ -2,7 +2,7 @@
 
 import { SearchIcon, XIcon } from 'lucide-react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
-import { useCallback, useState, useTransition, useRef } from 'react'
+import { useCallback, useState, useTransition, useRef, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { cn } from '@/lib/utils'
 
@@ -12,11 +12,11 @@ export default function Search() {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
-  // Local state for immediate UI feedback
-  const [value, setValue] = useState(searchParams.get('szukaj') ?? '')
+  const initialValue = searchParams.get('szukaj') ?? ''
+  const [value, setValue] = useState(initialValue)
 
-  // Track if user is actively typing to prevent URL sync from overwriting
-  const isTypingRef = useRef(false)
+  // Track the last value we sent to the URL
+  const lastSubmittedRef = useRef(initialValue)
 
   // Debounced URL update
   const debouncedSearch = useDebouncedCallback((term: string) => {
@@ -28,27 +28,31 @@ export default function Search() {
       params.delete('szukaj')
     }
 
-    // Reset to page 1 when searching
     params.delete('strona')
+
+    // Update our ref before navigation
+    lastSubmittedRef.current = term
 
     startTransition(() => {
       router.replace(`${pathname}?${params.toString()}`, { scroll: false })
     })
-
-    // Mark typing as complete after URL update is triggered
-    isTypingRef.current = false
   }, 300)
 
-  // Sync with URL only when not typing (e.g., browser back/forward)
-  const urlValue = searchParams.get('szukaj') ?? ''
-  if (!isTypingRef.current && urlValue !== value) {
-    setValue(urlValue)
-  }
+  // Sync from URL only when it differs from what we submitted
+  // (handles browser back/forward, external navigation)
+  useEffect(() => {
+    const urlValue = searchParams.get('szukaj') ?? ''
+
+    // Only sync if URL changed externally (not from our own navigation)
+    if (urlValue !== lastSubmittedRef.current) {
+      setValue(urlValue)
+      lastSubmittedRef.current = urlValue
+    }
+  }, [searchParams])
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value
-      isTypingRef.current = true
       setValue(newValue)
       debouncedSearch(newValue)
     },
@@ -56,7 +60,6 @@ export default function Search() {
   )
 
   const handleClear = useCallback(() => {
-    isTypingRef.current = true
     setValue('')
     debouncedSearch('')
   }, [debouncedSearch])
@@ -80,7 +83,7 @@ export default function Search() {
         value={value}
         onChange={handleChange}
         placeholder="Szukaj wykonawców i atrakcji"
-        className="flex-1 bg-transparent text-foreground placeholder:text-foreground/50 outline-none"
+        className="flex-1 text-ellipsis w-full bg-transparent text-foreground placeholder:text-foreground/50 outline-none"
       />
       {value && (
         <button

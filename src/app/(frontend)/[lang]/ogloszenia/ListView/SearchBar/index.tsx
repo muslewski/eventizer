@@ -5,7 +5,7 @@ import { Settings2Icon } from 'lucide-react'
 
 export default function SearchBar() {
   return (
-    <div className="flex gap-6 h-16 min-h-16">
+    <div className="flex w-full gap-2 sm:gap-6 h-16 min-h-16">
       {/* Search */}
       <Search />
 

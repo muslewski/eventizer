@@ -112,7 +112,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
   )
 
   return (
-    <div className="lg:max-w-72 w-full md:w-1/4 h-full border-r border-border/50 py-8 pr-4">
+    <div className="lg:max-w-72 w-full md:w-1/4 h-full sm:border-r border-border/50 py-8 sm:pr-4">
       {/* Category Header */}
       <div className="flex flex-col gap-5 mb-6">
         <TitleH3 title={'Kategorie'} />

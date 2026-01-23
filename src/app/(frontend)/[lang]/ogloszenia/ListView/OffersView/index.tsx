@@ -57,7 +57,7 @@ export default function OffersView({
         viewportRef={viewportRef}
         onScrollCapture={handleScroll}
       >
-        <div className="flex flex-col gap-6 items-center w-full pr-6">
+        <div className="flex flex-col gap-6 items-center w-full sm:pr-6">
           {/* Map offers */}
           {offers && offers.length > 0 ? (
             offers.map((offer, index) => (

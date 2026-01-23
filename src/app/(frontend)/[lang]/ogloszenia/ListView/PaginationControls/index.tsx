@@ -1,3 +1,5 @@
+'use client'
+
 import { PaginationInfo } from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.client'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -9,6 +11,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import { useSearchParams } from 'next/navigation'
 
 export default function PaginationControls({
   pagination,
@@ -17,7 +20,18 @@ export default function PaginationControls({
   pagination: PaginationInfo
   pathname: string
 }) {
+  const searchParams = useSearchParams()
   const { currentPage, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage } = pagination
+
+  // Build URL preserving existing search params
+  const buildPageUrl = (page: number | undefined) => {
+    if (!page) return '#'
+
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('strona', String(page))
+
+    return `${pathname}?${params.toString()}`
+  }
 
   // Generate page numbers to display
   const getPageNumbers = () => {
@@ -72,7 +86,7 @@ export default function PaginationControls({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={hasPrevPage ? `${pathname}?strona=${prevPage}` : '#'}
+            href={buildPageUrl(prevPage)}
             aria-disabled={!hasPrevPage}
             className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
             text="Poprzednia"
@@ -86,7 +100,7 @@ export default function PaginationControls({
             </PaginationItem>
           ) : (
             <PaginationItem key={page}>
-              <PaginationLink href={`${pathname}?strona=${page}`} isActive={page === currentPage}>
+              <PaginationLink href={buildPageUrl(page)} isActive={page === currentPage}>
                 {page}
               </PaginationLink>
             </PaginationItem>
@@ -95,7 +109,7 @@ export default function PaginationControls({
 
         <PaginationItem>
           <PaginationNext
-            href={hasNextPage ? `${pathname}?strona=${nextPage}` : '#'}
+            href={buildPageUrl(nextPage)}
             aria-disabled={!hasNextPage}
             className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
             text="Następna"
