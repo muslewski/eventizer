@@ -74,6 +74,10 @@ export default function OffersCarousel({ offers }: { offers: Offer[] }) {
 
     const onSelect = () => {
       setCurrent(api.selectedScrollSnap())
+      // Reset progress animation on every slide change (including manual navigation)
+      if (autoplayPlugin.isPlaying?.()) {
+        startProgressAnimation()
+      }
     }
 
     const onTimerSet = () => {
