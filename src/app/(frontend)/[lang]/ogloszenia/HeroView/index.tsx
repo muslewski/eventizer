@@ -37,6 +37,7 @@ export default async function HeroView({ payload }: HeroViewProps) {
       title="Znajdź specjalistów, którzy uczynią Twoje wydarzenie wyjątkowym"
       backgroundImage={backgroundImage}
       backgroundVideo={backgroundVideo}
+      showScrollIndicator
     />
   )
 }
