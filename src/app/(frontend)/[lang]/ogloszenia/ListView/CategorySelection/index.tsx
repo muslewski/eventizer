@@ -74,7 +74,13 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
   )
 
   const handleCategoryClick = useCallback(
-    (slug: string) => {
+    (slug: string, categoryId: number) => {
+      // Collapse the category when clicking on it
+      setOpenCategories((prev) => {
+        const next = new Set(prev)
+        next.add(categoryId)
+        return next
+      })
       updateCategoryParam(slug)
     },
     [updateCategoryParam],
@@ -188,7 +194,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
                         'bg-gradient-to-r from-yellow-400/20 to-transparent text-foreground font-semibold',
                       isPending && 'opacity-50 pointer-events-none',
                     )}
-                    onClick={() => handleCategoryClick(category.slug)}
+                    onClick={() => handleCategoryClick(category.slug, category.id)}
                   >
                     {category.name}
                   </Button>
