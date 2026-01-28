@@ -82,6 +82,8 @@ export default function OffersView({
                   reviewCount={27}
                   priceMin={offer.priceFrom || 0}
                   priceMax={offer.priceTo || 0}
+                  price={offer.price || undefined}
+                  hasPriceRange={offer.hasPriceRange || undefined}
                 />
               </motion.div>
             ))

@@ -5,6 +5,7 @@ import OffersView from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView'
 import { usePathname } from 'next/navigation'
 import SearchBar from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar'
 import CategorySelection from '@/app/(frontend)/[lang]/ogloszenia/ListView/CategorySelection'
+import { SortOption } from '@/app/(frontend)/[lang]/ogloszenia/ListView/types'
 
 export interface PaginationInfo {
   currentPage: number
@@ -14,15 +15,27 @@ export interface PaginationInfo {
   hasPrevPage: boolean
   nextPage?: number
   prevPage?: number
+  minCena?: number
+  maxCena?: number
 }
 
 interface ClientListViewProps {
   offers: Offer[] | null
   categoryData?: ServiceCategory[]
   pagination: PaginationInfo
+  currentSort: SortOption
+  minCena?: number
+  maxCena?: number
 }
 
-export default function ClientListView({ offers, categoryData, pagination }: ClientListViewProps) {
+export default function ClientListView({
+  offers,
+  categoryData,
+  pagination,
+  currentSort,
+  minCena,
+  maxCena,
+}: ClientListViewProps) {
   const pathname = usePathname()
 
   return (
@@ -33,7 +46,7 @@ export default function ClientListView({ offers, categoryData, pagination }: Cli
       {/* Main Search bar and offers */}
       <div className="w-full max-w-375 h-full min-w-0 py-0 flex flex-col gap-8 ">
         {/* Search Bar */}
-        <SearchBar />
+        <SearchBar currentSort={currentSort} minPrice={minCena} maxPrice={maxCena} />
 
         {/* Display offers */}
         <OffersView offers={offers} pagination={pagination} pathname={pathname} />

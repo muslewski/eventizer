@@ -10,6 +10,8 @@ interface OfferListCardProps {
   reviewCount: number
   priceMin: number
   priceMax: number
+  price?: number
+  hasPriceRange?: boolean
   imageUrl?: string
 }
 
@@ -20,17 +22,25 @@ export const OfferListCard = ({
   reviewCount,
   priceMin,
   priceMax,
+  price,
+  hasPriceRange,
   imageUrl,
 }: OfferListCardProps) => {
   const renderStars = (rating: number) => {
     return '⭐'.repeat(Math.round(rating))
   }
 
-  const formatPrice = (min: number, max: number) => {
-    if (min === max) {
-      return `${min.toFixed(2)} zł`
+  const formatPrice = () => {
+    // Single price offer
+    if (!hasPriceRange) {
+      return `${(price ?? 0).toFixed(2)} zł`
     }
-    return `${min.toFixed(2)} zł - ${max.toFixed(2)} zł`
+
+    // Price range offer
+    if (priceMin === priceMax) {
+      return `${priceMin.toFixed(2)} zł`
+    }
+    return `${priceMin.toFixed(2)} zł - ${priceMax.toFixed(2)} zł`
   }
 
   return (
@@ -58,7 +68,7 @@ export const OfferListCard = ({
           {/* Price */}
           <div className="lg:w-42 max-w-xs p-4 bg-linear-to-r from-stone-950/60 to-background/35 rounded-2xl border border-foreground/10">
             <p className="md:text-xl sm:text-md text-sm font-montserrat font-medium w-full text-foreground leading-[0.9] truncate whitespace-nowrap ">
-              {formatPrice(priceMin, priceMax)}
+              {formatPrice()}
             </p>
           </div>
         </CardDescription>
