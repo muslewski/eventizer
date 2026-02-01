@@ -13,6 +13,7 @@ import React, { Fragment } from 'react'
 import type { Page } from '../payload-types'
 import { FeaturedOffersBlock } from '@/blocks/FeaturedOffers/Component'
 import { HowItWorksBlock } from '@/blocks/HowItWorks/Component'
+import { SocialMediaBlock } from '@/blocks/SocialMedia/Component'
 
 const blockComponents = {
   //   archive: ArchiveBlock,
@@ -21,6 +22,7 @@ const blockComponents = {
   comingSoon: ComingSoonBlock,
   featuredOffers: FeaturedOffersBlock,
   howItWorks: HowItWorksBlock,
+  socialMedia: SocialMediaBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   //   formBlock: FormBlock,

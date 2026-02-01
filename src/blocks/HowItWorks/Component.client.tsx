@@ -78,7 +78,7 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
     <div className={cn('flex flex-col items-center gap-8', className)}>
       <div className="flex flex-col items-center text-center">
         <TitleH2 align="center" title={heading} />
-        <p>{description}</p>
+        <p className="max-w-3xl">{description}</p>
       </div>
 
       {/* Display switch button */}

@@ -203,6 +203,7 @@ export interface Page {
     | BannerBlock
     | ComingSoonBlock
     | HowItWorksBlock
+    | SocialMediaBlock
   )[];
   meta?: {
     title?: string | null;
@@ -635,6 +636,49 @@ export interface HowItWorksBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'howItWorks';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SocialMediaBlock".
+ */
+export interface SocialMediaBlock {
+  heading: string;
+  description: string;
+  instagram?: {
+    enabled?: boolean | null;
+    url?: string | null;
+    /**
+     * Optional description shown below the social icon
+     */
+    description?: string | null;
+  };
+  facebook?: {
+    enabled?: boolean | null;
+    url?: string | null;
+    /**
+     * Optional description shown below the social icon
+     */
+    description?: string | null;
+  };
+  tiktok?: {
+    enabled?: boolean | null;
+    url?: string | null;
+    /**
+     * Optional description shown below the social icon
+     */
+    description?: string | null;
+  };
+  twitter?: {
+    enabled?: boolean | null;
+    url?: string | null;
+    /**
+     * Optional description shown below the social icon
+     */
+    description?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'socialMedia';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1088,6 +1132,7 @@ export interface PagesSelect<T extends boolean = true> {
         banner?: T | BannerBlockSelect<T>;
         comingSoon?: T | ComingSoonBlockSelect<T>;
         howItWorks?: T | HowItWorksBlockSelect<T>;
+        socialMedia?: T | SocialMediaBlockSelect<T>;
       };
   meta?:
     | T
@@ -1252,6 +1297,44 @@ export interface HowItWorksBlockSelect<T extends boolean = true> {
               description?: T;
               media?: T;
             };
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SocialMediaBlock_select".
+ */
+export interface SocialMediaBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  instagram?:
+    | T
+    | {
+        enabled?: T;
+        url?: T;
+        description?: T;
+      };
+  facebook?:
+    | T
+    | {
+        enabled?: T;
+        url?: T;
+        description?: T;
+      };
+  tiktok?:
+    | T
+    | {
+        enabled?: T;
+        url?: T;
+        description?: T;
+      };
+  twitter?:
+    | T
+    | {
+        enabled?: T;
+        url?: T;
+        description?: T;
       };
   id?: T;
   blockName?: T;

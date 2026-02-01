@@ -26,6 +26,7 @@ import { adminOrHigher } from '@/access'
 import { isClientRoleEqualOrHigher } from '@/access/utilities'
 import { FeaturedOffers } from '@/blocks/FeaturedOffers/config'
 import { HowItWorks } from '@/blocks/HowItWorks/config'
+import { SocialMedia } from '@/blocks/SocialMedia/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -89,6 +90,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 Banner,
                 ComingSoon /* Archive, */ /* FormBlock */,
                 HowItWorks,
+                SocialMedia,
               ],
               required: true,
               admin: {

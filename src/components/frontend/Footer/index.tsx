@@ -5,6 +5,7 @@ import HeaderLogo from '@/components/frontend/Header/Logo'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { Mail, MapPin, Phone } from 'lucide-react'
+import { FaInstagram, FaFacebook } from 'react-icons/fa'
 import Link from 'next/link'
 
 const containerVariants = {
@@ -155,6 +156,59 @@ export default function Footer() {
               </motion.li>
             ))}
           </ul>
+
+          {/* Social Media */}
+          <motion.div variants={itemVariants} className="mt-6">
+            <p className="text-xs uppercase tracking-widest text-stone-500 dark:text-stone-500 mb-3 font-medium">
+              Obserwuj nas
+            </p>
+            <div className="flex gap-2">
+              {[
+                {
+                  href: 'http://instagram.com/eventizer_official',
+                  icon: FaInstagram,
+                  label: 'Instagram',
+                  gradient: 'from-purple-500 via-pink-500 to-orange-400',
+                  hoverBg:
+                    'hover:bg-gradient-to-br hover:from-purple-500 hover:via-pink-500 hover:to-orange-400',
+                },
+                {
+                  href: 'https://www.facebook.com/profile.php?id=61587430645143',
+                  icon: FaFacebook,
+                  label: 'Facebook',
+                  gradient: 'from-blue-600 to-blue-500',
+                  hoverBg: 'hover:bg-gradient-to-br hover:from-blue-600 hover:to-blue-500',
+                },
+              ].map((social) => (
+                <motion.div
+                  key={social.href}
+                  whileHover={{ scale: 1.08, y: -3 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                >
+                  <Link
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className={`
+                      relative group flex items-center justify-center size-11 rounded-xl
+                      bg-stone-200/60 dark:bg-stone-800/60 
+                      border border-stone-300/50 dark:border-stone-700/50
+                      text-stone-600 dark:text-stone-400
+                      ${social.hoverBg} hover:text-white hover:border-transparent
+                      hover:shadow-lg hover:shadow-stone-400/20 dark:hover:shadow-black/30
+                      transition-all duration-300 ease-out
+                      overflow-hidden
+                    `}
+                  >
+                    <social.icon className="size-5 relative z-10 transition-transform duration-300 group-hover:scale-110" />
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-white/20 to-transparent" />
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         </motion.div>
 
         {/* Right Part - Navigation */}
