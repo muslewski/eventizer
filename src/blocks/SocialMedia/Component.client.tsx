@@ -113,7 +113,7 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
   }
 
   return (
-    <section className={cn('relative pt-24 md:pt-32 px-6', className)}>
+    <section className={cn('relative px-6', className)}>
       {/* Background effects */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
