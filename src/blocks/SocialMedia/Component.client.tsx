@@ -113,7 +113,7 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
   }
 
   return (
-    <section className={cn('relative px-6', className)}>
+    <section className={cn('relative w-full', className)}>
       {/* Background effects */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
@@ -130,16 +130,26 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={containerVariants}
-        className="relative z-10 max-w-5xl mx-auto"
+        className="relative z-10 mx-auto"
       >
         {/* Header */}
-        <motion.div
-          variants={headerVariants}
-          className="text-center mb-16  flex flex-col items-center"
-        >
-          <TitleH2 align="center" title={heading} />
-          <p className="max-w-3xl">{description}</p>
-        </motion.div>
+        <div className="flex flex-col gap-16 relative mb-16">
+          {/* Line */}
+          <div className="bg-linear-to-r from-yellow-500 dark:from-yellow-400/50 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
+
+          {/* Header Content */}
+          <motion.div variants={headerVariants} className="text-center flex flex-col items-center">
+            <TitleH2 align="center" title={heading} />
+            <p className="max-w-3xl">{description}</p>
+          </motion.div>
+
+          {/* Line */}
+          <div className="bg-linear-to-l from-yellow-500 dark:from-yellow-400/40 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
+
+          {/* Corner accents */}
+          <div className="absolute top-0 right-0 w-8 h-8 border-r border-t border-pink-400/20" />
+          <div className="absolute bottom-0 left-0 w-8 h-8 border-l border-b border-pink-400/20" />
+        </div>
 
         {/* Social Cards Grid */}
         <motion.div

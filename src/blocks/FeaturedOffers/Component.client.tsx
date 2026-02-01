@@ -40,7 +40,7 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
         </div>
 
         {/* Line */}
-        <div className="bg-linear-to-r from-yellow-400/50 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
+        <div className="bg-linear-to-r from-yellow-500 dark:from-yellow-400/50 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
 
         {/* Header of Featured Offers */}
         <div className="text-center flex flex-col items-center gap-6">
@@ -52,7 +52,7 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
         </div>
 
         {/* Line */}
-        <div className="bg-linear-to-l from-yellow-400/40 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
+        <div className="bg-linear-to-l from-yellow-500 dark:from-yellow-400/40 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
 
         {/* Corner accents */}
         <div className="absolute top-0 right-0 w-8 h-8 border-r border-t border-yellow-400/20" />
