@@ -2,6 +2,7 @@
 
 import { Card, CardDescription } from '@/components/ui/card'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface OfferListCardProps {
   title: string
@@ -13,6 +14,7 @@ interface OfferListCardProps {
   price?: number
   hasPriceRange?: boolean
   imageUrl?: string
+  slug: string
 }
 
 export const OfferListCard = ({
@@ -25,6 +27,7 @@ export const OfferListCard = ({
   price,
   hasPriceRange,
   imageUrl,
+  slug,
 }: OfferListCardProps) => {
   const renderStars = (rating: number) => {
     return '⭐'.repeat(Math.round(rating))
@@ -44,10 +47,13 @@ export const OfferListCard = ({
   }
 
   return (
-    <Card className="w-full flex xl:flex-row flex-col py-0 sm:py-0 h-120 sm:h-130 xl:h-48  items-center bg-transparent bg-linear-to-r from-stone-900/60 to-background/35 rounded-2xl overflow-hidden">
-      <div className="w-full xl:max-w-3xs h-full bottom-0 top-0 rounded-2xl bg-white/10 relative overflow-hidden shadow-[6px_0px_32px_2px_rgba(24,10,10,1)]">
+    <Card className="w-full flex xl:flex-row flex-col py-0 sm:py-0 h-120 sm:h-130 xl:h-48  items-center bg-transparent bg-linear-to-r from-stone-200 dark:from-stone-900/60 to-background/35 rounded-2xl overflow-hidden">
+      <Link
+        href={`/ogloszenia/${slug}`}
+        className="w-full xl:max-w-3xs h-full bottom-0 top-0 rounded-2xl bg-white/10 relative overflow-hidden dark:shadow-[6px_0px_32px_2px_rgba(24,10,10,1)]"
+      >
         {imageUrl && <Image src={imageUrl} alt={title} fill className="object-cover" />}
-      </div>
+      </Link>
 
       {/* Content */}
       <div className="xl:pb-6 xl:pt-6 sm:pb-6 sm:pt-0 pb-6 pt-6 flex flex-col lg:flex-row gap-8 justify-between  w-full min-w-0 px-6 xl:px-0 xl:pr-6">
@@ -66,7 +72,7 @@ export const OfferListCard = ({
           </div>
 
           {/* Price */}
-          <div className="lg:w-42 max-w-xs p-4 bg-linear-to-r from-stone-950/60 to-background/35 rounded-2xl border border-foreground/10">
+          <div className="lg:w-42 max-w-xs p-4 bg-linear-to-r dark:from-stone-950/60 from-stone-200 dark:to-background/35 rounded-2xl border border-foreground/10">
             <p className="md:text-xl sm:text-md text-sm font-montserrat font-medium w-full text-foreground leading-[0.9] truncate whitespace-nowrap ">
               {formatPrice()}
             </p>

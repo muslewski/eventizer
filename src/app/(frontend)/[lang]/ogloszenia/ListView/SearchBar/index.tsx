@@ -24,11 +24,14 @@ export default function SearchBar({
       {/* Settings */}
       <Popover>
         <PopoverTrigger asChild>
-          <button className="flex h-full px-6 py-4 items-center bg-black/60 border rounded-2xl hover:bg-black/80 transition-colors cursor-pointer">
+          <button className="flex h-full px-6 py-4 items-center dark:bg-black/60 border rounded-2xl hover:bg-muted dark:hover:bg-black/80 transition-colors cursor-pointer">
             <Settings2Icon size={22} />
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-64 p-4 bg-black/50 backdrop-blur-md rounded-2xl" align="end">
+        <PopoverContent
+          className="w-64 p-4 bg-background/50 backdrop-blur-md rounded-2xl"
+          align="end"
+        >
           <div className="flex flex-col gap-4">
             <h4 className="xl:text-4xl w-fit md:text-3xl sm:text-2xl text-xl font-bebas max-w-7xl text-foreground ">
               Ustawienia

@@ -67,7 +67,7 @@ export default function Search() {
   return (
     <div
       className={cn(
-        'flex items-center gap-4 h-full bg-black/60 border px-6 py-4 rounded-2xl w-full transition-all duration-200',
+        'flex items-center gap-4 h-full dark:bg-black/60 hover:bg-muted dark:hover:bg-black/80 border px-6 py-4 rounded-2xl w-full transition-all duration-200',
         'focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/20',
       )}
     >
