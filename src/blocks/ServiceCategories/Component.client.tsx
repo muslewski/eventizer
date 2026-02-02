@@ -142,7 +142,11 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
 
             {/* Main category button */}
             <div className="px-6 py-4">
-              <Link href={`/ogloszenia?kategoria=${selectedCategory?.slug}#oferty`} passHref>
+              <Link
+                href={`/ogloszenia?kategoria=${selectedCategory?.slug}#oferty`}
+                passHref
+                prefetch
+              >
                 <Button className="w-full gap-2" size="lg" onClick={handleCloseDrawer}>
                   Przeglądaj wszystkie w {selectedCategory?.name}
                   <ArrowRight className="h-4 w-4" />
@@ -168,6 +172,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                         href={`/ogloszenia?kategoria=${selectedCategory?.slug}/${subcategory.slug}#oferty`}
                         onClick={handleCloseDrawer}
                         className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 bg-muted/30 hover:bg-muted/60 hover:border-yellow-400/30 transition-all duration-200 group"
+                        prefetch
                       >
                         {subcategoryIconUrl && (
                           <div className="relative w-10 h-10 rounded-lg bg-background/50 p-2">
