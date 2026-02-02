@@ -1,6 +1,6 @@
 import BlurText from '@/components/react-bits/BlurText'
 
-export const ParagraphLikeH3 = ({
+export const TitleH3 = ({
   title,
   align,
 }: {
