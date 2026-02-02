@@ -2,7 +2,6 @@
 
 import { ServiceCategory, Media } from '@/payload-types'
 import { TitleH2 } from '@/components/frontend/Content/TitleH2'
-import { Badge } from '@/components/ui/badge'
 import { CategoryCard } from './CategoryCard'
 import { useState } from 'react'
 import {
@@ -19,7 +18,7 @@ import Link from 'next/link'
 import { ArrowRight, X } from 'lucide-react'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
-import { TitleH3 } from '@/components/frontend/Content/TitleH3'
+import { ParagraphLikeH3 } from '@/components/frontend/Content/ParagraphLikeH3'
 
 interface ServiceCategoriesClientProps {
   heading: string
@@ -131,7 +130,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                   </div>
                 )}
                 <DrawerTitle className="font-normal">
-                  <TitleH3 align="center" title={selectedCategory?.name || ''} />
+                  <ParagraphLikeH3 align="center" title={selectedCategory?.name || ''} />
                 </DrawerTitle>
                 {selectedCategory?.description && (
                   <DrawerDescription className="text-center max-w-md">
