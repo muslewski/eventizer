@@ -158,11 +158,11 @@ export default function Footer() {
           </ul>
 
           {/* Social Media */}
-          <motion.div variants={itemVariants} className="mt-6">
-            <p className="text-xs uppercase tracking-widest text-stone-500 dark:text-stone-500 mb-3 font-medium">
+          <motion.div variants={itemVariants} className="mt-6 space-y-3">
+            <h3 className="md:text-4xl text-3xl font-bebas max-w-7xl text-[#D4AF37]/85">
               Obserwuj nas
-            </p>
-            <div className="flex gap-2">
+            </h3>
+            <div className="flex gap-4">
               {[
                 {
                   href: 'http://instagram.com/eventizer_official',
@@ -196,7 +196,7 @@ export default function Footer() {
                       bg-stone-200/60 dark:bg-stone-800/60 
                       border border-stone-300/50 dark:border-stone-700/50
                       text-stone-600 dark:text-stone-400
-                      ${social.hoverBg} hover:text-white hover:border-transparent
+                      ${social.hoverBg} hover:text-white dark:hover:text-white hover:border-transparent
                       hover:shadow-lg hover:shadow-stone-400/20 dark:hover:shadow-black/30
                       transition-all duration-300 ease-out
                       overflow-hidden

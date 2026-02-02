@@ -14,6 +14,7 @@ import type { Page } from '../payload-types'
 import { FeaturedOffersBlock } from '@/blocks/FeaturedOffers/Component'
 import { HowItWorksBlock } from '@/blocks/HowItWorks/Component'
 import { SocialMediaBlock } from '@/blocks/SocialMedia/Component'
+import { ServiceCategoriesBlock } from '@/blocks/ServiceCategories/Component'
 
 const blockComponents = {
   //   archive: ArchiveBlock,
@@ -23,6 +24,7 @@ const blockComponents = {
   featuredOffers: FeaturedOffersBlock,
   howItWorks: HowItWorksBlock,
   socialMedia: SocialMediaBlock,
+  serviceCategories: ServiceCategoriesBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   //   formBlock: FormBlock,

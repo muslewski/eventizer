@@ -204,6 +204,7 @@ export interface Page {
     | ComingSoonBlock
     | HowItWorksBlock
     | SocialMediaBlock
+    | ServiceCategoriesBlock
   )[];
   meta?: {
     title?: string | null;
@@ -682,6 +683,120 @@ export interface SocialMediaBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServiceCategoriesBlock".
+ */
+export interface ServiceCategoriesBlock {
+  heading: string;
+  description: string;
+  /**
+   * Select the service categories to display in this block
+   */
+  categories: (number | ServiceCategory)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'serviceCategories';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-categories".
+ */
+export interface ServiceCategory {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Unique identifier (e.g., 'dj', 'catering')
+   */
+  slug: string;
+  /**
+   * Select the subscription plan required to access services in this category.
+   */
+  requiredPlan?: (number | null) | SubscriptionPlan;
+  /**
+   * Optional icon image for this category.
+   */
+  icon?: (number | null) | Media;
+  description?: string | null;
+  /**
+   * Add subcategories to further organize services.
+   */
+  subcategory_level_1?:
+    | {
+        name: string;
+        /**
+         * Unique identifier (e.g., 'dj', 'catering')
+         */
+        slug: string;
+        /**
+         * Select the subscription plan required to access services in this category.
+         */
+        requiredPlan?: (number | null) | SubscriptionPlan;
+        /**
+         * Optional icon image for this category.
+         */
+        icon?: (number | null) | Media;
+        description?: string | null;
+        /**
+         * Add subcategories to further organize services.
+         */
+        subcategory_level_2?:
+          | {
+              name: string;
+              /**
+               * Unique identifier (e.g., 'dj', 'catering')
+               */
+              slug: string;
+              /**
+               * Select the subscription plan required to access services in this category.
+               */
+              requiredPlan?: (number | null) | SubscriptionPlan;
+              /**
+               * Optional icon image for this category.
+               */
+              icon?: (number | null) | Media;
+              description?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Manage subscription plan content and display settings. Plan pricing and billing logic should be configured in the Stripe Dashboard.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscription-plans".
+ */
+export interface SubscriptionPlan {
+  id: number;
+  name: string;
+  /**
+   * Unique identifier (e.g., 'basic', 'pro', 'enterprise')
+   */
+  slug: string;
+  description?: string | null;
+  /**
+   * Defines the hierarchy of plans. Higher levels include access to lower level plans' features.
+   */
+  level: number;
+  highlighted?: boolean | null;
+  features?:
+    | {
+        feature: string;
+        included?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  stripeID?: string | null;
+  skipSync?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-sessions".
  */
 export interface UserSession {
@@ -722,93 +837,6 @@ export interface UserVerification {
   identifier: string;
   value: string;
   expiresAt: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "service-categories".
- */
-export interface ServiceCategory {
-  id: number;
-  _order?: string | null;
-  name: string;
-  /**
-   * Unique identifier (e.g., 'dj', 'catering')
-   */
-  slug: string;
-  /**
-   * Select the subscription plan required to access services in this category.
-   */
-  requiredPlan?: (number | null) | SubscriptionPlan;
-  description?: string | null;
-  /**
-   * Add subcategories to further organize services.
-   */
-  subcategory_level_1?:
-    | {
-        name: string;
-        /**
-         * Unique identifier (e.g., 'dj', 'catering')
-         */
-        slug: string;
-        /**
-         * Select the subscription plan required to access services in this category.
-         */
-        requiredPlan?: (number | null) | SubscriptionPlan;
-        description?: string | null;
-        /**
-         * Add subcategories to further organize services.
-         */
-        subcategory_level_2?:
-          | {
-              name: string;
-              /**
-               * Unique identifier (e.g., 'dj', 'catering')
-               */
-              slug: string;
-              /**
-               * Select the subscription plan required to access services in this category.
-               */
-              requiredPlan?: (number | null) | SubscriptionPlan;
-              description?: string | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Manage subscription plan content and display settings. Plan pricing and billing logic should be configured in the Stripe Dashboard.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "subscription-plans".
- */
-export interface SubscriptionPlan {
-  id: number;
-  name: string;
-  /**
-   * Unique identifier (e.g., 'basic', 'pro', 'enterprise')
-   */
-  slug: string;
-  description?: string | null;
-  /**
-   * Defines the hierarchy of plans. Higher levels include access to lower level plans' features.
-   */
-  level: number;
-  highlighted?: boolean | null;
-  features?:
-    | {
-        feature: string;
-        included?: boolean | null;
-        id?: string | null;
-      }[]
-    | null;
-  stripeID?: string | null;
-  skipSync?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1133,6 +1161,7 @@ export interface PagesSelect<T extends boolean = true> {
         comingSoon?: T | ComingSoonBlockSelect<T>;
         howItWorks?: T | HowItWorksBlockSelect<T>;
         socialMedia?: T | SocialMediaBlockSelect<T>;
+        serviceCategories?: T | ServiceCategoriesBlockSelect<T>;
       };
   meta?:
     | T
@@ -1341,6 +1370,17 @@ export interface SocialMediaBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServiceCategoriesBlock_select".
+ */
+export interface ServiceCategoriesBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  categories?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "offers_select".
  */
 export interface OffersSelect<T extends boolean = true> {
@@ -1440,6 +1480,7 @@ export interface ServiceCategoriesSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   requiredPlan?: T;
+  icon?: T;
   description?: T;
   subcategory_level_1?:
     | T
@@ -1447,6 +1488,7 @@ export interface ServiceCategoriesSelect<T extends boolean = true> {
         name?: T;
         slug?: T;
         requiredPlan?: T;
+        icon?: T;
         description?: T;
         subcategory_level_2?:
           | T
@@ -1454,6 +1496,7 @@ export interface ServiceCategoriesSelect<T extends boolean = true> {
               name?: T;
               slug?: T;
               requiredPlan?: T;
+              icon?: T;
               description?: T;
               id?: T;
             };

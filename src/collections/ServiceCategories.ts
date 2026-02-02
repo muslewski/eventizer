@@ -44,6 +44,21 @@ const commonCategoryFields: Field[] = [
     },
   },
   {
+    name: 'icon',
+    type: 'upload',
+    relationTo: 'media',
+    label: {
+      en: 'Icon',
+      pl: 'Ikona',
+    },
+    admin: {
+      description: {
+        en: 'Optional icon image for this category.',
+        pl: 'Opcjonalny obraz ikony dla tej kategorii.',
+      },
+    },
+  },
+  {
     name: 'description',
     type: 'textarea',
     label: {

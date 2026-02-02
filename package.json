@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --turbopack",
+    "dev:webpack": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
@@ -75,7 +76,8 @@
     "tailwind": "^4.0.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
-    "use-debounce": "^10.1.0"
+    "use-debounce": "^10.1.0",
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@playwright/test": "1.56.1",
