@@ -63,7 +63,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
   return (
     <>
       <div
-        className={`flex flex-col gap-16 py-16 -px-4 sm:px-8 -ml-4 sm:-ml-8 w-[calc(100%+2rem)] sm:w-[calc(100%+4rem)] bg-linear-to-b from-background via-muted/30 to-background ${className || ''}`}
+        className={`flex flex-col gap-16 py-16 -px-4 sm:px-8 -ml-4 sm:-ml-8 w-[calc(100%+2rem)] sm:w-[calc(100%+4rem)] bg-background ${className || ''}`}
       >
         {/* Header Section */}
         <div className="flex flex-col gap-16 relative px-4 sm:px-8">
