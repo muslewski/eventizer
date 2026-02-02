@@ -20,7 +20,7 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
   className,
 }) => {
   return (
-    <div className="flex flex-col gap-16 -px-4 sm:px-8 -ml-4 sm:-ml-8 w-[calc(100%+2rem)] sm:w-[calc(100%+4rem)] bg-linear-to-b from-background dark:via-black to-background">
+    <div className="flex flex-col gap-16 -px-4 sm:px-8 -ml-4 sm:-ml-8 w-[calc(100%+2rem)] sm:w-[calc(100%+4rem)] bg-linear-to-b from-background dark:via-black/25 to-background">
       {/* Top of Featured Offers */}
       <div className="flex flex-col gap-16 relative">
         {/* Decorative accent bottom center */}

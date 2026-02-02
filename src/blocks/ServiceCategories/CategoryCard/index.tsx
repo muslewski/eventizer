@@ -2,6 +2,8 @@
 
 import { ServiceCategory, Media } from '@/payload-types'
 import Image from 'next/image'
+import { useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface CategoryCardProps {
   category: ServiceCategory
@@ -28,6 +30,8 @@ function interpolateColor(ratio: number, darker: boolean = false): string {
 }
 
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, index, total }) => {
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
+
   const getIconUrl = (icon: (number | null) | Media | undefined): string | null => {
     if (!icon || typeof icon === 'number') return null
     return icon.url || null
@@ -57,12 +61,18 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
         className="relative size-12 sm:size-20 rounded-xl bg-muted/50 p-2 sm:p-3 border-2 transition-all duration-300"
       >
         {iconUrl ? (
-          <Image
-            src={iconUrl}
-            alt={category.name}
-            fill
-            className="object-contain p-1 sm:p-4 dark:invert group-hover:scale-110 transition-transform duration-300"
-          />
+          <>
+            {!isImageLoaded && (
+              <Skeleton className="absolute inset-0 rounded-lg" />
+            )}
+            <Image
+              src={iconUrl}
+              alt={category.name}
+              fill
+              className={`object-contain p-1 sm:p-4 dark:invert group-hover:scale-110 transition-transform duration-300 ${!isImageLoaded ? 'opacity-0' : 'opacity-100'}`}
+              onLoad={() => setIsImageLoaded(true)}
+            />
+          </>
         ) : (
           <div className="w-full h-full rounded-lg bg-muted flex items-center justify-center">
             <span className="text-xl sm:text-2xl font-bold text-muted-foreground">

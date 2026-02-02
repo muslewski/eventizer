@@ -18,6 +18,8 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowRight, X } from 'lucide-react'
 import Image from 'next/image'
+import { Skeleton } from '@/components/ui/skeleton'
+import { TitleH3 } from '@/components/frontend/Content/TitleH3'
 
 interface ServiceCategoriesClientProps {
   heading: string
@@ -42,6 +44,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | null>(null)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
 
   const handleCategoryClick = (category: ServiceCategory) => {
     setSelectedCategory(category)
@@ -51,6 +54,11 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false)
     setSelectedCategory(null)
+    setLoadedImages(new Set())
+  }
+
+  const handleImageLoad = (id: string) => {
+    setLoadedImages((prev) => new Set(prev).add(id))
   }
 
   const getIconUrl = (icon: (number | null) | Media | undefined): string | null => {
@@ -110,16 +118,20 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
               <div className="flex flex-col items-center gap-4 pt-2">
                 {selectedCategory && getIconUrl(selectedCategory.icon) && (
                   <div className="relative w-16 h-16 rounded-2xl bg-muted/50 p-3 border border-border/50">
+                    {!loadedImages.has(`main-${selectedCategory.id}`) && (
+                      <Skeleton className="absolute inset-0 rounded-2xl" />
+                    )}
                     <Image
                       src={getIconUrl(selectedCategory.icon)!}
                       alt={selectedCategory.name}
                       fill
-                      className="object-contain p-2 dark:invert"
+                      className={`object-contain p-2 dark:invert transition-opacity duration-200 ${!loadedImages.has(`main-${selectedCategory.id}`) ? 'opacity-0' : 'opacity-100'}`}
+                      onLoad={() => handleImageLoad(`main-${selectedCategory.id}`)}
                     />
                   </div>
                 )}
-                <DrawerTitle className="text-2xl font-bebas tracking-wide">
-                  {selectedCategory?.name}
+                <DrawerTitle className="font-normal">
+                  <TitleH3 align="center" title={selectedCategory?.name || ''} />
                 </DrawerTitle>
                 {selectedCategory?.description && (
                   <DrawerDescription className="text-center max-w-md">
@@ -131,7 +143,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
 
             {/* Main category button */}
             <div className="px-6 py-4">
-              <Link href={`/ogloszenia?kategoria=${selectedCategory?.slug}`} passHref>
+              <Link href={`/ogloszenia?kategoria=${selectedCategory?.slug}#oferty`} passHref>
                 <Button className="w-full gap-2" size="lg" onClick={handleCloseDrawer}>
                   Przeglądaj wszystkie w {selectedCategory?.name}
                   <ArrowRight className="h-4 w-4" />
@@ -154,17 +166,21 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                     return (
                       <Link
                         key={subcategory.id}
-                        href={`/ogloszenia?kategoria=${selectedCategory?.slug}/${subcategory.slug}`}
+                        href={`/ogloszenia?kategoria=${selectedCategory?.slug}/${subcategory.slug}#oferty`}
                         onClick={handleCloseDrawer}
                         className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 bg-muted/30 hover:bg-muted/60 hover:border-yellow-400/30 transition-all duration-200 group"
                       >
                         {subcategoryIconUrl && (
                           <div className="relative w-10 h-10 rounded-lg bg-background/50 p-2">
+                            {!loadedImages.has(`sub-${subcategory.id}`) && (
+                              <Skeleton className="absolute inset-0 rounded-lg" />
+                            )}
                             <Image
                               src={subcategoryIconUrl}
                               alt={subcategory.name}
                               fill
-                              className="object-contain p-1 dark:invert group-hover:scale-110 transition-transform duration-200"
+                              className={`object-contain p-1 dark:invert group-hover:scale-110 transition-transform duration-200 ${!loadedImages.has(`sub-${subcategory.id}`) ? 'opacity-0' : 'opacity-100'}`}
+                              onLoad={() => handleImageLoad(`sub-${subcategory.id}`)}
                             />
                           </div>
                         )}
