@@ -15,10 +15,10 @@ import {
 } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { ArrowRight, X } from 'lucide-react'
+import { ArrowRight, X, ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ParagraphLikeH3 } from '@/components/frontend/Content/ParagraphLikeH3'
+import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
 
 interface ServiceCategoriesClientProps {
   heading: string
@@ -118,7 +118,9 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                 {selectedCategory && getIconUrl(selectedCategory.icon) && (
                   <div className="relative w-16 h-16 rounded-2xl bg-muted/50 p-3 border border-border/50">
                     {!loadedImages.has(`main-${selectedCategory.id}`) && (
-                      <Skeleton className="absolute inset-0 rounded-2xl" />
+                      <Skeleton className="absolute inset-0 rounded-2xl flex items-center justify-center">
+                        <ImageIcon className="size-6 text-muted-foreground/50 animate-pulse" />
+                      </Skeleton>
                     )}
                     <Image
                       src={getIconUrl(selectedCategory.icon)!}
@@ -130,7 +132,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                   </div>
                 )}
                 <DrawerTitle className="font-normal">
-                  <ParagraphLikeH3 align="center" title={selectedCategory?.name || ''} />
+                  <SpanLikeH3 align="center" title={selectedCategory?.name || ''} />
                 </DrawerTitle>
                 {selectedCategory?.description && (
                   <DrawerDescription className="text-center max-w-md">
@@ -177,7 +179,9 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                         {subcategoryIconUrl && (
                           <div className="relative w-10 h-10 rounded-lg bg-background/50 p-2">
                             {!loadedImages.has(`sub-${subcategory.id}`) && (
-                              <Skeleton className="absolute inset-0 rounded-lg" />
+                              <Skeleton className="absolute inset-0 rounded-lg flex items-center justify-center">
+                                <ImageIcon className="size-4 text-muted-foreground/50 animate-pulse" />
+                              </Skeleton>
                             )}
                             <Image
                               src={subcategoryIconUrl}

@@ -4,6 +4,7 @@ import { ServiceCategory, Media } from '@/payload-types'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ImageIcon } from 'lucide-react'
 
 interface CategoryCardProps {
   category: ServiceCategory
@@ -63,7 +64,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
         {iconUrl ? (
           <>
             {!isImageLoaded && (
-              <Skeleton className="absolute inset-0 rounded-lg" />
+              <Skeleton className="absolute inset-0 rounded-lg flex items-center justify-center">
+                <ImageIcon className="size-4 sm:size-6 text-muted-foreground/50 animate-pulse" />
+              </Skeleton>
             )}
             <Image
               src={iconUrl}

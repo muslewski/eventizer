@@ -39,7 +39,10 @@ export default function ClientListView({
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-col md:flex-row w-full gap-8 md:h-screen md:max-h-screen" id="oferty">
+    <div
+      className="flex flex-col md:flex-row w-full -mt-16 pt-16 gap-8 md:h-screen md:max-h-screen"
+      id="oferty"
+    >
       {/* Category Selection */}
       <CategorySelection categoryData={categoryData} />
 
