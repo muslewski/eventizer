@@ -63,7 +63,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
       {/* Main content - Rich Text */}
       <div className="flex flex-col-reverse lg:flex-row lg:items-start gap-8 lg:gap-12">
         <div className="lg:w-2/3">
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <Card className="bg-primary/5 backdrop-blur-sm border-border/50">
             <CardHeader className="border-b">
               <CardTitle className="flex items-center font-normal gap-4 sm:gap-6 text-xl font-montserrat">
                 <FileText className="size-6 sm:size-8 text-primary" />
@@ -86,7 +86,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
         {/* Sidebar - Quick Info */}
         <div className="lg:w-1/3 lg:self-start lg:sticky lg:top-24 ">
           {/* Quick Info Card */}
-          <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+          <Card className="bg-primary/5 backdrop-blur-sm border-border/50">
             <CardHeader className="pb-3 border-b">
               <CardTitle className="flex items-center font-normal gap-4 sm:gap-6 text-xl font-montserrat">
                 <Info className="size-6 sm:size-8 text-primary" />
