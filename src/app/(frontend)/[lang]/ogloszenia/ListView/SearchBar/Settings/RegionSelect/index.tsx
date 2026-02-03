@@ -1,6 +1,6 @@
 'use client'
 
-import { POLISH_PROVINCES } from '@/collections/Offers'
+import { POLISH_PROVINCES } from '@/lib/provinces'
 import {
   Select,
   SelectContent,
