@@ -10,6 +10,7 @@ export function parseSearchParams(params: OfferSearchParams): ParsedSearchParams
     kategoria: params.kategoria,
     szukaj: params.szukaj,
     sortuj: parseSortOption(params.sortuj),
+    region: params.region,
     minCena: params.minCena ? Number(params.minCena) : undefined,
     maxCena: params.maxCena ? Number(params.maxCena) : undefined,
   }

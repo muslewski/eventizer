@@ -9,6 +9,7 @@ interface ListViewProps {
   kategoria?: string
   szukaj?: string
   sortuj?: string
+  region?: string
   minCena?: number
   maxCena?: number
 }
@@ -32,6 +33,7 @@ export default async function ListView({ payload, ...searchParams }: ListViewPro
       categoryData={categories.docs}
       pagination={pagination}
       currentSort={params.sortuj}
+      currentRegion={params.region}
       minCena={params.minCena}
       maxCena={params.maxCena}
     />

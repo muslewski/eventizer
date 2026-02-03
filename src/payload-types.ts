@@ -501,6 +501,31 @@ export interface Offer {
    */
   email?: string | null;
   /**
+   * Select the province where this offer is available.
+   */
+  serviceArea: (
+    | 'dolnoslaskie'
+    | 'kujawsko-pomorskie'
+    | 'lubelskie'
+    | 'lubuskie'
+    | 'lodzkie'
+    | 'malopolskie'
+    | 'mazowieckie'
+    | 'opolskie'
+    | 'podkarpackie'
+    | 'podlaskie'
+    | 'pomorskie'
+    | 'slaskie'
+    | 'swietokrzyskie'
+    | 'warminsko-mazurskie'
+    | 'wielkopolskie'
+    | 'zachodniopomorskie'
+  )[];
+  /**
+   * Check if this offer does not have a specific address.
+   */
+  isWithoutAddress?: boolean | null;
+  /**
    * Optional address related to the offer.
    */
   address?: string | null;
@@ -1399,6 +1424,8 @@ export interface OffersSelect<T extends boolean = true> {
   shortDescription?: T;
   phone?: T;
   email?: T;
+  serviceArea?: T;
+  isWithoutAddress?: T;
   address?: T;
   meta?:
     | T

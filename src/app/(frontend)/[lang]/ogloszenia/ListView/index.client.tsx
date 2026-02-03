@@ -24,6 +24,7 @@ interface ClientListViewProps {
   categoryData?: ServiceCategory[]
   pagination: PaginationInfo
   currentSort: SortOption
+  currentRegion?: string
   minCena?: number
   maxCena?: number
 }
@@ -33,6 +34,7 @@ export default function ClientListView({
   categoryData,
   pagination,
   currentSort,
+  currentRegion,
   minCena,
   maxCena,
 }: ClientListViewProps) {
@@ -49,7 +51,12 @@ export default function ClientListView({
       {/* Main Search bar and offers */}
       <div className="w-full max-w-375 h-full min-w-0 py-0 flex flex-col gap-8 ">
         {/* Search Bar */}
-        <SearchBar currentSort={currentSort} minPrice={minCena} maxPrice={maxCena} />
+        <SearchBar
+          currentSort={currentSort}
+          currentRegion={currentRegion}
+          minPrice={minCena}
+          maxPrice={maxCena}
+        />
 
         {/* Display offers */}
         <OffersView offers={offers} pagination={pagination} pathname={pathname} />

@@ -2,6 +2,7 @@
 
 import Search from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/Search'
 import PriceRangeInputs from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/Settings/PriceRange'
+import RegionSelect from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/Settings/RegionSelect'
 import SortSelect from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/Settings/SortSelect'
 import { SortOption } from '@/app/(frontend)/[lang]/ogloszenia/ListView/types'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -9,10 +10,12 @@ import { Settings2Icon } from 'lucide-react'
 
 export default function SearchBar({
   currentSort,
+  currentRegion,
   minPrice,
   maxPrice,
 }: {
   currentSort: SortOption
+  currentRegion?: string
   minPrice?: number
   maxPrice?: number
 }) {
@@ -37,6 +40,9 @@ export default function SearchBar({
               Ustawienia
             </h4>
             <SortSelect currentSort={currentSort} />
+
+            {/* Region/Province filter */}
+            <RegionSelect currentRegion={currentRegion} />
 
             {/* Range from and to price in pln */}
             <PriceRangeInputs minPrice={minPrice} maxPrice={maxPrice} />

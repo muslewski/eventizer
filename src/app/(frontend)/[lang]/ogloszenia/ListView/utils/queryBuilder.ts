@@ -18,6 +18,13 @@ export function buildBaseConditions(params: ParsedSearchParams): Where[] {
     })
   }
 
+  // Add region/serviceArea filter
+  if (params.region) {
+    conditions.push({
+      serviceArea: { contains: params.region },
+    })
+  }
+
   // Add price range conditions
   const priceConditions = buildPriceConditions(params.minCena, params.maxCena)
   conditions.push(...priceConditions)

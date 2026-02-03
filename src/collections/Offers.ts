@@ -13,6 +13,26 @@ import { APIError, slugField, type CollectionConfig } from 'payload'
 
 const MAX_OFFERS_PER_USER = 10
 
+// Polish voivodeships with slugs for search params
+export const POLISH_PROVINCES = [
+  { label: { en: 'Lower Silesian', pl: 'Dolnośląskie' }, value: 'dolnoslaskie' },
+  { label: { en: 'Kuyavian-Pomeranian', pl: 'Kujawsko-Pomorskie' }, value: 'kujawsko-pomorskie' },
+  { label: { en: 'Lublin', pl: 'Lubelskie' }, value: 'lubelskie' },
+  { label: { en: 'Lubusz', pl: 'Lubuskie' }, value: 'lubuskie' },
+  { label: { en: 'Łódź', pl: 'Łódzkie' }, value: 'lodzkie' },
+  { label: { en: 'Lesser Poland', pl: 'Małopolskie' }, value: 'malopolskie' },
+  { label: { en: 'Masovian', pl: 'Mazowieckie' }, value: 'mazowieckie' },
+  { label: { en: 'Opole', pl: 'Opolskie' }, value: 'opolskie' },
+  { label: { en: 'Subcarpathian', pl: 'Podkarpackie' }, value: 'podkarpackie' },
+  { label: { en: 'Podlaskie', pl: 'Podlaskie' }, value: 'podlaskie' },
+  { label: { en: 'Pomeranian', pl: 'Pomorskie' }, value: 'pomorskie' },
+  { label: { en: 'Silesian', pl: 'Śląskie' }, value: 'slaskie' },
+  { label: { en: 'Holy Cross', pl: 'Świętokrzyskie' }, value: 'swietokrzyskie' },
+  { label: { en: 'Warmian-Masurian', pl: 'Warmińsko-Mazurskie' }, value: 'warminsko-mazurskie' },
+  { label: { en: 'Greater Poland', pl: 'Wielkopolskie' }, value: 'wielkopolskie' },
+  { label: { en: 'West Pomeranian', pl: 'Zachodniopomorskie' }, value: 'zachodniopomorskie' },
+]
+
 export const Offers: CollectionConfig = {
   slug: 'offers',
   labels: {
@@ -60,6 +80,7 @@ export const Offers: CollectionConfig = {
     priceTo: true,
     price: true,
     hasPriceRange: true,
+    serviceArea: true,
     meta: {
       image: true,
     },
@@ -208,6 +229,7 @@ export const Offers: CollectionConfig = {
         },
       },
     },
+
     {
       type: 'checkbox',
       name: 'hasPriceRange',
@@ -406,7 +428,41 @@ export const Offers: CollectionConfig = {
                 },
               },
             },
-            // Disable address
+
+            {
+              name: 'serviceArea',
+              type: 'select',
+              hasMany: true,
+              required: true,
+              label: {
+                en: 'Service Area',
+                pl: 'Województwo',
+              },
+              options: POLISH_PROVINCES,
+              admin: {
+                description: {
+                  en: 'Select the province where this offer is available.',
+                  pl: 'Wybierz województwo, w którym ta oferta jest dostępna.',
+                },
+              },
+              index: true, // Index for faster search queries
+            },
+            // Here we should have checkbox to disable address and serviceArea, it should be question like isWithoutAddress
+            {
+              name: 'isWithoutAddress',
+              type: 'checkbox',
+              label: {
+                en: 'Offer without address',
+                pl: 'Oferta bez adresu',
+              },
+              defaultValue: false,
+              admin: {
+                description: {
+                  en: 'Check if this offer does not have a specific address.',
+                  pl: 'Zaznacz, jeśli ta oferta nie posiada konkretnego adresu.',
+                },
+              },
+            },
             {
               name: 'address',
               type: 'text',
@@ -419,6 +475,7 @@ export const Offers: CollectionConfig = {
                   en: 'Optional address related to the offer.',
                   pl: 'Opcjonalny adres związany z ofertą.',
                 },
+                condition: (data) => !data?.isWithoutAddress,
               },
               required: false,
             },
