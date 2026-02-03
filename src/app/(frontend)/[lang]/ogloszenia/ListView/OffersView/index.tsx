@@ -84,7 +84,7 @@ export default function OffersView({
                   priceMax={offer.priceTo || 0}
                   price={offer.price || undefined}
                   hasPriceRange={offer.hasPriceRange || undefined}
-                  slug={offer.slug}
+                  slug={offer.link}
                 />
               </motion.div>
             ))

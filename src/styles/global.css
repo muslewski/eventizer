@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import '@daveyplate/better-auth-ui/css';
+@plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -138,7 +139,7 @@
     -moz-osx-font-smoothing: grayscale;
     /* Improve text rendering */
     text-rendering: optimizeLegibility;
-    /* Prevent horizontal scroll */
-    overflow-x: hidden;
+    /* Prevent horizontal scroll - use clip instead of hidden to preserve sticky positioning */
+    overflow-x: clip;
   }
 }

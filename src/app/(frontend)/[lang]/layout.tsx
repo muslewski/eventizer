@@ -45,7 +45,7 @@ export default async function RootLayout({
     <html
       lang={lang}
       suppressHydrationWarning
-      className={`${bebasNeue.variable} ${montserrat.variable} overflow-x-hidden`}
+      className={`${bebasNeue.variable} ${montserrat.variable} overflow-x-clip`}
     >
       <head>
         <link rel="icon" type="image/png" href="/my-favicon/icon-1.png" sizes="96x96" />

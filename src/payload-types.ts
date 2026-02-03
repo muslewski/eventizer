@@ -467,12 +467,11 @@ export interface Offer {
   price?: number | null;
   priceFrom?: number | null;
   priceTo?: number | null;
-  /**
-   * Upload the main image representing your offer.
-   */
-  mainImage: number | OfferUpload;
   categoryName?: string | null;
   categorySlug?: string | null;
+  /**
+   * Add a detailed description of your offer.
+   */
   content: {
     root: {
       type: string;
@@ -492,6 +491,14 @@ export interface Offer {
    * A brief summary of the offer, shown in listings.
    */
   shortDescription: string;
+  /**
+   * Upload the main image representing your offer.
+   */
+  mainImage: number | OfferUpload;
+  /**
+   * This image will be displayed as a background on your offer page. It helps create a more immersive experience for your clients.
+   */
+  backgroundImage?: (number | null) | OfferUpload;
   /**
    * Phone number related to the offer.
    */
@@ -526,9 +533,18 @@ export interface Offer {
    */
   isWithoutAddress?: boolean | null;
   /**
-   * Optional address related to the offer.
+   * Address related to the offer.
    */
   address?: string | null;
+  /**
+   * Add your social media links to help clients find you. (optional)
+   */
+  socialMedia?: {
+    facebook?: string | null;
+    instagram?: string | null;
+    tiktok?: string | null;
+    linkedin?: string | null;
+  };
   meta?: {
     title?: string | null;
     /**
@@ -541,7 +557,7 @@ export interface Offer {
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
-  slug: string;
+  link: string;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1417,16 +1433,25 @@ export interface OffersSelect<T extends boolean = true> {
   price?: T;
   priceFrom?: T;
   priceTo?: T;
-  mainImage?: T;
   categoryName?: T;
   categorySlug?: T;
   content?: T;
   shortDescription?: T;
+  mainImage?: T;
+  backgroundImage?: T;
   phone?: T;
   email?: T;
   serviceArea?: T;
   isWithoutAddress?: T;
   address?: T;
+  socialMedia?:
+    | T
+    | {
+        facebook?: T;
+        instagram?: T;
+        tiktok?: T;
+        linkedin?: T;
+      };
   meta?:
     | T
     | {
@@ -1435,7 +1460,7 @@ export interface OffersSelect<T extends boolean = true> {
         description?: T;
       };
   generateSlug?: T;
-  slug?: T;
+  link?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

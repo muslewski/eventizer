@@ -15,6 +15,7 @@ const MAX_OFFERS_PER_USER = 10
 
 // Remove the POLISH_PROVINCES definition from here, keep the rest
 import { POLISH_PROVINCES } from '@/lib/provinces'
+import { Component } from 'lucide-react'
 
 export const Offers: CollectionConfig = {
   slug: 'offers',
@@ -273,22 +274,7 @@ export const Offers: CollectionConfig = {
         condition: (data, siblingData) => Boolean(siblingData?.hasPriceRange),
       },
     },
-    {
-      name: 'mainImage',
-      type: 'upload',
-      relationTo: 'offer-uploads',
-      required: true,
-      label: {
-        en: 'Main Image',
-        pl: 'Główne Zdjęcie',
-      },
-      admin: {
-        description: {
-          en: 'Upload the main image representing your offer.',
-          pl: 'Prześlij główne zdjęcie reprezentujące Twoją ofertę.',
-        },
-      },
-    },
+
     // Display-friendly category name (auto-populated)
     {
       name: 'categoryName',
@@ -366,6 +352,15 @@ export const Offers: CollectionConfig = {
                 en: 'Content',
                 pl: 'Treść',
               },
+              admin: {
+                description: {
+                  pl: 'Dodaj szczegółowy opis swojej oferty.',
+                  en: 'Add a detailed description of your offer.',
+                },
+                components: {
+                  afterInput: ['/components/payload/fields/offerContentInstructions'],
+                },
+              },
               required: true,
             },
             {
@@ -383,6 +378,49 @@ export const Offers: CollectionConfig = {
               },
               required: true,
             },
+            {
+              name: 'mainImage',
+              type: 'upload',
+              relationTo: 'offer-uploads',
+              required: true,
+              label: {
+                en: 'Main Image',
+                pl: 'Główne Zdjęcie',
+              },
+              admin: {
+                description: {
+                  en: 'Upload the main image representing your offer.',
+                  pl: 'Prześlij główne zdjęcie reprezentujące Twoją ofertę.',
+                },
+              },
+            },
+            {
+              name: 'backgroundImage',
+              type: 'upload',
+              relationTo: 'offer-uploads',
+              label: {
+                en: 'Background Image',
+                pl: 'Zdjęcie w Tle',
+              },
+              admin: {
+                description: {
+                  en: 'This image will be displayed as a background on your offer page. It helps create a more immersive experience for your clients.',
+                  pl: 'To zdjęcie będzie wyświetlane jako tło na stronie Twojej oferty. Pomoże stworzyć bardziej angażujące doświadczenie dla Twoich klientów.',
+                },
+              },
+            },
+          ],
+          label: {
+            en: 'Content',
+            pl: 'Treść',
+          },
+        },
+        {
+          label: {
+            en: 'Contact Information',
+            pl: 'Informacje kontaktowe',
+          },
+          fields: [
             {
               name: 'phone',
               type: 'text',
@@ -411,7 +449,6 @@ export const Offers: CollectionConfig = {
                 },
               },
             },
-
             {
               name: 'serviceArea',
               type: 'select',
@@ -430,7 +467,6 @@ export const Offers: CollectionConfig = {
               },
               index: true, // Index for faster search queries
             },
-            // Here we should have checkbox to disable address and serviceArea, it should be question like isWithoutAddress
             {
               name: 'isWithoutAddress',
               type: 'checkbox',
@@ -455,20 +491,63 @@ export const Offers: CollectionConfig = {
               },
               admin: {
                 description: {
-                  en: 'Optional address related to the offer.',
-                  pl: 'Opcjonalny adres związany z ofertą.',
+                  en: 'Address related to the offer.',
+                  pl: 'Adres związany z ofertą.',
                 },
                 condition: (data) => !data?.isWithoutAddress,
               },
-              required: false,
+              required: true,
+            },
+            {
+              name: 'socialMedia',
+              type: 'group',
+              label: {
+                en: 'Social Media',
+                pl: 'Media społecznościowe',
+              },
+              admin: {
+                description: {
+                  en: 'Add your social media links to help clients find you. (optional)',
+                  pl: 'Dodaj linki do mediów społecznościowych, aby klienci mogli Cię łatwiej znaleźć. (opcjonalne)',
+                },
+              },
+              fields: [
+                {
+                  name: 'facebook',
+                  type: 'text',
+                  label: 'Facebook',
+                  admin: {
+                    placeholder: 'https://facebook.com/...',
+                  },
+                },
+                {
+                  name: 'instagram',
+                  type: 'text',
+                  label: 'Instagram',
+                  admin: {
+                    placeholder: 'https://instagram.com/...',
+                  },
+                },
+                {
+                  name: 'tiktok',
+                  type: 'text',
+                  label: 'TikTok',
+                  admin: {
+                    placeholder: 'https://tiktok.com/@...',
+                  },
+                },
+                {
+                  name: 'linkedin',
+                  type: 'text',
+                  label: 'LinkedIn',
+                  admin: {
+                    placeholder: 'https://linkedin.com/in/...',
+                  },
+                },
+              ],
             },
           ],
-          label: {
-            en: 'Content',
-            pl: 'Treść',
-          },
         },
-
         {
           name: 'meta',
           label: {
@@ -512,6 +591,7 @@ export const Offers: CollectionConfig = {
       ],
     },
     slugField({
+      name: 'link',
       useAsSlug: 'title',
     }),
   ],

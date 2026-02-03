@@ -3,17 +3,27 @@ import { HighImpactHeroClient } from './index.client'
 import { Background } from './Background'
 import { Content } from './Content'
 
-export const HighImpactHero: React.FC<Page['hero']> = ({
+type HighImpactHeroProps = Page['hero'] & {
+  /** Optional custom content to replace the default Content component */
+  children?: React.ReactNode
+}
+
+export const HighImpactHero: React.FC<HighImpactHeroProps> = ({
   links,
   backgroundImage,
   backgroundVideo,
   title,
   showScrollIndicator,
+  children,
 }) => {
   return (
     <HighImpactHeroClient>
       <Background backgroundImage={backgroundImage} backgroundVideo={backgroundVideo} />
-      <Content links={links} title={title} showScrollIndicator={showScrollIndicator} />
+      {children ? (
+        children
+      ) : (
+        <Content links={links} title={title} showScrollIndicator={showScrollIndicator} />
+      )}
     </HighImpactHeroClient>
   )
 }

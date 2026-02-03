@@ -80,7 +80,7 @@ export default function OffersCarousel({ offers }: { offers: Offer[] }) {
                   </p>
                 </CardHeader>
                 <CardFooter className="absolute bottom-6 left-0">
-                  <CMSLink type="custom" url={`/offers/${offer.slug}`} appearance="cta">
+                  <CMSLink type="custom" url={`/offers/${offer.link}`} appearance="cta">
                     Poznaj ofertę
                   </CMSLink>
                 </CardFooter>

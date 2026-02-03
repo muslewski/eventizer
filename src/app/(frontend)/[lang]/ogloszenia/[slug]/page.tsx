@@ -1,5 +1,9 @@
 import { getPayload, Locale } from 'payload'
 import configPromise from '@payload-config'
+import { notFound } from 'next/navigation'
+import { OfferHero, OfferDetails, ContactInfo } from './components'
+import type { Metadata } from 'next'
+import { generateMeta } from '@/utilities/generateMeta'
 
 type Args = {
   params: Promise<{
@@ -8,48 +12,80 @@ type Args = {
   }>
 }
 
-export default async function Page({ params }: Args) {
+export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug, lang } = await params
 
   if (!slug) {
-    return null
+    return {}
   }
 
-  const offerPage = await queryOfferPageBySlug({
+  const offer = await queryOfferPageBySlug({ slug, lang })
+
+  if (!offer) {
+    return {}
+  }
+
+  return generateMeta({
+    doc: {
+      ...offer,
+      slug: offer.link,
+    } as any,
+  })
+}
+
+export default async function OfferPage({ params }: Args) {
+  const { slug, lang } = await params
+
+  if (!slug) {
+    notFound()
+  }
+
+  const offer = await queryOfferPageBySlug({
     slug,
     lang,
   })
 
+  if (!offer) {
+    notFound()
+  }
+
   return (
-    <div>
-      {offerPage ? (
-        <div className="h-screen flex items-center">
-          <h1>{offerPage.title}</h1>
-        </div>
-      ) : (
-        <p>Offer not found.</p>
-      )}
-    </div>
+    <article>
+      {/* Hero Section with background effects */}
+      <OfferHero offer={offer} />
+
+      <div className="flex flex-col gap-8 lg:gap-12 w-full">
+        {/* Main Content Section */}
+        <OfferDetails offer={offer} />
+
+        {/* Contact & Social Media Section */}
+        <ContactInfo offer={offer} />
+      </div>
+    </article>
   )
 }
 
 const queryOfferPageBySlug = async ({ slug, lang }: { slug: string; lang: Locale }) => {
-  // is enabled
   const payload = await getPayload({
     config: configPromise,
   })
 
   const result = await payload.find({
     collection: 'offers',
-    // draft,
     limit: 1,
     overrideAccess: true,
     pagination: false,
+    depth: 2, // Ensure relationships are populated
     where: {
       and: [
         {
-          slug: {
+          link: {
             equals: slug,
+          },
+        },
+        {
+          _status: {
+            equals: 'published',
           },
         },
       ],
