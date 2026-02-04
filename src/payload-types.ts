@@ -470,6 +470,14 @@ export interface Offer {
   categoryName?: string | null;
   categorySlug?: string | null;
   /**
+   * Upload the main image representing your offer.
+   */
+  mainImage: number | OfferUpload;
+  /**
+   * This image will be displayed as a background on your offer page. It helps create a more immersive experience for your clients.
+   */
+  backgroundImage?: (number | null) | OfferUpload;
+  /**
    * Add a detailed description of your offer.
    */
   content: {
@@ -491,14 +499,6 @@ export interface Offer {
    * A brief summary of the offer, shown in listings.
    */
   shortDescription: string;
-  /**
-   * Upload the main image representing your offer.
-   */
-  mainImage: number | OfferUpload;
-  /**
-   * This image will be displayed as a background on your offer page. It helps create a more immersive experience for your clients.
-   */
-  backgroundImage?: (number | null) | OfferUpload;
   /**
    * Phone number related to the offer.
    */
@@ -1435,10 +1435,10 @@ export interface OffersSelect<T extends boolean = true> {
   priceTo?: T;
   categoryName?: T;
   categorySlug?: T;
-  content?: T;
-  shortDescription?: T;
   mainImage?: T;
   backgroundImage?: T;
+  content?: T;
+  shortDescription?: T;
   phone?: T;
   email?: T;
   serviceArea?: T;

@@ -42,6 +42,11 @@ export const Offers: CollectionConfig = {
       en: `Manage and create service offers available to your clients. (limit ${MAX_OFFERS_PER_USER} offers)`,
       pl: `Zarządzaj i twórz oferty usług dostępne dla Twoich klientów. (limit ${MAX_OFFERS_PER_USER} ofert)`,
     },
+    // preview: (doc, { req }) => `${req.protocol}//${req.host}/ogloszenia/${doc.slug}`,
+    livePreview: {
+      url: ({ req, data }) =>
+        `${req.protocol}//${req.host}/${req.locale ? req.locale + '/' : ''}ogloszenia/${data?.link || ''}`,
+    },
   },
 
   versions: {
@@ -344,40 +349,6 @@ export const Offers: CollectionConfig = {
       tabs: [
         {
           fields: [
-            // Add instruction - instrukcja przejrzystej oferty
-            {
-              name: 'content',
-              type: 'richText',
-              label: {
-                en: 'Content',
-                pl: 'Treść',
-              },
-              admin: {
-                description: {
-                  pl: 'Dodaj szczegółowy opis swojej oferty.',
-                  en: 'Add a detailed description of your offer.',
-                },
-                components: {
-                  afterInput: ['/components/payload/fields/offerContentInstructions'],
-                },
-              },
-              required: true,
-            },
-            {
-              name: 'shortDescription',
-              type: 'textarea',
-              label: {
-                en: 'Short Description',
-                pl: 'Krótki Opis',
-              },
-              admin: {
-                description: {
-                  en: 'A brief summary of the offer, shown in listings.',
-                  pl: 'Krótki opis oferty, wyświetlany na listach.',
-                },
-              },
-              required: true,
-            },
             {
               name: 'mainImage',
               type: 'upload',
@@ -409,10 +380,44 @@ export const Offers: CollectionConfig = {
                 },
               },
             },
+            // Add instruction - instrukcja przejrzystej oferty
+            {
+              name: 'content',
+              type: 'richText',
+              label: {
+                en: 'Main Content',
+                pl: 'Treść',
+              },
+              admin: {
+                description: {
+                  pl: 'Dodaj szczegółowy opis swojej oferty.',
+                  en: 'Add a detailed description of your offer.',
+                },
+                components: {
+                  afterInput: ['/components/payload/fields/offerContentInstructions'],
+                },
+              },
+              required: true,
+            },
+            {
+              name: 'shortDescription',
+              type: 'textarea',
+              label: {
+                en: 'Short Description',
+                pl: 'Krótki Opis',
+              },
+              admin: {
+                description: {
+                  en: 'A brief summary of the offer, shown in listings.',
+                  pl: 'Krótki opis oferty, wyświetlany na listach.',
+                },
+              },
+              required: true,
+            },
           ],
           label: {
-            en: 'Content',
-            pl: 'Treść',
+            en: 'Main Content',
+            pl: 'Główna Treść',
           },
         },
         {

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { OfferHero, OfferDetails, ContactInfo } from './components'
 import type { Metadata } from 'next'
 import { generateMeta } from '@/utilities/generateMeta'
-import { LivePreviewOffer } from './LivePreviewOffer'
+import { RefreshRouteOnSave } from '@/app/(frontend)/[lang]/ogloszenia/[slug]/RefreshRouteOnSave'
 
 type Args = {
   params: Promise<{
@@ -52,7 +52,18 @@ export default async function OfferPage({ params }: Args) {
 
   return (
     <article>
-      <LivePreviewOffer initialData={offer} />
+      <RefreshRouteOnSave />
+
+      {/* Hero Section with background effects */}
+      <OfferHero offer={offer} />
+
+      <div className="flex flex-col gap-8 lg:gap-12 w-full">
+        {/* Main Content Section */}
+        <OfferDetails offer={offer} />
+
+        {/* Contact & Social Media Section */}
+        <ContactInfo offer={offer} />
+      </div>
     </article>
   )
 }

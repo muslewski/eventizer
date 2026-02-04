@@ -23,6 +23,7 @@
     "@formatjs/intl-localematcher": "^0.7.5",
     "@payloadcms/db-vercel-postgres": "3.69.0",
     "@payloadcms/email-resend": "3.69.0",
+    "@payloadcms/live-preview-react": "3.69.0",
     "@payloadcms/next": "3.69.0",
     "@payloadcms/plugin-seo": "^3.69.0",
     "@payloadcms/plugin-stripe": "3.69.0",
