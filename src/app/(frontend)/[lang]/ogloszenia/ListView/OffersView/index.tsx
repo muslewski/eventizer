@@ -78,8 +78,10 @@ export default function OffersView({
                   }
                   title={offer.title}
                   description={offer.shortDescription}
-                  rating={4.5}
-                  reviewCount={27}
+                  // rating={4.5}
+                  // reviewCount={27}
+                  categoryName={offer.categoryName ?? undefined}
+                  serviceArea={offer.serviceArea ?? undefined}
                   priceMin={offer.priceFrom || 0}
                   priceMax={offer.priceTo || 0}
                   price={offer.price || undefined}

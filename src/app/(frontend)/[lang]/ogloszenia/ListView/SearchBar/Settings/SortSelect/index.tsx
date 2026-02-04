@@ -10,7 +10,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useTransition } from 'react'
+import { cn } from '@/lib/utils'
 
 interface SortSelectProps {
   currentSort: SortOption
@@ -19,6 +20,7 @@ interface SortSelectProps {
 export default function SortSelect({ currentSort }: SortSelectProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
 
   const handleSortChange = useCallback(
     (value: SortOption) => {
@@ -33,7 +35,9 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
       // Reset to page 1 when sorting changes
       params.delete('strona')
 
-      router.push(`?${params.toString()}`, { scroll: false })
+      startTransition(() => {
+        router.push(`?${params.toString()}`, { scroll: false })
+      })
     },
     [router, searchParams],
   )
@@ -52,8 +56,11 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
       <label htmlFor="sort-select" className="text-sm font-medium">
         Sortuj:
       </label>
-      <Select value={currentSort} onValueChange={handleSortChange}>
-        <SelectTrigger id="sort-select" className="w-full">
+      <Select value={currentSort} onValueChange={handleSortChange} disabled={isPending}>
+        <SelectTrigger
+          id="sort-select"
+          className={cn('w-full transition-opacity', isPending && 'opacity-50')}
+        >
           <SelectValue placeholder="Wybierz sortowanie" />
         </SelectTrigger>
         <SelectContent>

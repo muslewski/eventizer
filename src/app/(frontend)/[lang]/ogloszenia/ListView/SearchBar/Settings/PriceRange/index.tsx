@@ -2,7 +2,8 @@
 
 import { Input } from '@/components/ui/input'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState, useEffect, useTransition } from 'react'
+import { cn } from '@/lib/utils'
 
 interface PriceRangeInputsProps {
   minPrice?: number
@@ -12,6 +13,7 @@ interface PriceRangeInputsProps {
 export default function PriceRangeInputs({ minPrice, maxPrice }: PriceRangeInputsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
 
   // Read from URL params directly
   const minFromUrl = searchParams.get('minCena') ?? ''
@@ -48,7 +50,9 @@ export default function PriceRangeInputs({ minPrice, maxPrice }: PriceRangeInput
       // Reset to page 1 when filters change
       params.delete('strona')
 
-      router.push(`?${params.toString()}`, { scroll: false })
+      startTransition(() => {
+        router.push(`?${params.toString()}`, { scroll: false })
+      })
     },
     [router, searchParams],
   )
@@ -76,7 +80,7 @@ export default function PriceRangeInputs({ minPrice, maxPrice }: PriceRangeInput
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm font-medium">Zakres cen (zł):</label>
-      <div className="flex gap-2 items-center">
+      <div className={cn('flex gap-2 items-center transition-opacity', isPending && 'opacity-50')}>
         <Input
           type="number"
           placeholder="Od"
@@ -86,6 +90,7 @@ export default function PriceRangeInputs({ minPrice, maxPrice }: PriceRangeInput
           onKeyDown={handleKeyDown}
           min={0}
           className="w-full"
+          disabled={isPending}
         />
         <span className="text-muted-foreground">—</span>
         <Input
@@ -97,6 +102,7 @@ export default function PriceRangeInputs({ minPrice, maxPrice }: PriceRangeInput
           onKeyDown={handleKeyDown}
           min={0}
           className="w-full"
+          disabled={isPending}
         />
       </div>
     </div>

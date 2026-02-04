@@ -9,7 +9,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useTransition } from 'react'
+import { cn } from '@/lib/utils'
 
 interface RegionSelectProps {
   currentRegion?: string
@@ -18,6 +19,7 @@ interface RegionSelectProps {
 export default function RegionSelect({ currentRegion }: RegionSelectProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
 
   const handleRegionChange = useCallback(
     (value: string) => {
@@ -32,7 +34,9 @@ export default function RegionSelect({ currentRegion }: RegionSelectProps) {
       // Reset to page 1 when filter changes
       params.delete('strona')
 
-      router.push(`?${params.toString()}`, { scroll: false })
+      startTransition(() => {
+        router.push(`?${params.toString()}`, { scroll: false })
+      })
     },
     [router, searchParams],
   )
@@ -42,8 +46,15 @@ export default function RegionSelect({ currentRegion }: RegionSelectProps) {
       <label htmlFor="region-select" className="text-sm font-medium">
         Województwo:
       </label>
-      <Select value={currentRegion || 'all'} onValueChange={handleRegionChange}>
-        <SelectTrigger id="region-select" className="w-full">
+      <Select
+        value={currentRegion || 'all'}
+        onValueChange={handleRegionChange}
+        disabled={isPending}
+      >
+        <SelectTrigger
+          id="region-select"
+          className={cn('w-full transition-opacity', isPending && 'opacity-50')}
+        >
           <SelectValue placeholder="Wybierz województwo" />
         </SelectTrigger>
         <SelectContent>

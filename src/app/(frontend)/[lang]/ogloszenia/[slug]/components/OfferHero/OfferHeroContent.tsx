@@ -72,9 +72,9 @@ export const OfferHeroContent: React.FC<OfferHeroContentProps> = ({ offer }) => 
             <p className="text-xl sm:text-2xl md:text-3xl font-montserrat font-semibold text-white">
               {formatPrice(offer)}
             </p>
-            {offer.hasPriceRange && (
-              <p className="text-xs text-white/60 mt-1">cena zależna od zakresu usługi</p>
-            )}
+            <p className="text-xs text-white/60 mt-1">
+              {offer.hasPriceRange ? 'cena zależna od zakresu usługi' : 'cena z góry ustalona'}
+            </p>
           </div>
         </div>
 
