@@ -8,23 +8,12 @@ import { useRouter } from 'next/navigation'
 export function CustomLogoutButton() {
   const { t } = useTranslation()
   const router = useRouter()
-  const { logOut, user } = useAuth()
-  const userRole = user?.role?.name || 'unknown'
+  const { logOut } = useAuth()
 
   const handleLogout = async () => {
     try {
       await logOut()
-      console.log('====================================')
-      console.log(user)
-      console.log('====================================')
-      console.log('====================================')
-      console.log('userROle: ', userRole)
-      console.log('====================================')
-      if (userRole === 'service-provider') {
-        router.replace('/auth/sign-in/service-provider')
-      } else {
-        router.replace('/auth/sign-in')
-      }
+      router.replace('/auth/sign-in')
     } finally {
       router.refresh()
     }
