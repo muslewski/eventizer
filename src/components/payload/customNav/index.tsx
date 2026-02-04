@@ -3,9 +3,10 @@ import { ServerProps } from 'payload'
 import { FC } from 'react'
 import { NavWrapper } from './NavWrapper'
 import { RenderServerComponent } from '@payloadcms/ui/elements/RenderServerComponent'
-import { Logout } from '@payloadcms/ui'
 import { NavClient } from './index.client'
 import { NavHamburger } from './NavHamburger'
+import { CustomLogoutButton } from './CustomLogoutButton'
+import { HomeButton } from './HomeButton'
 
 export const baseClass = 'nav'
 
@@ -29,7 +30,7 @@ const Nav: FC<ServerProps> = async (props) => {
 
   const {
     admin: {
-      components: { afterNavLinks, beforeNavLinks, logout },
+      components: { afterNavLinks, beforeNavLinks },
     },
     collections,
     globals,
@@ -62,25 +63,6 @@ const Nav: FC<ServerProps> = async (props) => {
 
   // Get nav preferences server-side
   // const navPreferences = user ? await getNavPrefs({ payload, user }) : null
-
-  const LogoutComponent = RenderServerComponent({
-    clientProps: {
-      documentSubViewType,
-      viewType,
-    },
-    Component: logout?.Button,
-    Fallback: Logout,
-    importMap: payload.importMap,
-    serverProps: {
-      i18n,
-      locale,
-      params,
-      payload,
-      permissions,
-      searchParams,
-      user,
-    },
-  })
 
   return (
     <NavWrapper baseClass={baseClass}>
@@ -120,7 +102,11 @@ const Nav: FC<ServerProps> = async (props) => {
             user,
           },
         })}
-        <div className={`${baseClass}__controls`}>{LogoutComponent}</div>
+        {/* Here besides custom logout button add also Strona główna button */}
+        <div className={`mt-auto flex gap-3 w-full `}>
+          <HomeButton />
+          <CustomLogoutButton />
+        </div>
       </nav>
       <div className={`${baseClass}__header`}>
         <div className={`${baseClass}__header-content`}>
