@@ -61,7 +61,7 @@ export default function OfferCarouselCard({ offer, isActive }: OfferCardProps) {
       <CardHeader>
         <Badge variant="default">{getCategoryLabel(offer.categoryName)}</Badge>
         <Link
-          href={`/offers/${offer.link}`}
+          href={`/ogloszenia/${offer.link}`}
           onClick={() => window.scrollTo(0, 0)}
           prefetch={true}
           className="font-bebas mix-blend-overlay text-2xl sm:text-3xl lg:text-4xl xl:text-5xl hover:scale-105 transition-transform duration-300"
@@ -72,7 +72,7 @@ export default function OfferCarouselCard({ offer, isActive }: OfferCardProps) {
       <CardFooter className="absolute bottom-6 left-0">
         <CMSLink
           type="custom"
-          url={`/offers/${offer.link}`}
+          url={`/ogloszenia/${offer.link}`}
           appearance="cta"
           size="sm"
           prefetch={true}
