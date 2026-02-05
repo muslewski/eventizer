@@ -11,6 +11,7 @@ function Pagination({ className, ...props }: React.ComponentProps<'nav'>) {
       role="navigation"
       aria-label="pagination"
       data-slot="pagination"
+      data-shadcn
       className={cn('mx-auto flex w-full justify-center', className)}
       {...props}
     />

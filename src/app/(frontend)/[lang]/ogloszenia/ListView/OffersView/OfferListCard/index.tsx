@@ -91,7 +91,7 @@ export const OfferListCard = ({
           )}
         </div>
         <CardDescription className="flex flex-row gap-4 flex-wrap lg:flex-col items-start lg:items-end justify-between w-full lg:w-fit">
-          <div className="min-w-0 text-end">
+          <div className="min-w-0 text-start lg:text-end">
             <div className="text-xs text-muted-foreground">Cena</div>
             <div className="font-montserrat font-semibold text-foreground whitespace-nowrap ">
               {formatPrice()}

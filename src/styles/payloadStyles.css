@@ -3,7 +3,15 @@
 
 /* Import the Tailwind theme styles */
 @import 'tailwindcss/theme.css' layer(theme);
-/* @import 'tw-animate-css'; */
+
+/* Import animation utilities */
+@import 'tw-animate-css';
+
+/* Import shared theme (colors, animations, Tailwind mappings) */
+@import './shared.scss';
+
+/* Import scoped preflight for shadcn components */
+@import './scopedPreflight.css' layer(base);
 
 /* Skip the preflight reset to avoid conflicts with Payload's admin styles */
 /* @import 'tailwindcss/preflight.css' layer(base); */
@@ -14,65 +22,12 @@
 /* Support Payload's dark mode toggle by adding a custom variant */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+/*
+ * Payload Admin UI specific styles
+ * These extend the shared theme with Payload-specific customizations
+ */
 :root {
-  --radius: 0.625rem;
-
-  /* Payload custom base colors */
-  --color-base-0: rgb(255, 255, 253);
-  --color-base-50: rgb(247, 245, 240);
-  --color-base-100: rgb(238, 235, 228);
-  --color-base-150: rgb(225, 221, 212);
-  --color-base-200: rgb(212, 207, 196);
-  --color-base-250: rgb(199, 193, 181);
-  --color-base-300: rgb(186, 179, 165);
-  --color-base-350: rgb(173, 166, 150);
-  --color-base-400: rgb(160, 152, 135);
-  --color-base-450: rgb(147, 139, 121);
-  --color-base-500: rgb(134, 126, 108);
-  --color-base-550: rgb(120, 112, 94);
-  --color-base-600: rgb(107, 99, 82);
-  --color-base-650: rgb(93, 86, 70);
-  --color-base-700: rgb(74, 74, 74);
-  --color-base-750: rgb(60, 60, 60);
-  --color-base-800: rgb(47, 47, 47);
-  --color-base-850: rgb(34, 34, 34);
-  --color-base-900: rgb(11, 11, 11);
-  --color-base-950: rgb(8, 8, 8);
-  --color-base-1000: rgb(5, 5, 5);
-
-  /* Shadcn UI colors synchronized with Payload base colors */
-  --background: var(--color-base-0);
-  --foreground: var(--color-base-900);
-  --card: var(--color-base-0);
-  --card-foreground: var(--color-base-900);
-  --popover: var(--color-base-0);
-  --popover-foreground: var(--color-base-900);
-  --primary: var(--color-base-900);
-  --primary-foreground: var(--color-base-0);
-  --secondary: var(--color-base-100);
-  --secondary-foreground: var(--color-base-900);
-  --muted: var(--color-base-100);
-  --muted-foreground: var(--color-base-550);
-  --accent: var(--color-base-100);
-  --accent-foreground: var(--color-base-900);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: var(--color-base-200);
-  --input: var(--color-base-200);
-  --ring: var(--color-base-700);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: var(--color-base-50);
-  --sidebar-foreground: var(--color-base-900);
-  --sidebar-primary: var(--color-base-900);
-  --sidebar-primary-foreground: var(--color-base-0);
-  --sidebar-accent: var(--color-base-100);
-  --sidebar-accent-foreground: var(--color-base-900);
-  --sidebar-border: var(--color-base-200);
-  --sidebar-ring: var(--color-base-700);
-
+  /* Payload elevation colors - maps base colors to Payload's elevation system */
   --theme-elevation-0: var(--color-base-0);
   --theme-elevation-50: var(--color-base-50);
   --theme-elevation-100: var(--color-base-100);
@@ -94,137 +49,10 @@
   --theme-elevation-900: var(--color-base-900);
   --theme-elevation-950: var(--color-base-950);
   --theme-elevation-1000: var(--color-base-1000);
-
-  /* Apply border-radius to all Payload UI elements */
-  input,
-  span,
-  .banner,
-  .field-type input,
-  .field-label,
-  .field-type,
-  .rs__control,
-  .rs__menu,
-  .rs__menu-list,
-  .where-builder,
-  .collapsible,
-  .collapsible__content,
-  .collapsible--style-default > .collapsible__toggle-wrap .collapsible__toggle,
-  .collapsible--style-default,
-  .table tbody tr:nth-child(odd),
-  .Toastify .Toastify__toast,
-  .search-bar,
-  .checkbox-input__input,
-  .pill,
-  .pill-selector,
-  .btn,
-  .dropzone,
-  .collection-edit__auth,
-  .doc-controls__dots,
-  .hamburger,
-  .popup-button,
-  .popup__content,
-  .react-datepicker,
-  .react-datepicker__day,
-  .localizer,
-  .localizer-button,
-  .table-wrap,
-  .table,
-  .thumbnail,
-  .table--appearance-condensed,
-  .popup,
-  .upload,
-  .file-details,
-  .field-type__wrap,
-  .textarea-outer,
-  button,
-  textarea,
-  .card {
-    border-radius: var(--radius);
-  }
-
-  .btn--withPopup {
-    display: flex;
-    gap: 0.2rem;
-  }
-
-  table {
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  /* repair table after adding shadcn and tailwind */
-  .table {
-    width: 100%;
-  }
-
-  /* repair table cells to be vertically aligned middle */
-  .table td[class*='cell-'] {
-    vertical-align: middle;
-  }
-
-  .popup__caret {
-    /* Modern, elegant caret arrow */
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--theme-elevation-100);
-    border-top: 8px solid var(--theme-elevation-100);
-  }
-
-  .localizer {
-    right: 60px;
-    top: 110px;
-    radius: 100px;
-    position: absolute;
-    z-index: 1000;
-  }
-
-  /* body[data-user-role='service-provider'] .localizer,
-  body[data-user-role='client'] .localizer {
-    display: none;
-  } */
-
-  #admin-layout[data-user-role='service-provider'] .localizer,
-  #admin-layout[data-user-role='client'] .localizer {
-    display: none;
-  }
 }
 
-/* Dark theme */
+/* Dark theme - Payload elevation colors inverted */
 :is(.dark, [data-theme='dark']) {
-  /* Shadcn UI Dark Theme Colors synchronized with Payload base colors */
-  --background: var(--color-base-900);
-  --foreground: var(--color-base-0);
-  --card: var(--color-base-800);
-  --card-foreground: var(--color-base-0);
-  --popover: var(--color-base-800);
-  --popover-foreground: var(--color-base-0);
-  --primary: var(--color-base-200);
-  --primary-foreground: var(--color-base-900);
-  --secondary: var(--color-base-800);
-  --secondary-foreground: var(--color-base-0);
-  --muted: var(--color-base-800);
-  --muted-foreground: var(--color-base-400);
-  --accent: var(--color-base-800);
-  --accent-foreground: var(--color-base-0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: var(--color-base-750);
-  --input: var(--color-base-700);
-  --ring: var(--color-base-550);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: var(--color-base-850);
-  --sidebar-foreground: var(--color-base-0);
-  --sidebar-primary: var(--color-base-300);
-  --sidebar-primary-foreground: var(--color-base-900);
-  --sidebar-accent: var(--color-base-800);
-  --sidebar-accent-foreground: var(--color-base-0);
-  --sidebar-border: var(--color-base-750);
-  --sidebar-ring: var(--color-base-550);
-
-  /* Payload elevation colors inverted */
   --theme-elevation-0: var(--color-base-900);
   --theme-elevation-50: var(--color-base-850);
   --theme-elevation-100: var(--color-base-800);
@@ -233,8 +61,9 @@
   --theme-elevation-250: var(--color-base-650);
   --theme-elevation-300: var(--color-base-600);
   --theme-elevation-350: var(--color-base-550);
-  --theme-elevation-400: var(--color-base-450);
-  --theme-elevation-450: var(--color-base-400);
+  --theme-elevation-400: var(--color-base-500);
+  --theme-elevation-450: var(--color-base-450);
+  --theme-elevation-500: var(--color-base-400); /* Was missing! */
   --theme-elevation-550: var(--color-base-350);
   --theme-elevation-600: var(--color-base-300);
   --theme-elevation-650: var(--color-base-250);
@@ -247,90 +76,112 @@
   --theme-elevation-1000: var(--color-base-0);
 }
 
-/* Tailwind theme inline block to register CSS variables as Tailwind colors */
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-
-  /* fonts */
-  --font-family-montserrat: 'Montserrat', sans-serif;
-  --font-family-bebas: 'Bebas Neue', sans-serif;
+/* ------------------------------------------ */
+/*
+ * Payload UI element styling
+ * Apply consistent border-radius to all Payload components
+ */
+input,
+span,
+.banner,
+.field-type input,
+.field-label,
+.field-type,
+.rs__control,
+.rs__menu,
+.rs__menu-list,
+.where-builder,
+.collapsible,
+.collapsible__content,
+.collapsible--style-default > .collapsible__toggle-wrap .collapsible__toggle,
+.collapsible--style-default,
+.table tbody tr:nth-child(odd),
+.Toastify .Toastify__toast,
+.search-bar,
+.checkbox-input__input,
+.pill,
+.pill-selector,
+.btn,
+.dropzone,
+.collection-edit__auth,
+.doc-controls__dots,
+.hamburger,
+.popup-button,
+.popup__content,
+.react-datepicker,
+.react-datepicker__day,
+.localizer,
+.localizer-button,
+.table-wrap,
+.table,
+.thumbnail,
+.table--appearance-condensed,
+.popup,
+.upload,
+.file-details,
+.field-type__wrap,
+.textarea-outer,
+button,
+textarea,
+.card {
+  border-radius: var(--radius);
 }
+
+.btn--withPopup {
+  display: flex;
+  gap: 0.2rem;
+}
+
+table {
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* repair table after adding shadcn and tailwind */
+.table {
+  width: 100%;
+}
+
+/* repair table cells to be vertically aligned middle */
+.table td[class*='cell-'] {
+  vertical-align: middle;
+}
+
+.popup__caret {
+  /* Modern, elegant caret arrow */
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--theme-elevation-100);
+  border-top: 8px solid var(--theme-elevation-100);
+}
+
+.localizer {
+  right: 60px;
+  top: 110px;
+  position: absolute;
+  z-index: 1000;
+}
+
+#admin-layout[data-user-role='service-provider'] .localizer,
+#admin-layout[data-user-role='client'] .localizer {
+  display: none;
+}
+
+/* ------------------------------------------ */
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border/30 outline-ring/10;
   }
+
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Montserrat', sans-serif;
+    @apply bg-background text-foreground font-montserrat;
     font-optical-sizing: auto;
-    background-color: #342907;
   }
 
-  .template-default__wrap {
-    @apply bg-linear-to-br from-[#f7f6f3] to-[#f0eeeb] dark:from-[var(--color-base-900)] dark:via-stone-950 dark:to-[#000000];
-  }
-
-  @font-face {
-    font-family: 'Bebas Neue';
-    src: url('/fonts/BebasNeue-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  @font-face {
-    font-family: 'Montserrat';
-    src: url('/fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
-    font-weight: 100 900;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  h1 {
-    font-family: 'Bebas Neue', sans-serif !important;
-    font-weight: 400;
-    font-style: normal;
-  }
-
+  h1,
   h3 {
-    font-family: 'Bebas Neue', sans-serif !important;
+    @apply font-bebas;
     font-weight: 400;
     font-style: normal;
   }

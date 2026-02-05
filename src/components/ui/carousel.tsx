@@ -121,6 +121,7 @@ function Carousel({
         role="region"
         aria-roledescription="carousel"
         data-slot="carousel"
+        data-shadcn
         {...props}
       >
         {children}

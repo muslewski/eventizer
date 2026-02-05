@@ -6,6 +6,18 @@ import { auth } from '@/auth/auth'
 import { checkSubscription, SubscriptionStatus } from '@/actions/stripe/checkSubscription'
 import { AdminLayoutClient } from './AdminLayoutClient'
 import { Role } from '@/access/hierarchy'
+import { Bebas_Neue, Montserrat } from 'next/font/google'
+
+const bebasNeue = Bebas_Neue({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-bebas',
+})
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  variable: '--font-montserrat',
+})
 
 export interface AdminLayoutProps {
   children: React.ReactNode
@@ -56,7 +68,11 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     // <AdminLayoutClient userSubscriptionData={userSubscriptionData}>{children}</AdminLayoutClient>
-    <div id="admin-layout" data-user-role={userSubscriptionData.role ?? undefined}>
+    <div
+      id="admin-layout"
+      data-user-role={userSubscriptionData.role ?? undefined}
+      className={`${bebasNeue.variable} ${montserrat.variable} overflow-x-clip`}
+    >
       <AdminLayoutClient userSubscriptionData={userSubscriptionData}>{children}</AdminLayoutClient>
     </div>
   )

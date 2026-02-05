@@ -6,6 +6,7 @@ import { Bebas_Neue, Montserrat } from 'next/font/google'
 import Header from '@/components/frontend/Header/index.client'
 import type { Config } from '@/payload-types'
 import Footer from '@/components/frontend/Footer'
+import { RootAuthProvider } from '@/providers/RootAuthProvider'
 
 type Locale = Config['locale']
 
@@ -56,14 +57,16 @@ export default async function RootLayout({
       </head>
       <body className="bg-background min-h-screen h-full">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <main className="w-full">
-            <div className="px-4 sm:px-8 w-full relative transition-[padding] duration-900 ease-in-out">
-              <Header />
-              {children}
-            </div>
-            <Footer />
-          </main>
-          <Toaster />
+          <RootAuthProvider>
+            <main className="w-full">
+              <div className="px-4 sm:px-8 w-full relative transition-[padding] duration-900 ease-in-out">
+                <Header />
+                {children}
+              </div>
+              <Footer />
+            </main>
+            <Toaster />
+          </RootAuthProvider>
         </ThemeProvider>
       </body>
     </html>

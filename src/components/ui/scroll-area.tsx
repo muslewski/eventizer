@@ -14,6 +14,7 @@ const ScrollArea = React.forwardRef<
 >(({ className, children, viewportRef, onScrollCapture, ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
+    data-shadcn
     className={cn('relative overflow-hidden', className)}
     {...props}
   >

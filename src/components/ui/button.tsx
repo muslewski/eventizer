@@ -59,6 +59,7 @@ function Button({
   return (
     <Comp
       data-slot="button"
+      data-shadcn
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}

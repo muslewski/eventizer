@@ -8,9 +8,11 @@ import Link from 'next/link'
 import HeaderLogo from '@/components/frontend/Header/Logo'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
-import type { Config } from '@/payload-types'
+import type { Config, User } from '@/payload-types'
 import MobileHeader from '@/components/frontend/Header/MobileHeader'
 import { ReduceMotionToggle } from '@/components/frontend/Header/ReduceMotionToggle'
+import { useRootAuth } from '@/providers/RootAuthProvider'
+import { HeaderAvatar } from '@/components/frontend/Header/Avatar'
 
 type Locale = Config['locale']
 
@@ -30,6 +32,8 @@ export default function HeaderClient() {
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
 
+  const { user, status } = useRootAuth()
+
   const navLinks = [
     { href: '/ogloszenia', label: 'Ogłoszenia' },
     { href: '/o-nas', label: 'O nas' },
@@ -39,7 +43,7 @@ export default function HeaderClient() {
   return (
     <>
       {/* Desktop Header */}
-      <header className="rounded-t-2xl h-16 relative z-20 top-8 w-full border-b border-white/20 bg-black/5 backdrop-blur-md hidden xl:flex justify-between items-center px-8 gap-8">
+      <header className="rounded-t-2xl h-16 relative z-20 top-8 w-full border-b border-white/20 bg-base-900/20 backdrop-blur-md hidden xl:flex justify-between items-center px-8 gap-8">
         {/* Eventizer Logo */}
         <HeaderLogo />
 
@@ -83,16 +87,23 @@ export default function HeaderClient() {
 
         {/* Call to action buttons */}
         <div className="flex gap-4">
-          <Button variant="golden" asChild>
-            <Link href="/auth/sign-in/service-provider" prefetch>
-              Panel usługodawcy
-            </Link>
-          </Button>
-          <Button variant="blend" asChild>
-            <Link href="/auth/sign-in" prefetch>
-              Zaloguj się
-            </Link>
-          </Button>
+          {user ? (
+            <HeaderAvatar />
+          ) : (
+            <>
+              <Button variant="golden" asChild>
+                <Link href="/auth/sign-in/service-provider" prefetch>
+                  Panel usługodawcy
+                </Link>
+              </Button>
+
+              <Button variant="blend" asChild>
+                <Link href="/auth/sign-in" prefetch>
+                  Zaloguj się
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
       </header>
 
