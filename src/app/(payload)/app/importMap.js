@@ -21,7 +21,7 @@ import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c08
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
-import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
+import { SlugField as SlugField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { default as default_d4bd505028530c1383bc60f48596a0c8 } from '../../../components/payload/fields/offerCategorySelect'
 import { default as default_1fe6cf5e93660301ab4066777495aeef } from '../../../components/payload/fields/offerContentInstructions'
 import { default as default_133738e3839d3dd2ada085fc82bb57a4 } from '../../../components/payload/fields/roleSelect'
@@ -32,9 +32,9 @@ import { default as default_2744e170651c717afcd33ddf5639e43b } from '../../../co
 import { default as default_452285b1c20babd5c4679d3d9f40faa7 } from '../../../components/payload/fields/stripeProductDetails'
 import { default as default_a84f4c0406ded508d7c2f97180dc34b4 } from '../../../components/payload/cells/stripeProductDetails'
 import { LinkToDoc as LinkToDoc_2e9be70cd13299dd4a11a5bd739a5a3c } from '@payloadcms/plugin-stripe/client'
-import { FolderTableCell as FolderTableCell_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
-import { FolderField as FolderField_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
-import { FolderTypeField as FolderTypeField_3817bf644402e67bfe6577f60ef982de } from '@payloadcms/ui'
+import { FolderTableCell as FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
+import { FolderField as FolderField_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
+import { FolderTypeField as FolderTypeField_2b8867833a34864a02ddf429b0728a40 } from '@payloadcms/next/client'
 import { default as default_be2ecad27866eb93959c7c78b7781adf } from '@/components/payload/customAvatar'
 import { default as default_43ac34ff4eae2a82ff61ac1b86521104 } from '@/components/payload/customNav'
 import { default as default_727369734c27157ec5bf12367d91cb02 } from '@/components/payload/customIcon'
@@ -44,7 +44,7 @@ import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e
 import { default as default_6c69fe0c35c8d80fed80d44b1e65f59f } from '@/components/payload/views/serviceProviderOnboarding'
 import { default as default_f89d75ca67be6d2dbbd55f291a5c05d3 } from '@/components/payload/views/offersLimitReached'
 import { default as default_a91e1f251e8fdc5827cd66f76f4d8293 } from '@/components/payload/views/customDashboard'
-import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -70,7 +70,7 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#MetaImageComponent": MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
-  "@payloadcms/ui#SlugField": SlugField_3817bf644402e67bfe6577f60ef982de,
+  "@payloadcms/next/client#SlugField": SlugField_2b8867833a34864a02ddf429b0728a40,
   "/components/payload/fields/offerCategorySelect#default": default_d4bd505028530c1383bc60f48596a0c8,
   "/components/payload/fields/offerContentInstructions#default": default_1fe6cf5e93660301ab4066777495aeef,
   "/components/payload/fields/roleSelect#default": default_133738e3839d3dd2ada085fc82bb57a4,
@@ -81,9 +81,9 @@ export const importMap = {
   "/components/payload/fields/stripeProductDetails#default": default_452285b1c20babd5c4679d3d9f40faa7,
   "/components/payload/cells/stripeProductDetails#default": default_a84f4c0406ded508d7c2f97180dc34b4,
   "@payloadcms/plugin-stripe/client#LinkToDoc": LinkToDoc_2e9be70cd13299dd4a11a5bd739a5a3c,
-  "@payloadcms/ui/rsc#FolderTableCell": FolderTableCell_ab83ff7e88da8d3530831f296ec4756a,
-  "@payloadcms/ui/rsc#FolderField": FolderField_ab83ff7e88da8d3530831f296ec4756a,
-  "@payloadcms/ui#FolderTypeField": FolderTypeField_3817bf644402e67bfe6577f60ef982de,
+  "@payloadcms/next/rsc#FolderTableCell": FolderTableCell_f9c02e79a4aed9a3924487c0cd4cafb1,
+  "@payloadcms/next/rsc#FolderField": FolderField_f9c02e79a4aed9a3924487c0cd4cafb1,
+  "@payloadcms/next/client#FolderTypeField": FolderTypeField_2b8867833a34864a02ddf429b0728a40,
   "@/components/payload/customAvatar#default": default_be2ecad27866eb93959c7c78b7781adf,
   "@/components/payload/customNav#default": default_43ac34ff4eae2a82ff61ac1b86521104,
   "@/components/payload/customIcon#default": default_727369734c27157ec5bf12367d91cb02,
@@ -93,5 +93,5 @@ export const importMap = {
   "@/components/payload/views/serviceProviderOnboarding#default": default_6c69fe0c35c8d80fed80d44b1e65f59f,
   "@/components/payload/views/offersLimitReached#default": default_f89d75ca67be6d2dbbd55f291a5c05d3,
   "@/components/payload/views/customDashboard#default": default_a91e1f251e8fdc5827cd66f76f4d8293,
-  "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

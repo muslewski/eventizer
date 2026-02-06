@@ -121,7 +121,7 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.5, ease: 'easeOut' }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-primary/5 via-transparent to-amber-500/5 rounded-full blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-primary/5 via-transparent to-accent/5 rounded-full blur-3xl"
         />
       </div>
 
@@ -135,7 +135,7 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
         {/* Header */}
         <div className="flex flex-col gap-16 relative mb-16">
           {/* Line */}
-          <div className="bg-linear-to-r from-yellow-500 dark:from-yellow-400/50 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
+          <div className="bg-linear-to-r from-accent dark:from-accent/50 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
 
           {/* Header Content */}
           <motion.div variants={headerVariants} className="text-center flex flex-col items-center">
@@ -144,7 +144,7 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
           </motion.div>
 
           {/* Line */}
-          <div className="bg-linear-to-l from-yellow-500 dark:from-yellow-400/40 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
+          <div className="bg-linear-to-l from-accent dark:from-accent/40 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
 
           {/* Corner accents */}
           <div className="absolute top-0 right-0 w-8 h-8 border-r border-t border-pink-400/20" />

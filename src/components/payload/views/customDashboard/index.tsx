@@ -58,7 +58,7 @@ const Dashboard: FC<DashboardProps> = (props) => {
           {featuredGroups.length > 0 && regularGroups.length > 0 && (
             <div className="relative py-8">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-amber-500/60 to-transparent" />
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
               </div>
             </div>
           )}
@@ -78,28 +78,28 @@ const Dashboard: FC<DashboardProps> = (props) => {
                     {/* Horizontal divider - above each row except first */}
                     {!isFirstRow && isLeftColumn && (
                       <div className="absolute -top-px left-0 right-0 h-px hidden lg:block">
-                        <div className="h-full bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+                        <div className="h-full bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
                       </div>
                     )}
 
                     {/* Right column horizontal divider on desktop */}
                     {!isFirstRow && isRightColumn && (
                       <div className="absolute -top-px left-0 right-0 h-px hidden lg:block">
-                        <div className="h-full bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+                        <div className="h-full bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
                       </div>
                     )}
 
                     {/* Mobile horizontal divider */}
                     {entityIndex > 0 && (
                       <div className="absolute -top-px left-0 right-0 h-px lg:hidden">
-                        <div className="h-full bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
+                        <div className="h-full bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
                       </div>
                     )}
 
                     {/* Vertical divider - between columns */}
                     {isLeftColumn && (
                       <div className="hidden lg:block absolute top-0 -right-px bottom-0 w-px">
-                        <div className="h-full bg-gradient-to-b from-transparent via-amber-500/50 to-transparent" />
+                        <div className="h-full bg-gradient-to-b from-transparent via-accent/50 to-transparent" />
                       </div>
                     )}
 

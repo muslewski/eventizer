@@ -120,9 +120,7 @@ export interface Config {
   globals: {};
   globalsSelect: {};
   locale: 'pl' | 'en';
-  user: User & {
-    collection: 'users';
-  };
+  user: User;
   jobs: {
     tasks: {
       schedulePublish: TaskSchedulePublish;
@@ -273,6 +271,7 @@ export interface User {
   image?: string | null;
   updatedAt: string;
   createdAt: string;
+  collection: 'users';
 }
 /**
  * Upload and manage user profile pictures.

@@ -50,10 +50,10 @@ export default function BecomeServiceProviderField() {
 
   return (
     <div className="space-y-4">
-      <div className="p-6 rounded-lg max-w-3xl border-2 border-dashed border-amber-500/30 bg-amber-500/5">
+      <div className="p-6 rounded-lg max-w-3xl border-2 border-dashed border-accent/30 bg-accent/5">
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-xl bg-amber-500/20 border border-amber-500/30">
-            <Briefcase className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+          <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-xl bg-accent/20 border border-accent/30">
+            <Briefcase className="w-6 h-6 text-accent-foreground dark:text-accent" />
           </div>
           <div className="flex-1">
             <h3 className="text-xl  text-[var(--theme-text)]">Zostań usługodawcą</h3>
@@ -71,7 +71,7 @@ export default function BecomeServiceProviderField() {
             <Button
               onClick={handleBecomeServiceProvider}
               disabled={isLoading}
-              className="bg-amber-600 hover:bg-amber-700"
+              className="bg-accent-foreground hover:bg-accent-foreground/90 text-white"
             >
               {isLoading ? (
                 'Przetwarzanie...'

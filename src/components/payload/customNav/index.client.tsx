@@ -2,7 +2,6 @@
 
 import { getTranslation } from '@payloadcms/translations'
 import { useConfig, useTranslation } from '@payloadcms/ui'
-import { baseClass } from './index'
 import { EntityType, formatAdminURL, NavGroupType } from '@payloadcms/ui/shared'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
@@ -11,7 +10,6 @@ import { getNavIcon } from './navIconMap'
 import { motion } from 'framer-motion'
 import { CustomNavGroup } from './CustomNavGroup'
 import { cn } from '@/lib/utils'
-import { should } from 'vitest'
 
 type Props = {
   groups: NavGroupType[]
@@ -156,7 +154,7 @@ export const NavClient: FC<Props> = ({ groups }) => {
 
   return (
     <motion.div
-      className="w-full"
+      className="w-full flex-1 min-h-0 overflow-y-auto"
       variants={containerVariants}
       initial={shouldAnimate ? 'hidden' : false}
       animate="visible"
@@ -191,11 +189,10 @@ export const NavClient: FC<Props> = ({ groups }) => {
                 return (
                   <Link
                     className={cn(
-                      `${baseClass}__link`,
-                      'group relative flex items-center gap-3 px-3 py-2.5 rounded-lg',
-                      'transition-all duration-200 ease-out',
-                      'hover:bg-amber-500/5 hover:translate-x-0.5',
-                      activeCollection && 'active bg-amber-500/10',
+                      'group relative flex items-center gap-2 px-2 py-1.5 rounded-md',
+                      'no-underline transition-colors duration-150',
+                      'hover:bg-accent/10',
+                      activeCollection && 'bg-accent/10',
                     )}
                     href={href}
                     id={id}
@@ -205,51 +202,36 @@ export const NavClient: FC<Props> = ({ groups }) => {
                     <motion.div
                       variants={itemVariants}
                       initial={shouldAnimate ? undefined : false}
-                      className="flex gap-3 items-center"
+                      className="flex items-center gap-2 min-w-0"
                     >
                       {activeCollection && (
                         <motion.div
                           layoutId="activeIndicator"
-                          className={cn(
-                            'absolute translate-x-[-20px] top-1/2 -translate-y-1/2',
-                            'w-1 h-6 rounded-full',
-                            'bg-gradient-to-b from-amber-500 to-amber-600',
-                            'shadow-[0_0_8px_rgba(245,158,11,0.4)]',
-                          )}
+                          className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-full bg-accent"
                         />
                       )}
 
                       {Icon && (
                         <Icon
                           className={cn(
-                            `${baseClass}__icon`,
-                            'w-5 h-5 transition-colors duration-200',
+                            'size-4 shrink-0 transition-colors duration-150',
                             activeCollection
-                              ? 'text-amber-500 dark:text-amber-400'
-                              : 'text-amber-600/40 dark:text-amber-100/50 group-hover:text-amber-500/70 dark:group-hover:text-amber-400/70',
+                              ? 'text-accent'
+                              : 'text-muted-foreground group-hover:text-accent/70',
                           )}
                         />
                       )}
 
                       <span
                         className={cn(
-                          `${baseClass}__link-label`,
+                          'text-sm truncate',
                           activeCollection
-                            ? 'text-amber-700 dark:text-amber-300 font-medium'
-                            : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-200',
+                            ? 'text-accent-foreground dark:text-accent font-medium'
+                            : 'text-muted-foreground group-hover:text-foreground',
                         )}
                       >
                         {getTranslation(label, i18n)}
                       </span>
-
-                      <div
-                        className={cn(
-                          'absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300',
-                          'bg-gradient-to-r from-amber-500/0 via-amber-500/5 to-amber-500/0',
-                          'group-hover:opacity-100',
-                          'pointer-events-none',
-                        )}
-                      />
                     </motion.div>
                   </Link>
                 )

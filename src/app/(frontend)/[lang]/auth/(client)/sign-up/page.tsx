@@ -1,5 +1,6 @@
 import { AuthView } from '@daveyplate/better-auth-ui'
 import { authViewPaths } from '@daveyplate/better-auth-ui/server'
+import { authClassNames } from '../../authClassNames'
 
 import type { Config } from '@/payload-types'
 import { getDictionary } from '@/lib/dictionary'
@@ -36,11 +37,7 @@ export default async function AuthPage({
         PASSWORD: dict.auth.password,
         PASSWORD_PLACEHOLDER: dict.auth.password,
       }}
-      classNames={{
-        base: 'bg-gradient-to-br from-white/15 via-stone-200 to-stone-100 dark:from-background dark:via-[#111114] dark:to-background',
-        content: 'font-montserrat',
-        title: 'xl:text-5xl md:text-4xl sm:text-3xl text-2xl font-bebas font-light',
-      }}
+      classNames={authClassNames}
     />
   )
 }

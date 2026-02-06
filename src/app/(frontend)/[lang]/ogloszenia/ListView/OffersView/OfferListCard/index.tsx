@@ -90,10 +90,9 @@ export const OfferListCard = ({
             </div>
           )}
         </div>
-        <CardDescription className="flex flex-row gap-4 flex-wrap lg:flex-col items-start lg:items-end justify-between w-full lg:w-fit">
-          <div className="min-w-0 text-start lg:text-end">
-            <div className="text-xs text-muted-foreground">Cena</div>
-            <div className="font-montserrat font-semibold text-foreground whitespace-nowrap ">
+        <CardDescription className="flex flex-row gap-3 flex-wrap lg:flex-col items-start lg:items-end justify-between w-full lg:w-fit">
+          <div className="px-4 py-2.5 rounded-xl bg-background/80 border border-border/50 backdrop-blur-sm">
+            <div className="font-bebas text-xl sm:text-2xl text-foreground/75 whitespace-nowrap leading-tight tracking-wide">
               {formatPrice()}
             </div>
           </div>
@@ -102,13 +101,6 @@ export const OfferListCard = ({
           <Button asChild variant="secondary">
             <Link href={`/ogloszenia/${slug}`}>Sprawdź</Link>
           </Button>
-
-          {/* Price */}
-          {/* <div className="lg:w-42 max-w-xs p-4 bg-linear-to-r dark:from-stone-950/60 from-stone-200 dark:to-background/35 rounded-2xl border border-foreground/10">
-            <p className="md:text-xl sm:text-md text-sm font-montserrat font-medium w-full text-foreground leading-[0.9] truncate whitespace-nowrap ">
-              {formatPrice()}
-            </p>
-          </div> */}
         </CardDescription>
       </div>
     </Card>

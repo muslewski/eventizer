@@ -42,17 +42,20 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
   className,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | null>(null)
+  const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
 
-  const handleCategoryClick = (category: ServiceCategory) => {
+  const handleCategoryClick = (category: ServiceCategory, color: string) => {
     setSelectedCategory(category)
+    setSelectedColor(color)
     setIsDrawerOpen(true)
   }
 
   const handleCloseDrawer = () => {
     setIsDrawerOpen(false)
     setSelectedCategory(null)
+    setSelectedColor(null)
     setLoadedImages(new Set())
   }
 
@@ -89,7 +92,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
             <CategoryCard
               key={category.id}
               category={category}
-              onClick={() => handleCategoryClick(category)}
+              onClick={(color) => handleCategoryClick(category, color)}
               index={index}
               total={categories.length}
             />
@@ -99,8 +102,11 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
 
       {/* Category Drawer */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-        <DrawerContent className="max-h-[85vh]">
-          <div className="mx-auto w-full max-w-3xl overflow-y-auto">
+        <DrawerContent
+          className="max-h-[85vh]"
+          style={selectedColor ? { borderTop: `3px solid ${selectedColor}` } : undefined}
+        >
+          <div className="mx-auto w-full max-w-4xl overflow-y-auto">
             <DrawerHeader className="relative">
               <DrawerClose asChild>
                 <Button
@@ -116,10 +122,10 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
               {/* Category icon and title */}
               <div className="flex flex-col items-center gap-4 pt-2">
                 {selectedCategory && getIconUrl(selectedCategory.icon) && (
-                  <div className="relative w-16 h-16 rounded-2xl bg-muted/50 p-3 border border-border/50">
+                  <div className="relative w-20 h-20 rounded-2xl bg-muted/50 p-3 border border-border/50">
                     {!loadedImages.has(`main-${selectedCategory.id}`) && (
                       <Skeleton className="absolute inset-0 rounded-2xl flex items-center justify-center">
-                        <ImageIcon className="size-6 text-muted-foreground/50 animate-pulse" />
+                        <ImageIcon className="size-8 text-muted-foreground/50 animate-pulse" />
                       </Skeleton>
                     )}
                     <Image
@@ -173,14 +179,14 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                         key={subcategory.id}
                         href={`/ogloszenia?kategoria=${selectedCategory?.slug}/${subcategory.slug}#oferty`}
                         onClick={handleCloseDrawer}
-                        className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 bg-muted/30 hover:bg-muted/60 hover:border-yellow-400/30 transition-all duration-200 group"
+                        className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 bg-muted/30 hover:bg-muted/60 hover:border-accent/30 transition-all duration-200 group"
                         prefetch
                       >
                         {subcategoryIconUrl && (
-                          <div className="relative w-10 h-10 rounded-lg bg-background/50 p-2">
+                          <div className="relative w-14 h-14 rounded-lg bg-background/50 p-2">
                             {!loadedImages.has(`sub-${subcategory.id}`) && (
                               <Skeleton className="absolute inset-0 rounded-lg flex items-center justify-center">
-                                <ImageIcon className="size-4 text-muted-foreground/50 animate-pulse" />
+                                <ImageIcon className="size-5 text-muted-foreground/50 animate-pulse" />
                               </Skeleton>
                             )}
                             <Image

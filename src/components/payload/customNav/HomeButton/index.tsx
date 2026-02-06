@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 export function HomeButton() {
   return (
-    <Button variant="outline" asChild className="no-underline">
+    <Button variant="golden" asChild className="no-underline">
       <Link href="/">
         <Home className="size-4" />
         Strona główna

@@ -20,7 +20,7 @@
     overflow: hidden;
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.06),
-      0 0 0 0 rgba(212, 175, 55, 0);
+      0 0 0 0 color-mix(in srgb, var(--color-brand-500) 0%, transparent);
 
     // Mobile-first: compact circular avatar
     @media (max-width: 768px) {
@@ -41,15 +41,20 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        color-mix(in srgb, var(--color-brand-500) 10%, transparent),
+        transparent
+      );
       transition: left 0.5s ease;
     }
 
     &:hover {
-      border-color: rgba(212, 175, 55, 0.4);
+      border-color: color-mix(in srgb, var(--color-brand-500) 40%, transparent);
       box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.1),
-        0 0 0 3px rgba(212, 175, 55, 0.1);
+        0 0 0 3px color-mix(in srgb, var(--color-brand-500) 10%, transparent);
       transform: translateY(-1px);
 
       &::before {
@@ -62,16 +67,16 @@
       }
 
       .avatar__chevron-wrap {
-        background-color: rgba(212, 175, 55, 0.15);
+        background-color: color-mix(in srgb, var(--color-brand-500) 15%, transparent);
       }
 
       .avatar__chevron {
-        color: #d4af37;
+        color: var(--color-brand-500);
         transform: translateX(2px);
       }
 
       .avatar__username {
-        background: linear-gradient(135deg, #d4af37, #f0d875);
+        background: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-300));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -105,7 +110,7 @@
       width: 16px;
       height: 16px;
       border: 2px solid var(--theme-elevation-200);
-      border-top-color: #d4af37;
+      border-top-color: var(--color-brand-500);
       border-radius: 50%;
       animation: avatar-spin 0.8s linear infinite;
     }
@@ -143,7 +148,12 @@
       position: absolute;
       inset: -2px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #d4af37, #f0d875, #d4af37);
+      background: linear-gradient(
+        135deg,
+        var(--color-brand-500),
+        var(--color-brand-300),
+        var(--color-brand-500)
+      );
       opacity: 0;
       transform: scale(0.9);
       transition: all 0.3s ease;
@@ -220,13 +230,13 @@
 
   .avatar:hover .graphic-account {
     &__bg {
-      fill: rgba(212, 175, 55, 0.1);
-      stroke: rgba(212, 175, 55, 0.4);
+      fill: color-mix(in srgb, var(--color-brand-500) 10%, transparent);
+      stroke: color-mix(in srgb, var(--color-brand-500) 40%, transparent);
     }
 
     &__head,
     &__body {
-      fill: #d4af37;
+      fill: var(--color-brand-500);
     }
   }
 }

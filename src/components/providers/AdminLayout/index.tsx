@@ -72,6 +72,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
       id="admin-layout"
       data-user-role={userSubscriptionData.role ?? undefined}
       className={`${bebasNeue.variable} ${montserrat.variable} overflow-x-clip`}
+      suppressHydrationWarning
     >
       <AdminLayoutClient userSubscriptionData={userSubscriptionData}>{children}</AdminLayoutClient>
     </div>

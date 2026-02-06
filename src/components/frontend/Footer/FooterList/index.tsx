@@ -12,10 +12,10 @@ export default function FooterList({
 }) {
   return (
     <div>
-      <h3 className="md:text-4xl text-3xl font-bebas max-w-7xl text-[#D4AF37]/85">{header}</h3>
+      <h3 className="md:text-4xl text-3xl font-bebas max-w-7xl text-brand-500/85">{header}</h3>
 
       {/* Line */}
-      <div className="w-16 h-1 bg-linear-to-r from-[#D4AF37]/50 to-transparent mt-2 mb-4" />
+      <div className="w-16 h-1 bg-linear-to-r from-brand-500/50 to-transparent mt-2 mb-4" />
 
       <ul className="flex flex-col gap-2">
         {linkItems.map((item) => (

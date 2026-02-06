@@ -14,7 +14,8 @@ export const NavWrapper: React.FC<{
     <aside
       className={[
         baseClass,
-        'bg-linear-to-br from-[#f7f6f3] to-[#ece9e5] dark:from-[var(--color-base-900)] dark:via-stone-950 dark:to-[var(--color-base-900)]',
+        // 'bg-linear-to-b from-base-100/50 to-base-50 dark:from-base-850/50 dark:to-base-950',
+        'bg-base-0 dark:bg-base-950 border-r border-border/50',
         navOpen && `${baseClass}--nav-open`,
         shouldAnimate && `${baseClass}--nav-animate`,
         hydrated && `${baseClass}--nav-hydrated`,
@@ -23,7 +24,7 @@ export const NavWrapper: React.FC<{
         .join(' ')}
       inert={!navOpen ? true : undefined}
     >
-      <div className={`${baseClass}__scroll`} ref={navRef}>
+      <div className={`${baseClass}__scroll !overflow-hidden`} ref={navRef}>
         {children}
       </div>
     </aside>

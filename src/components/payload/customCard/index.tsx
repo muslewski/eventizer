@@ -42,30 +42,30 @@ export const CustomCard: React.FC<Props> = (props) => {
         isClickable && `${baseClass}--has-onclick`,
         'relative overflow-hidden',
         'before:absolute before:inset-0 before:rounded-[inherit] before:p-[1px]',
-        'before:bg-gradient-to-br before:from-amber-500/20 before:via-transparent before:to-amber-500/20',
+        'before:bg-gradient-to-br before:from-accent/20 before:via-transparent before:to-accent/20',
         'before:opacity-0 before:transition-opacity before:duration-300',
-        'hover:before:opacity-100 border-2 border-amber-500/10',
-        'hover:shadow-[0_4px_20px_rgba(212,175,55,0.15)]',
+        'hover:before:opacity-100 border-2 border-accent/10',
+        'hover:shadow-[0_4px_20px_color-mix(in_srgb,var(--accent)_15%,transparent)]',
         'after:absolute after:top-0 after:left-0 after:right-0 after:h-[2px]',
-        'after:bg-gradient-to-r after:from-transparent after:via-amber-500/10 after:to-transparent',
+        'after:bg-gradient-to-r after:from-transparent after:via-accent/10 after:to-transparent',
         'after:opacity-0 after:transition-opacity after:duration-300',
         'hover:after:opacity-100 bg-(--theme-elevation-100) dark:bg-(--theme-elevation-50)',
       )}
       id={id}
     >
       <div className="absolute top-0 right-0 w-8 h-8 overflow-hidden opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none">
-        <div className="absolute top-0 right-0 w-12 h-[1px] bg-gradient-to-l from-amber-500/60 to-transparent transform rotate-45 origin-top-right" />
+        <div className="absolute top-0 right-0 w-12 h-[1px] bg-gradient-to-l from-accent/60 to-transparent transform rotate-45 origin-top-right" />
       </div>
 
       <div className="flex items-center gap-4 relative z-[1]">
         {Icon && (
-          <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-amber-500/5 group-hover:bg-amber-500/10 transition-colors duration-300">
+          <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-accent/5 group-hover:bg-accent/10 transition-colors duration-300">
             <Icon
               className={cn(
                 'w-6 h-6 transition-all duration-300',
-                'text-amber-600/70 dark:text-amber-400/70',
+                'text-accent-foreground/70 dark:text-accent/70',
                 isClickable &&
-                  'group-hover:text-amber-500 dark:group-hover:text-amber-400 group-hover:scale-110',
+                  'group-hover:text-accent dark:group-hover:text-accent group-hover:scale-110',
               )}
             />
           </div>
@@ -75,7 +75,7 @@ export const CustomCard: React.FC<Props> = (props) => {
           className={cn(
             `${baseClass}__title`,
             'transition-colors duration-300',
-            isClickable && 'group-hover:text-amber-600 dark:group-hover:text-amber-400',
+            isClickable && 'group-hover:text-accent-foreground dark:group-hover:text-accent',
           )}
         >
           {title}

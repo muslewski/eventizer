@@ -66,7 +66,7 @@ const Nav: FC<ServerProps> = async (props) => {
 
   return (
     <NavWrapper baseClass={baseClass}>
-      <nav className={`${baseClass}__wrap`}>
+      <nav className={`${baseClass}__wrap p-2 flex flex-col h-full`}>
         {RenderServerComponent({
           clientProps: {
             documentSubViewType,
@@ -102,8 +102,7 @@ const Nav: FC<ServerProps> = async (props) => {
             user,
           },
         })}
-        {/* Here besides custom logout button add also Strona główna button */}
-        <div className={`mt-auto flex gap-3 w-full `}>
+        <div className="shrink-0 mt-auto pt-2 flex flex-wrap gap-3 w-full">
           <HomeButton />
           <CustomLogoutButton />
         </div>

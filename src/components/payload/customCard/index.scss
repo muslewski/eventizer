@@ -31,7 +31,7 @@
         left: 0;
         width: 0;
         height: 1px;
-        background: linear-gradient(90deg, #f59e0b, transparent);
+        background: linear-gradient(90deg, var(--color-brand-500), transparent);
         transition: width 0.3s ease;
       }
     }
@@ -53,10 +53,10 @@
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 
         &:hover {
-          border-color: #f59e0b;
-          background-color: rgba(245, 158, 11, 0.1);
-          color: #f59e0b;
-          box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+          border-color: var(--color-brand-500);
+          background-color: color-mix(in srgb, var(--color-brand-500) 10%, transparent);
+          color: var(--color-brand-500);
+          box-shadow: 0 0 12px color-mix(in srgb, var(--color-brand-500) 20%, transparent);
         }
       }
     }
@@ -66,7 +66,7 @@
 
       &:hover {
         background: var(--theme-elevation-100);
-        border-color: rgba(245, 158, 11, 0.3);
+        border-color: color-mix(in srgb, var(--color-brand-500) 30%, transparent);
         transform: translateY(-1px);
 
         .card__title::after {

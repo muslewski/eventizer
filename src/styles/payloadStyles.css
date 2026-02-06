@@ -23,6 +23,19 @@
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 /*
+ * Font size normalization for Tailwind/shadcn inside Payload Admin
+ *
+ * Problem: Payload sets html font-size to 13px, Tailwind assumes 16px.
+ * This causes all rem-based utilities to render ~19% smaller.
+ *
+ * Solution: Override html to 16px and update Payload's CSS variables
+ * so its --base calculation remains correct.
+ *
+ * Payload calculates: --base = (--base-px / --base-body-size) * 1rem
+ * With 16px root and --base-body-size: 16, this stays proportional.
+ */
+
+/*
  * Payload Admin UI specific styles
  * These extend the shared theme with Payload-specific customizations
  */
@@ -63,7 +76,7 @@
   --theme-elevation-350: var(--color-base-550);
   --theme-elevation-400: var(--color-base-500);
   --theme-elevation-450: var(--color-base-450);
-  --theme-elevation-500: var(--color-base-400); /* Was missing! */
+  --theme-elevation-500: var(--color-base-400);
   --theme-elevation-550: var(--color-base-350);
   --theme-elevation-600: var(--color-base-300);
   --theme-elevation-650: var(--color-base-250);
@@ -157,7 +170,7 @@ table {
 
 .localizer {
   right: 60px;
-  top: 110px;
+  top: 130px;
   position: absolute;
   z-index: 1000;
 }

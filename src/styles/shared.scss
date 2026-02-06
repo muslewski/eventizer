@@ -33,6 +33,18 @@
   --color-base-950: rgb(8, 8, 8);
   --color-base-1000: rgb(5, 5, 5);
 
+  /* Brand accent palette — swap this block to re-theme */
+  --color-brand-50: rgb(255, 251, 235);
+  --color-brand-100: rgb(254, 243, 199);
+  --color-brand-200: rgb(253, 230, 138);
+  --color-brand-300: rgb(252, 211, 77);
+  --color-brand-400: rgb(250, 189, 35);
+  --color-brand-500: rgb(228, 160, 11);
+  --color-brand-600: rgb(196, 124, 8);
+  --color-brand-700: rgb(158, 92, 15);
+  --color-brand-800: rgb(130, 75, 19);
+  --color-brand-900: rgb(111, 63, 20);
+
   /* Shadcn UI semantic colors - Light theme */
   --background: var(--color-base-0);
   --foreground: var(--color-base-900);
@@ -46,8 +58,8 @@
   --secondary-foreground: var(--color-base-900);
   --muted: var(--color-base-100);
   --muted-foreground: var(--color-base-550);
-  --accent: var(--color-base-100);
-  --accent-foreground: var(--color-base-900);
+  --accent: var(--color-brand-500);
+  --accent-foreground: var(--color-brand-800);
   --destructive: oklch(0.577 0.245 27.325);
   --border: var(--color-base-200);
   --input: var(--color-base-200);
@@ -61,8 +73,8 @@
   --sidebar-foreground: var(--color-base-900);
   --sidebar-primary: var(--color-base-900);
   --sidebar-primary-foreground: var(--color-base-0);
-  --sidebar-accent: var(--color-base-100);
-  --sidebar-accent-foreground: var(--color-base-900);
+  --sidebar-accent: var(--color-brand-500);
+  --sidebar-accent-foreground: var(--color-brand-800);
   --sidebar-border: var(--color-base-200);
   --sidebar-ring: var(--color-base-700);
 }
@@ -84,8 +96,8 @@
   --secondary-foreground: var(--color-base-0);
   --muted: var(--color-base-800);
   --muted-foreground: var(--color-base-400);
-  --accent: var(--color-base-800);
-  --accent-foreground: var(--color-base-0);
+  --accent: var(--color-brand-600);
+  --accent-foreground: var(--color-brand-50);
   --destructive: oklch(0.704 0.191 22.216);
   --border: var(--color-base-750);
   --input: var(--color-base-700);
@@ -99,8 +111,8 @@
   --sidebar-foreground: var(--color-base-0);
   --sidebar-primary: var(--color-base-300);
   --sidebar-primary-foreground: var(--color-base-900);
-  --sidebar-accent: var(--color-base-800);
-  --sidebar-accent-foreground: var(--color-base-0);
+  --sidebar-accent: var(--color-brand-700);
+  --sidebar-accent-foreground: var(--color-brand-50);
   --sidebar-border: var(--color-base-750);
   --sidebar-ring: var(--color-base-550);
 }
@@ -115,6 +127,13 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /*
+   * Font sizes - using px for consistency across different root font-sizes
+   * This ensures Tailwind text utilities render identically on:
+   * - Frontend (browser default 16px root)
+   * - Payload Admin (13px root)
+   */
 
   /* Base color palette - raw values for direct use */
   --color-base-0: var(--color-base-0);
@@ -138,6 +157,18 @@
   --color-base-900: var(--color-base-900);
   --color-base-950: var(--color-base-950);
   --color-base-1000: var(--color-base-1000);
+
+  /* Brand accent palette */
+  --color-brand-50: var(--color-brand-50);
+  --color-brand-100: var(--color-brand-100);
+  --color-brand-200: var(--color-brand-200);
+  --color-brand-300: var(--color-brand-300);
+  --color-brand-400: var(--color-brand-400);
+  --color-brand-500: var(--color-brand-500);
+  --color-brand-600: var(--color-brand-600);
+  --color-brand-700: var(--color-brand-700);
+  --color-brand-800: var(--color-brand-800);
+  --color-brand-900: var(--color-brand-900);
 
   /* Colors - mapped from CSS variables */
   --color-background: var(--background);
@@ -176,4 +207,9 @@
   /* Font families */
   --font-bebas: var(--font-bebas), 'Bebas Neue', sans-serif;
   --font-montserrat: var(--font-montserrat), 'Montserrat', sans-serif;
+}
+
+html {
+  font-size: 15px;
+  /* --base-body-size: 6; */
 }

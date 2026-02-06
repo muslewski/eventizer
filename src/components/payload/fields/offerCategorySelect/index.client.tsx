@@ -293,7 +293,7 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
             isSelected &&
               'bg-primary/10 ring-1 ring-primary/20 shadow-sm dark:bg-primary/20 dark:ring-primary/30',
             !isSelected && 'hover:bg-accent/60',
-            category.isUserDefault && 'border-l-3 border-l-amber-400 rounded-l-none',
+            category.isUserDefault && 'border-l-3 border-l-accent rounded-l-none',
           )}
           style={{ paddingLeft: `${category.depth * 20 + 12}px` }}
         >
@@ -332,7 +332,7 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
               'flex h-8 w-8 items-center justify-center rounded-lg transition-colors',
               hasChildren
                 ? isExpanded
-                  ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400'
+                  ? 'bg-accent/10 text-accent-foreground dark:bg-accent/20 dark:text-accent'
                   : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
                 : isSelected
                   ? 'bg-primary/15 text-primary dark:bg-primary/25'
@@ -363,7 +363,7 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
                 {category.name}
               </span>
               {category.isUserDefault && (
-                <Badge className="text-[10px] px-1.5 py-0 h-5 bg-gradient-to-r from-amber-400 to-orange-400 text-white border-0 shadow-sm">
+                <Badge className="text-[10px] px-1.5 py-0 h-5 bg-gradient-to-r from-accent to-accent-foreground text-white border-0 shadow-sm">
                   <Star className="h-2.5 w-2.5 mr-1 fill-white" />
                   Domyślna
                 </Badge>
@@ -526,13 +526,13 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
               {userPlanInfo && lockedCount > 0 && (
                 <>
                   <CommandSeparator />
-                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 p-4">
+                  <div className="bg-gradient-to-r from-accent/5 to-accent/10 dark:from-accent/10 dark:to-accent/15 p-4">
                     <div className="flex items-center justify-between gap-4">
                       <div className="space-y-1">
-                        <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                        <p className="text-sm font-medium text-accent-foreground dark:text-accent">
                           Odblokuj więcej kategorii
                         </p>
-                        <p className="text-xs text-amber-700 dark:text-amber-300">
+                        <p className="text-xs text-accent-foreground/70 dark:text-accent/70">
                           Ulepsz swój plan, aby uzyskać dostęp do {lockedCount} dodatkowych
                           kategorii
                         </p>
@@ -554,13 +554,13 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
 
       {/* Warning if no categories available */}
       {availableCount === 0 && (
-        <Alert className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/50">
-          <Crown className="h-4 w-4 text-amber-600" />
-          <AlertDescription className="text-amber-800 dark:text-amber-200">
+        <Alert className="border-accent/40 bg-accent/5 dark:border-accent/30 dark:bg-accent/10">
+          <Crown className="h-4 w-4 text-accent-foreground" />
+          <AlertDescription className="text-accent-foreground dark:text-accent">
             Brak dostępnych kategorii w Twoim obecnym planie.{' '}
             <Link
               href="/app/onboarding/service-provider?edit=true"
-              className="font-medium underline underline-offset-2 hover:text-amber-900"
+              className="font-medium underline underline-offset-2 hover:text-accent-foreground/80"
             >
               Ulepsz swoją subskrypcję
             </Link>

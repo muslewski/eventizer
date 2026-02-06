@@ -76,7 +76,7 @@ export default function Footer() {
       {/* Decorative top border with shimmer */}
       <motion.div
         variants={lineVariants}
-        className="absolute top-0 left-0 w-full h-px origin-left bg-linear-to-r from-transparent via-amber-500/60 to-transparent"
+        className="absolute top-0 left-0 w-full h-px origin-left bg-linear-to-r from-transparent via-accent/60 to-transparent"
       />
       <motion.div
         initial={{ x: '-100%' }}
@@ -97,7 +97,7 @@ export default function Footer() {
             <Link
               href="/"
               prefetch
-              className="xl:text-7xl md:text-6xl text-5xl font-bebas tracking-tight text-primary hover:text-amber-600 dark:hover:text-amber-400 transition-colors duration-300 inline-block"
+              className="xl:text-7xl md:text-6xl text-5xl font-bebas tracking-tight text-primary hover:text-accent-foreground dark:hover:text-accent transition-colors duration-300 inline-block"
             >
               Eventizer
             </Link>
@@ -137,7 +137,7 @@ export default function Footer() {
               >
                 <Button
                   variant="ghost"
-                  className="text-stone-600 dark:text-stone-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-transparent px-0 h-auto py-1 justify-start gap-3 group"
+                  className="text-stone-600 dark:text-stone-400 hover:text-accent-foreground dark:hover:text-accent hover:bg-transparent px-0 h-auto py-1 justify-start gap-3 group"
                   asChild
                 >
                   <Link
@@ -148,7 +148,7 @@ export default function Footer() {
                       whileHover={{ rotate: [0, -10, 10, 0] }}
                       transition={{ duration: 0.4 }}
                     >
-                      <item.icon className="size-4 shrink-0 group-hover:text-amber-500 transition-colors" />
+                      <item.icon className="size-4 shrink-0 group-hover:text-accent transition-colors" />
                     </motion.span>
                     <span className="font-medium text-wrap text-left">{item.text}</span>
                   </Link>
@@ -159,7 +159,7 @@ export default function Footer() {
 
           {/* Social Media */}
           <motion.div variants={itemVariants} className="mt-6 space-y-3">
-            <h3 className="md:text-4xl text-3xl font-bebas max-w-7xl text-[#D4AF37]/85">
+            <h3 className="md:text-4xl text-3xl font-bebas max-w-7xl text-brand-500/85">
               Obserwuj nas
             </h3>
             <div className="flex gap-4">
@@ -260,14 +260,14 @@ export default function Footer() {
       <div className="relative">
         <motion.div
           variants={lineVariants}
-          className="w-full h-px origin-left bg-gradient-to-r from-amber-500/40 via-stone-300 dark:via-stone-700 to-transparent"
+          className="w-full h-px origin-left bg-gradient-to-r from-accent/40 via-stone-300 dark:via-stone-700 to-transparent"
         />
         <motion.div
           initial={{ x: '-100%' }}
           whileInView={{ x: '200%' }}
           viewport={{ once: true }}
           transition={{ duration: 2.5, delay: 0.8, ease: 'easeInOut' }}
-          className="absolute top-0 left-0 w-1/3 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent"
+          className="absolute top-0 left-0 w-1/3 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent"
         />
       </div>
 
@@ -307,7 +307,7 @@ export default function Footer() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-stone-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-transparent"
+                  className="text-stone-500 hover:text-accent-foreground dark:hover:text-accent hover:bg-transparent"
                   asChild
                 >
                   <Link href={link.href} prefetch>

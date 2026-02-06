@@ -46,7 +46,7 @@ export function SubscriptionCellClient({ subscriptionStatus }: SubscriptionCellC
         icon: <AlertTriangle className="w-3 h-3" />,
         text: 'Anulowanie',
         className:
-          'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30 hover:bg-amber-500/20',
+          'bg-accent/10 text-accent-foreground dark:text-accent border-accent/30 hover:bg-accent/20',
       }
     }
 
@@ -97,9 +97,9 @@ export function SubscriptionCellClient({ subscriptionStatus }: SubscriptionCellC
           <div className="flex items-center gap-2 cursor-default">
             {/* Plan badge with golden accent for premium feel */}
             {plan?.name && (
-              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 dark:bg-amber-500/20 border border-amber-500/30">
-                <Crown className="w-3 h-3 text-amber-500" />
-                <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
+              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-accent/10 dark:bg-accent/20 border border-accent/30">
+                <Crown className="w-3 h-3 text-accent" />
+                <span className="text-xs font-medium text-accent-foreground dark:text-accent">
                   {plan.name}
                 </span>
               </div>

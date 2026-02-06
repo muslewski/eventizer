@@ -53,7 +53,7 @@ function getStatusBadge(status: SubscriptionStatus['status'], isCancelling: bool
   // Use isCancelling instead of just cancelAtPeriodEnd
   if (isCancelling) {
     return (
-      <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/30">
+      <Badge variant="outline" className="bg-accent/10 text-accent-foreground border-accent/30">
         <AlertTriangle className="w-3 h-3 mr-1" />
         Anulowanie zaplanowane
       </Badge>
@@ -267,7 +267,9 @@ export function SubscriptionDetailsClient({
               {formatDate(displayDate)}
             </div>
             {willEnd && (
-              <p className="mt-1 text-sm text-amber-600">Subskrypcja wygaśnie po tej dacie</p>
+              <p className="mt-1 text-sm text-accent-foreground">
+                Subskrypcja wygaśnie po tej dacie
+              </p>
             )}
           </div>
 

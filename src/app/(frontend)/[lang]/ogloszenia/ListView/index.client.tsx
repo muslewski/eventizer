@@ -49,7 +49,7 @@ export default function ClientListView({
       <CategorySelection categoryData={categoryData} />
 
       {/* Main Search bar and offers */}
-      <div className="w-full max-w-375 h-full min-w-0 py-0 flex flex-col gap-8 ">
+      <div className="w-full max-w-575 h-full min-w-0 py-0 flex flex-col gap-8 ">
         {/* Search Bar */}
         <SearchBar
           currentSort={currentSort}

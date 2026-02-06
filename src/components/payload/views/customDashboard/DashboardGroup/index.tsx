@@ -1,7 +1,6 @@
 import { EntityType, formatAdminURL } from '@payloadcms/ui/shared'
 import { FC } from 'react'
 import { getTranslation, I18nClient } from '@payloadcms/translations'
-import Link from 'next/link'
 import { BasePayload, CollectionSlug, StaticLabel, User } from 'payload'
 
 import './index.scss'
@@ -73,7 +72,6 @@ export const DashboardGroup: FC<Props> = async ({
                   path:
                     type === EntityType.collection ? `/collections/${slug}` : `/globals/${slug}`,
                 })}
-                Link={Link}
                 slug={slug}
                 count={counts[slug] ?? 0}
               />

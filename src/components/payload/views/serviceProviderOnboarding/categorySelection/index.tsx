@@ -122,7 +122,7 @@ export function CategorySelection({
       <Card
         className={cn(
           'border-2',
-          'border-amber-500/10 dark:border-amber-500/20',
+          'border-accent/10 dark:border-accent/20',
           'bg-[var(--theme-elevation-50)]',
         )}
       >
@@ -132,11 +132,11 @@ export function CategorySelection({
               <div
                 className={cn(
                   'flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-xl',
-                  'bg-amber-500/10 dark:bg-amber-500/20',
-                  'border border-amber-500/20 dark:border-amber-500/30',
+                  'bg-accent/10 dark:bg-accent/20',
+                  'border border-accent/20 dark:border-accent/30',
                 )}
               >
-                <Briefcase className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                <Briefcase className="w-6 h-6 text-accent-foreground dark:text-accent" />
               </div>
               <div>
                 <CardTitle className="text-xl text-[var(--theme-text)]">Kategoria usługi</CardTitle>
@@ -169,9 +169,9 @@ export function CategorySelection({
                   className={cn(
                     'flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold transition-all',
                     step < currentLevel
-                      ? 'bg-amber-500 text-white'
+                      ? 'bg-accent text-white'
                       : step === currentLevel
-                        ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border-2 border-amber-500'
+                        ? 'bg-accent/20 text-accent-foreground dark:text-accent border-2 border-accent'
                         : 'bg-[var(--theme-elevation-100)] text-[var(--theme-elevation-500)]',
                   )}
                 >
@@ -181,7 +181,7 @@ export function CategorySelection({
                   <div
                     className={cn(
                       'flex-1 h-1 rounded-full transition-all',
-                      step < currentLevel ? 'bg-amber-500' : 'bg-[var(--theme-elevation-150)]',
+                      step < currentLevel ? 'bg-accent' : 'bg-[var(--theme-elevation-150)]',
                     )}
                   />
                 )}
@@ -200,7 +200,7 @@ export function CategorySelection({
                     onClick={() => handleBreadcrumbClick(index)}
                     className={cn(
                       'px-2 py-1 text-sm rounded-md transition-colors',
-                      'hover:bg-amber-500/10 text-amber-700 dark:text-amber-400',
+                      'hover:bg-accent/10 text-accent-foreground dark:text-accent',
                       'font-medium',
                     )}
                   >
@@ -277,7 +277,7 @@ export function CategorySelection({
                         'w-full flex items-center justify-between p-4 rounded-xl',
                         'border-2 border-transparent',
                         'bg-[var(--theme-elevation-100)]',
-                        'hover:border-amber-500/40 hover:bg-amber-500/5',
+                        'hover:border-accent/40 hover:bg-accent/5',
                         'transition-all duration-200 text-left',
                         'group',
                       )}
@@ -286,8 +286,8 @@ export function CategorySelection({
                         <div
                           className={cn(
                             'flex-shrink-0 p-2 rounded-lg',
-                            'bg-[var(--theme-elevation-150)] group-hover:bg-amber-500/15',
-                            'text-[var(--theme-elevation-600)] group-hover:text-amber-600 dark:group-hover:text-amber-400',
+                            'bg-[var(--theme-elevation-150)] group-hover:bg-accent/15',
+                            'text-[var(--theme-elevation-600)] group-hover:text-accent-foreground dark:group-hover:text-accent',
                             'transition-colors',
                           )}
                         >
@@ -303,8 +303,8 @@ export function CategorySelection({
                                 variant="secondary"
                                 className={cn(
                                   'flex-shrink-0 text-xs',
-                                  'bg-amber-500/15 text-amber-700 dark:text-amber-300',
-                                  'border border-amber-500/30',
+                                  'bg-accent/15 text-accent-foreground dark:text-accent',
+                                  'border border-accent/30',
                                 )}
                               >
                                 <Crown className="h-3 w-3 mr-1" />
@@ -323,7 +323,7 @@ export function CategorySelection({
                       <div
                         className={cn(
                           'flex-shrink-0 ml-3 flex items-center gap-1',
-                          'text-[var(--theme-elevation-400)] group-hover:text-amber-600 dark:group-hover:text-amber-400',
+                          'text-[var(--theme-elevation-400)] group-hover:text-accent-foreground dark:group-hover:text-accent',
                           'transition-colors',
                         )}
                       >
@@ -351,8 +351,8 @@ export function CategorySelection({
         <Card
           className={cn(
             'border-2',
-            'border-amber-500/30 dark:border-amber-500/40',
-            'bg-gradient-to-br from-amber-500/5 to-amber-500/10',
+            'border-accent/30 dark:border-accent/40',
+            'bg-gradient-to-br from-accent/5 to-accent/10',
           )}
         >
           <CardContent className="pt-6">
@@ -360,10 +360,10 @@ export function CategorySelection({
               <div
                 className={cn(
                   'inline-flex items-center justify-center w-16 h-16 rounded-full',
-                  'bg-amber-500/20 dark:bg-amber-500/30',
+                  'bg-accent/20 dark:bg-accent/30',
                 )}
               >
-                <Check className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+                <Check className="h-8 w-8 text-accent-foreground dark:text-accent" />
               </div>
               <div>
                 <h3 className="font-medium text-[var(--theme-text)]">Kategoria wybrana!</h3>
@@ -380,13 +380,13 @@ export function CategorySelection({
                       className={cn(
                         'px-3 py-1.5 text-sm font-medium',
                         'bg-[var(--theme-elevation-50)]',
-                        'border-amber-500/40 text-amber-800 dark:text-amber-200',
+                        'border-accent/40 text-accent-foreground dark:text-accent',
                       )}
                     >
                       {category.name}
                     </Badge>
                     {index < selectedPath.length - 1 && (
-                      <ChevronRight className="h-4 w-4 text-amber-500/60" />
+                      <ChevronRight className="h-4 w-4 text-accent/60" />
                     )}
                   </React.Fragment>
                 ))}
@@ -394,10 +394,10 @@ export function CategorySelection({
 
               {selectedPath[selectedPath.length - 1]?.requiredPlan && (
                 <div className="flex items-center justify-center gap-2 pt-4 text-sm">
-                  <Crown className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <Crown className="h-4 w-4 text-accent-foreground dark:text-accent" />
                   <span className="text-[var(--theme-elevation-700)]">
                     Wymagany plan:
-                    <span className="font-semibold text-amber-700 dark:text-amber-400 ml-1">
+                    <span className="font-semibold text-accent-foreground dark:text-accent ml-1">
                       {(selectedPath[selectedPath.length - 1].requiredPlan as any)?.name}
                     </span>
                   </span>

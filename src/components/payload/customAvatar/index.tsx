@@ -11,7 +11,11 @@ const AdminAvatar = () => {
 
   const typedUser = user as unknown as User
 
-  return <AvatarDropdown user={typedUser} variant="admin" showHomeLink />
+  return (
+    <div className="translate-y-7">
+      <AvatarDropdown user={typedUser} variant="admin" showHomeLink />
+    </div>
+  )
 }
 
 export default AdminAvatar

@@ -24,23 +24,23 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
       {/* Top of Featured Offers */}
       <div className="flex flex-col gap-16 relative">
         {/* Decorative accent bottom center */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-linear-to-r from-transparent via-yellow-400 blur-md to-transparent rounded-full" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-linear-to-r from-transparent via-accent blur-md to-transparent rounded-full" />
         {/* <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-1 bg-linear-to-r from-transparent via-stone-400 blur-md to-transparent rounded-full" /> */}
 
         {/* Decorative scroll indicator */}
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
-          <div className="w-3 h-3 border-b-2 border-r-2 border-yellow-400/60 rotate-45" />
-          <div className="w-2 h-2 border-b-2 border-r-2 border-yellow-400/40 rotate-45" />
+          <div className="w-3 h-3 border-b-2 border-r-2 border-accent/60 rotate-45" />
+          <div className="w-2 h-2 border-b-2 border-r-2 border-accent/40 rotate-45" />
         </div>
 
         {/* Decorative scroll indicator */}
         <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
-          <div className="w-px h-4 bg-linear-to-b from-yellow-400 dark:from-yellow-400/60 to-transparent" />
-          <div className="w-2 h-2 rotate-45 border border-yellow-400/60 mt-1" />
+          <div className="w-px h-4 bg-linear-to-b from-accent dark:from-accent/60 to-transparent" />
+          <div className="w-2 h-2 rotate-45 border border-accent/60 mt-1" />
         </div>
 
         {/* Line */}
-        <div className="bg-linear-to-r from-yellow-500 dark:from-yellow-400/50 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
+        <div className="bg-linear-to-r from-accent dark:from-accent/50 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
 
         {/* Header of Featured Offers */}
         <div className="text-center flex flex-col items-center gap-6">
@@ -52,11 +52,11 @@ export const FeaturedOffersClient: React.FC<FeaturedOffersClientProps> = ({
         </div>
 
         {/* Line */}
-        <div className="bg-linear-to-l from-yellow-500 dark:from-yellow-400/40 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
+        <div className="bg-linear-to-l from-accent dark:from-accent/40 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
 
         {/* Corner accents */}
-        <div className="absolute top-0 right-0 w-8 h-8 border-r border-t border-yellow-400/20" />
-        <div className="absolute bottom-0 left-0 w-8 h-8 border-l border-b border-yellow-400/20" />
+        <div className="absolute top-0 right-0 w-8 h-8 border-r border-t border-accent/20" />
+        <div className="absolute bottom-0 left-0 w-8 h-8 border-l border-b border-accent/20" />
       </div>
 
       {/* Carousel of Featured Offers */}

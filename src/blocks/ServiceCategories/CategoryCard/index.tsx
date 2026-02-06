@@ -8,7 +8,7 @@ import { ImageIcon } from 'lucide-react'
 
 interface CategoryCardProps {
   category: ServiceCategory
-  onClick: () => void
+  onClick: (color: string) => void
   index: number
   total: number
 }
@@ -47,7 +47,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
 
   return (
     <button
-      onClick={onClick}
+      onClick={() => onClick(borderColor)}
       style={
         {
           '--card-border-color': borderColor,

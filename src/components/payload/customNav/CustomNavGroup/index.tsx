@@ -4,8 +4,6 @@ import { Collapsible } from '@payloadcms/ui'
 import React, { FC, ReactNode, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 
-import './index.scss'
-
 type Props = {
   children: ReactNode
   isOpen: boolean
@@ -29,41 +27,39 @@ export const CustomNavGroup: FC<Props> = ({ children, isOpen = true, label, onTo
   return (
     <Collapsible
       className={cn(
-        'nav-group',
-        'relative',
-        // Subtle separator
-        'before:absolute before:bottom-0 before:left-2 before:right-2 before:h-[1px]',
-        'before:bg-gradient-to-r before:from-transparent before:via-amber-500/10 before:to-transparent rounded-2xl',
-        'last:before:hidden',
+        'nav-group mb-2 relative',
+        '[&_.collapsible__toggle-wrap]:p-1',
+        '[&_.collapsible__toggle-wrap_span]:hidden',
+        '[&_.collapsible__toggle]:text-accent/60 [&_.collapsible__toggle]:transition-colors',
+        'hover:[&_.collapsible__toggle]:text-accent',
       )}
       isCollapsed={collapsed}
       collapsibleStyle="default"
       header={
-        <div className="nav-group__header group flex items-center gap-2 cursor-pointer py-1">
+        <div className="group flex items-center gap-1.5 cursor-pointer px-1 py-0.5 rounded-md transition-colors hover:bg-accent/5">
           {/* Decorative dot */}
           <div
             className={cn(
-              'w-1.5 h-1.5 rounded-full transition-all duration-300',
-              collapsed ? 'bg-amber-500/30' : 'bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]',
+              'w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-300',
+              collapsed
+                ? 'bg-accent/30'
+                : 'bg-accent shadow-[0_0_6px_color-mix(in_srgb,var(--accent)_50%,transparent)]',
             )}
           />
-          <div
+          <span
             className={cn(
-              'nav-group__label',
-              'text-xl tracking-wide uppercase',
-              // 'transition-colors duration-200',
-              collapsed ? 'text-gray-500 dark:text-gray-500' : 'text-amber-600 dark:text-amber-400',
-              'group-hover:text-amber-500 dark:group-hover:text-amber-400',
+              'text-xs font-semibold tracking-wider uppercase truncate',
+              collapsed ? 'text-muted-foreground' : 'text-accent-foreground dark:text-accent',
+              'group-hover:text-accent dark:group-hover:text-accent',
             )}
-            style={{ fontFamily: 'Bebas Neue' }}
           >
             {label}
-          </div>
+          </span>
         </div>
       }
       onToggle={handleToggle}
     >
-      <div className="nav-group__content pl-2 pt-1 pb-3">{children}</div>
+      <div className="pl-1 pt-0.5 pb-1">{children}</div>
     </Collapsible>
   )
 }

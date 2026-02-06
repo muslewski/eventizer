@@ -81,7 +81,7 @@ export const StripeProductDetailsClient = () => {
     return (
       <div className="rounded-lg border border-[var(--theme-elevation-150)] bg-[var(--theme-elevation-50)] p-8">
         <div className="flex items-center justify-center gap-3">
-          <Loader2 className="h-6 w-6 animate-spin text-amber-500" />
+          <Loader2 className="h-6 w-6 animate-spin text-accent" />
           <span className="text-[var(--theme-elevation-600)]">
             Loading Stripe product details...
           </span>
@@ -120,7 +120,7 @@ export const StripeProductDetailsClient = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-accent to-accent-foreground">
             <Package className="h-4 w-4 text-white" />
           </div>
           <h3 className="font-semibold text-[var(--theme-text)]">Stripe Product Details</h3>
@@ -196,7 +196,7 @@ export const StripeProductDetailsClient = () => {
         {/* Prices Section */}
         <div className="p-5">
           <div className="flex items-center gap-2 mb-4">
-            <CreditCard className="h-4 w-4 text-amber-500" />
+            <CreditCard className="h-4 w-4 text-accent" />
             <h5 className="font-medium text-[var(--theme-text)]">Prices ({prices.length})</h5>
           </div>
 
@@ -217,7 +217,7 @@ export const StripeProductDetailsClient = () => {
         {Object.keys(product.metadata).length > 0 && (
           <div className="border-t border-[var(--theme-elevation-100)] p-5">
             <div className="flex items-center gap-2 mb-3">
-              <Tag className="h-4 w-4 text-amber-500" />
+              <Tag className="h-4 w-4 text-accent" />
               <h5 className="font-medium text-[var(--theme-text)]">Metadata</h5>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -264,12 +264,12 @@ function PriceCard({ price, isDefault }: PriceCardProps) {
     <div
       className={`relative rounded-lg border p-4 transition-all ${
         isDefault
-          ? 'border-amber-300 bg-amber-50/50 dark:border-amber-600/50 dark:bg-amber-950/20'
+          ? 'border-accent/60 bg-accent/5 dark:border-accent/50 dark:bg-accent/5'
           : 'border-[var(--theme-elevation-150)] bg-[var(--theme-elevation-0)] hover:border-[var(--theme-elevation-200)]'
       }`}
     >
       {isDefault && (
-        <span className="absolute -top-2 right-3 inline-flex items-center gap-1 rounded-full bg-amber-500 px-2 py-0.5 text-xs font-medium text-white">
+        <span className="absolute -top-2 right-3 inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-white">
           Default
         </span>
       )}

@@ -269,8 +269,8 @@ export function ServiceProviderOnboardingClient({
         )
       case 'downgrade':
         return (
-          <Alert className="border-amber-500/50 bg-amber-500/10">
-            <AlertTriangle className="h-4 w-4 text-amber-600" />
+          <Alert className="border-accent/50 bg-accent/10">
+            <AlertTriangle className="h-4 w-4 text-accent-foreground" />
             <AlertTitle>Obniżenie planu</AlertTitle>
             <AlertDescription>
               Przechodzisz na niższy plan. Zmiana wejdzie w życie na koniec bieżącego okresu
@@ -363,7 +363,7 @@ export function ServiceProviderOnboardingClient({
             size="lg"
             className={cn(
               changeType === 'upgrade' && 'bg-blue-600 hover:bg-blue-700',
-              changeType === 'downgrade' && 'bg-amber-600 hover:bg-amber-700',
+              changeType === 'downgrade' && 'bg-accent hover:bg-accent-foreground',
             )}
           >
             {getSubmitButtonText()}

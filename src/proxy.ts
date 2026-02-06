@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server'
 const LOCALES = ['pl', 'en']
 const DEFAULT_LOCALE = 'pl'
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const search = request.nextUrl.search // Preserve query params
 

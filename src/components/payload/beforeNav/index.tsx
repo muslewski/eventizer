@@ -8,6 +8,8 @@ import { cn } from '@/lib/utils'
 import { useRef, useEffect } from 'react'
 
 import './index.scss'
+import { Button } from '@/components/ui/button'
+import { StarIcon } from 'lucide-react'
 
 const baseClass = 'before-nav'
 
@@ -28,10 +30,10 @@ const CustomBeforeNav: React.FC = () => {
       ref={containerRef}
       className={cn(
         baseClass,
-        'relative w-full px-4 py-5 mb-6',
+        'relative w-full px-4 pb-5 flex flex-col gap-4',
         // Animated bottom border with shimmer
-        'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[1px]',
-        'after:bg-gradient-to-r after:from-transparent after:via-amber-500/40 after:to-transparent',
+        // 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[1px]',
+        // 'after:bg-gradient-to-r after:from-transparent after:via-accent/40 after:to-transparent',
       )}
     >
       <Link
@@ -43,15 +45,6 @@ const CustomBeforeNav: React.FC = () => {
           'hover:translate-x-0.5',
         )}
       >
-        {/* Subtle glow effect on hover */}
-        <div
-          className={cn(
-            'absolute -inset-3 rounded-lg opacity-0 transition-opacity duration-300',
-            'bg-gradient-to-r from-amber-500/5 via-amber-500/10 to-amber-500/5',
-            'group-hover:opacity-100 blur-sm',
-          )}
-        />
-
         {/* Logo wrapper with glow animation */}
         <div className={cn(`${baseClass}__logo-wrapper`, 'relative rounded-lg')}>
           <Image
@@ -76,12 +69,18 @@ const CustomBeforeNav: React.FC = () => {
         <div
           className={cn(
             'absolute -bottom-1 left-0 h-[2px] w-0',
-            'bg-gradient-to-r from-amber-500/60 to-amber-400/40',
+            'bg-gradient-to-r from-accent/60 to-accent/40',
             'transition-all duration-300 ease-out',
             'group-hover:w-full',
           )}
         />
       </Link>
+      <Button variant="golden" asChild className="no-underline">
+        <Link href="/ogloszenia#oferty" prefetch>
+          <StarIcon className="size-4" />
+          Przejdź do ogłoszeń
+        </Link>
+      </Button>
     </div>
   )
 }

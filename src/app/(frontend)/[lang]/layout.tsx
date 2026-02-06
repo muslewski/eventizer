@@ -55,7 +55,7 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/my-favicon/apple-icon.png" />
         <link rel="manifest" href="/my-favicon/manifest.json" />
       </head>
-      <body className="bg-background min-h-screen h-full">
+      <body className="bg-background min-h-screen h-full" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <RootAuthProvider>
             <main className="w-full">

@@ -8,6 +8,8 @@ const nextConfig = {
     },
   },
 
+  serverExternalPackages: ['graphql'],
+
   images: {
     remotePatterns: [
       {
@@ -18,20 +20,15 @@ const nextConfig = {
     ],
   },
 
-  // Only use webpack config when not using Turbopack
-  // Turbopack doesn't need extensionAlias
-  ...(process.env.TURBOPACK
-    ? {}
-    : {
-        webpack: (webpackConfig) => {
-          webpackConfig.resolve.extensionAlias = {
-            '.cjs': ['.cts', '.cjs'],
-            '.js': ['.ts', '.tsx', '.js', '.jsx'],
-            '.mjs': ['.mts', '.mjs'],
-          }
-          return webpackConfig
-        },
-      }),
+  // Webpack config only used when running with --webpack flag
+  webpack: (webpackConfig) => {
+    webpackConfig.resolve.extensionAlias = {
+      '.cjs': ['.cts', '.cjs'],
+      '.js': ['.ts', '.tsx', '.js', '.jsx'],
+      '.mjs': ['.mts', '.mjs'],
+    }
+    return webpackConfig
+  },
 }
 
-export default withPayload(nextConfig, { devBundleServerPackages: false })
+export default withPayload(nextConfig, { devBundleServerPackages: true })

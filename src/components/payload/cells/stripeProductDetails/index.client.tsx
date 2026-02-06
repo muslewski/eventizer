@@ -58,7 +58,7 @@ export const StripeProductDetailsCellClient = ({ rowData }: StripeProductDetails
   if (loading) {
     return (
       <div className="flex items-center gap-1.5">
-        <Loader2 className="h-4 w-4 animate-spin text-amber-500" />
+        <Loader2 className="h-4 w-4 animate-spin text-accent" />
       </div>
     )
   }
@@ -110,7 +110,7 @@ export const StripeProductDetailsCellClient = ({ rowData }: StripeProductDetails
 
   return (
     <div className="flex items-baseline gap-1.5">
-      <span className="text-base font-bold text-amber-600 dark:text-amber-400">
+      <span className="text-base font-bold text-accent-foreground dark:text-accent">
         {formatPrice(displayPrice.unitAmount, displayPrice.currency)}
       </span>
       {displayPrice.recurring && (
