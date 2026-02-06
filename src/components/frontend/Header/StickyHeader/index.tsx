@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 
 import HeaderLogo from '@/components/frontend/Header/Logo'
 import { Button } from '@/components/ui/button'
@@ -15,26 +17,42 @@ import { LanguageSwitcher } from '@/components/frontend/LanguageSwitcher'
 import { ReduceMotionToggle } from '@/components/frontend/Header/ReduceMotionToggle'
 
 export default function StickyHeader() {
-  const visible = useScrollPast(0.75)
+  const pastThreshold = useScrollPast(0.75)
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
   const { user } = useRootAuth()
+
+  // Hide on scroll down, show on scroll up (like BioFloor nav)
+  const { scrollY } = useScroll()
+  const [hidden, setHidden] = useState(false)
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    const previous = scrollY.getPrevious()
+    if (previous !== undefined && latest > previous && latest > 50) {
+      setHidden(true)
+    } else {
+      setHidden(false)
+    }
+  })
 
   // Don't render on /ogloszenia
   if (normalizedPathname === '/ogloszenia') return null
 
   return (
-    <header
+    <motion.header
       className={cn(
         'fixed z-50 top-4 left-1/2 -translate-x-1/2',
         'h-12 w-[min(96vw,64rem)] rounded-full',
         'border border-white/15 bg-base-900/40 backdrop-blur-xl shadow-lg shadow-black/20',
         'flex items-center justify-between px-5 gap-6',
-        'transition-all duration-500 ease-out',
-        visible
-          ? 'opacity-100 translate-y-0 pointer-events-auto'
-          : 'opacity-0 -translate-y-4 pointer-events-none',
+        !pastThreshold && 'pointer-events-none',
       )}
+      variants={{
+        visible: { opacity: 1, y: 0 },
+        hidden: { opacity: 0, y: '-200%' },
+      }}
+      animate={pastThreshold && !hidden ? 'visible' : 'hidden'}
+      transition={{ duration: 0.5, ease: 'easeInOut' }}
     >
       {/* Logo – compact */}
       <HeaderLogo />
@@ -83,6 +101,6 @@ export default function StickyHeader() {
           </>
         )}
       </div>
-    </header>
+    </motion.header>
   )
 }
