@@ -4,11 +4,8 @@ import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/Theme'
 import { Bebas_Neue, Montserrat } from 'next/font/google'
 import Header from '@/components/frontend/Header/index.client'
-import type { Config } from '@/payload-types'
 import Footer from '@/components/frontend/Footer'
 import { RootAuthProvider } from '@/providers/RootAuthProvider'
-
-type Locale = Config['locale']
 
 export const metadata = {
   description: 'Eventizer - Event Management Platform',
@@ -38,7 +35,7 @@ export default async function RootLayout({
   params,
 }: Readonly<{
   children: React.ReactNode
-  params: Promise<{ lang: Locale }>
+  params: Promise<{ lang: string }>
 }>) {
   const { lang } = await params
 

@@ -106,7 +106,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
           className="max-h-[85vh]"
           style={selectedColor ? { borderTop: `3px solid ${selectedColor}` } : undefined}
         >
-          <div className="mx-auto w-full max-w-4xl overflow-y-auto">
+          <div className="mx-auto w-full max-w-3xl overflow-y-auto">
             <DrawerHeader className="relative">
               <DrawerClose asChild>
                 <Button
@@ -141,7 +141,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                   <SpanLikeH3 align="center" title={selectedCategory?.name || ''} />
                 </DrawerTitle>
                 {selectedCategory?.description && (
-                  <DrawerDescription className="text-center max-w-md">
+                  <DrawerDescription className="text-center max-w-full">
                     {selectedCategory.description}
                   </DrawerDescription>
                 )}
