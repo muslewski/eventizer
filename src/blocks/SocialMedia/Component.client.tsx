@@ -3,7 +3,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { TitleH2 } from '@/components/frontend/Content/TitleH2'
+import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { FaInstagram, FaFacebook, FaTiktok, FaXTwitter } from 'react-icons/fa6'
 import Link from 'next/link'
 import type { SocialMediaBlock as SocialMediaProps } from '@/payload-types'
@@ -114,17 +114,6 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
 
   return (
     <section className={cn('relative w-full', className)}>
-      {/* Background effects */}
-      <div className="absolute inset-0 pointer-events-none">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5, ease: 'easeOut' }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-primary/5 via-transparent to-accent/5 rounded-full blur-3xl"
-        />
-      </div>
-
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -133,23 +122,15 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
         className="relative z-10 mx-auto"
       >
         {/* Header */}
-        <div className="flex flex-col gap-16 relative mb-16">
-          {/* Line */}
-          <div className="bg-linear-to-r from-accent dark:from-accent/50 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
-
-          {/* Header Content */}
-          <motion.div variants={headerVariants} className="text-center flex flex-col items-center">
-            <TitleH2 align="center" title={heading} />
-            <p className="max-w-3xl">{description}</p>
-          </motion.div>
-
-          {/* Line */}
-          <div className="bg-linear-to-l from-accent dark:from-accent/40 via-transparent to-transparent h-px w-[calc(100%+4rem)] -ml-8" />
-
-          {/* Corner accents */}
-          <div className="absolute top-0 right-0 w-8 h-8 border-r border-t border-pink-400/20" />
-          <div className="absolute bottom-0 left-0 w-8 h-8 border-l border-b border-pink-400/20" />
-        </div>
+        <BlockHeader
+          heading={heading}
+          description={description}
+          lines
+          // planet
+          spotlight
+          cornerAccentColor="pink-400"
+          className="mb-16"
+        />
 
         {/* Social Cards Grid */}
         <motion.div

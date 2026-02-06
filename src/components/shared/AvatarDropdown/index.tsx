@@ -27,7 +27,6 @@ import {
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import { getInitials, hasRole } from './utils'
 import { Button } from '@/components/ui/button'
-import type { ReactNode } from 'react'
 
 export interface AvatarDropdownProps {
   user: User
@@ -37,43 +36,6 @@ export interface AvatarDropdownProps {
   showHomeLink?: boolean
   /** Custom logout handler - if not provided, renders a link to /app/sign-out */
   onLogout?: () => void
-}
-
-/**
- * A menu item that either uses Next.js Link (frontend) or
- * window.location.href (admin) to avoid Payload router conflicts.
- */
-function MenuLink({
-  href,
-  hardNav,
-  className,
-  children,
-}: {
-  href: string
-  hardNav: boolean
-  className?: string
-  children: ReactNode
-}) {
-  if (hardNav) {
-    return (
-      <DropdownMenuItem
-        className={className}
-        onSelect={() => {
-          window.location.href = href
-        }}
-      >
-        {children}
-      </DropdownMenuItem>
-    )
-  }
-
-  return (
-    <DropdownMenuItem asChild>
-      <Link href={href} className={className}>
-        {children}
-      </Link>
-    </DropdownMenuItem>
-  )
 }
 
 export function AvatarDropdown({
@@ -94,26 +56,14 @@ export function AvatarDropdown({
   }
 
   const isAdminVariant = variant === 'admin'
-  // In admin panel, use hard navigation to avoid Payload router conflicts
-  const hardNav = isAdminVariant
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={`rounded-full! overflow-hidden ${isAdminVariant ? 'focus:ring-primary/50' : 'focus:ring-white/50'}`}
-        >
+        <Button variant="outline" size="icon" className="rounded-full! overflow-hidden">
           <Avatar className="h-9 w-9 cursor-pointer">
             <AvatarImage src={imageUrl ?? ''} />
-            <AvatarFallback
-              className={`text-sm ${
-                isAdminVariant ? 'bg-primary/20 text-primary' : 'bg-white/20 text-white'
-              }`}
-            >
-              {getInitials(user)}
-            </AvatarFallback>
+            <AvatarFallback className="bg-base-900/40">{getInitials(user)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -128,72 +78,82 @@ export function AvatarDropdown({
 
         <DropdownMenuGroup>
           {showHomeLink && (
-            <MenuLink href="/" hardNav={hardNav} className="cursor-pointer">
-              <Home className="mr-2 h-4 w-4" />
-              Strona główna
-            </MenuLink>
+            <DropdownMenuItem asChild>
+              <Link href="/" className="cursor-pointer">
+                <Home className="mr-2 h-4 w-4" />
+                Strona główna
+              </Link>
+            </DropdownMenuItem>
           )}
-          <MenuLink href="/app" hardNav={hardNav} className="cursor-pointer">
-            <LayoutDashboard className="mr-2 h-4 w-4" />
-            Panel główny
-          </MenuLink>
-          <MenuLink href="/ogloszenia#oferty" hardNav={hardNav} className="cursor-pointer">
-            <Megaphone className="mr-2 h-4 w-4" />
-            Lista ogłoszeń
-          </MenuLink>
+          <DropdownMenuItem asChild>
+            <Link href="/app" className="cursor-pointer">
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              Panel główny
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/ogloszenia#oferty" className="cursor-pointer">
+              <Megaphone className="mr-2 h-4 w-4" />
+              Lista ogłoszeń
+            </Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
           {!isServiceProvider && !isModerator && !isAdmin && (
-            <MenuLink
-              href="/app/onboarding/service-provider"
-              hardNav={hardNav}
-              className="cursor-pointer"
-            >
-              <Briefcase className="mr-2 h-4 w-4" />
-              Zostań usługodawcą
-            </MenuLink>
+            <DropdownMenuItem asChild>
+              <Link href="/app/onboarding/service-provider" className="cursor-pointer">
+                <Briefcase className="mr-2 h-4 w-4" />
+                Zostań usługodawcą
+              </Link>
+            </DropdownMenuItem>
           )}
 
           {isServiceProvider && (
-            <MenuLink href="/app/collections/offers" hardNav={hardNav} className="cursor-pointer">
-              <FileText className="mr-2 h-4 w-4" />
-              Zarządzaj ofertami
-            </MenuLink>
+            <DropdownMenuItem asChild>
+              <Link href="/app/collections/offers" className="cursor-pointer">
+                <FileText className="mr-2 h-4 w-4" />
+                Zarządzaj ofertami
+              </Link>
+            </DropdownMenuItem>
           )}
 
           {(isModerator || isAdmin) && (
-            <MenuLink href="/app/collections/users" hardNav={hardNav} className="cursor-pointer">
-              <Users className="mr-2 h-4 w-4" />
-              Zarządzaj użytkownikami
-            </MenuLink>
+            <DropdownMenuItem asChild>
+              <Link href="/app/collections/users" className="cursor-pointer">
+                <Users className="mr-2 h-4 w-4" />
+                Zarządzaj użytkownikami
+              </Link>
+            </DropdownMenuItem>
           )}
 
           {isAdmin && (
-            <MenuLink href="/app/collections/pages" hardNav={hardNav} className="cursor-pointer">
-              <FileEdit className="mr-2 h-4 w-4" />
-              Zarządzaj stronami
-            </MenuLink>
+            <DropdownMenuItem asChild>
+              <Link href="/app/collections/pages" className="cursor-pointer">
+                <FileEdit className="mr-2 h-4 w-4" />
+                Zarządzaj stronami
+              </Link>
+            </DropdownMenuItem>
           )}
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <MenuLink href="/app/account" hardNav={hardNav} className="cursor-pointer">
-            <Settings className="mr-2 h-4 w-4" />
-            Zarządzaj kontem
-          </MenuLink>
-          <MenuLink
-            href="/app/collections/help-tickets"
-            hardNav={hardNav}
-            className="cursor-pointer"
-          >
-            <HelpCircle className="mr-2 h-4 w-4" />
-            Pomoc
-          </MenuLink>
+          <DropdownMenuItem asChild>
+            <Link href="/app/account" className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              Zarządzaj kontem
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/app/collections/help-tickets" className="cursor-pointer">
+              <HelpCircle className="mr-2 h-4 w-4" />
+              Pomoc
+            </Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
@@ -207,14 +167,15 @@ export function AvatarDropdown({
             Wyloguj się
           </DropdownMenuItem>
         ) : (
-          <MenuLink
-            href="/app/sign-out"
-            hardNav={hardNav}
-            className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Wyloguj się
-          </MenuLink>
+          <DropdownMenuItem asChild>
+            <Link
+              href="/app/sign-out"
+              className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Wyloguj się
+            </Link>
+          </DropdownMenuItem>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

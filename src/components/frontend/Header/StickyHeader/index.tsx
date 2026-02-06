@@ -15,12 +15,15 @@ import { HeaderAvatar } from '@/components/frontend/Header/Avatar'
 import { ModeToggle } from '@/components/providers/Theme/ThemeSwitcher'
 import { LanguageSwitcher } from '@/components/frontend/LanguageSwitcher'
 import { ReduceMotionToggle } from '@/components/frontend/Header/ReduceMotionToggle'
+import AnimatedMenuIcon from '@/components/frontend/Header/MobileHeader/animatedMenuIcon'
+import { useMobileMenu } from '@/components/frontend/Header/MobileMenuContext'
 
 export default function StickyHeader() {
   const pastThreshold = useScrollPast(0.75)
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
   const { user } = useRootAuth()
+  const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useMobileMenu()
 
   // Hide on scroll down, show on scroll up (like BioFloor nav)
   const { scrollY } = useScroll()
@@ -77,29 +80,42 @@ export default function StickyHeader() {
       </nav>
 
       {/* Settings + CTA */}
-      <div className="flex items-center gap-12">
-        <div className="hidden sm:flex items-center gap-3">
-          <ModeToggle variant="ghost" />
-          <LanguageSwitcher variant="ghost" />
-          <ReduceMotionToggle variant="ghost" />
+      <div className="flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
+          <ModeToggle variant="ghost" className="text-white" />
+          <LanguageSwitcher variant="link" className="text-white" />
+          <ReduceMotionToggle variant="ghost" className="text-white" />
         </div>
 
+        {/* Desktop: avatar or sign-in */}
         {user ? (
           <HeaderAvatar />
         ) : (
-          <>
-            <Button variant="golden" size="sm" asChild className="hidden sm:inline-flex">
+          <div className="hidden xl:flex items-center gap-2">
+            <Button variant="golden" asChild>
               <Link href="/auth/sign-in/service-provider" prefetch>
                 Panel usługodawcy
               </Link>
             </Button>
-            <Button variant="blend" size="sm" asChild>
+
+            <Button variant="blend" asChild>
               <Link href="/auth/sign-in" prefetch>
                 Zaloguj się
               </Link>
             </Button>
-          </>
+          </div>
         )}
+
+        {/* Mobile/Tablet: hamburger */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleMobileMenu}
+          className="xl:hidden text-white/80 hover:text-white"
+          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+        >
+          <AnimatedMenuIcon isOpen={isMobileMenuOpen} />
+        </Button>
       </div>
     </motion.header>
   )

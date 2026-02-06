@@ -14,6 +14,8 @@ import { useRootAuth } from '@/providers/RootAuthProvider'
 import { HeaderAvatar } from '@/components/frontend/Header/Avatar'
 import StickyHeader from '@/components/frontend/Header/StickyHeader'
 import { navLinks, removeLocalePrefix } from '@/components/frontend/Header/shared'
+import { MobileMenuProvider } from '@/components/frontend/Header/MobileMenuContext'
+import FullScreenMenu from '@/components/frontend/Header/FullScreenMenu'
 
 export default function HeaderClient() {
   const pathname = usePathname()
@@ -22,7 +24,7 @@ export default function HeaderClient() {
   const { user } = useRootAuth()
 
   return (
-    <>
+    <MobileMenuProvider>
       {/* Desktop Header */}
       <header className="rounded-t-2xl h-16 relative z-20 top-8 w-full border-b border-white/20 bg-base-900/20 backdrop-blur-md hidden xl:flex justify-between items-center px-8 gap-8">
         {/* Eventizer Logo */}
@@ -89,10 +91,13 @@ export default function HeaderClient() {
       </header>
 
       {/* Mobile Header */}
-      <MobileHeader navLinks={navLinks} normalizedPathname={normalizedPathname} />
+      <MobileHeader />
 
       {/* Sticky Header – appears after scrolling 75vh */}
       <StickyHeader />
-    </>
+
+      {/* Full-screen menu overlay (shared by mobile header & sticky header) */}
+      <FullScreenMenu normalizedPathname={normalizedPathname} />
+    </MobileMenuProvider>
   )
 }

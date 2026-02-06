@@ -170,16 +170,34 @@ table {
 
 .localizer {
   right: 60px;
-  top: 130px;
+  top: 230px;
   position: absolute;
   z-index: 1000;
 }
 
+/* Hide localizer by default for service-provider and client roles (existing guardrail) */
 #admin-layout[data-user-role='service-provider'] .localizer,
 #admin-layout[data-user-role='client'] .localizer {
   display: none;
 }
 
+/* For admin/moderator roles: hide localizer everywhere EXCEPT on page item routes */
+#admin-layout:not([data-user-role='service-provider']):not([data-user-role='client']) .localizer {
+  display: none;
+}
+
+#admin-layout:not([data-user-role='service-provider']):not(
+    [data-user-role='client']
+  )[data-page-context='page-item']
+  .localizer {
+  display: block;
+}
+
+/* Disable payloadcms default avatar */
+.app-header__account {
+  display: none;
+  pointer-events: none;
+}
 /* ------------------------------------------ */
 
 @layer base {

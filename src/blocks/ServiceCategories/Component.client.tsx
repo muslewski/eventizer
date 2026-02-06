@@ -1,7 +1,7 @@
 'use client'
 
 import { ServiceCategory, Media } from '@/payload-types'
-import { TitleH2 } from '@/components/frontend/Content/TitleH2'
+import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { CategoryCard } from './CategoryCard'
 import { useState } from 'react'
 import {
@@ -78,12 +78,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
         {/* Header Section */}
         <div className="flex flex-col gap-16 relative px-4 sm:px-8">
           {/* Header content */}
-          <div className="text-center flex flex-col items-center gap-6">
-            <div className="flex flex-col items-center">
-              <TitleH2 align="center" title={heading} />
-              <p className="text-muted-foreground max-w-2xl">{description}</p>
-            </div>
-          </div>
+          <BlockHeader heading={heading} description={description} spotlight />
         </div>
 
         {/* Categories Grid */}

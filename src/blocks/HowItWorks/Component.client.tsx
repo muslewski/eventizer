@@ -1,7 +1,7 @@
 'use client'
 
 import HowItWorksCard from '@/blocks/HowItWorks/HowItWorksCard'
-import { TitleH2 } from '@/components/frontend/Content/TitleH2'
+import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { type HowItWorksBlock as HowItWorksProps } from '@/payload-types'
@@ -77,10 +77,7 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
 
   return (
     <div className={cn('flex flex-col items-center gap-8', className)}>
-      <div className="flex flex-col items-center text-center">
-        <TitleH2 align="center" title={heading} />
-        <p className="max-w-3xl">{description}</p>
-      </div>
+      <BlockHeader heading={heading} description={description} />
 
       {/* Display switch button */}
       <div className="w-full max-w-xl py-2 flex">
@@ -103,7 +100,7 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
       </div>
 
       {/* Display content based on selection */}
-      <div className="w-full px-8 flex items-center justify-center relative">
+      <div className="w-full px-8 mt-12 flex items-center justify-center relative">
         {/* Background image */}
         <div className="top-0 bottom-0 w-[calc(100%+80px)] h-full -left-10 -right-10 absolute ">
           <Image

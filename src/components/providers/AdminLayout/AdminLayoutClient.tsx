@@ -10,6 +10,8 @@ const PATH_TO_ACCOUNT = '/app/account'
 const PATH_TO_SIGN_IN = '/auth/sign-in'
 const PATH_REDIRECT_TO_SIGN_IN = '/app/redirect-to-sign-in'
 
+const PATH_PAGES_COLLECTION_ITEM = '/app/collections/pages/'
+
 export interface AdminLayoutClientProps {
   children: React.ReactNode
   userSubscriptionData: UserSubscriptionData
@@ -23,15 +25,21 @@ export function AdminLayoutClient({ children, userSubscriptionData }: AdminLayou
 
   const { userId, role, subscriptionStatus } = userSubscriptionData
 
-  // Set data-user-role on body for CSS targeting
-  // useEffect(() => {
-  //   if (role) {
-  //     document.body.setAttribute('data-user-role', role)
-  //   }
-  //   return () => {
-  //     document.body.removeAttribute('data-user-role')
-  //   }
-  // }, [role])
+  // Set data-page-context on the admin layout for CSS targeting
+  useEffect(() => {
+    const adminLayout = document.getElementById('admin-layout')
+    if (!adminLayout) return
+
+    // Check if we're on a specific page item (e.g., /app/collections/pages/123)
+    const isPageItem =
+      pathname.startsWith(PATH_PAGES_COLLECTION_ITEM) && pathname !== PATH_PAGES_COLLECTION_ITEM
+
+    if (isPageItem) {
+      adminLayout.setAttribute('data-page-context', 'page-item')
+    } else {
+      adminLayout.removeAttribute('data-page-context')
+    }
+  }, [pathname])
 
   useEffect(() => {
     // If on redirect-to-sign-in page, just go to sign-in immediately

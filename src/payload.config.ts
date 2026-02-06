@@ -74,7 +74,7 @@ export default buildConfig({
     },
 
     components: {
-      // header: ['@/components/payload/customHeader'],
+      header: ['@/components/payload/customHeader'],
       views: {
         'onboarding-service-provider': {
           Component: '@/components/payload/views/serviceProviderOnboarding',
@@ -95,9 +95,9 @@ export default buildConfig({
       },
       Nav: '@/components/payload/customNav',
     },
-    avatar: {
-      Component: '@/components/payload/customAvatar',
-    },
+    // avatar: {
+    //   Component: '@/components/payload/customAvatar',
+    // },
     user: Users.slug,
     importMap: {
       baseDir: path.resolve(dirname),
