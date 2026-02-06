@@ -30,7 +30,7 @@ const CustomBeforeNav: React.FC = () => {
       ref={containerRef}
       className={cn(
         baseClass,
-        'relative w-full px-4 pb-5 flex flex-col gap-4',
+        'relative w-full -mt-12 px-4 pb-5 flex flex-col gap-4',
         // Animated bottom border with shimmer
         // 'after:absolute after:bottom-0 after:left-4 after:right-4 after:h-[1px]',
         // 'after:bg-gradient-to-r after:from-transparent after:via-accent/40 after:to-transparent',

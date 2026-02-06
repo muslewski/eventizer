@@ -63,7 +63,7 @@ export default async function Page({ params }: Args) {
   return (
     <article>
       <RenderHero {...hero} />
-      <div className="flex flex-col gap-24 sm:gap-32 xl:gap-36">
+      <div className="flex flex-col gap-12 sm:gap-16 xl:gap-16 2xl:gap-28">
         <RenderBlocks blocks={layout} />
       </div>
     </article>

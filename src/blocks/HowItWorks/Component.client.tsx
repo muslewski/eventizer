@@ -10,6 +10,7 @@ import { useState } from 'react'
 import backgroundImage from '@/assets/howItWorks/how-it-works-background-compressed.png'
 import { AnimatePresence, motion } from 'framer-motion'
 import { type Transition } from 'framer-motion'
+import { User, Briefcase } from 'lucide-react'
 
 interface HowItWorksClientProps extends HowItWorksProps {
   className?: string
@@ -88,6 +89,7 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
           onClick={() => setIsSelectedClient(true)}
           className="w-1/2 rounded-l-full rounded-r-none"
         >
+          <User className="h-4 w-4 mr-2" />
           Klient
         </Button>
         <Button
@@ -95,6 +97,7 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
           onClick={() => setIsSelectedClient(false)}
           className="w-1/2 rounded-l-none rounded-r-full"
         >
+          <Briefcase className="h-4 w-4 mr-2" />
           Usługodawca
         </Button>
       </div>

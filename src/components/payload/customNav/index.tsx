@@ -102,8 +102,8 @@ const Nav: FC<ServerProps> = async (props) => {
             user,
           },
         })}
-        <div className="shrink-0 mt-auto pt-2 flex flex-wrap gap-3 w-full">
-          <HomeButton />
+        <div className="shrink-0 mt-auto pt-6 flex flex-wrap gap-3 w-full">
+          {/* <HomeButton /> */}
           <CustomLogoutButton />
         </div>
       </nav>

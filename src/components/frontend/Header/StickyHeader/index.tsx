@@ -40,7 +40,7 @@ export default function StickyHeader() {
       <HeaderLogo />
 
       {/* Nav links – desktop only */}
-      <nav className="hidden xl:flex items-center gap-6">
+      <nav className="hidden md:flex items-center gap-6">
         {navLinks.map((link) => (
           <Button
             key={link.href}
