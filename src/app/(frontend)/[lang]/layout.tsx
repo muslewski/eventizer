@@ -59,9 +59,9 @@ export default async function RootLayout({
               <main className="w-full relative">
                 <Header />
                 <div className=" w-full relative ease-in-out">{children}</div>
-                <Footer />
               </main>
             </div>
+            <Footer />
             <Toaster />
           </RootAuthProvider>
         </ThemeProvider>
