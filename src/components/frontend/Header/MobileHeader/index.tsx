@@ -9,7 +9,7 @@ export default function MobileHeader() {
   const { isOpen, toggle } = useMobileMenu()
 
   return (
-    <header className="rounded-t-2xl h-16 relative z-50 top-4 sm:top-8 transition-[top] duration-900 ease-in-out w-full border-b border-white/20 bg-black/5 backdrop-blur-md flex xl:hidden justify-between items-center px-8 gap-8">
+    <header className="rounded-t-2xl h-16 absolute z-50 top-4 sm:top-8 transition-[top] duration-900 ease-in-out w-full border-b border-white/20 bg-black/5 backdrop-blur-md flex xl:hidden justify-between items-center px-8 gap-8">
       <HeaderLogo />
 
       <Button

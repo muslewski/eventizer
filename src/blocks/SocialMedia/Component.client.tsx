@@ -126,8 +126,11 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
           heading={heading}
           description={description}
           lines
-          // planet
-          spotlight
+          gap
+          planet
+          grid
+          aurora
+          overflowHidden
           cornerAccentColor="pink-400"
           className="mb-16"
         />

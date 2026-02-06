@@ -76,8 +76,8 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
   const activeSteps = isSelectedClient ? client : serviceProvider
 
   return (
-    <div className={cn('flex flex-col items-center gap-8', className)}>
-      <BlockHeader heading={heading} description={description} />
+    <div className={cn('flex flex-col items-center gap-8 w-full', className)}>
+      <BlockHeader heading={heading} description={description} planet />
 
       {/* Display switch button */}
       <div className="w-full max-w-xl py-2 flex">

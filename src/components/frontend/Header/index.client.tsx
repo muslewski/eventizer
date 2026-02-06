@@ -26,7 +26,7 @@ export default function HeaderClient() {
   return (
     <MobileMenuProvider>
       {/* Desktop Header */}
-      <header className="rounded-t-2xl h-16 relative z-20 top-8 w-full border-b border-white/20 bg-base-900/20 backdrop-blur-md hidden xl:flex justify-between items-center px-8 gap-8">
+      <header className="rounded-t-2xl h-16 top-8 absolute z-20  inset-0 w-full border-b border-white/20 bg-base-900/20 backdrop-blur-md hidden xl:flex justify-between items-center px-8 gap-8">
         {/* Eventizer Logo */}
         <HeaderLogo />
 

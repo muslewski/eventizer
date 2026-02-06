@@ -11,8 +11,12 @@ interface BlockHeaderProps {
     variant?: VariantProps<typeof badgeVariants>['variant']
   }
   lines?: boolean
+  gap?: boolean
   planet?: boolean
   spotlight?: boolean
+  grid?: boolean
+  aurora?: boolean
+  overflowHidden?: boolean
   cornerAccentColor?: string // e.g. 'accent', 'pink-400'
   className?: string
   children?: React.ReactNode
@@ -23,8 +27,12 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
   description,
   badge,
   lines = false,
+  gap = false,
   planet = false,
   spotlight = false,
+  grid = false,
+  aurora = false,
+  overflowHidden = false,
   cornerAccentColor = 'accent',
   className,
   children,
@@ -40,20 +48,50 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
     </div>
   )
 
-  const effects = (planet || spotlight) && (
-    <div className="absolute inset-0 pointer-events-none overflow-visible">
+  const effects = (planet || spotlight || grid || aurora) && (
+    <div
+      className={cn('absolute inset-0 pointer-events-none', overflowHidden && 'overflow-hidden')}
+    >
       {planet && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-50 h-50 bg-linear-to-br from-primary/50 via-transparent to-accent/5 rounded-full blur-sm" />
       )}
       {spotlight && (
         <div className="absolute top-1/2 left-2/5 -translate-x-1/2 -translate-y-1/2 w-35 -rotate-45 h-100 bg-linear-to-br from-primary/5 via-accent-foreground/5 to-transparent rounded-full blur-3xl" />
       )}
+      {grid && (
+        <div
+          className="absolute inset-0 opacity-[0.07] dark:opacity-[0.05]"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, var(--color-accent) 1px, transparent 1px), linear-gradient(to bottom, var(--color-accent) 1px, transparent 1px)',
+            backgroundSize: '48px 48px',
+          }}
+        >
+          {/* Fade-out mask so the grid dissolves toward the edges */}
+          <div className="absolute inset-0 bg-linear-to-b from-transparent via-background/60 to-background" />
+        </div>
+      )}
+      {aurora && (
+        <>
+          <div className="absolute -top-12 left-1/4 w-72 h-40 bg-linear-to-r from-primary/20 via-accent/15 to-transparent rounded-full blur-3xl animate-pulse [animation-duration:4s]" />
+          <div className="absolute -bottom-8 right-1/4 w-64 h-36 bg-linear-to-l from-accent/20 via-primary/10 to-transparent rounded-full blur-3xl animate-pulse [animation-duration:4s] [animation-delay:2s]" />
+        </>
+      )}
     </div>
   )
 
-  if (!lines) {
+  if (!lines && !gap) {
     return (
       <div className={cn('relative flex flex-col items-center', className)}>
+        {effects}
+        {content}
+      </div>
+    )
+  }
+
+  if (gap && !lines) {
+    return (
+      <div className={cn('relative flex flex-col items-center py-16', className)}>
         {effects}
         {content}
       </div>

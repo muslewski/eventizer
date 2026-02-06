@@ -18,10 +18,15 @@
     text-size-adjust: 100%;
     /* Better tab sizing */
     tab-size: 4;
+
+    box-sizing: border-box;
   }
 
   body {
     @apply bg-background text-foreground font-montserrat;
+
+    margin: 0;
+    padding: 0;
 
     /* Font smoothing for better text rendering */
     -webkit-font-smoothing: antialiased;
