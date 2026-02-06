@@ -8,37 +8,18 @@ import Link from 'next/link'
 import HeaderLogo from '@/components/frontend/Header/Logo'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
-import type { Config, User } from '@/payload-types'
 import MobileHeader from '@/components/frontend/Header/MobileHeader'
 import { ReduceMotionToggle } from '@/components/frontend/Header/ReduceMotionToggle'
 import { useRootAuth } from '@/providers/RootAuthProvider'
 import { HeaderAvatar } from '@/components/frontend/Header/Avatar'
-
-type Locale = Config['locale']
-
-function removeLocalePrefix(pathname: string): string {
-  const segments = pathname.split('/')
-  // Check if second segment matches locale pattern (2-letter code)
-  // This works because Config['locale'] is a union like 'pl' | 'en'
-  const possibleLocale = segments[1] as Locale
-  // If it's a valid locale (short 2-3 letter segment that's not a route)
-  if (segments.length > 1 && segments[1].length <= 3 && /^[a-z]{2,3}$/.test(segments[1])) {
-    return '/' + segments.slice(2).join('/') || '/'
-  }
-  return pathname
-}
+import StickyHeader from '@/components/frontend/Header/StickyHeader'
+import { navLinks, removeLocalePrefix } from '@/components/frontend/Header/shared'
 
 export default function HeaderClient() {
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
 
-  const { user, status } = useRootAuth()
-
-  const navLinks = [
-    { href: '/ogloszenia', label: 'Ogłoszenia' },
-    { href: '/o-nas', label: 'O nas' },
-    { href: '/kontakt', label: 'Kontakt' },
-  ]
+  const { user } = useRootAuth()
 
   return (
     <>
@@ -109,6 +90,9 @@ export default function HeaderClient() {
 
       {/* Mobile Header */}
       <MobileHeader navLinks={navLinks} normalizedPathname={normalizedPathname} />
+
+      {/* Sticky Header – appears after scrolling 75vh */}
+      <StickyHeader />
     </>
   )
 }

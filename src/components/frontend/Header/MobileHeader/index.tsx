@@ -17,7 +17,7 @@ export default function MobileHeader({
   navLinks,
   normalizedPathname,
 }: {
-  navLinks: { href: string; label: string }[]
+  navLinks: readonly { href: string; label: string }[]
   normalizedPathname: string
 }) {
   const [isOpen, setIsOpen] = useState(false)

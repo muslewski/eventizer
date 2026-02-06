@@ -1,11 +1,11 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button, type ButtonProps } from '@/components/ui/button'
 import { Zap, ZapOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
-export function ReduceMotionToggle() {
+export function ReduceMotionToggle({ variant = 'blend' }: { variant?: ButtonProps['variant'] }) {
   const [reducedMotion, setReducedMotion] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -32,7 +32,7 @@ export function ReduceMotionToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="blend" size="icon" disabled>
+      <Button variant={variant} size="icon" disabled>
         <Zap className="h-[1.2rem] w-[1.2rem]" />
         <span className="sr-only">Toggle reduced motion</span>
       </Button>
@@ -43,7 +43,7 @@ export function ReduceMotionToggle() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button variant="blend" size="icon" onClick={toggleMotion}>
+          <Button variant={variant} size="icon" onClick={toggleMotion}>
             {reducedMotion ? (
               <ZapOff className="h-[1.2rem] w-[1.2rem]" />
             ) : (

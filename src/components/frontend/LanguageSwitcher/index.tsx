@@ -13,9 +13,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { LanguagesIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button, type ButtonProps } from '@/components/ui/button'
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ variant = 'blend' }: { variant?: ButtonProps['variant'] }) {
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
 
@@ -37,7 +37,7 @@ export function LanguageSwitcher() {
         <Tooltip>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
-              <Button variant="blend" size="icon" disabled={isPending}>
+              <Button variant={variant} size="icon" disabled={isPending}>
                 <LanguagesIcon className="h-[1.2rem] w-[1.2rem]" />
                 <span className="sr-only">Zmień język</span>
               </Button>
