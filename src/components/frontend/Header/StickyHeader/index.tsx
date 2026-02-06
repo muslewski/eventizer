@@ -19,7 +19,7 @@ import AnimatedMenuIcon from '@/components/frontend/Header/MobileHeader/animated
 import { useMobileMenu } from '@/components/frontend/Header/MobileMenuContext'
 
 export default function StickyHeader() {
-  const pastThreshold = useScrollPast(0.75)
+  const pastThreshold = useScrollPast(0.2)
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
   const { user } = useRootAuth()
@@ -45,7 +45,7 @@ export default function StickyHeader() {
     <motion.header
       className={cn(
         'fixed z-50 top-4 left-1/2 -translate-x-1/2',
-        'h-12 w-[min(96vw,64rem)] rounded-full',
+        'h-12 w-[min(96vw,75rem)] rounded-full',
         'border border-white/15 bg-base-900/40 backdrop-blur-xl shadow-lg shadow-black/20',
         'flex items-center justify-between px-5 gap-6',
         !pastThreshold && 'pointer-events-none',
@@ -54,6 +54,7 @@ export default function StickyHeader() {
         visible: { opacity: 1, y: 0 },
         hidden: { opacity: 0, y: '-200%' },
       }}
+      initial="hidden"
       animate={pastThreshold && !hidden ? 'visible' : 'hidden'}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
     >
