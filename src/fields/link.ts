@@ -26,6 +26,10 @@ export const appearanceOptions: Record<LinkAppearances, { label: string; value: 
     label: 'Golden',
     value: 'golden',
   },
+  accent: {
+    label: 'Accent',
+    value: 'accent',
+  },
   blend: {
     label: 'Blend',
     value: 'blend',
