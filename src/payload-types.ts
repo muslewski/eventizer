@@ -176,7 +176,18 @@ export interface Page {
              * Choose how the link should be rendered.
              */
             appearance?:
-              | ('default' | 'destructive' | 'cta' | 'golden' | 'blend' | 'outline' | 'secondary' | 'ghost' | 'link')
+              | (
+                  | 'default'
+                  | 'destructive'
+                  | 'cta'
+                  | 'golden'
+                  | 'accent'
+                  | 'blend'
+                  | 'outline'
+                  | 'secondary'
+                  | 'ghost'
+                  | 'link'
+                )
               | null;
           };
           id?: string | null;
@@ -406,7 +417,18 @@ export interface ContentBlock {
            * Choose how the link should be rendered.
            */
           appearance?:
-            | ('default' | 'destructive' | 'cta' | 'golden' | 'blend' | 'outline' | 'secondary' | 'ghost' | 'link')
+            | (
+                | 'default'
+                | 'destructive'
+                | 'cta'
+                | 'golden'
+                | 'accent'
+                | 'blend'
+                | 'outline'
+                | 'secondary'
+                | 'ghost'
+                | 'link'
+              )
             | null;
         };
         id?: string | null;

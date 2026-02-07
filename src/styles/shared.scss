@@ -33,7 +33,8 @@
   --color-base-950: rgb(8, 8, 8);
   --color-base-1000: rgb(5, 5, 5);
 
-  /* Brand accent palette — swap this block to re-theme */
+  /* Initial one */
+  /*
   --color-brand-50: rgb(255, 251, 235);
   --color-brand-100: rgb(254, 243, 199);
   --color-brand-200: rgb(253, 230, 138);
@@ -44,6 +45,47 @@
   --color-brand-700: rgb(158, 92, 15);
   --color-brand-800: rgb(130, 75, 19);
   --color-brand-900: rgb(111, 63, 20);
+  */
+
+  /* Antique / copper gold brand palette - example alternative */
+  --color-brand-50: rgb(255, 248, 232);
+  --color-brand-100: rgb(254, 237, 192);
+  --color-brand-200: rgb(252, 218, 132);
+  --color-brand-300: rgb(248, 194, 68);
+  --color-brand-400: rgb(238, 168, 22);
+  --color-brand-500: rgb(210, 140, 8);
+  --color-brand-600: rgb(180, 108, 4);
+  --color-brand-700: rgb(148, 80, 10);
+  --color-brand-800: rgb(122, 64, 16);
+  --color-brand-900: rgb(100, 50, 16);
+
+  /* Purple brand palette - example alternative */
+  /*
+  --color-brand-50: rgb(245, 237, 255);
+  --color-brand-100: rgb(233, 213, 255);
+  --color-brand-200: rgb(214, 175, 255);
+  --color-brand-300: rgb(192, 132, 252);
+  --color-brand-400: rgb(168, 85, 247);
+  --color-brand-500: rgb(139, 62, 225);
+  --color-brand-600: rgb(117, 38, 198);
+  --color-brand-700: rgb(95, 26, 163);
+  --color-brand-800: rgb(78, 22, 133);
+  --color-brand-900: rgb(60, 17, 107);
+    */
+
+  /* Teal brand palette - example alternative */
+  /*
+  --color-brand-50: rgb(232, 255, 253);
+  --color-brand-100: rgb(198, 252, 247);
+  --color-brand-200: rgb(142, 245, 237);
+  --color-brand-300: rgb(80, 228, 220);
+  --color-brand-400: rgb(34, 202, 198);
+  --color-brand-500: rgb(12, 172, 172);
+  --color-brand-600: rgb(8, 140, 145);
+  --color-brand-700: rgb(14, 112, 118);
+  --color-brand-800: rgb(18, 90, 96);
+  --color-brand-900: rgb(18, 74, 79);
+    */
 
   /* Shadcn UI semantic colors - Light theme */
   --background: var(--color-base-0);
