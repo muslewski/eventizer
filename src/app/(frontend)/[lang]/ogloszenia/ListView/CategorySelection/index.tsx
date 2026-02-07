@@ -1,8 +1,9 @@
 'use client'
 
 import { TitleH3 } from '@/components/frontend/Content/TitleH3'
-import { ServiceCategory } from '@/payload-types'
+import { Media, ServiceCategory } from '@/payload-types'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ChevronDown, ChevronRight, LayoutGrid } from 'lucide-react'
 import { useState, useEffect, useTransition, useCallback, useMemo } from 'react'
@@ -14,6 +15,7 @@ interface SubcategoryLevel1 {
   id: string
   name: string
   slug: string
+  icon?: (number | null) | Media
 }
 
 export default function CategorySelection({ categoryData }: { categoryData?: ServiceCategory[] }) {
@@ -112,7 +114,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
   )
 
   return (
-    <div className="lg:max-w-72 2xl:max-w-80 w-full md:w-1/4 h-full sm:border-r border-border/50 py-8 sm:pr-4">
+    <div className="lg:max-w-80 2xl:max-w-80 w-full md:w-2/5 h-full sm:border-r border-border/50 py-8 sm:pr-4">
       {/* Category Header */}
       <div className="flex flex-col gap-5 mb-6">
         <TitleH3 title={'Kategorie'} />
@@ -122,16 +124,17 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
       <ScrollArea className="h-[calc(100%-80px)] pr-4" type="hover">
         {/* All Categories Button */}
         <Button
-          variant="ghost"
+          variant={!currentKategoria ? 'accent' : 'ghost'}
           className={cn(
-            'w-full justify-start text-left font-medium mb-3 gap-2.5 px-3 py-2.5 h-auto rounded-lg transition-all duration-200',
-            !currentKategoria &&
-              'bg-gradient-to-r from-accent/20 to-accent/5 text-foreground border border-accent/30 shadow-sm',
+            'group w-full justify-start text-left mb-3 gap-2.5 px-3 py-2.5 h-auto transition-all duration-200',
             isPending && 'opacity-50 pointer-events-none',
           )}
           onClick={handleAllCategoriesClick}
         >
-          <LayoutGrid className="h-4 w-4 shrink-0" />
+          <LayoutGrid
+            className="!h-[30px] !w-[30px] min-h-[30px] min-w-[30px] shrink-0 transition-transform duration-200 group-active:rotate-12"
+            strokeWidth={1.2}
+          />
           Wszystkie kategorie
         </Button>
 
@@ -157,12 +160,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
                 onOpenChange={() => toggleCategory(category.id)}
                 className="group"
               >
-                <div
-                  className={cn(
-                    'flex items-center gap-1 rounded-lg transition-colors duration-200',
-                    (isSelected || hasSelectedSubcategory) && 'bg-accent/30',
-                  )}
-                >
+                <div className="flex items-center gap-1 rounded-lg transition-colors duration-200">
                   {hasSubcategories && (
                     <CollapsibleTrigger asChild>
                       <Button
@@ -185,16 +183,23 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
                   )}
                   {!hasSubcategories && <div className="w-8" />}
                   <Button
-                    variant="ghost"
+                    variant={isSelected || hasSelectedSubcategory ? 'accent' : 'ghost'}
                     className={cn(
-                      'flex-1 justify-start text-left font-medium text-sm h-auto py-2 px-2 whitespace-normal rounded-md transition-all duration-200',
-                      'hover:bg-accent/60 hover:translate-x-0.5',
-                      isSelected &&
-                        'bg-gradient-to-r from-accent/20 to-transparent text-foreground font-semibold',
+                      'group/cat flex-1 justify-start text-left font-medium text-sm h-auto py-2 px-2 whitespace-normal transition-all duration-200 gap-2',
+                      'hover:pl-2.5',
                       isPending && 'opacity-50 pointer-events-none',
                     )}
                     onClick={() => handleCategoryClick(category.slug, category.id)}
                   >
+                    {category.icon && typeof category.icon === 'object' && category.icon.url && (
+                      <Image
+                        src={category.icon.url}
+                        alt={category.icon.alt || category.name}
+                        width={30}
+                        height={30}
+                        className="shrink-0 dark:invert object-contain transition-transform duration-200 group-active/cat:rotate-12"
+                      />
+                    )}
                     {category.name}
                   </Button>
                 </div>
@@ -207,16 +212,26 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
                         return (
                           <Button
                             key={subcategory.id}
-                            variant="ghost"
+                            variant={isSubSelected ? 'accent' : 'ghost'}
                             className={cn(
-                              'justify-start text-left text-xs h-auto py-1.5 px-2.5 w-full whitespace-normal rounded-md transition-all duration-200',
-                              'text-muted-foreground hover:text-foreground hover:bg-accent/50 hover:translate-x-0.5',
+                              'group/sub justify-start text-left text-xs h-auto py-1.5 px-2.5 w-full whitespace-normal transition-all duration-200 gap-2',
+                              !isSubSelected && 'text-muted-foreground hover:text-foreground',
+                              'hover:pl-3',
                               isPending && 'opacity-50 pointer-events-none',
-                              isSubSelected &&
-                                'bg-accent/15 text-foreground font-medium border-l-2 border-accent -ml-[2px] pl-[calc(0.625rem+2px)]',
                             )}
                             onClick={() => handleSubcategoryClick(category.slug, subcategory.slug)}
                           >
+                            {subcategory.icon &&
+                              typeof subcategory.icon === 'object' &&
+                              subcategory.icon.url && (
+                                <Image
+                                  src={subcategory.icon.url}
+                                  alt={subcategory.icon.alt || subcategory.name}
+                                  width={25}
+                                  height={25}
+                                  className="shrink-0 dark:invert object-contain transition-transform duration-200 group-active/sub:rotate-12"
+                                />
+                              )}
                             {subcategory.name}
                           </Button>
                         )
