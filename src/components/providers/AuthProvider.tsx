@@ -2,6 +2,7 @@
 
 import { authClient } from '@/auth/auth-client'
 import { Toaster } from '@/components/ui/sonner'
+import { useRootAuth } from '@/providers/RootAuthProvider'
 import { AuthUIProvider } from '@daveyplate/better-auth-ui'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -12,12 +13,13 @@ import { toast } from 'sonner'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
+  const { refreshUser } = useRootAuth()
 
   return (
     <AuthUIProvider
       // basePath="/app/auth"
       basePath="/auth"
-      redirectTo="/app"
+      redirectTo="/ogloszenia"
       authClient={authClient}
       navigate={router.push}
       replace={router.replace}
@@ -29,6 +31,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       onSessionChange={() => {
         // Clear router cache (protected routes)
         router.refresh()
+
+        // Sync auth state
+        refreshUser()
       }}
       Link={Link}
       toast={({ message, variant }) => {

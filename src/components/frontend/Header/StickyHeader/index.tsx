@@ -10,19 +10,17 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useScrollPast } from '@/hooks/useScrollPast'
 import { navLinks, removeLocalePrefix } from '@/components/frontend/Header/shared'
-import { useRootAuth } from '@/providers/RootAuthProvider'
-import { HeaderAvatar } from '@/components/frontend/Header/Avatar'
 import { ModeToggle } from '@/components/providers/Theme/ThemeSwitcher'
 import { LanguageSwitcher } from '@/components/frontend/LanguageSwitcher'
 import { ReduceMotionToggle } from '@/components/frontend/Header/ReduceMotionToggle'
-import AnimatedMenuIcon from '@/components/frontend/Header/MobileHeader/animatedMenuIcon'
+import AnimatedMenuIcon from '@/components/frontend/Header/AnimatedMenuIcon'
 import { useMobileMenu } from '@/components/frontend/Header/MobileMenuContext'
+import HeaderCTA from '@/components/frontend/Header/HeaderCTA'
 
 export default function StickyHeader() {
   const pastThreshold = useScrollPast(0.2)
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
-  const { user } = useRootAuth()
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useMobileMenu()
 
   // Hide on scroll down, show on scroll up (like BioFloor nav)
@@ -89,30 +87,16 @@ export default function StickyHeader() {
         </div>
 
         {/* Desktop: avatar or sign-in */}
-        {user ? (
-          <HeaderAvatar />
-        ) : (
-          <div className="hidden xl:flex items-center gap-2">
-            <Button variant="golden" asChild>
-              <Link href="/auth/sign-in/service-provider" prefetch>
-                Panel usługodawcy
-              </Link>
-            </Button>
-
-            <Button variant="blend" asChild>
-              <Link href="/auth/sign-in" prefetch>
-                Zaloguj się
-              </Link>
-            </Button>
-          </div>
-        )}
+        <div className="hidden lg:block">
+          <HeaderCTA />
+        </div>
 
         {/* Mobile/Tablet: hamburger */}
         <Button
           variant="ghost"
           size="icon"
           onClick={toggleMobileMenu}
-          className="xl:hidden text-white/80 hover:text-white"
+          className="lg:hidden text-white/80 hover:text-white"
           aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
         >
           <AnimatedMenuIcon isOpen={isMobileMenuOpen} />

@@ -10,7 +10,7 @@ export default function HeaderLogo() {
       prefetch
       className="group h-full flex items-center gap-3 transition-transform duration-300 hover:scale-105"
     >
-      <div className="relative h-1/2 w-8">
+      <div className="relative h-8 w-8">
         <Image
           src={Logo}
           alt="Eventizer Logo"

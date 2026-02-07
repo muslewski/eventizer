@@ -12,7 +12,7 @@ import { useMobileMenu } from '@/components/frontend/Header/MobileMenuContext'
 import { useRootAuth } from '@/providers/RootAuthProvider'
 import { HeaderAvatar } from '@/components/frontend/Header/Avatar'
 import { navLinks } from '@/components/frontend/Header/shared'
-import AnimatedMenuIcon from '@/components/frontend/Header/MobileHeader/animatedMenuIcon'
+import AnimatedMenuIcon from '@/components/frontend/Header/AnimatedMenuIcon'
 import HeaderLogo from '@/components/frontend/Header/Logo'
 
 const overlayVariants = {
@@ -75,7 +75,7 @@ export default function FullScreenMenu({ normalizedPathname }: { normalizedPathn
           <div className="absolute inset-0 bg-background/95 backdrop-blur-2xl" />
 
           {/* Top bar with logo and close */}
-          <div className="relative z-10 flex items-center justify-between px-8 h-16 shrink-0">
+          <div className="relative z-10 flex items-center justify-between px-12 sm:px-15 md:px-16 h-fit pt-7 md:pt-10 shrink-0">
             <HeaderLogo />
             <Button
               variant="ghost"
