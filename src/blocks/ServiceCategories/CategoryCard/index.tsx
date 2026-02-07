@@ -59,7 +59,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
       {/* Icon container */}
       <div
         style={{ borderColor: iconBorderColor }}
-        className="relative size-12 sm:size-20 rounded-xl bg-muted/50 p-2 sm:p-3 border-2 transition-all duration-300"
+        className="relative size-16 sm:size-20 rounded-xl bg-muted/50 p-2 sm:p-3 border-2 transition-all duration-300"
       >
         {iconUrl ? (
           <>
@@ -72,7 +72,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
               src={iconUrl}
               alt={category.name}
               fill
-              className={`object-contain p-1 sm:p-4 dark:invert group-hover:scale-110 transition-transform duration-300 ${!isImageLoaded ? 'opacity-0' : 'opacity-100'}`}
+              className={`object-contain p-2 sm:p-4 dark:invert group-hover:scale-110 transition-transform duration-300 ${!isImageLoaded ? 'opacity-0' : 'opacity-100'}`}
               onLoad={() => setIsImageLoaded(true)}
             />
           </>
