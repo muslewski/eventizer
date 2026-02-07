@@ -14,7 +14,6 @@ const EXPLICIT_ROUTES = new Set([
 
 export function generateStaticParams() {
   return Object.values(authViewPaths)
-    .map((path) => ({ path }))
     .filter((path) => !EXPLICIT_ROUTES.has(path))
     .map((path) => ({ path }))
 }
