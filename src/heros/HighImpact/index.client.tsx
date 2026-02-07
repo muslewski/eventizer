@@ -14,7 +14,7 @@ export const HighImpactHeroClient: React.FC<{ children: React.ReactNode }> = ({ 
   return (
     // Wrapper div to prevent entire page height to animate on ios when dvh units are used
     <div className="h-screen">
-      <div className="h-dvh py-4 w-full flex justify-center items-center">
+      <div className="h-dvh py-4 sm:py-8 w-full flex justify-center items-center">
         {/* Bottom filler pattern - only visible on iOS when browser tools affect viewport */}
         <div
           className="absolute block sm:hidden top-[calc(82vh)] left-0 right-0 h-32 bg-linear-to-t from-background to-transparent pointer-events-none"
@@ -25,7 +25,7 @@ export const HighImpactHeroClient: React.FC<{ children: React.ReactNode }> = ({ 
 
         {/* -mt-12 sm:-mt-8 */}
         <div
-          className="h-[calc(100dvh-32px)] sm:h-[calc(100dvh-64px)] w-full  high-impact-hero rounded-2xl overflow-hidden pb-8 sm:pb-16 pt-8 sm:pt-16  px-8 sm:px-16 relative"
+          className="h-full w-full  high-impact-hero rounded-2xl overflow-hidden pb-8 sm:pb-16 pt-8 sm:pt-16  px-8 sm:px-16 relative"
           data-theme="dark"
         >
           {children}
