@@ -3,30 +3,35 @@
 import { LanguageSwitcher } from '@/components/frontend/LanguageSwitcher'
 import { ModeToggle } from '@/components/providers/Theme/ThemeSwitcher'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 
 import HeaderLogo from '@/components/frontend/Header/Logo'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import { ReduceMotionToggle } from '@/components/frontend/Header/ReduceMotionToggle'
 import StickyHeader from '@/components/frontend/Header/StickyHeader'
-import { navLinks, removeLocalePrefix } from '@/components/frontend/Header/shared'
+import { removeLocalePrefix } from '@/components/frontend/Header/shared'
+import NavigationLinks from '@/components/frontend/Header/NavigationLinks'
 import { MobileMenuProvider } from '@/components/frontend/Header/MobileMenuContext'
 import { useMobileMenu } from '@/components/frontend/Header/MobileMenuContext'
 import FullScreenMenu from '@/components/frontend/Header/FullScreenMenu'
 import HeaderCTA from '@/components/frontend/Header/HeaderCTA'
 import AnimatedMenuIcon from '@/components/frontend/Header/AnimatedMenuIcon'
+import type { NavCategory } from '@/components/frontend/Header/NavigationLinks'
 
-export default function HeaderClient() {
+interface HeaderClientProps {
+  categories: NavCategory[]
+}
+
+export default function HeaderClient({ categories }: HeaderClientProps) {
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
 
   return (
     <MobileMenuProvider>
-      <HeaderBar normalizedPathname={normalizedPathname} />
+      <HeaderBar normalizedPathname={normalizedPathname} categories={categories} />
 
       {/* Sticky Header – appears after scrolling */}
-      <StickyHeader />
+      <StickyHeader categories={categories} />
 
       {/* Full-screen menu overlay */}
       <FullScreenMenu normalizedPathname={normalizedPathname} />
@@ -34,7 +39,13 @@ export default function HeaderClient() {
   )
 }
 
-function HeaderBar({ normalizedPathname }: { normalizedPathname: string }) {
+function HeaderBar({
+  normalizedPathname,
+  categories,
+}: {
+  normalizedPathname: string
+  categories: NavCategory[]
+}) {
   const { isOpen, toggle } = useMobileMenu()
 
   return (
@@ -44,32 +55,11 @@ function HeaderBar({ normalizedPathname }: { normalizedPathname: string }) {
 
       {/* Desktop nav links */}
       <nav className="hidden md:flex gap-10 items-center">
-        {navLinks.map((link, index) => (
-          <div key={link.href} className="flex gap-10 items-center">
-            {index > 0 && (
-              <div
-                className={cn(
-                  'h-16 w-px',
-                  index % 2 === 1
-                    ? 'bg-linear-to-t from-white/50 to-transparent'
-                    : 'bg-linear-to-b from-white/50 to-transparent',
-                )}
-              />
-            )}
-            <Button
-              variant="link"
-              asChild
-              className={cn(
-                'text-white/70 after:from-white after:to-white/50',
-                normalizedPathname === link.href && 'after:scale-x-100',
-              )}
-            >
-              <Link href={link.href} prefetch>
-                {link.label}
-              </Link>
-            </Button>
-          </div>
-        ))}
+        <NavigationLinks
+          normalizedPathname={normalizedPathname}
+          variant="header"
+          categories={categories}
+        />
         <div className="h-16 w-px bg-linear-to-t from-white/50 to-transparent" />
 
         {/* Settings – visible on large screens */}

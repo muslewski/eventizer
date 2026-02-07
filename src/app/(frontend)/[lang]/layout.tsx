@@ -3,7 +3,7 @@ import '@/styles/global.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/Theme'
 import { Bebas_Neue, Montserrat } from 'next/font/google'
-import Header from '@/components/frontend/Header/index.client'
+import Header from '@/components/frontend/Header'
 import Footer from '@/components/frontend/Footer'
 import { RootAuthProvider } from '@/providers/RootAuthProvider'
 

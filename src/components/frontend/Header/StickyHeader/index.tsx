@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 
@@ -9,15 +8,21 @@ import HeaderLogo from '@/components/frontend/Header/Logo'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useScrollPast } from '@/hooks/useScrollPast'
-import { navLinks, removeLocalePrefix } from '@/components/frontend/Header/shared'
+import { removeLocalePrefix } from '@/components/frontend/Header/shared'
 import { ModeToggle } from '@/components/providers/Theme/ThemeSwitcher'
 import { LanguageSwitcher } from '@/components/frontend/LanguageSwitcher'
 import { ReduceMotionToggle } from '@/components/frontend/Header/ReduceMotionToggle'
 import AnimatedMenuIcon from '@/components/frontend/Header/AnimatedMenuIcon'
 import { useMobileMenu } from '@/components/frontend/Header/MobileMenuContext'
 import HeaderCTA from '@/components/frontend/Header/HeaderCTA'
+import NavigationLinks from '@/components/frontend/Header/NavigationLinks'
+import type { NavCategory } from '@/components/frontend/Header/NavigationLinks'
 
-export default function StickyHeader() {
+interface StickyHeaderProps {
+  categories: NavCategory[]
+}
+
+export default function StickyHeader({ categories }: StickyHeaderProps) {
   const pastThreshold = useScrollPast(0.2)
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
@@ -43,8 +48,8 @@ export default function StickyHeader() {
     <motion.header
       className={cn(
         'fixed z-50 top-4 left-1/2 -translate-x-1/2',
-        'h-12 w-[min(96vw,75rem)] rounded-full',
-        'border border-white/15 bg-base-900/40 backdrop-blur-xl shadow-lg shadow-black/20',
+        'h-14 w-[min(96vw,75rem)] rounded-full',
+        'border border-white/15 bg-base-900/90 dark:bg-base-900/40 backdrop-blur-xl shadow-lg shadow-black/20',
         'flex items-center justify-between px-5 gap-6',
         !pastThreshold && 'pointer-events-none',
       )}
@@ -61,21 +66,11 @@ export default function StickyHeader() {
 
       {/* Nav links – desktop only */}
       <nav className="hidden md:flex items-center gap-6">
-        {navLinks.map((link) => (
-          <Button
-            key={link.href}
-            variant="link"
-            asChild
-            className={cn(
-              'text-sm text-white/60 after:from-white after:to-white/50',
-              normalizedPathname === link.href && 'after:scale-x-100 text-white',
-            )}
-          >
-            <Link href={link.href} prefetch>
-              {link.label}
-            </Link>
-          </Button>
-        ))}
+        <NavigationLinks
+          normalizedPathname={normalizedPathname}
+          variant="sticky"
+          categories={categories}
+        />
       </nav>
 
       {/* Settings + CTA */}

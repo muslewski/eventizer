@@ -61,7 +61,7 @@ export function AvatarDropdown({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon" className="rounded-full! overflow-hidden">
-          <Avatar className="h-9 w-9 cursor-pointer">
+          <Avatar className="h-9 w-9 cursor-pointer bg-white dark:bg-background/10">
             <AvatarImage src={imageUrl ?? ''} />
             <AvatarFallback className="bg-base-900/40">{getInitials(user)}</AvatarFallback>
           </Avatar>
