@@ -4,7 +4,6 @@ import type { ElementType } from 'react'
 import React from 'react'
 import Link from 'next/link'
 
-import './index.scss'
 import { Button } from '@payloadcms/ui'
 import { cn } from '@/lib/utils'
 import { getNavIcon } from '../../../customNav/navIconMap'
@@ -21,8 +20,6 @@ export type Props = {
   slug?: string
 }
 
-const baseClass = 'feature-card'
-
 export const FeatureCard: React.FC<Props> = (props) => {
   const { id, actions, buttonAriaLabel, href, onClick, title, titleAs, count, slug } = props
 
@@ -34,58 +31,31 @@ export const FeatureCard: React.FC<Props> = (props) => {
   return (
     <div
       className={cn(
-        baseClass,
-        'group',
-        isClickable && `${baseClass}--has-onclick`,
-        'relative overflow-hidden',
-        'before:absolute before:inset-0 before:rounded-[inherit] before:p-[1px]',
-        'before:bg-gradient-to-br before:from-accent/20 before:via-transparent before:to-accent/20',
-        'before:opacity-0 before:transition-opacity before:duration-300',
-        'hover:before:opacity-100 border-2 border-accent/10',
-        'hover:shadow-[0_4px_20px_color-mix(in_srgb,var(--accent)_15%,transparent)]',
-        'after:absolute after:top-0 after:left-0 after:right-0 after:h-[2px]',
-        'after:bg-gradient-to-r after:from-transparent after:via-accent/10 after:to-transparent',
-        'after:opacity-0 after:transition-opacity after:duration-300',
-        'hover:after:opacity-100 bg-(--theme-elevation-100) dark:bg-(--theme-elevation-50)',
+        'group relative flex flex-col justify-between gap-4',
+        'rounded-lg border border-(--theme-border-color) bg-(--theme-elevation-50)',
+        'p-6 transition-all duration-200',
+        isClickable &&
+          'cursor-pointer hover:bg-(--theme-elevation-100) hover:border-(--theme-elevation-400)',
       )}
       id={id}
     >
-      <div className="absolute top-0 right-0 w-8 h-8 overflow-hidden opacity-0 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none">
-        <div className="absolute top-0 right-0 w-12 h-[1px] bg-gradient-to-l from-accent/60 to-transparent transform rotate-45 origin-top-right" />
-      </div>
-
-      <div className="flex items-center gap-4 relative z-[1]">
+      <div className="flex items-center gap-3">
         {Icon && (
-          <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center rounded-xl bg-accent/5 group-hover:bg-accent/10 transition-colors duration-300">
-            <Icon
-              className={cn(
-                'w-7 h-7 transition-all duration-300',
-                'text-accent-foreground/70 dark:text-accent/70',
-                isClickable &&
-                  'group-hover:text-accent dark:group-hover:text-accent group-hover:scale-110',
-              )}
-            />
+          <div className="shrink-0 w-10 h-10 flex items-center justify-center rounded-md bg-(--theme-elevation-100)">
+            <Icon className="w-5 h-5 text-(--theme-elevation-600)" />
           </div>
         )}
 
-        <Tag
-          className={cn(
-            `${baseClass}__title`,
-            'transition-colors duration-300',
-            isClickable && 'group-hover:text-accent-foreground dark:group-hover:text-accent',
-          )}
-        >
-          {title}
-        </Tag>
+        <Tag className="text-sm font-semibold text-(--theme-elevation-650)">{title}</Tag>
       </div>
 
-      {actions && <div className={cn(`${baseClass}__actions`, 'relative z-10')}>{actions}</div>}
+      {actions && <div className="relative z-10 inline-flex">{actions}</div>}
 
       {isClickable && (
         <Button
           aria-label={buttonAriaLabel}
           buttonStyle="none"
-          className={`${baseClass}__click`}
+          className="absolute inset-0 z-1 m-0"
           el="link"
           Link={Link}
           onClick={onClick}
@@ -93,16 +63,7 @@ export const FeatureCard: React.FC<Props> = (props) => {
         />
       )}
 
-      <h2
-        className={cn(
-          `${baseClass}__count`,
-          'transition-colors duration-300',
-          'bg-gradient-to-r from-accent-foreground to-accent bg-clip-text',
-          isClickable && 'hover:from-accent hover:to-accent',
-        )}
-      >
-        {count ?? 0}
-      </h2>
+      <h2 className="text-3xl font-medium m-0 text-(--theme-elevation-800)">{count ?? 0}</h2>
     </div>
   )
 }

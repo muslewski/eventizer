@@ -35,7 +35,7 @@ export const DashboardBanner = () => {
       <div className="absolute top-0 left-0 w-full min-h-[200px]">
         <div className="relative w-full h-[200px]">
           <div
-            className="absolute inset-0 bg-[center_10%] bg-cover bg-fixed"
+            className="absolute inset-0 bg-[center_10%] bg-cover"
             style={{ backgroundImage: `url(${dashboardBanner.src})` }}
           />
           {/* Elegant overlay with golden tint */}

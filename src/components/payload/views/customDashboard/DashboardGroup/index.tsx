@@ -3,7 +3,6 @@ import { FC } from 'react'
 import { getTranslation, I18nClient } from '@payloadcms/translations'
 import { BasePayload, CollectionSlug, StaticLabel, User } from 'payload'
 
-import './index.scss'
 import { FeatureCard } from '../DashboardFeatureCard'
 import { CustomCard } from '@/components/payload/customCard'
 
@@ -51,15 +50,15 @@ export const DashboardGroup: FC<Props> = async ({
   }
 
   return (
-    <div className="dashboard__group flex flex-col gap-4">
-      <p className="dashboard__label text-lg font-medium tracking-wide text-muted-foreground">
+    <div className="flex flex-col gap-3">
+      <p className="text-xs font-semibold uppercase tracking-widest text-(--theme-elevation-500) m-0">
         {groupLabel}
       </p>
       <ul
-        className={`p-0 list-none ${
+        className={`p-0 m-0 list-none ${
           isFeatured
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-            : 'flex flex-wrap gap-4'
+            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3'
+            : 'flex flex-wrap gap-2'
         }`}
       >
         {entities.map(({ slug, type, label }, entityIndex) => (
