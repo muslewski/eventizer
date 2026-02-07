@@ -1,31 +1,18 @@
 import { AuthView } from '@daveyplate/better-auth-ui'
-import { authViewPaths } from '@daveyplate/better-auth-ui/server'
 import { authClassNames } from '../../authClassNames'
 
 import type { Config } from '@/payload-types'
 import { getDictionary } from '@/lib/dictionary'
 type Locale = Config['locale']
 
-export const dynamicParams = false
-
-export function generateStaticParams() {
-  return Object.values(authViewPaths).map((path) => ({
-    path,
-  }))
-}
-
-export default async function AuthPage({
-  params,
-}: {
-  params: Promise<{ path: string; lang: Locale }>
-}) {
-  const { path, lang } = await params
+export default async function AuthPage({ params }: { params: Promise<{ lang: Locale }> }) {
+  const { lang } = await params
   const dict = await getDictionary(lang)
 
   return (
     <AuthView
       view="RESET_PASSWORD"
-      path={path}
+      path="reset-password"
       socialLayout="horizontal"
       localization={{
         RESET_PASSWORD: dict.auth.resetPasswordTitle,
