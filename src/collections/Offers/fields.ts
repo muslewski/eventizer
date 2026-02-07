@@ -176,6 +176,9 @@ export const offersFields: Field[] = [
               pl: 'Główne Zdjęcie',
             },
             admin: {
+              components: {
+                Cell: '/components/payload/fields/offerMainImageCell',
+              },
               description: {
                 en: 'Upload the main image representing your offer.',
                 pl: 'Prześlij główne zdjęcie reprezentujące Twoją ofertę.',

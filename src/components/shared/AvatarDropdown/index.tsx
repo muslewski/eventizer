@@ -111,7 +111,7 @@ export function AvatarDropdown({
             </DropdownMenuItem>
           )}
 
-          {isServiceProvider && (
+          {(isServiceProvider || isModerator || isAdmin) && (
             <DropdownMenuItem asChild>
               <Link href="/app/collections/offers" className="cursor-pointer">
                 <FileText className="mr-2 h-4 w-4" />

@@ -25,7 +25,7 @@ export const Offers: CollectionConfig = {
     group: adminGroups.featured,
     // Hide offers for clients
     hidden: ({ user }) => !isClientRoleEqualOrHigher('service-provider', user),
-    defaultColumns: ['title', '_status', 'category', 'user'],
+    defaultColumns: ['mainImage', 'title', '_status', 'category', 'user'],
     // hide api url in admin panel
     hideAPIURL: true,
     description: {
