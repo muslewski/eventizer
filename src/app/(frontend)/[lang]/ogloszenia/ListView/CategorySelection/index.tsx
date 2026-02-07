@@ -114,7 +114,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
   )
 
   return (
-    <div className="lg:max-w-80 2xl:max-w-80 w-full md:w-2/5 h-full sm:border-r border-border/50 py-8 sm:pr-4">
+    <div className="lg:max-w-72 2xl:max-w-80 w-full md:w-2/5 h-full sm:border-r border-border/50 py-8 sm:pr-4">
       {/* Category Header */}
       <div className="flex flex-col gap-5 mb-6">
         <TitleH3 title={'Kategorie'} />
@@ -197,7 +197,10 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
                         alt={category.icon.alt || category.name}
                         width={30}
                         height={30}
-                        className="shrink-0 dark:invert object-contain transition-transform duration-200 group-active/cat:rotate-12"
+                        className={cn(
+                          'shrink-0 dark:invert object-contain transition-transform duration-200 group-active/cat:rotate-12 opacity-75',
+                          (isSelected || hasSelectedSubcategory) && 'opacity-100',
+                        )}
                       />
                     )}
                     {category.name}
@@ -229,7 +232,10 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
                                   alt={subcategory.icon.alt || subcategory.name}
                                   width={25}
                                   height={25}
-                                  className="shrink-0 dark:invert object-contain transition-transform duration-200 group-active/sub:rotate-12"
+                                  className={cn(
+                                    'shrink-0 dark:invert object-contain transition-transform duration-200 group-active/sub:rotate-12 opacity-75',
+                                    isSubSelected && 'opacity-100',
+                                  )}
                                 />
                               )}
                             {subcategory.name}
