@@ -1,13 +1,13 @@
 'use client'
 
 import type { User } from '@/payload-types'
-import { createContext, useCallback, useContext, useState, useEffect } from 'react'
+import { createContext, useState, useEffect, use } from 'react'
 
 type AuthContext = {
   user: User | null
   setUser: (user: User | null) => void
   status: 'loading' | 'authenticated' | 'unauthenticated'
-  refreshUser?: () => Promise<void>
+  refreshUser: () => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -17,9 +17,7 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [status, setStatus] = useState<AuthContext['status']>('loading')
 
-  // authentication logic would go here
-
-  const refreshUser = useCallback(async () => {
+  async function refreshUser() {
     try {
       setStatus('loading')
       const response = await fetch('/api/users/me', {
@@ -48,9 +46,9 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null)
       setStatus('unauthenticated')
     }
-  }, [])
+  }
 
-  const logout = useCallback(async () => {
+  async function logout() {
     try {
       const response = await fetch('/api/users/logout', {
         method: 'POST',
@@ -63,17 +61,17 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         setUser(null)
         setStatus('unauthenticated')
-        // Optionally redirect to home
         window.location.href = '/'
       }
     } catch (error) {
       console.error('Failed to logout:', error)
     }
-  }, [])
+  }
 
   useEffect(() => {
     refreshUser()
-  }, [refreshUser])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Context.Provider value={{ user, setUser, status, refreshUser, logout }}>
@@ -83,7 +81,7 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useRootAuth() {
-  const context = useContext(Context)
+  const context = use(Context)
   if (context === undefined) {
     throw new Error('useRootAuth must be used within a RootAuthProvider')
   }
