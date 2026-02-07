@@ -1,6 +1,7 @@
 import { Offer } from '@/payload-types'
 import { ContactDetails } from './ContactDetails'
 import { SocialMedia } from './SocialMedia'
+import { TitleH2 } from '@/components/frontend/Content/TitleH2'
 
 interface ContactInfoProps {
   offer: Offer
@@ -21,7 +22,16 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ offer }) => {
   }
 
   return (
-    <section className="mx-auto w-full">
+    <section className="mx-auto w-full space-y-6 sm:space-y-8">
+      {/* Section heading with decorative accent */}
+      <div className="flex items-center gap-4 sm:gap-6">
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        <div className="shrink-0">
+          <TitleH2 title="Kontakt" />
+        </div>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      </div>
+
       <div className="flex flex-col lg:flex-row lg:items-start gap-6 sm:gap-8 lg:gap-12 w-full min-w-0">
         {hasContactInfo && <ContactDetails offer={offer} />}
         {hasSocialMedia && <SocialMedia offer={offer} />}

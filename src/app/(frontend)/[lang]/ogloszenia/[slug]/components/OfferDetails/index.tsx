@@ -11,6 +11,7 @@ import {
   Banknote,
   CalendarPlus,
   CalendarClock,
+  Quote,
 } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
@@ -28,7 +29,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
   return (
     <section className="mx-auto w-full min-w-0 space-y-6 sm:space-y-8 md:space-y-12">
       {/* Top section - Circle image with short description */}
-      <div className="flex flex-col justify-center sm:flex-row items-center gap-6 sm:gap-8 md:gap-12">
+      <div className="py-16 flex flex-col justify-center sm:flex-row items-center gap-6 sm:gap-8 md:gap-12 mx-auto max-w-4xl">
         {/* Circle main image */}
         {mainImage && mainImage.url && (
           <div className="relative shrink-0">
@@ -51,13 +52,16 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
 
         {/* Short description */}
         {offer.shortDescription && (
-          <div className="flex-1 min-w-0 text-center sm:text-left flex flex-col items-center sm:items-start mt-2 gap-4">
+          <div className="flex-1 min-w-0 text-center sm:text-left flex flex-col items-center sm:items-start mt-2 gap-4 relative">
             <div className="w-fit">
               <TitleH3 title="W skrócie" />
             </div>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl break-words">
-              {offer.shortDescription}
-            </p>
+            <div className="relative pl-4 sm:pl-5 border-l-2 border-primary/40">
+              <Quote className="absolute -left-3 -top-1 size-5 sm:size-6 text-primary/30 fill-primary/10" />
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl break-words italic">
+                {offer.shortDescription}
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -95,10 +99,10 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
                 <SpanLikeH3 title="Informacje" />
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6 space-y-4 sm:space-y-5">
+            <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6 space-y-1">
               {/* Author */}
               {author && (
-                <div className="flex items-center gap-2.5 sm:gap-3">
+                <div className="flex items-center gap-2.5 sm:gap-3 rounded-lg p-2 -mx-2 transition-colors hover:bg-primary/5">
                   <div className="p-1.5 sm:p-2 rounded-full bg-primary/10">
                     <UserIcon className="size-3.5 sm:size-4 text-primary" />
                   </div>
@@ -113,7 +117,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
 
               {/* Category */}
               {offer.categoryName && (
-                <div className="flex items-center gap-2.5 sm:gap-3">
+                <div className="flex items-center gap-2.5 sm:gap-3 rounded-lg p-2 -mx-2 transition-colors hover:bg-primary/5">
                   <div className="p-1.5 sm:p-2 rounded-full bg-primary/10">
                     <Tag className="size-3.5 sm:size-4 text-primary" />
                   </div>
@@ -124,14 +128,14 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
                 </div>
               )}
 
-              {/* Price */}
-              <div className="flex items-center gap-2.5 sm:gap-3">
-                <div className="p-1.5 sm:p-2 rounded-full bg-primary/10">
+              {/* Price - Highlighted */}
+              <div className="flex items-center gap-2.5 sm:gap-3 rounded-xl p-3 -mx-2 bg-primary/10 border border-primary/20">
+                <div className="p-1.5 sm:p-2 rounded-full bg-primary/20">
                   <Banknote className="size-3.5 sm:size-4 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] sm:text-xs text-muted-foreground">Cena</p>
-                  <p className="font-semibold text-sm sm:text-base text-primary">
+                  <p className="text-[11px] sm:text-xs text-primary/70">Cena</p>
+                  <p className="font-bold text-base sm:text-lg text-primary">
                     {offer.hasPriceRange
                       ? `${(offer.priceFrom ?? 0).toLocaleString('pl-PL')} - ${(offer.priceTo ?? 0).toLocaleString('pl-PL')} zł`
                       : `${(offer.price ?? 0).toLocaleString('pl-PL')} zł`}
@@ -142,7 +146,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
               <Separator />
 
               {/* Created at */}
-              <div className="flex items-center gap-2.5 sm:gap-3">
+              <div className="flex items-center gap-2.5 sm:gap-3 rounded-lg p-2 -mx-2 transition-colors hover:bg-muted/50">
                 <div className="p-1.5 sm:p-2 rounded-full bg-muted">
                   <CalendarPlus className="size-3.5 sm:size-4 text-muted-foreground" />
                 </div>
@@ -159,7 +163,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
               </div>
 
               {/* Updated at */}
-              <div className="flex items-center gap-2.5 sm:gap-3">
+              <div className="flex items-center gap-2.5 sm:gap-3 rounded-lg p-2 -mx-2 transition-colors hover:bg-muted/50">
                 <div className="p-1.5 sm:p-2 rounded-full bg-muted">
                   <CalendarClock className="size-3.5 sm:size-4 text-muted-foreground" />
                 </div>

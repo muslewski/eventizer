@@ -1,6 +1,5 @@
 import { Offer } from '@/payload-types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { ExternalLink, Facebook, Instagram, Linkedin } from 'lucide-react'
 import Link from 'next/link'
 import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
@@ -18,10 +17,30 @@ const TikTokIcon = ({ className }: { className?: string }) => (
 )
 
 const socialMediaConfig = [
-  { key: 'facebook' as const, label: 'Facebook', icon: Facebook },
-  { key: 'instagram' as const, label: 'Instagram', icon: Instagram },
-  { key: 'tiktok' as const, label: 'TikTok', icon: TikTokIcon },
-  { key: 'linkedin' as const, label: 'LinkedIn', icon: Linkedin },
+  {
+    key: 'facebook' as const,
+    label: 'Facebook',
+    icon: Facebook,
+    hoverClass: 'hover:bg-[#1877F2]/10 hover:border-[#1877F2]/40 hover:text-[#1877F2]',
+  },
+  {
+    key: 'instagram' as const,
+    label: 'Instagram',
+    icon: Instagram,
+    hoverClass: 'hover:bg-[#E4405F]/10 hover:border-[#E4405F]/40 hover:text-[#E4405F]',
+  },
+  {
+    key: 'tiktok' as const,
+    label: 'TikTok',
+    icon: TikTokIcon,
+    hoverClass: 'hover:bg-foreground/10 hover:border-foreground/40',
+  },
+  {
+    key: 'linkedin' as const,
+    label: 'LinkedIn',
+    icon: Linkedin,
+    hoverClass: 'hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/40 hover:text-[#0A66C2]',
+  },
 ]
 
 interface SocialMediaProps {
@@ -40,22 +59,22 @@ export const SocialMedia: React.FC<SocialMediaProps> = ({ offer }) => {
         </CardHeader>
         <CardContent className="pt-6">
           <div className="flex flex-wrap justify-center gap-3">
-            {socialMediaConfig.map(({ key, label, icon: Icon }) => {
+            {socialMediaConfig.map(({ key, label, icon: Icon, hoverClass }) => {
               const url = offer.socialMedia?.[key]
               if (!url) return null
 
               return (
-                <Button
+                <Link
                   key={key}
-                  variant="outline"
-                  className="h-auto px-6 py-4 flex items-center gap-3 transition-all duration-300"
-                  asChild
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center gap-3 h-auto px-6 py-4 rounded-xl border border-border/50 bg-background/50 text-sm font-medium transition-all duration-300 ${hoverClass} hover:shadow-md hover:scale-[1.03] active:scale-[0.98]`}
                 >
-                  <Link href={url} target="_blank" rel="noopener noreferrer">
-                    <Icon className="size-5" />
-                    <span className="text-sm font-medium">{label}</span>
-                  </Link>
-                </Button>
+                  <Icon className="size-5" />
+                  <span>{label}</span>
+                  <ExternalLink className="size-3 ml-1 opacity-40" />
+                </Link>
               )
             })}
           </div>
