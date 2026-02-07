@@ -6,6 +6,7 @@ import { Bebas_Neue, Montserrat } from 'next/font/google'
 import Header from '@/components/frontend/Header'
 import Footer from '@/components/frontend/Footer'
 import { RootAuthProvider } from '@/providers/RootAuthProvider'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata = {
   description: 'Eventizer - Event Management Platform',

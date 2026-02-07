@@ -55,17 +55,17 @@ export default function NavigationLinks({
                       variant="link"
                       asChild
                       className={cn(
-                        'text-white/70 after:from-white after:to-white/50',
+                        'text-white/70 after:from-white after:to-white/50 h-9 px-0 py-0',
                         normalizedPathname === link.href && 'after:scale-x-100',
                       )}
                     >
-                      <Link href={link.href} prefetch>
-                        <NavigationMenuTrigger className="bg-transparent! hover:bg-transparent! focus:bg-transparent! data-[state=open]:bg-transparent! h-auto! rounded-none! px-0! py-0! shadow-none! focus-visible:ring-0! focus-visible:outline-none! cursor-pointer!  hover:text-white/70 focus:text-white/70 data-[state=open]:text-white/70">
+                      <Link href={link.href} prefetch className="">
+                        <NavigationMenuTrigger className="bg-transparent! hover:bg-transparent! focus:bg-transparent! data-[state=open]:bg-transparent! h-auto! rounded-none! h-9 px-4! py-2! shadow-none! focus-visible:ring-0! focus-visible:outline-none! cursor-pointer!  hover:text-white/70 focus:text-white/70 data-[state=open]:text-white/70">
                           {link.label}
                         </NavigationMenuTrigger>
                       </Link>
                     </Button>
-                    <NavigationMenuContent className="border-border/50 bg-background text-foreground! shadow-lg! shadow-black/10! rounded-xl!">
+                    <NavigationMenuContent className="border-border/50 bg-background/95! border-double border-4! text-foreground! shadow-lg! shadow-black/10! rounded-xl!">
                       <OgloszeniaDropdown categories={categories} />
                     </NavigationMenuContent>
                   </>
