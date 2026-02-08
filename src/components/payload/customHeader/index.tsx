@@ -13,7 +13,7 @@ export default function CustomHeader() {
   return (
     <div className="h-0 w-full relative">
       {/* Position avatar dropdown at the top right corner */}
-      <div className="absolute z-10 top-[calc(100%+2.75rem)] right-16">
+      <div className="absolute z-10 top-[calc(100%+2rem)] right-16">
         <AvatarDropdown user={typedUser} variant="admin" showHomeLink />
       </div>
     </div>

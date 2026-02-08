@@ -1,6 +1,7 @@
 'use client'
 
 import type { User } from '@/payload-types'
+import { useRouter } from 'next/navigation'
 import { createContext, useState, useEffect, use } from 'react'
 
 type AuthContext = {
@@ -16,6 +17,7 @@ const Context = createContext<AuthContext | undefined>(undefined)
 export function RootAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [status, setStatus] = useState<AuthContext['status']>('loading')
+  const router = useRouter()
 
   async function refreshUser() {
     try {
@@ -61,7 +63,8 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         setUser(null)
         setStatus('unauthenticated')
-        window.location.href = '/'
+        // window.location.href = '/'
+        router.refresh()
       }
     } catch (error) {
       console.error('Failed to logout:', error)
