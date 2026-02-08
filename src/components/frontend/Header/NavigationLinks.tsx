@@ -65,7 +65,7 @@ export default function NavigationLinks({
                         </NavigationMenuTrigger>
                       </Link>
                     </Button>
-                    <NavigationMenuContent className="border-border/50 bg-background/95! border-double border-4! text-foreground! shadow-lg! shadow-black/10! rounded-xl!">
+                    <NavigationMenuContent className="border-border/50 bg-background border-double border-4! text-foreground! shadow-lg! shadow-black/10! rounded-xl!">
                       <OgloszeniaDropdown categories={categories} />
                     </NavigationMenuContent>
                   </>

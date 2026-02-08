@@ -471,7 +471,6 @@ export interface FeaturedOffersBlock {
  */
 export interface Offer {
   id: number;
-  _order?: string | null;
   user: number | User;
   title: string;
   /**
@@ -1446,7 +1445,6 @@ export interface ServiceCategoriesBlockSelect<T extends boolean = true> {
  * via the `definition` "offers_select".
  */
 export interface OffersSelect<T extends boolean = true> {
-  _order?: T;
   user?: T;
   title?: T;
   category?: T;

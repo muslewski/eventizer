@@ -1,4 +1,4 @@
-import { moderatorOrHigherOrSelf, publicAccess } from '@/access'
+import { adminOrHigherOrSelfByEmail, moderatorOrHigherOrSelf, publicAccess } from '@/access'
 import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
 import { ClientUser } from 'node_modules/payload/dist/auth/types'
@@ -28,7 +28,7 @@ export const OfferUploads: CollectionConfig = {
     ],
   },
   admin: {
-    // hidden: ({ user }: { user: ClientUser }) => !isClientRoleEqualOrHigher('moderator', user),
+    hidden: ({ user }) => !isClientRoleEqualOrHigher('moderator', user),
     description: {
       en: 'Upload and manage files related to offers.',
       pl: 'Przesyłaj i zarządzaj plikami związanymi z ofertami.',
@@ -52,8 +52,10 @@ export const OfferUploads: CollectionConfig = {
       }
     },
     create: publicAccess,
-    update: moderatorOrHigherOrSelf('user'),
-    delete: moderatorOrHigherOrSelf('user'),
+    // update: moderatorOrHigherOrSelf('user'),
+    // delete: moderatorOrHigherOrSelf('user'),
+    update: adminOrHigherOrSelfByEmail('uploadedBy'),
+    delete: adminOrHigherOrSelfByEmail('uploadedBy'),
   },
   fields: [
     {

@@ -19,7 +19,7 @@ export const Offers: CollectionConfig = {
       pl: 'Oferty',
     },
   },
-  orderable: true,
+  // orderable: true,
   admin: {
     useAsTitle: 'title',
     group: adminGroups.featured,

@@ -38,6 +38,7 @@ export default function HeaderCTA() {
             initial="initial"
             animate="animate"
             exit="exit"
+            className="h-9"
             transition={transition}
           >
             <HeaderAvatar />
