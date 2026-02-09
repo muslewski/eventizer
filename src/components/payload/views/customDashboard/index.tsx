@@ -34,14 +34,34 @@ const Dashboard: FC<DashboardProps> = async (props) => {
   let showExpiredBanner = false
 
   if (typedUser) {
-    if (isServiceProvider) {
-      // Service provider without active subscription
-      const subscriptionDetails = await getCurrentSubscriptionDetails(typedUser.id)
-      showExpiredBanner = !subscriptionDetails.hasSubscription
-    } else if (isClient) {
-      // Client who was previously a paying customer (subscription was deleted)
-      const returning = await isReturningCustomer(typedUser.id)
-      showExpiredBanner = returning
+    // Always check actual subscription status first
+    const subscriptionDetails = await getCurrentSubscriptionDetails(typedUser.id)
+
+    if (subscriptionDetails.hasSubscription) {
+      // User has an active subscription
+      if (isClient) {
+        // Self-healing: client with active subscription should be a service-provider
+        // This can happen if customer.subscription.deleted fired for an old subscription
+        // while a new one was already active
+        await payload.update({
+          collection: 'users',
+          id: typedUser.id,
+          data: { role: 'service-provider' },
+        })
+        payload.logger.info(
+          `Dashboard self-heal: Promoted user ${typedUser.id} from client to service-provider (has active subscription)`,
+        )
+      }
+      showExpiredBanner = false
+    } else {
+      // No active subscription
+      if (isServiceProvider) {
+        showExpiredBanner = true
+      } else if (isClient) {
+        // Client who was previously a paying customer (subscription was deleted)
+        const returning = await isReturningCustomer(typedUser.id)
+        showExpiredBanner = returning
+      }
     }
   }
 

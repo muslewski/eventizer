@@ -18,6 +18,7 @@ interface CreateCheckoutSessionParams {
 /**
  * Get or create a Stripe customer for the given user.
  * This ensures we always reuse the same Stripe customer for a user.
+ * Also ensures a Payload `stripe-customers` record exists and is linked to the user.
  */
 async function getOrCreateStripeCustomer(userId: number, email: string): Promise<string> {
   const payload = await getPayload({ config })
@@ -44,8 +45,12 @@ async function getOrCreateStripeCustomer(userId: number, email: string): Promise
   })
 
   if (stripeCustomers.data[0]) {
-    // Customer exists in Stripe - webhook will sync it to our DB
-    return stripeCustomers.data[0].id
+    const stripeCustomerId = stripeCustomers.data[0].id
+
+    // Ensure a Payload record exists and is linked to this user
+    await ensurePayloadCustomerRecord(payload, stripeCustomerId, userId, email)
+
+    return stripeCustomerId
   }
 
   // 3. Create new customer in Stripe
@@ -56,8 +61,60 @@ async function getOrCreateStripeCustomer(userId: number, email: string): Promise
     },
   })
 
-  // The webhook will automatically create the record in our stripe-customers collection
+  // Create the Payload record immediately instead of relying on webhooks (race condition)
+  await ensurePayloadCustomerRecord(payload, newCustomer.id, userId, email)
+
   return newCustomer.id
+}
+
+/**
+ * Ensure a `stripe-customers` Payload record exists and is linked to the given user.
+ * If a record with the given stripeID exists but isn't linked, update it.
+ * If no record exists, create one.
+ */
+async function ensurePayloadCustomerRecord(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  stripeCustomerId: string,
+  userId: number,
+  email: string,
+): Promise<void> {
+  try {
+    const existing = await payload.find({
+      collection: 'stripe-customers',
+      where: {
+        stripeID: { equals: stripeCustomerId },
+      },
+      limit: 1,
+    })
+
+    if (existing.docs[0]) {
+      // Record exists — ensure it's linked to the correct user
+      const linkedUser = existing.docs[0].user
+      const linkedUserId = typeof linkedUser === 'object' && linkedUser ? linkedUser.id : linkedUser
+
+      if (linkedUserId !== userId) {
+        await payload.update({
+          collection: 'stripe-customers',
+          id: existing.docs[0].id,
+          data: { user: userId },
+        })
+      }
+    } else {
+      // No Payload record — create one linked to the user
+      await payload.create({
+        collection: 'stripe-customers',
+        data: {
+          stripeID: stripeCustomerId,
+          email,
+          user: userId,
+        },
+      })
+    }
+  } catch (error) {
+    // Log but don't throw — the checkout can still proceed.
+    // The webhook sync will eventually create/update the record.
+    console.error('Error ensuring Payload stripe-customers record:', error)
+  }
 }
 /**
  * Start the payment

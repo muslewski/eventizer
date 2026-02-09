@@ -59,16 +59,19 @@ export function AvatarDropdown({
   const isClient = !isServiceProvider && !isModerator && !isAdmin
 
   useEffect(() => {
-    if (isServiceProvider) {
-      getCurrentSubscriptionDetails(user.id).then((details) => {
-        setHasActiveSubscription(details.hasSubscription)
-      })
-    } else if (isClient) {
-      // Check if this client was previously a paying customer
-      isReturningCustomer(user.id).then((returning) => {
-        setIsReturning(returning)
-      })
-    }
+    // Always check actual subscription status regardless of role
+    // This handles the case where a user is a client but has an active subscription
+    // (role mismatch that gets self-healed on next dashboard visit)
+    getCurrentSubscriptionDetails(user.id).then((details) => {
+      setHasActiveSubscription(details.hasSubscription)
+
+      // For clients: also check returning customer status if no active subscription
+      if (isClient && !details.hasSubscription) {
+        isReturningCustomer(user.id).then((returning) => {
+          setIsReturning(returning)
+        })
+      }
+    })
   }, [isServiceProvider, isClient, user.id])
 
   let imageUrl: string | null = null
@@ -125,8 +128,18 @@ export function AvatarDropdown({
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
+          {/* Client with active subscription (role mismatch - will be self-healed on dashboard visit) */}
+          {isClient && hasActiveSubscription === true && (
+            <DropdownMenuItem asChild>
+              <Link href="/app" className="cursor-pointer">
+                <Briefcase className="mr-2 h-4 w-4" />
+                Zarządzaj ofertami
+              </Link>
+            </DropdownMenuItem>
+          )}
+
           {/* Client who was never a customer */}
-          {isClient && !isReturning && (
+          {isClient && hasActiveSubscription !== true && !isReturning && (
             <DropdownMenuItem asChild>
               <Link href="/app/onboarding/service-provider" className="cursor-pointer">
                 <Briefcase className="mr-2 h-4 w-4" />
@@ -135,8 +148,8 @@ export function AvatarDropdown({
             </DropdownMenuItem>
           )}
 
-          {/* Client who previously had a subscription (returning customer) */}
-          {isClient && isReturning && (
+          {/* Client who previously had a subscription (returning customer, no active sub) */}
+          {isClient && hasActiveSubscription === false && isReturning && (
             <DropdownMenuItem asChild>
               <Link
                 href="/app/onboarding/service-provider?renew=true"

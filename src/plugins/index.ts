@@ -5,6 +5,7 @@ import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { getServerSideURL } from '@/utilities/getURL'
 import { Page } from '@/payload-types'
+import { stripe } from '@/lib/stripe'
 
 const generateTitle: GenerateTitle<Page> = ({ doc }) => {
   return doc?.title ? `${doc.title}` : 'Eventizer'
@@ -131,6 +132,60 @@ export const plugins: Plugin[] = [
             data: updateData,
           })
 
+          // Safety net: ensure stripe-customers record is linked to the user
+          if (session.customer) {
+            try {
+              const existingRecord = await payload.find({
+                collection: 'stripe-customers',
+                where: {
+                  stripeID: { equals: session.customer },
+                },
+                limit: 1,
+              })
+
+              if (existingRecord.docs[0]) {
+                const linkedUser = existingRecord.docs[0].user
+                const linkedUserId =
+                  typeof linkedUser === 'object' && linkedUser ? linkedUser.id : linkedUser
+
+                if (linkedUserId !== numericUserId) {
+                  await payload.update({
+                    collection: 'stripe-customers',
+                    id: existingRecord.docs[0].id,
+                    data: { user: numericUserId },
+                  })
+                  console.log(
+                    `checkout.session.completed: Linked stripe-customers record to user ${numericUserId}`,
+                  )
+                }
+              } else {
+                // Fetch user email for creating the record
+                const userDoc = await payload.findByID({
+                  collection: 'users',
+                  id: numericUserId,
+                  depth: 0,
+                })
+
+                await payload.create({
+                  collection: 'stripe-customers',
+                  data: {
+                    stripeID: session.customer,
+                    email: userDoc?.email || undefined,
+                    user: numericUserId,
+                  },
+                })
+                console.log(
+                  `checkout.session.completed: Created stripe-customers record for user ${numericUserId}`,
+                )
+              }
+            } catch (linkError) {
+              console.error(
+                'checkout.session.completed: Error linking stripe-customers record:',
+                linkError,
+              )
+            }
+          }
+
           console.log(
             `checkout.session.completed: User ${numericUserId} promoted to service-provider`,
           )
@@ -154,6 +209,35 @@ export const plugins: Plugin[] = [
 
           if (!customerId) {
             console.log('customer.subscription.deleted: No customer ID found, skipping')
+            return
+          }
+
+          // IMPORTANT: Check if user has other active/trialing subscriptions before reverting.
+          // When a user renews or changes plan, Stripe may delete the old subscription
+          // while the new one is already active.
+          const otherActiveSubscriptions = await stripe.subscriptions.list({
+            customer: customerId,
+            status: 'active',
+            limit: 1,
+          })
+
+          if (otherActiveSubscriptions.data.length > 0) {
+            console.log(
+              `customer.subscription.deleted: Customer ${customerId} still has ${otherActiveSubscriptions.data.length} active subscription(s), skipping revert`,
+            )
+            return
+          }
+
+          const trialingSubscriptions = await stripe.subscriptions.list({
+            customer: customerId,
+            status: 'trialing',
+            limit: 1,
+          })
+
+          if (trialingSubscriptions.data.length > 0) {
+            console.log(
+              `customer.subscription.deleted: Customer ${customerId} still has trialing subscription(s), skipping revert`,
+            )
             return
           }
 
