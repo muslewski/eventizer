@@ -12,6 +12,7 @@ interface PriceSelectionProps {
   onPriceSelect: (priceId: string) => void
   isLoading?: boolean
   planName?: string
+  currentPriceId?: string
 }
 
 function getIntervalLabel(interval: string, intervalCount: number): string {
@@ -96,6 +97,7 @@ export function PriceSelection({
   onPriceSelect,
   isLoading = false,
   planName,
+  currentPriceId,
 }: PriceSelectionProps) {
   if (isLoading) {
     return (
@@ -160,6 +162,7 @@ export function PriceSelection({
           if (!price.recurring || price.unitAmount === null) return null
 
           const isSelected = selectedPriceId === price.id
+          const isCurrent = currentPriceId === price.id
           const isBestValue = price.id === bestValueId
           const intervalLabel = getIntervalLabel(
             price.recurring.interval,
@@ -205,6 +208,11 @@ export function PriceSelection({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-semibold text-[var(--theme-text)]">{intervalLabel}</span>
+                  {isCurrent && (
+                    <Badge variant="outline" className="text-[0.55rem]">
+                      Obecny
+                    </Badge>
+                  )}
                   {isBestValue && (
                     <Badge variant="golden" className="text-[0.55rem]">
                       Najlepsza wartość

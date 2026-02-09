@@ -41,8 +41,7 @@ export default function StickyHeader({ categories }: StickyHeaderProps) {
     }
   })
 
-  // Don't render on /ogloszenia
-  if (normalizedPathname === '/ogloszenia') return null
+  const isOgloszenia = normalizedPathname === '/ogloszenia'
 
   return (
     <motion.header
@@ -58,7 +57,7 @@ export default function StickyHeader({ categories }: StickyHeaderProps) {
         hidden: { opacity: 0, y: '-200%' },
       }}
       initial="hidden"
-      animate={pastThreshold && !hidden ? 'visible' : 'hidden'}
+      animate={pastThreshold && !hidden && !isOgloszenia ? 'visible' : 'hidden'}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
     >
       {/* Logo – compact */}

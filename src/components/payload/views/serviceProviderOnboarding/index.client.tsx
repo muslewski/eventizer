@@ -20,6 +20,7 @@ interface ServiceProviderOnboardingClientProps {
   categories: ServiceCategory[]
   user: User
   isEditMode?: boolean
+  isRenewMode?: boolean
   currentSubscription?: CurrentSubscriptionDetails
   initialCategoryPath?: number[]
 }
@@ -95,6 +96,7 @@ export function ServiceProviderOnboardingClient({
   categories,
   user,
   isEditMode = false,
+  isRenewMode = false,
   currentSubscription,
   initialCategoryPath = [],
 }: ServiceProviderOnboardingClientProps) {
@@ -122,15 +124,15 @@ export function ServiceProviderOnboardingClient({
   // Show revert option only for service-providers without subscription (not for client)
   const showRevertOption = isServiceProviderOnboarding && !isWithSubscription
 
-  // Initialize with current category if in edit mode
+  // Initialize with current category if in edit mode or renew mode
   useEffect(() => {
-    if (isEditMode && initialCategoryPath.length > 0) {
+    if ((isEditMode || isRenewMode) && initialCategoryPath.length > 0) {
       const initialCategories = findCategoriesByPath(categories, initialCategoryPath)
       if (initialCategories) {
         setSelectedCategories(initialCategories)
       }
     }
-  }, [isEditMode, initialCategoryPath, categories])
+  }, [isEditMode, isRenewMode, initialCategoryPath, categories])
 
   const isComplete = isCategorySelectionComplete(selectedCategories)
   const requiredPlan = getRequiredPlan(selectedCategories)
@@ -146,7 +148,18 @@ export function ServiceProviderOnboardingClient({
       const result = await getStripePrices(productId)
       if (result.success) {
         setAvailablePrices(result.prices)
-        // Auto-select the first (monthly) price
+
+        // In edit mode, pre-select the current price if it belongs to this product
+        if (isEditMode && currentSubscription?.currentPriceId) {
+          const currentPriceMatch = result.prices.find(
+            (p) => p.id === currentSubscription.currentPriceId,
+          )
+          if (currentPriceMatch) {
+            setSelectedPriceId(currentPriceMatch.id)
+          }
+        }
+
+        // Auto-select the first (monthly) price only if single option
         if (result.prices.length === 1) {
           setSelectedPriceId(result.prices[0].id)
         }
@@ -159,7 +172,7 @@ export function ServiceProviderOnboardingClient({
     } finally {
       setIsPricesLoading(false)
     }
-  }, [])
+  }, [isEditMode, currentSubscription?.currentPriceId])
 
   useEffect(() => {
     if (isComplete && stripeProductId) {
@@ -178,8 +191,12 @@ export function ServiceProviderOnboardingClient({
     const currentPlanLevel = currentSubscription.currentPlan?.level ?? 0
     const newPlanLevel = requiredPlan?.level ?? 0
 
-    // Same product = either same plan or just category change
+    // Same product
     if (currentSubscription.currentProductId === stripeProductId) {
+      // Check if user is changing billing interval
+      if (selectedPriceId && selectedPriceId !== currentSubscription.currentPriceId) {
+        return 'same_plan' // interval change on same product
+      }
       return 'category_only'
     }
 
@@ -232,10 +249,11 @@ export function ServiceProviderOnboardingClient({
       const categorySlugs = selectedCategories.map((cat) => cat.slug)
 
       if (isEditMode && currentSubscription?.hasSubscription) {
-        // Handle subscription update
+        // Handle subscription update (with optional interval change)
         const result = await updateSubscription({
           userId: user.id,
           newProductId: stripeProductId!,
+          newPriceId: selectedPriceId || undefined,
           categoryNames,
           categorySlugs,
         })
@@ -277,7 +295,9 @@ export function ServiceProviderOnboardingClient({
           priceId: selectedPriceId,
           userId: user.id,
           successUrl: '/app',
-          cancelUrl: '/app/onboarding/service-provider',
+          cancelUrl: isRenewMode
+            ? '/app/onboarding/service-provider?renew=true'
+            : '/app/onboarding/service-provider',
           categoryNames,
           categorySlugs,
           userEmail: user.email || undefined,
@@ -301,6 +321,7 @@ export function ServiceProviderOnboardingClient({
 
   const getSubmitButtonText = () => {
     if (isSubmitting) return 'Przetwarzanie...'
+    if (isRenewMode) return 'Odnów subskrypcję'
     if (!isEditMode) return 'Kontynuuj'
 
     switch (changeType) {
@@ -308,6 +329,8 @@ export function ServiceProviderOnboardingClient({
         return 'Ulepsz plan'
       case 'downgrade':
         return 'Zmień na niższy plan'
+      case 'same_plan':
+        return 'Zmień okres rozliczeniowy'
       case 'category_only':
         return 'Zapisz kategorię'
       default:
@@ -340,6 +363,17 @@ export function ServiceProviderOnboardingClient({
             </AlertDescription>
           </Alert>
         )
+      case 'same_plan':
+        return (
+          <Alert className="border-blue-500/50 bg-blue-500/10">
+            <Info className="h-4 w-4 text-blue-600" />
+            <AlertTitle>Zmiana okresu rozliczeniowego</AlertTitle>
+            <AlertDescription>
+              Zmieniasz okres rozliczeniowy na tym samym planie. Proporcjonalna różnica zostanie
+              naliczona lub zwrócona.
+            </AlertDescription>
+          </Alert>
+        )
       case 'category_only':
         return (
           <Alert className="border-green-500/50 bg-green-500/10">
@@ -357,11 +391,28 @@ export function ServiceProviderOnboardingClient({
 
   return (
     <div className="w-full max-w-2xl space-y-6 my-16">
-      {isEditMode && (
+      {(isEditMode || isRenewMode) && (
         <Button variant="ghost" onClick={() => router.back()} className="mb-4">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Powrót
         </Button>
+      )}
+
+      {/* Renewal banner */}
+      {isRenewMode && (
+        <Alert className="border-destructive/50 bg-destructive/5">
+          <AlertTriangle className="h-4 w-4 text-destructive" />
+          <AlertTitle>Subskrypcja wygasła</AlertTitle>
+          <AlertDescription>
+            Twoja subskrypcja wygasła. Wybierz kategorię i plan, aby odnowić dostęp do panelu
+            usługodawcy.
+            {user.serviceCategory && (
+              <>
+                {' '}Ostatnia kategoria: <strong>{user.serviceCategory}</strong>.
+              </>
+            )}
+          </AlertDescription>
+        </Alert>
       )}
 
       {isEditMode && currentSubscription?.currentPlan && (
@@ -402,14 +453,15 @@ export function ServiceProviderOnboardingClient({
         onSelectionChange={handleCategoryChange}
       />
 
-      {/* Price selection - show when category is complete and NOT in edit mode with existing subscription */}
-      {isComplete && !(isEditMode && currentSubscription?.hasSubscription) && (
+      {/* Price selection - always show when category is complete */}
+      {isComplete && (
         <PriceSelection
           prices={availablePrices}
           selectedPriceId={selectedPriceId}
           onPriceSelect={setSelectedPriceId}
           isLoading={isPricesLoading}
           planName={requiredPlan?.name ?? undefined}
+          currentPriceId={isEditMode ? currentSubscription?.currentPriceId : undefined}
         />
       )}
 
@@ -436,8 +488,7 @@ export function ServiceProviderOnboardingClient({
             disabled={
               isSubmitting ||
               !isComplete ||
-              // For new subscriptions, require price selection
-              (!(isEditMode && currentSubscription?.hasSubscription) && !selectedPriceId)
+              !selectedPriceId
             }
             size="lg"
             className={cn(

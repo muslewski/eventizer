@@ -5,6 +5,7 @@ import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { checkSubscription, SubscriptionStatus } from '@/actions/stripe/checkSubscription'
 import { AdminLayoutClient } from './AdminLayoutClient'
+import { SuppressHydrationWarnings } from '@/components/providers/SuppressHydrationWarnings'
 import { Role } from '@/access/hierarchy'
 import { Bebas_Neue, Montserrat } from 'next/font/google'
 
@@ -47,6 +48,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
       className={`${bebasNeue.variable} ${montserrat.variable} overflow-x-clip`}
       suppressHydrationWarning
     >
+      <SuppressHydrationWarnings />
       <AdminLayoutClient>{children}</AdminLayoutClient>
     </div>
   )

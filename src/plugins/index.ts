@@ -189,6 +189,34 @@ export const plugins: Plugin[] = [
             },
           })
 
+          // Set all of this user's published offers to draft
+          const userOffers = await payload.find({
+            collection: 'offers',
+            where: {
+              user: { equals: userId },
+              _status: { equals: 'published' },
+            },
+            limit: 0, // fetch all
+            depth: 0,
+          })
+
+          if (userOffers.docs.length > 0) {
+            await Promise.all(
+              userOffers.docs.map((offer) =>
+                payload.update({
+                  collection: 'offers',
+                  id: offer.id,
+                  data: {
+                    _status: 'draft',
+                  },
+                }),
+              ),
+            )
+            console.log(
+              `customer.subscription.deleted: Set ${userOffers.docs.length} offers to draft for user ${userId}`,
+            )
+          }
+
           console.log(
             `customer.subscription.deleted: User ${userId} reverted to client after subscription ${subscription.id} ended`,
           )

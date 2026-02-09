@@ -9,6 +9,7 @@ import { SubscriptionPlan } from '@/payload-types'
 export interface CurrentSubscriptionDetails {
   hasSubscription: boolean
   currentProductId?: string
+  currentPriceId?: string
   currentPlan?: SubscriptionPlan
   currentPeriodEnd?: string
   cancelAtPeriodEnd?: boolean
@@ -51,9 +52,12 @@ export async function getCurrentSubscriptionDetails(
       ? new Date(subscription.current_period_end * 1000).toISOString()
       : undefined
 
+    const currentPriceId = subscriptionItem.price.id
+
     return {
       hasSubscription: true,
       currentProductId,
+      currentPriceId,
       currentPlan: plans.docs[0] || undefined,
       currentPeriodEnd,
       cancelAtPeriodEnd: subscription.cancel_at_period_end,

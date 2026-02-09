@@ -3,14 +3,18 @@ import { ServerProps } from 'payload'
 import { FC, Fragment } from 'react'
 import { DashboardBanner } from './DashboardBanner'
 import { DashboardGroup } from './DashboardGroup'
+import { SubscriptionExpiredBanner } from './SubscriptionExpiredBanner'
 import type { I18nClient } from '@payloadcms/translations'
 import { adminGroups } from '@/lib/adminGroups'
+import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
+import { isReturningCustomer } from '@/actions/stripe/isReturningCustomer'
+import type { User } from '@/payload-types'
 
 type DashboardProps = {
   navGroups: ReturnType<typeof groupNavItems>
 } & ServerProps
 
-const Dashboard: FC<DashboardProps> = (props) => {
+const Dashboard: FC<DashboardProps> = async (props) => {
   const {
     navGroups,
     i18n,
@@ -23,6 +27,24 @@ const Dashboard: FC<DashboardProps> = (props) => {
     },
   } = props
 
+  // Check if user needs a subscription expired banner
+  const typedUser = user as User | null
+  const isServiceProvider = typedUser?.role === 'service-provider'
+  const isClient = typedUser?.role === 'client'
+  let showExpiredBanner = false
+
+  if (typedUser) {
+    if (isServiceProvider) {
+      // Service provider without active subscription
+      const subscriptionDetails = await getCurrentSubscriptionDetails(typedUser.id)
+      showExpiredBanner = !subscriptionDetails.hasSubscription
+    } else if (isClient) {
+      // Client who was previously a paying customer (subscription was deleted)
+      const returning = await isReturningCustomer(typedUser.id)
+      showExpiredBanner = returning
+    }
+  }
+
   const featuredGroups = navGroups.filter(
     ({ label }) => label === adminGroups.featured.en || label === adminGroups.featured.pl,
   )
@@ -34,6 +56,10 @@ const Dashboard: FC<DashboardProps> = (props) => {
     <Fragment>
       <DashboardBanner />
       <div className="mt-10 mx-4 md:mx-10 lg:mx-16 mb-16 flex flex-col gap-8">
+        {/* Subscription expired banner for service-providers */}
+        {showExpiredBanner && (
+          <SubscriptionExpiredBanner serviceCategory={typedUser?.serviceCategory} />
+        )}
         {/* Featured Groups */}
         {featuredGroups.map(({ label, entities }, index) => (
           <DashboardGroup

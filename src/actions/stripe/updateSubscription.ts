@@ -20,11 +20,13 @@ export interface UpdateSubscriptionResult {
 export async function updateSubscription({
   userId,
   newProductId,
+  newPriceId,
   categoryNames,
   categorySlugs,
 }: {
   userId: number
   newProductId: string
+  newPriceId?: string
   categoryNames: string[]
   categorySlugs: string[]
 }): Promise<UpdateSubscriptionResult> {
@@ -64,7 +66,42 @@ export async function updateSubscription({
         : subscriptionItem.price.product.id
 
     // 4. Check if it's the same product
+    const currentPriceId = subscriptionItem.price.id
     if (currentProductId === newProductId) {
+      // Check if user wants to change billing interval on the same plan
+      if (newPriceId && newPriceId !== currentPriceId) {
+        // Update subscription item to the new price (interval change)
+        await stripe.subscriptions.update(subscription.id, {
+          items: [
+            {
+              id: subscriptionItem.id,
+              price: newPriceId,
+            },
+          ],
+          proration_behavior: 'create_prorations',
+          metadata: {
+            categoryNames: categoryNames.join(' > '),
+            categorySlugs: categorySlugs.join('/'),
+          },
+        })
+
+        // Update user's category
+        await payload.update({
+          collection: 'users',
+          id: userId,
+          data: {
+            serviceCategory: categoryNames.join(' > '),
+            serviceCategorySlug: categorySlugs.join('/'),
+          },
+        })
+
+        return {
+          success: true,
+          message: 'Okres rozliczeniowy i kategoria zostały zaktualizowane.',
+          action: 'same_plan',
+        }
+      }
+
       // Just update the category, no subscription change needed
       await payload.update({
         collection: 'users',
@@ -82,43 +119,43 @@ export async function updateSubscription({
       }
     }
 
-    // 5. Get the new product's price - fetch all active prices for the product
-    const prices = await stripe.prices.list({
-      product: newProductId,
-      active: true,
-      limit: 10,
-    })
+    // 5. Determine the price to use
+    let selectedPriceId = newPriceId || null
 
-    if (prices.data.length === 0) {
-      return {
-        success: false,
-        message: 'No active prices found for the selected plan.',
+    if (!selectedPriceId) {
+      // No price explicitly selected — auto-pick from available prices
+      const prices = await stripe.prices.list({
+        product: newProductId,
+        active: true,
+        limit: 10,
+      })
+
+      if (prices.data.length === 0) {
+        return {
+          success: false,
+          message: 'No active prices found for the selected plan.',
+        }
       }
-    }
 
-    // Find the best price: prefer recurring, then default, then first available
-    let newPriceId: string | null = null
-
-    // First, try to find a recurring price (for subscriptions)
-    const recurringPrice = prices.data.find((price) => price.type === 'recurring')
-    if (recurringPrice) {
-      newPriceId = recurringPrice.id
-    }
-
-    // If no recurring price, try to get the product's default_price
-    if (!newPriceId) {
-      const product = await stripe.products.retrieve(newProductId)
-      if (product.default_price) {
-        newPriceId =
-          typeof product.default_price === 'string'
-            ? product.default_price
-            : product.default_price.id
+      // Prefer recurring, then default, then first available
+      const recurringPrice = prices.data.find((price) => price.type === 'recurring')
+      if (recurringPrice) {
+        selectedPriceId = recurringPrice.id
       }
-    }
 
-    // Fallback to first available price
-    if (!newPriceId) {
-      newPriceId = prices.data[0].id
+      if (!selectedPriceId) {
+        const product = await stripe.products.retrieve(newProductId)
+        if (product.default_price) {
+          selectedPriceId =
+            typeof product.default_price === 'string'
+              ? product.default_price
+              : product.default_price.id
+        }
+      }
+
+      if (!selectedPriceId) {
+        selectedPriceId = prices.data[0].id
+      }
     }
 
     // 6. Get plan levels to determine upgrade/downgrade
@@ -146,7 +183,7 @@ export async function updateSubscription({
       items: [
         {
           id: subscriptionItem.id,
-          price: newPriceId,
+          price: selectedPriceId,
         },
       ],
       proration_behavior: isUpgrade ? 'create_prorations' : 'none',

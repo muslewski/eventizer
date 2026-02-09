@@ -21,8 +21,9 @@ const ServiceProviderOnboarding = async ({
 
   // Check subscription status
   const subscriptionDetails = await getCurrentSubscriptionDetails(user.id)
-  // check if edit mode
+  // check if edit mode or renew mode
   const isEditMode = resolvedSearchParams?.edit === 'true'
+  const isRenewMode = resolvedSearchParams?.renew === 'true'
 
   // If user already has an active subscription and is NOT in edit mode, redirect to account page
   if (subscriptionDetails.hasSubscription && !isEditMode) {
@@ -37,9 +38,9 @@ const ServiceProviderOnboarding = async ({
     limit: 100,
   })
 
-  // If edit mode, try to pre-populate the current category path
+  // If edit mode or renew mode, try to pre-populate the current category path
   const initialCategoryPath: number[] = []
-  if (isEditMode && user.serviceCategorySlug) {
+  if ((isEditMode || isRenewMode) && user.serviceCategorySlug) {
     const slugParts = user.serviceCategorySlug.split('/')
 
     // Find categories matching the slug path
@@ -49,6 +50,20 @@ const ServiceProviderOnboarding = async ({
         initialCategoryPath.push(category.id)
       }
     }
+  }
+
+  // Determine page title and description
+  const getTitle = () => {
+    if (isEditMode) return 'Zmień kategorię lub plan'
+    if (isRenewMode) return 'Odnów subskrypcję'
+    return 'Wybierz kategorię oferowanych usług'
+  }
+
+  const getDescription = () => {
+    if (isEditMode) return 'Możesz zmienić kategorię usług lub przejść na inny plan subskrypcji.'
+    if (isRenewMode)
+      return 'Twoja subskrypcja wygasła. Wybierz kategorię i plan, aby odnowić dostęp.'
+    return 'Zanim zaczniesz, prosimy o wybranie odpowiedniej kategorii.'
   }
 
   return (
@@ -64,17 +79,14 @@ const ServiceProviderOnboarding = async ({
     >
       <Gutter>
         <div>
-          <h1>{isEditMode ? 'Zmień kategorię lub plan' : 'Wybierz kategorię oferowanych usług'}</h1>
-          <p>
-            {isEditMode
-              ? 'Możesz zmienić kategorię usług lub przejść na inny plan subskrypcji.'
-              : 'Zanim zaczniesz, prosimy o wybranie odpowiedniej kategorii.'}
-          </p>
+          <h1>{getTitle()}</h1>
+          <p>{getDescription()}</p>
 
           <ServiceProviderOnboardingClient
             categories={categoriesResult.docs}
             user={initPageResult.req.user}
             isEditMode={isEditMode}
+            isRenewMode={isRenewMode}
             currentSubscription={subscriptionDetails}
             initialCategoryPath={initialCategoryPath}
           />

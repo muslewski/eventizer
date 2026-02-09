@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -23,10 +24,13 @@ import {
   LogOut,
   Home,
   Megaphone,
+  RefreshCw,
 } from 'lucide-react'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import { getInitials, hasRole } from './utils'
 import { Button } from '@/components/ui/button'
+import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
+import { isReturningCustomer } from '@/actions/stripe/isReturningCustomer'
 
 export interface AvatarDropdownProps {
   user: User
@@ -47,6 +51,25 @@ export function AvatarDropdown({
   const isServiceProvider = hasRole(user, 'service-provider')
   const isModerator = hasRole(user, 'moderator')
   const isAdmin = hasRole(user, 'admin')
+
+  // Check subscription status for service-providers, and returning customer status for clients
+  const [hasActiveSubscription, setHasActiveSubscription] = useState<boolean | null>(null)
+  const [isReturning, setIsReturning] = useState<boolean>(false)
+
+  const isClient = !isServiceProvider && !isModerator && !isAdmin
+
+  useEffect(() => {
+    if (isServiceProvider) {
+      getCurrentSubscriptionDetails(user.id).then((details) => {
+        setHasActiveSubscription(details.hasSubscription)
+      })
+    } else if (isClient) {
+      // Check if this client was previously a paying customer
+      isReturningCustomer(user.id).then((returning) => {
+        setIsReturning(returning)
+      })
+    }
+  }, [isServiceProvider, isClient, user.id])
 
   let imageUrl: string | null = null
   if (user?.profilePicture && isExpandedDoc<ProfilePicture>(user.profilePicture)) {
@@ -102,11 +125,25 @@ export function AvatarDropdown({
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          {!isServiceProvider && !isModerator && !isAdmin && (
+          {/* Client who was never a customer */}
+          {isClient && !isReturning && (
             <DropdownMenuItem asChild>
               <Link href="/app/onboarding/service-provider" className="cursor-pointer">
                 <Briefcase className="mr-2 h-4 w-4" />
                 Zostań usługodawcą
+              </Link>
+            </DropdownMenuItem>
+          )}
+
+          {/* Client who previously had a subscription (returning customer) */}
+          {isClient && isReturning && (
+            <DropdownMenuItem asChild>
+              <Link
+                href="/app/onboarding/service-provider?renew=true"
+                className="cursor-pointer text-destructive focus:text-destructive"
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Wznów subskrypcję
               </Link>
             </DropdownMenuItem>
           )}
@@ -142,6 +179,29 @@ export function AvatarDropdown({
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
+          {/* Service provider with active subscription - can change plan */}
+          {isServiceProvider && hasActiveSubscription === true && (
+            <DropdownMenuItem asChild>
+              <Link href="/app/onboarding/service-provider?edit=true" className="cursor-pointer">
+                <Briefcase className="mr-2 h-4 w-4" />
+                Zmień plan
+              </Link>
+            </DropdownMenuItem>
+          )}
+
+          {/* Service provider whose subscription expired */}
+          {isServiceProvider && hasActiveSubscription === false && (
+            <DropdownMenuItem asChild>
+              <Link
+                href="/app/onboarding/service-provider?renew=true"
+                className="cursor-pointer text-destructive focus:text-destructive"
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Wznów subskrypcję
+              </Link>
+            </DropdownMenuItem>
+          )}
+
           <DropdownMenuItem asChild>
             <Link href="/app/account" className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />

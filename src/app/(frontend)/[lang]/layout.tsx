@@ -7,6 +7,7 @@ import Header from '@/components/frontend/Header'
 import Footer from '@/components/frontend/Footer'
 import { RootAuthProvider } from '@/providers/RootAuthProvider'
 import { Analytics } from '@vercel/analytics/next'
+import { SuppressHydrationWarnings } from '@/components/providers/SuppressHydrationWarnings'
 
 export const metadata = {
   description: 'Eventizer - Event Management Platform',
@@ -54,12 +55,13 @@ export default async function RootLayout({
         <link rel="manifest" href="/my-favicon/manifest.json" />
       </head>
       <body className="bg-background h-full" suppressHydrationWarning>
+        <SuppressHydrationWarnings />
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <RootAuthProvider>
             <div className="w-full px-4 sm:px-8 transition-[padding] duration-900 ease-in-out">
-              <main className="w-full relative" suppressHydrationWarning>
+              <main className="w-full relative">
                 <Header />
-                <div className=" w-full relative ease-in-out">{children}</div>
+                <div className="w-full relative ease-in-out">{children}</div>
               </main>
             </div>
             <Footer />
