@@ -5,7 +5,7 @@ import config from '@payload-config'
 import { headers } from 'next/headers'
 import { auth } from '@/auth/auth'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
-import type { ServiceCategory, SubscriptionPlan } from '@/payload-types'
+import type { Media, ServiceCategory, SubscriptionPlan } from '@/payload-types'
 
 export interface CategoryOption {
   slug: string
@@ -17,6 +17,7 @@ export interface CategoryOption {
   depth: number
   isAvailable: boolean
   isUserDefault: boolean
+  iconUrl: string | null
   children: CategoryOption[]
 }
 
@@ -36,6 +37,7 @@ interface SubcategoryItem {
   name: string
   slug: string
   requiredPlan?: string | SubscriptionPlan | null
+  icon?: number | Media | null
   description?: string | null
   subcategory_level_1?: SubcategoryItem[] | null
   subcategory_level_2?: SubcategoryItem[] | null
@@ -91,6 +93,12 @@ function buildCategoryTree(
       }
     }
 
+    // Extract icon URL if available
+    let iconUrl: string | null = null
+    if (category.icon && typeof category.icon === 'object' && 'url' in category.icon) {
+      iconUrl = category.icon.url || null
+    }
+
     // User can access if their plan level is >= required level
     const isAvailable = userPlanLevel >= requiredPlanLevel
     const isUserDefault = fullPath === userDefaultCategorySlug
@@ -122,6 +130,7 @@ function buildCategoryTree(
       depth,
       isAvailable,
       isUserDefault,
+      iconUrl,
       children,
     }
   }
