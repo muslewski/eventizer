@@ -87,6 +87,10 @@ export default buildConfig({
         dashboard: {
           Component: '@/components/payload/views/customDashboard',
         },
+        'sign-out-redirect': {
+          Component: '@/components/payload/views/signOutRedirect',
+          path: '/sign-out-redirect',
+        },
       },
       beforeNavLinks: ['@/components/payload/beforeNav'],
       graphics: {
@@ -103,11 +107,11 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     routes: {
-      login: '/redirect-to-sign-in',
-      createFirstUser: '/redirect-to-sign-in',
-      forgot: '/redirect-to-sign-in',
-      reset: '/redirect-to-sign-in',
-      logout: '/sign-out',
+      login: '/app/sign-out-redirect',
+      createFirstUser: '/app/sign-out-redirect',
+      forgot: '/app/sign-out-redirect',
+      reset: '/app/sign-out-redirect',
+      logout: '/app/sign-out-redirect',
     },
   },
 

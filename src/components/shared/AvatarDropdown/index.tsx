@@ -169,7 +169,7 @@ export function AvatarDropdown({
         ) : (
           <DropdownMenuItem asChild>
             <Link
-              href="/app/sign-out"
+              href="/app/sign-out-redirect"
               className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950"
             >
               <LogOut className="mr-2 h-4 w-4" />

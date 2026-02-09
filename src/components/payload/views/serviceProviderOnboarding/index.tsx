@@ -13,15 +13,21 @@ const ServiceProviderOnboarding = async ({
   searchParams,
 }: AdminViewServerProps) => {
   if (!initPageResult.req.user) {
-    // redirect('/app/auth/sign-in')
-    redirect('/app/sign-in')
+    redirect('/auth/sign-in')
   }
 
   const user = initPageResult.req.user
+  const resolvedSearchParams = await searchParams
 
-  // Check if this is edit mode (user already has subscription)
+  // Check subscription status
   const subscriptionDetails = await getCurrentSubscriptionDetails(user.id)
-  const isEditMode = subscriptionDetails.hasSubscription
+  // check if edit mode
+  const isEditMode = resolvedSearchParams?.edit === 'true'
+
+  // If user already has an active subscription and is NOT in edit mode, redirect to account page
+  if (subscriptionDetails.hasSubscription && !isEditMode) {
+    redirect('/app/account')
+  }
 
   // Fetch service categories on server
   const categoriesResult = await initPageResult.req.payload.find({

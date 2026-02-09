@@ -11,9 +11,11 @@ const AdminAvatar = () => {
 
   const typedUser = user as unknown as User
 
+
+
   return (
     <div className="translate-y-7">
-      <AvatarDropdown user={typedUser} variant="admin" showHomeLink />
+      <AvatarDropdown user={typedUser} variant="admin" showHomeLink/>
     </div>
   )
 }

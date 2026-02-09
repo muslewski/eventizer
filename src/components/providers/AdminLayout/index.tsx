@@ -23,58 +23,31 @@ export interface AdminLayoutProps {
   children: React.ReactNode
 }
 
-export interface UserSubscriptionData {
-  userId: number | null
-  role: Role | null
-  subscriptionStatus: SubscriptionStatus | null
-}
-
-async function getUserSubscriptionData(): Promise<UserSubscriptionData> {
-  const headersList = await headers()
+export default async function AdminLayout({ children }: AdminLayoutProps) {
+   const headersList = await headers()
   const session = await auth.api.getSession({ headers: headersList })
 
   if (!session?.user) {
-    redirect('/auth/sign-in')
+    redirect('/')
   }
 
-  // Get user from Payload to get the role
   const payload = await getPayload({ config })
-  const users = await payload.find({
+  const user = await payload.find({
     collection: 'users',
     where: { email: { equals: session.user.email } },
     limit: 1,
   })
 
-  const user = users.docs[0]
-  if (!user) {
-    redirect('/auth/sign-in')
-  }
-
-  // Only check subscription for service providers
-  let subscriptionStatus: SubscriptionStatus | null = null
-  if (user.role === 'service-provider') {
-    subscriptionStatus = await checkSubscription(user.id)
-  }
-
-  return {
-    userId: user.id,
-    role: user.role,
-    subscriptionStatus,
-  }
-}
-
-export default async function AdminLayout({ children }: AdminLayoutProps) {
-  const userSubscriptionData = await getUserSubscriptionData()
+  const userRole = user?.docs[0]?.role
 
   return (
-    // <AdminLayoutClient userSubscriptionData={userSubscriptionData}>{children}</AdminLayoutClient>
     <div
       id="admin-layout"
-      data-user-role={userSubscriptionData.role ?? undefined}
+      data-user-role={userRole ?? undefined}
       className={`${bebasNeue.variable} ${montserrat.variable} overflow-x-clip`}
       suppressHydrationWarning
     >
-      <AdminLayoutClient userSubscriptionData={userSubscriptionData}>{children}</AdminLayoutClient>
+      <AdminLayoutClient>{children}</AdminLayoutClient>
     </div>
   )
 }

@@ -6,11 +6,12 @@ import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe'
 
 interface CreateCheckoutSessionParams {
-  productId: string
+  priceId: string
   userId: number
   successUrl: string
   cancelUrl: string
   categoryNames: string[]
+  categorySlugs: string[]
   userEmail?: string
 }
 
@@ -63,11 +64,12 @@ async function getOrCreateStripeCustomer(userId: number, email: string): Promise
  * @returns { url: string } - The URL to redirect the user to for checkout
  */
 export async function createCheckoutSession({
-  productId,
+  priceId,
   userId,
   successUrl,
   cancelUrl,
   categoryNames,
+  categorySlugs,
   userEmail,
 }: CreateCheckoutSessionParams) {
   try {
@@ -77,20 +79,7 @@ export async function createCheckoutSession({
     // Get or create Stripe customer (prevents duplicate customers)
     const customerId = userEmail ? await getOrCreateStripeCustomer(userId, userEmail) : undefined
 
-    // Get the price for this product
-    const prices = await stripe.prices.list({
-      product: productId,
-      active: true,
-      limit: 1,
-    })
-
-    if (!prices.data.length) {
-      throw new Error('No active prices found for the selected product')
-    }
-
-    const priceId = prices.data[0].id
-
-    // Create Stripe Checkout session with existing customer
+    // Create Stripe Checkout session with the user-selected price
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [
@@ -104,6 +93,7 @@ export async function createCheckoutSession({
       metadata: {
         userId,
         categoryNames: JSON.stringify(categoryNames),
+        categorySlugs: JSON.stringify(categorySlugs),
       },
       // Use customer ID if available, otherwise fallback to email
       ...(customerId ? { customer: customerId } : { customer_email: userEmail }),

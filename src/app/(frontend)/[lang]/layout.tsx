@@ -57,7 +57,7 @@ export default async function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <RootAuthProvider>
             <div className="w-full px-4 sm:px-8 transition-[padding] duration-900 ease-in-out">
-              <main className="w-full relative">
+              <main className="w-full relative" suppressHydrationWarning>
                 <Header />
                 <div className=" w-full relative ease-in-out">{children}</div>
               </main>

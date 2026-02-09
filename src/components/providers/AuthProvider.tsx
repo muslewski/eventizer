@@ -9,15 +9,12 @@ import { useRouter } from 'next/navigation'
 import { type ReactNode } from 'react'
 import { toast } from 'sonner'
 
-// TODO Addd facebook login
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
   const { refreshUser } = useRootAuth()
 
   return (
     <AuthUIProvider
-      // basePath="/app/auth"
       basePath="/auth"
       redirectTo="/ogloszenia"
       authClient={authClient}
@@ -33,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         router.refresh()
 
         // Sync auth state
+        // only because we redirect to frontend that uses useRootAuth)
         refreshUser()
       }}
       Link={Link}

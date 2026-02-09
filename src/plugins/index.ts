@@ -35,6 +35,7 @@ export const plugins: Plugin[] = [
   stripePlugin({
     stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
     stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_ENDPOINT_SECRET || '',
+    logs: true,
     sync: [
       {
         collection: 'subscription-plans',
@@ -80,6 +81,122 @@ export const plugins: Plugin[] = [
       },
     ],
     webhooks: {
+      // After successful Stripe Checkout, promote user from client to service-provider
+      'checkout.session.completed': async ({ event, payload }) => {
+        console.log('🪝 checkout.session.completed webhook received!')
+
+        const session = event.data.object as {
+          id: string
+          metadata: Record<string, string> | null
+          customer: string | null
+          subscription: string | null
+        }
+
+        console.log('🪝 Session metadata:', JSON.stringify(session.metadata))
+
+        const userId = session.metadata?.userId
+        if (!userId) {
+          console.log('checkout.session.completed: No userId in metadata, skipping role promotion')
+          return
+        }
+
+        try {
+          const numericUserId = Number(userId)
+
+          // Parse category data from metadata
+          const categoryNames = session.metadata?.categoryNames
+            ? JSON.parse(session.metadata.categoryNames)
+            : null
+          const categorySlugs = session.metadata?.categorySlugs
+            ? JSON.parse(session.metadata.categorySlugs)
+            : null
+
+          // Build update data
+          const updateData: Record<string, unknown> = {
+            role: 'service-provider',
+          }
+
+          // Set category info if available from metadata
+          if (categoryNames && Array.isArray(categoryNames)) {
+            updateData.serviceCategory = categoryNames.join(' > ')
+          }
+          if (categorySlugs && Array.isArray(categorySlugs)) {
+            updateData.serviceCategorySlug = categorySlugs.join('/')
+          }
+
+          // Promote user to service-provider
+          await payload.update({
+            collection: 'users',
+            id: numericUserId,
+            data: updateData,
+          })
+
+          console.log(
+            `checkout.session.completed: User ${numericUserId} promoted to service-provider`,
+          )
+        } catch (error) {
+          console.error('Error promoting user after checkout:', error)
+        }
+      },
+
+      // When a subscription is fully deleted (not just cancelled), revert user to client
+      'customer.subscription.deleted': async ({ event, payload }) => {
+        const subscription = event.data.object as {
+          id: string
+          customer: string
+        }
+
+        try {
+          const customerId =
+            typeof subscription.customer === 'string'
+              ? subscription.customer
+              : (subscription.customer as any)?.id
+
+          if (!customerId) {
+            console.log('customer.subscription.deleted: No customer ID found, skipping')
+            return
+          }
+
+          // Find the stripe-customer record to get the linked user
+          const customers = await payload.find({
+            collection: 'stripe-customers',
+            where: {
+              stripeID: { equals: customerId },
+            },
+            limit: 1,
+          })
+
+          const customer = customers.docs[0]
+          const linkedUserId = customer?.user
+
+          if (!linkedUserId) {
+            console.log(
+              `customer.subscription.deleted: No linked user for Stripe customer ${customerId}`,
+            )
+            return
+          }
+
+          const userId = typeof linkedUserId === 'object' ? linkedUserId.id : linkedUserId
+
+          // Revert user to client and clear service category
+          await payload.update({
+            collection: 'users',
+            id: userId,
+            data: {
+              role: 'client',
+              serviceCategory: null,
+              serviceCategorySlug: null,
+            },
+          })
+
+          console.log(
+            `customer.subscription.deleted: User ${userId} reverted to client after subscription ${subscription.id} ended`,
+          )
+        } catch (error) {
+          console.error('Error reverting user after subscription deletion:', error)
+        }
+      },
+
       // Hey so sometimes we have already created customer in stripe yet we don't have him in payload, so then we should make sure to at least truck him by subscription. Or not.
       // 'customer.subscription.created': async ({ event, payload }) => {
       //   const subscription = event.data.object as { id: string; customer: string }

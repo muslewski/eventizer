@@ -1,10 +1,12 @@
 'use client'
 
 import { CategorySelection } from '@/components/payload/views/serviceProviderOnboarding/categorySelection'
+import { PriceSelection } from '@/components/payload/views/serviceProviderOnboarding/priceSelection'
 import { Button } from '@/components/ui/button'
 import { ServiceCategory, SubscriptionPlan, User } from '@/payload-types'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createCheckoutSession } from '@/actions/stripe/createCheckoutSession'
+import { getStripePrices, StripePriceDetails } from '@/actions/stripe/products/getStripePrices'
 import { updateUserServiceCategory } from '@/actions/user/updateUserServiceCategory'
 import { updateSubscription } from '@/actions/stripe/updateSubscription'
 import { revertToClient } from '@/actions/user/revertToClient'
@@ -103,8 +105,22 @@ export function ServiceProviderOnboardingClient({
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
-  // Check if this is a new service provider (no subscription yet)
-  const isNewServiceProvider = !currentSubscription?.hasSubscription
+  // Price selection state
+  const [availablePrices, setAvailablePrices] = useState<StripePriceDetails[]>([])
+  const [selectedPriceId, setSelectedPriceId] = useState<string | null>(null)
+  const [isPricesLoading, setIsPricesLoading] = useState(false)
+
+  // someone with an active subscription
+  const isWithSubscription = currentSubscription?.hasSubscription
+
+  // User is a client who hasn't become a service provider yet
+  const isClientOnboarding = user.role === "client"
+
+  // Service provider onboarding (possibly changing his plan)
+  const isServiceProviderOnboarding = user.role === "service-provider"
+
+  // Show revert option only for service-providers without subscription (not for client)
+  const showRevertOption = isServiceProviderOnboarding && !isWithSubscription
 
   // Initialize with current category if in edit mode
   useEffect(() => {
@@ -119,6 +135,41 @@ export function ServiceProviderOnboardingClient({
   const isComplete = isCategorySelectionComplete(selectedCategories)
   const requiredPlan = getRequiredPlan(selectedCategories)
   const stripeProductId = requiredPlan ? requiredPlan.stripeID : null
+
+  // Fetch prices when category selection is complete and we have a product ID
+  const fetchPrices = useCallback(async (productId: string) => {
+    setIsPricesLoading(true)
+    setAvailablePrices([])
+    setSelectedPriceId(null)
+
+    try {
+      const result = await getStripePrices(productId)
+      if (result.success) {
+        setAvailablePrices(result.prices)
+        // Auto-select the first (monthly) price
+        if (result.prices.length === 1) {
+          setSelectedPriceId(result.prices[0].id)
+        }
+      } else {
+        setError(result.error)
+      }
+    } catch (err) {
+      console.error('Error fetching prices:', err)
+      setError('Nie udało się pobrać dostępnych cen.')
+    } finally {
+      setIsPricesLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isComplete && stripeProductId) {
+      fetchPrices(stripeProductId)
+    } else {
+      // Reset prices when category changes
+      setAvailablePrices([])
+      setSelectedPriceId(null)
+    }
+  }, [isComplete, stripeProductId, fetchPrices])
 
   // Determine what type of change this is
   const getChangeType = (): ChangeType => {
@@ -141,6 +192,8 @@ export function ServiceProviderOnboardingClient({
 
   const handleCategoryChange = (categoryPath: ServiceCategory[]) => {
     setSelectedCategories(categoryPath)
+    setSelectedPriceId(null)
+    setAvailablePrices([])
     setError(null)
     setSuccessMessage(null)
   }
@@ -201,7 +254,13 @@ export function ServiceProviderOnboardingClient({
           }, 2000)
         }
       } else {
-        // New subscription flow (existing logic)
+        // New subscription flow - works for both clients and service-providers without subscription
+        if (!selectedPriceId) {
+          setError('Wybierz okres rozliczeniowy.')
+          return
+        }
+
+        // Save category preference first (will be applied after payment via Stripe webhook)
         const updateResult = await updateUserServiceCategory({
           userId: String(user.id),
           categoryNames,
@@ -212,12 +271,15 @@ export function ServiceProviderOnboardingClient({
           throw new Error(updateResult.error || 'Failed to save category')
         }
 
+        // Redirect to stripe checkout with user-selected price
+        // Role change to service-provider happens in the stripe webhook after successful payment
         const { url } = await createCheckoutSession({
-          productId: stripeProductId!,
+          priceId: selectedPriceId,
           userId: user.id,
           successUrl: '/app',
           cancelUrl: '/app/onboarding/service-provider',
           categoryNames,
+          categorySlugs,
           userEmail: user.email || undefined,
         })
 
@@ -313,7 +375,7 @@ export function ServiceProviderOnboardingClient({
       )}
 
       {/* Show revert option only for new service providers without subscription */}
-      {isNewServiceProvider && (
+      {showRevertOption && (
         <Alert className="border-[var(--theme-elevation-200)]">
           <Info className="h-4 w-4" />
           <AlertTitle>Zmiana zdania?</AlertTitle>
@@ -332,12 +394,24 @@ export function ServiceProviderOnboardingClient({
           </AlertDescription>
         </Alert>
       )}
+      
 
       <CategorySelection
         categories={categories}
         value={selectedCategories}
         onSelectionChange={handleCategoryChange}
       />
+
+      {/* Price selection - show when category is complete and NOT in edit mode with existing subscription */}
+      {isComplete && !(isEditMode && currentSubscription?.hasSubscription) && (
+        <PriceSelection
+          prices={availablePrices}
+          selectedPriceId={selectedPriceId}
+          onPriceSelect={setSelectedPriceId}
+          isLoading={isPricesLoading}
+          planName={requiredPlan?.name ?? undefined}
+        />
+      )}
 
       {getChangeAlert()}
 
@@ -359,7 +433,12 @@ export function ServiceProviderOnboardingClient({
         <div className="flex gap-4">
           <Button
             onClick={handleSubmit}
-            disabled={isSubmitting || !isComplete}
+            disabled={
+              isSubmitting ||
+              !isComplete ||
+              // For new subscriptions, require price selection
+              (!(isEditMode && currentSubscription?.hasSubscription) && !selectedPriceId)
+            }
             size="lg"
             className={cn(
               changeType === 'upgrade' && 'bg-blue-600 hover:bg-blue-700',
