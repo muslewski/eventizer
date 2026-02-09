@@ -33,10 +33,10 @@ export const Offers: CollectionConfig = {
       pl: `Zarządzaj i twórz oferty usług dostępne dla Twoich klientów. (limit ${MAX_OFFERS_PER_USER} ofert)`,
     },
     // preview: (doc, { req }) => `${req.protocol}//${req.host}/ogloszenia/${doc.slug}`,
-    livePreview: {
-      url: ({ req, data }) =>
-        `${req.protocol}//${req.host}/${req.locale ? req.locale + '/' : ''}ogloszenia/${data?.link || ''}`,
-    },
+    // livePreview: {
+    //   url: ({ req, data }) =>
+    //     `${req.protocol}//${req.host}/${req.locale ? req.locale + '/' : ''}ogloszenia/${data?.link || ''}`,
+    // },
   },
 
   versions: {
