@@ -25,9 +25,14 @@ const ServiceProviderOnboarding = async ({
   const isEditMode = resolvedSearchParams?.edit === 'true'
   const isRenewMode = resolvedSearchParams?.renew === 'true'
 
-  // If user already has an active subscription and is NOT in edit mode, redirect to account page
+  // Admins and moderators shouldn't access the onboarding page
+  if (user.role === 'admin' || user.role === 'moderator') {
+    redirect('/app')
+  }
+
+  // If user already has an active subscription and is NOT in edit mode, redirect to dashboard
   if (subscriptionDetails.hasSubscription && !isEditMode) {
-    redirect('/app/account')
+    redirect('/app')
   }
 
   // Fetch service categories on server

@@ -167,40 +167,6 @@ export const offersFields: Field[] = [
     tabs: [
       {
         fields: [
-          {
-            name: 'mainImage',
-            type: 'upload',
-            relationTo: 'offer-uploads',
-            required: true,
-            label: {
-              en: 'Main Image',
-              pl: 'Główne Zdjęcie',
-            },
-            admin: {
-              components: {
-                Cell: '/components/payload/fields/offerMainImageCell',
-              },
-              description: {
-                en: 'Upload the main image representing your offer.',
-                pl: 'Prześlij główne zdjęcie reprezentujące Twoją ofertę.',
-              },
-            },
-          },
-          {
-            name: 'backgroundImage',
-            type: 'upload',
-            relationTo: 'offer-uploads',
-            label: {
-              en: 'Background Image',
-              pl: 'Zdjęcie w Tle',
-            },
-            admin: {
-              description: {
-                en: 'This image will be displayed as a background on your offer page. It helps create a more immersive experience for your clients.',
-                pl: 'To zdjęcie będzie wyświetlane jako tło na stronie Twojej oferty. Pomoże stworzyć bardziej angażujące doświadczenie dla Twoich klientów.',
-              },
-            },
-          },
           // Add instruction - instrukcja przejrzystej oferty
           {
             name: 'content',
@@ -241,6 +207,85 @@ export const offersFields: Field[] = [
           en: 'Main Content',
           pl: 'Główna Treść',
         },
+      },
+      {
+        label: {
+          en: 'Images',
+          pl: 'Zdjęcia',
+        },
+        fields: [
+          {
+            name: 'mainImage',
+            type: 'upload',
+            relationTo: 'offer-uploads',
+            required: true,
+            label: {
+              en: 'Main Image',
+              pl: 'Główne Zdjęcie',
+            },
+            admin: {
+              components: {
+                Cell: '/components/payload/fields/offerMainImageCell',
+              },
+              description: {
+                en: 'Upload the main image representing your offer.',
+                pl: 'Prześlij główne zdjęcie reprezentujące Twoją ofertę.',
+              },
+            },
+          },
+          {
+            name: 'backgroundImage',
+            type: 'upload',
+            relationTo: 'offer-uploads',
+            label: {
+              en: 'Background Image',
+              pl: 'Zdjęcie w Tle',
+            },
+            admin: {
+              description: {
+                en: 'This image will be displayed as a background on your offer page. It helps create a more immersive experience for your clients.',
+                pl: 'To zdjęcie będzie wyświetlane jako tło na stronie Twojej oferty. Pomoże stworzyć bardziej angażujące doświadczenie dla Twoich klientów.',
+              },
+            },
+          },
+          {
+            name: 'gallery',
+            type: 'array',
+            label: {
+              en: 'Gallery',
+              pl: 'Galeria',
+            },
+            admin: {
+              description: {
+                en: 'Add additional images for your offer slider/gallery.',
+                pl: 'Dodaj dodatkowe zdjęcia do slidera/galerii oferty.',
+              },
+              initCollapsed: true,
+            },
+            labels: {
+              singular: {
+                en: 'Image',
+                pl: 'Zdjęcie',
+              },
+              plural: {
+                en: 'Images',
+                pl: 'Zdjęcia',
+              },
+            },
+            fields: [
+              {
+                name: 'image',
+                type: 'upload',
+                relationTo: 'offer-uploads',
+                required: true,
+                label: {
+                  en: 'Image',
+                  pl: 'Zdjęcie',
+                },
+              },
+            ],
+          },
+        ],
       },
       {
         label: {

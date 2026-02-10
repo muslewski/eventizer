@@ -36,12 +36,13 @@ export const Image: React.FC<MediaProps> = (props) => {
 
   if (!src && resource && typeof resource === 'object') {
     const {
-      alt: altFromResource,
       filename: fullFilename,
       height: fullHeight,
       url,
       width: fullWidth,
     } = resource
+
+    const altFromResource = 'alt' in resource ? resource.alt : undefined
 
     width = widthFromProps ?? fullWidth
     height = heightFromProps ?? fullHeight

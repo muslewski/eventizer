@@ -4,10 +4,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 // import type { UserSubscriptionData } from './index'
 
-const PATH_TO_APP = '/app'
-const PATH_TO_ACCOUNT = '/app/account'
-const PATH_TO_SIGN_IN = '/auth/sign-in'
-
 // Because of payload default routes, we have to redirect to a specific page which then immediately redirects to sign-in. This is to prevent an infinite loop of redirects if the user is unauthenticated and tries to access a protected page.
 
 export interface AdminLayoutClientProps {

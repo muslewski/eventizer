@@ -6,7 +6,7 @@ import type { Block } from 'payload'
  */
 export const OfferMediaBlock: Block = {
   slug: 'mediaBlock',
-  interfaceName: 'MediaBlock',
+  interfaceName: 'OfferMediaBlock',
   labels: {
     singular: {
       en: 'Media',

@@ -443,36 +443,10 @@ export interface ContentBlock {
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
-  media: number | OfferUpload;
+  media: number | Media;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
-}
-/**
- * Upload and manage files related to offers.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "offer-uploads".
- */
-export interface OfferUpload {
-  id: number;
-  /**
-   * User who uploaded this file.
-   */
-  user?: (number | null) | User;
-  title: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -516,14 +490,6 @@ export interface Offer {
   categoryName?: string | null;
   categorySlug?: string | null;
   /**
-   * Upload the main image representing your offer.
-   */
-  mainImage: number | OfferUpload;
-  /**
-   * This image will be displayed as a background on your offer page. It helps create a more immersive experience for your clients.
-   */
-  backgroundImage?: (number | null) | OfferUpload;
-  /**
    * Add a detailed description of your offer.
    */
   content: {
@@ -545,6 +511,23 @@ export interface Offer {
    * A brief summary of the offer, shown in listings.
    */
   shortDescription: string;
+  /**
+   * Upload the main image representing your offer.
+   */
+  mainImage: number | OfferUpload;
+  /**
+   * This image will be displayed as a background on your offer page. It helps create a more immersive experience for your clients.
+   */
+  backgroundImage?: (number | null) | OfferUpload;
+  /**
+   * Add additional images for your offer slider/gallery.
+   */
+  gallery?:
+    | {
+        image: number | OfferUpload;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Phone number related to the offer.
    */
@@ -607,6 +590,32 @@ export interface Offer {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Upload and manage files related to offers.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offer-uploads".
+ */
+export interface OfferUpload {
+  id: number;
+  /**
+   * User who uploaded this file.
+   */
+  user?: (number | null) | User;
+  title: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1454,10 +1463,16 @@ export interface OffersSelect<T extends boolean = true> {
   priceTo?: T;
   categoryName?: T;
   categorySlug?: T;
-  mainImage?: T;
-  backgroundImage?: T;
   content?: T;
   shortDescription?: T;
+  mainImage?: T;
+  backgroundImage?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   phone?: T;
   email?: T;
   serviceArea?: T;
@@ -1786,6 +1801,16 @@ export interface TaskSchedulePublish {
     user?: (number | null) | User;
   };
   output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OfferMediaBlock".
+ */
+export interface OfferMediaBlock {
+  media: number | OfferUpload;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
