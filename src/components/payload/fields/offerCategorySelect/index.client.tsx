@@ -59,6 +59,7 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
   const { value, setValue, initialValue } = useField<string>({ path })
   const [open, setOpen] = useState(false)
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
+  const [searchQuery, setSearchQuery] = useState('')
   const hasSetInitialValue = useRef(false)
 
   // Set default value on mount (once)
@@ -167,13 +168,20 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
     )
   }
 
+  // Whether we're actively searching
+  const isSearching = searchQuery.trim().length > 0
+
   // Render a single category row
   const renderCategory = (cat: CategoryOption) => {
     const hasChildren = cat.children.length > 0
     const isExpanded = expandedPaths.has(cat.fullPath)
+    const showChildren = hasChildren && (isSearching || isExpanded)
     const isSelected = cat.fullPath === value
     const reachable = hasAvailableDescendants.get(cat.fullPath) ?? false
     const isFullyLocked = !cat.isAvailable && !reachable
+    const availableChildCount = hasChildren
+      ? cat.children.filter((c) => c.isAvailable || (hasAvailableDescendants.get(c.fullPath) ?? false)).length
+      : 0
 
     return (
       <div key={cat.fullPath}>
@@ -194,14 +202,27 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
             <button
               type="button"
               onClick={(e) => toggleExpand(e, cat.fullPath)}
-              className="flex h-5 w-5 items-center justify-center rounded hover:bg-accent"
+              className={cn(
+                'flex items-center gap-1 h-6 rounded-full px-1.5 transition-colors',
+                'border border-border/60 hover:border-primary/40 hover:bg-accent',
+                isExpanded && 'bg-accent/60 border-primary/30',
+              )}
             >
               <ChevronRight
-                className={cn('h-3.5 w-3.5 transition-transform', isExpanded && 'rotate-90')}
+                className={cn(
+                  'h-3.5 w-3.5 transition-transform duration-200 text-muted-foreground',
+                  isExpanded && 'rotate-90 text-primary',
+                )}
               />
+              <span className={cn(
+                'text-[10px] font-medium tabular-nums pr-0.5',
+                isExpanded ? 'text-primary' : 'text-muted-foreground',
+              )}>
+                {availableChildCount}
+              </span>
             </button>
           ) : (
-            <span className="w-5 flex items-center justify-center">
+            <span className="w-6 flex items-center justify-center">
               {hasChildren && <Lock className="h-3 w-3 text-muted-foreground/40" />}
             </span>
           )}
@@ -243,8 +264,8 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
           {isSelected && cat.isAvailable && <Check className="h-4 w-4 text-primary shrink-0" />}
         </CommandItem>
 
-        {/* Children */}
-        {hasChildren && isExpanded && (
+        {/* Children — always visible when searching, otherwise only when expanded */}
+        {showChildren && (
           <div className="ml-5 border-l border-border/40">
             {cat.children.map(renderCategory)}
           </div>
@@ -265,7 +286,10 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
       </div>
 
       {/* Dialog trigger */}
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={(isOpen) => {
+          setOpen(isOpen)
+          if (!isOpen) setSearchQuery('')
+        }}>
         <DialogTrigger asChild>
           <Button
             variant="outline"
@@ -321,7 +345,12 @@ export const OfferCategorySelectClient: React.FC<OfferCategorySelectClientProps>
           </DialogHeader>
 
           <Command className="border-0 rounded-none flex-1 overflow-hidden">
-            <CommandInput placeholder="Szukaj kategorii..." className="border-x-0 border-t-0" />
+            <CommandInput
+              placeholder="Szukaj kategorii..."
+              className="border-x-0 border-t-0"
+              value={searchQuery}
+              onValueChange={setSearchQuery}
+            />
             <CommandList className="flex-1 max-h-none overflow-y-auto">
               <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
                 Nie znaleziono kategorii.
