@@ -1,6 +1,7 @@
 import type { Field } from 'payload'
 import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { POLISH_PROVINCES } from '@/lib/provinces'
+import { offerLexical } from '@/fields/offerLexical'
 import {
   MetaDescriptionField,
   MetaImageField,
@@ -204,6 +205,7 @@ export const offersFields: Field[] = [
           {
             name: 'content',
             type: 'richText',
+            editor: offerLexical,
             label: {
               en: 'Main Content',
               pl: 'Treść',

@@ -443,10 +443,36 @@ export interface ContentBlock {
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
-  media: number | Media;
+  media: number | OfferUpload;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
+}
+/**
+ * Upload and manage files related to offers.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offer-uploads".
+ */
+export interface OfferUpload {
+  id: number;
+  /**
+   * User who uploaded this file.
+   */
+  user?: (number | null) | User;
+  title: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -581,32 +607,6 @@ export interface Offer {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
-}
-/**
- * Upload and manage files related to offers.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "offer-uploads".
- */
-export interface OfferUpload {
-  id: number;
-  /**
-   * User who uploaded this file.
-   */
-  user?: (number | null) | User;
-  title: string;
-  prefix?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
