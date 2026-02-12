@@ -86,7 +86,14 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
 export function useRootAuth() {
   const context = use(Context)
   if (context === undefined) {
-    throw new Error('useRootAuth must be used within a RootAuthProvider')
+    // During HMR/fast refresh, context can momentarily be undefined
+    return {
+      user: null,
+      setUser: () => {},
+      status: 'loading' as const,
+      refreshUser: async () => {},
+      logout: async () => {},
+    }
   }
   return context
 }

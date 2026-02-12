@@ -50,7 +50,7 @@ export const Image: React.FC<MediaProps> = (props) => {
 
     const filename = fullFilename
 
-    src = `${process.env.NEXT_PUBLIC_SERVER_URL}${url}`
+    src = `${process.env.NEXT_PUBLIC_SERVER_URL ?? ''}${url}`
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
@@ -63,7 +63,7 @@ export const Image: React.FC<MediaProps> = (props) => {
   return (
     <NextImage
       alt={alt || ''}
-      className={cn(imgClassName)}
+      className={cn(!fill && 'max-w-full h-auto', imgClassName)}
       fill={fill}
       height={!fill ? height || heightFromProps : undefined}
       onClick={onClick}

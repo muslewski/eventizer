@@ -6,6 +6,7 @@ import { RichText } from '@/components/payload/RichText'
 import type { MediaBlock as MediaBlockProps, OfferMediaBlock as OfferMediaBlockProps } from '@/payload-types'
 
 import { Media } from '@/components/payload/Media'
+import { MediaBlockWrapper } from './Wrapper'
 
 type Props = (MediaBlockProps | OfferMediaBlockProps) & {
   id?: string | number
@@ -16,6 +17,21 @@ type Props = (MediaBlockProps | OfferMediaBlockProps) & {
   imgClassName?: string
   staticImage?: StaticImageData
   disableInnerContainer?: boolean
+}
+
+const orientationClasses: Record<string, { wrapper: string; img: string }> = {
+  landscape: {
+    wrapper: 'max-w-3xl mx-auto aspect-video',
+    img: 'object-cover',
+  },
+  portrait: {
+    wrapper: 'max-w-sm mx-auto aspect-[3/4]',
+    img: 'object-cover',
+  },
+  square: {
+    wrapper: 'max-w-md mx-auto aspect-square',
+    img: 'object-cover',
+  },
 }
 
 export const MediaBlock: React.FC<Props> = (props) => {
@@ -29,8 +45,8 @@ export const MediaBlock: React.FC<Props> = (props) => {
     disableInnerContainer,
   } = props
 
-  // let caption
-  // if (media && typeof media === 'object') caption = media.caption
+  const orientation = 'orientation' in props && props.orientation ? props.orientation : 'landscape'
+  const orientationStyle = orientationClasses[orientation] || orientationClasses.landscape
 
   return (
     <div
@@ -42,11 +58,20 @@ export const MediaBlock: React.FC<Props> = (props) => {
         className,
       )}
     >
-      <Media
-        imgClassName={cn('border border-border rounded-[0.8rem]', imgClassName)}
-        resource={media}
-        src={staticImage}
-      />
+      <MediaBlockWrapper className={cn('relative overflow-hidden rounded-[0.8rem] border-2 border-double border-muted-foreground/50 not-prose my-8', orientationStyle.wrapper)}>
+        <Media
+          fill
+          htmlElement={null}
+          imgClassName={cn(orientationStyle.img, imgClassName)}
+          resource={media}
+          src={staticImage}
+        />
+        {/* Inner shadow overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none rounded-[0.8rem]"
+          style={{ boxShadow: 'inset 0 2px 20px rgba(0, 0, 0, 0.25)' }}
+        />
+      </MediaBlockWrapper>
       {/* {caption && (
         <div
           className={cn(

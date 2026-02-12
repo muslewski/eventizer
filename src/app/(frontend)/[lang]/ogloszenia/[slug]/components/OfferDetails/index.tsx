@@ -1,4 +1,4 @@
-import { Offer, OfferUpload, User } from '@/payload-types'
+import { Offer, OfferUpload, ProfilePicture, User } from '@/payload-types'
 import { RichText } from '@/components/payload/RichText'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import Image from 'next/image'
@@ -20,11 +20,20 @@ import { TitleH3 } from '@/components/frontend/Content/TitleH3'
 
 interface OfferDetailsProps {
   offer: Offer
+  /** Pre-resolved category icon URL (resolved server-side to avoid bundling payload in client) */
+  categoryIconUrl?: string | null
 }
 
-export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
+export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconUrl }) => {
   const mainImage = isExpandedDoc<OfferUpload>(offer.mainImage) ? offer.mainImage : null
   const author = isExpandedDoc<User>(offer.user) ? offer.user : null
+
+  let authorImageUrl: string | null = null
+  if (author?.profilePicture && isExpandedDoc<ProfilePicture>(author.profilePicture)) {
+    authorImageUrl = author.profilePicture.url || null
+  } else if (author?.image) {
+    authorImageUrl = author.image
+  }
 
   return (
     <section className="mx-auto w-full min-w-0 space-y-6 sm:space-y-8 md:space-y-12">
@@ -103,8 +112,18 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
               {/* Author */}
               {author && (
                 <div className="flex items-center gap-2.5 sm:gap-3 rounded-lg p-2 -mx-2 transition-colors hover:bg-primary/5">
-                  <div className="p-1.5 sm:p-2 rounded-full bg-primary/10">
-                    <UserIcon className="size-3.5 sm:size-4 text-primary" />
+                  <div className="relative size-8 sm:size-9 rounded-full bg-primary/10 overflow-hidden flex items-center justify-center shrink-0">
+                    {authorImageUrl ? (
+                      <Image
+                        src={authorImageUrl}
+                        alt={author.name || 'Autor'}
+                        fill
+                        className="object-cover"
+                        sizes="36px"
+                      />
+                    ) : (
+                      <UserIcon className="size-3.5 sm:size-4 text-primary" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[11px] sm:text-xs text-muted-foreground">Autor</p>
@@ -118,8 +137,18 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
               {/* Category */}
               {offer.categoryName && (
                 <div className="flex items-center gap-2.5 sm:gap-3 rounded-lg p-2 -mx-2 transition-colors hover:bg-primary/5">
-                  <div className="p-1.5 sm:p-2 rounded-full bg-primary/10">
-                    <Tag className="size-3.5 sm:size-4 text-primary" />
+                  <div className="relative size-8 sm:size-9 rounded-full bg-primary/10 overflow-hidden flex items-center justify-center shrink-0">
+                    {categoryIconUrl ? (
+                      <Image
+                        src={categoryIconUrl}
+                        alt={offer.categoryName}
+                        fill
+                        className="object-contain p-1.5 sm:p-2 dark:invert"
+                        sizes="36px"
+                      />
+                    ) : (
+                      <Tag className="size-3.5 sm:size-4 text-primary" />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-[11px] sm:text-xs text-muted-foreground">Kategoria</p>
@@ -143,7 +172,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer }) => {
                 </div>
               </div>
 
-              <Separator />
+              {/* <Separator /> */}
 
               {/* Created at */}
               <div className="flex items-center gap-2.5 sm:gap-3 rounded-lg p-2 -mx-2 transition-colors hover:bg-muted/50">

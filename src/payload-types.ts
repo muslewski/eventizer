@@ -444,6 +444,7 @@ export interface ContentBlock {
  */
 export interface MediaBlock {
   media: number | Media;
+  orientation?: ('landscape' | 'portrait' | 'square') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
@@ -1305,6 +1306,7 @@ export interface ContentBlockSelect<T extends boolean = true> {
  */
 export interface MediaBlockSelect<T extends boolean = true> {
   media?: T;
+  orientation?: T;
   id?: T;
   blockName?: T;
 }
@@ -1808,6 +1810,10 @@ export interface TaskSchedulePublish {
  */
 export interface OfferMediaBlock {
   media: number | OfferUpload;
+  /**
+   * Choose how the image should be displayed.
+   */
+  orientation?: ('landscape' | 'portrait' | 'square') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';

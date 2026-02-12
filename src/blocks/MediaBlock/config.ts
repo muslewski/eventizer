@@ -10,5 +10,19 @@ export const MediaBlock: Block = {
       relationTo: 'media',
       required: true,
     },
+    {
+      name: 'orientation',
+      type: 'select',
+      label: {
+        en: 'Image Orientation',
+        pl: 'Orientacja Zdjęcia',
+      },
+      defaultValue: 'landscape',
+      options: [
+        { label: { en: 'Landscape', pl: 'Poziome' }, value: 'landscape' },
+        { label: { en: 'Portrait', pl: 'Pionowe' }, value: 'portrait' },
+        { label: { en: 'Square', pl: 'Kwadratowe' }, value: 'square' },
+      ],
+    },
   ],
 }

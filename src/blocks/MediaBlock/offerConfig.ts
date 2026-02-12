@@ -28,5 +28,25 @@ export const OfferMediaBlock: Block = {
         pl: 'Media',
       },
     },
+    {
+      name: 'orientation',
+      type: 'select',
+      label: {
+        en: 'Image Orientation',
+        pl: 'Orientacja Zdjęcia',
+      },
+      defaultValue: 'landscape',
+      options: [
+        { label: { en: 'Landscape', pl: 'Poziome' }, value: 'landscape' },
+        { label: { en: 'Portrait', pl: 'Pionowe' }, value: 'portrait' },
+        { label: { en: 'Square', pl: 'Kwadratowe' }, value: 'square' },
+      ],
+      admin: {
+        description: {
+          en: 'Choose how the image should be displayed.',
+          pl: 'Wybierz, jak zdjęcie powinno być wyświetlane.',
+        },
+      },
+    },
   ],
 }

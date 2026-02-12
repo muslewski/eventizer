@@ -9,9 +9,54 @@
   }
 }
 
+@keyframes media-zoom-in {
+  0% {
+    opacity: 0;
+    transform: scale(1.15) rotate(2deg);
+    filter: blur(6px) contrast(1.2) saturate(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0) contrast(1) saturate(1);
+  }
+}
+
 .animate-zoom-in {
   animation: zoom-in 3s ease-out forwards;
   /* GPU layer promotion */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.animate-media-zoom-in {
+  animation: media-zoom-in 0.8s ease-out forwards;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* Subtle hover effect for media blocks */
+.media-block-hover {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.media-block-hover:hover {
+  transform: scale(1.015);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.media-block-hover:hover img {
+  filter: brightness(1.05) saturate(1.1);
+  transition: filter 0.4s ease;
+}
+
+/* Media block image: hidden until in view */
+.media-block-hover img {
+  opacity: 0;
+}
+
+.media-block-hover[data-visible='true'] img {
+  animation: media-zoom-in 0.8s ease-out forwards;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }

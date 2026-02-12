@@ -5,6 +5,7 @@ import { OfferHero, OfferDetails, ContactInfo } from './components'
 import type { Metadata } from 'next'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewOffer } from './LivePreviewOffer'
+import { resolveCategoryIconUrl } from '@/actions/resolveCategoryIconUrl'
 
 type Args = {
   params: Promise<{
@@ -50,9 +51,11 @@ export default async function OfferPage({ params }: Args) {
     notFound()
   }
 
+  const categoryIconUrl = offer.category ? await resolveCategoryIconUrl(offer.category) : null
+
   return (
     <article>
-      <LivePreviewOffer initialData={offer} />
+      <LivePreviewOffer initialData={offer} initialCategoryIconUrl={categoryIconUrl} />
     </article>
   )
 }
