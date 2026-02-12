@@ -283,6 +283,20 @@ export const offersFields: Field[] = [
                   pl: 'Zdjęcie',
                 },
               },
+              {
+                name: 'label',
+                type: 'text',
+                label: {
+                  en: 'Label',
+                  pl: 'Etykieta',
+                },
+                admin: {
+                  description: {
+                    en: 'Optional label displayed on the gallery slide.',
+                    pl: 'Opcjonalna etykieta wyświetlana na slajdzie galerii.',
+                  },
+                },
+              },
             ],
           },
         ],

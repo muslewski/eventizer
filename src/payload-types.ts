@@ -526,6 +526,10 @@ export interface Offer {
   gallery?:
     | {
         image: number | OfferUpload;
+        /**
+         * Optional label displayed on the gallery slide.
+         */
+        label?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1473,6 +1477,7 @@ export interface OffersSelect<T extends boolean = true> {
     | T
     | {
         image?: T;
+        label?: T;
         id?: T;
       };
   phone?: T;
