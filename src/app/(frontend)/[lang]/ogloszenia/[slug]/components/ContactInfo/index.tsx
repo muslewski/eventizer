@@ -23,6 +23,15 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ offer }) => {
 
   return (
     <section className="mx-auto w-full space-y-6 sm:space-y-8">
+   {/* Decorative accent divider */}
+        <div className="flex items-center justify-center gap-3" aria-hidden="true">
+          <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
+          <div className="h-1.5 w-3 rounded-full bg-primary/25" />
+          <div className="h-1.5 w-8 rounded-full bg-primary/40" />
+          <div className="h-1.5 w-3 rounded-full bg-primary/25" />
+          <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
+        </div>
+
       {/* Section heading with decorative accent */}
       <div className="flex items-center gap-4 sm:gap-6">
         <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />

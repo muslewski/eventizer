@@ -18,11 +18,12 @@ export const OfferShortInfo: React.FC<OfferShortInfoProps> = ({ offer }) => {
   if ((!mainImage || !mainImage.url) && !offer.shortDescription) return null
 
   return (
-    <section className="py-16 flex flex-col justify-center sm:flex-row items-center gap-6 sm:gap-8 md:gap-12 mx-auto max-w-4xl">
+    <section className="flex flex-col justify-center sm:flex-row items-center gap-6 sm:gap-8 md:gap-12 mx-auto max-w-4xl">
       {/* Circle main image */}
       {mainImage && mainImage.url && (
         <motion.div
-          className="relative shrink-0"
+          className="relative shrink-0 will-change-transform"
+          style={{ backfaceVisibility: 'hidden' }}
           initial={{ opacity: 0, scale: 0.5, rotate: -12 }}
           whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
           viewport={{ once: true, margin: '-50px' }}
@@ -41,7 +42,7 @@ export const OfferShortInfo: React.FC<OfferShortInfoProps> = ({ offer }) => {
             transition: { type: 'spring', stiffness: 400, damping: 15 },
           }}
         >
-          <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-60 md:h-60 rounded-full overflow-hidden border-4 border-primary/20 shadow-2xl shadow-primary/10 transition-shadow duration-300 hover:shadow-3xl hover:shadow-primary/20 hover:border-primary/40">
+          <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-60 md:h-60 rounded-full overflow-hidden border-4 border-primary/20 shadow-2xl shadow-primary/10 transform-gpu">
             <Image
               src={mainImage.url}
               alt={mainImage.title || offer.title}

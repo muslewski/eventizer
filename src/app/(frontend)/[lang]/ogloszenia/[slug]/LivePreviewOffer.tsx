@@ -32,20 +32,13 @@ export const LivePreviewOffer: React.FC<{
     <>
       <OfferHero offer={data} />
 
-      <div className="flex flex-col gap-10 lg:gap-16 w-full">
+      <div className="pt-16 flex flex-col gap-10 lg:gap-26 w-full">
       <OfferShortInfo offer={data} />
       <OfferGallery offer={data} />
 
         <OfferDetails offer={data} categoryIconUrl={categoryIconUrl} />
 
-        {/* Decorative accent divider */}
-        <div className="flex items-center justify-center gap-3" aria-hidden="true">
-          <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
-          <div className="h-1.5 w-3 rounded-full bg-primary/25" />
-          <div className="h-1.5 w-8 rounded-full bg-primary/40" />
-          <div className="h-1.5 w-3 rounded-full bg-primary/25" />
-          <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />
-        </div>
+     
 
         <ContactInfo offer={data} />
       </div>
