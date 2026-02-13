@@ -37,10 +37,10 @@ function UpgradeSubscriptionField() {
           <Settings className="h-4 w-4 mr-2" />
           Zmień kategorię
         </Button>
-        <Button onClick={handleChangePlan}>
+        {/* <Button onClick={handleChangePlan}>
           <ArrowUpCircle className="h-4 w-4 mr-2" />
           Zmień plan
-        </Button>
+        </Button> */}
       </div>
     </div>
   )

@@ -247,11 +247,11 @@ export function SubscriptionDetailsClient({
           </CardTitle>
           {getStatusBadge(localStatus.status, isCancelling)}
         </div>
-        {localStatus.plan && (
+        {/* {localStatus.plan && (
           <CardDescription className="mt-1">
             Plan: <span className="font-medium">{localStatus.plan.name}</span>
           </CardDescription>
-        )}
+        )} */}
       </CardHeader>
 
       <CardContent className="space-y-6">

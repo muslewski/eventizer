@@ -418,9 +418,10 @@ export function ServiceProviderOnboardingClient({
       {isEditMode && currentSubscription?.currentPlan && (
         <Alert className="border-[var(--theme-elevation-200)]">
           <Info className="h-4 w-4" />
-          <AlertTitle>Aktualny plan: {currentSubscription.currentPlan.name}</AlertTitle>
+          {/* <AlertTitle>Aktualny plan: {currentSubscription.currentPlan.name}</AlertTitle> */}
+          <AlertTitle>Aktualna kategoria: </AlertTitle>
           <AlertDescription>
-            {user.serviceCategory && `Kategoria: ${user.serviceCategory}`}
+            {user.serviceCategory && `${user.serviceCategory}`}
           </AlertDescription>
         </Alert>
       )}

@@ -298,7 +298,7 @@ export function CategorySelection({
                             <span className="font-medium text-[var(--theme-text)] truncate">
                               {category.name}
                             </span>
-                            {category.requiredPlan && (
+                            {/* {category.requiredPlan && (
                               <Badge
                                 variant="secondary"
                                 className={cn(
@@ -310,7 +310,7 @@ export function CategorySelection({
                                 <Crown className="h-3 w-3 mr-1" />
                                 {(category.requiredPlan as any).name}
                               </Badge>
-                            )}
+                            )} */}
                           </div>
                           {category.description && (
                             <p className="text-sm text-[var(--theme-elevation-600)] mt-0.5 line-clamp-1">
@@ -366,7 +366,7 @@ export function CategorySelection({
                 <Check className="h-8 w-8 text-accent-foreground dark:text-accent" />
               </div>
               <div>
-                <h3 className="font-medium text-[var(--theme-text)]">Kategoria wybrana!</h3>
+                <h3 className="font-medium text-[var(--theme-text)] text-3xl">Kategoria wybrana!</h3>
                 <p className="text-[var(--theme-elevation-600)] mt-1">
                   Twoja ścieżka kategorii została ustalona
                 </p>
@@ -392,7 +392,7 @@ export function CategorySelection({
                 ))}
               </div>
 
-              {selectedPath[selectedPath.length - 1]?.requiredPlan && (
+              {/* {selectedPath[selectedPath.length - 1]?.requiredPlan && (
                 <div className="flex items-center justify-center gap-2 pt-4 text-sm">
                   <Crown className="h-4 w-4 text-accent-foreground dark:text-accent" />
                   <span className="text-[var(--theme-elevation-700)]">
@@ -402,7 +402,7 @@ export function CategorySelection({
                     </span>
                   </span>
                 </div>
-              )}
+              )} */}
             </div>
           </CardContent>
         </Card>

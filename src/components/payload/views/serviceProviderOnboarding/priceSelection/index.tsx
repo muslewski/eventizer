@@ -150,11 +150,11 @@ export function PriceSelection({
     >
       <CardHeader className="pb-3">
         <CardTitle className="text-lg">Wybierz okres rozliczeniowy</CardTitle>
-        {planName && (
+        {/* {planName && (
           <CardDescription>
             Plan: <strong>{planName}</strong>
           </CardDescription>
-        )}
+        )} */}
       </CardHeader>
 
       <CardContent className="space-y-3">
