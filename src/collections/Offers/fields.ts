@@ -210,8 +210,8 @@ export const offersFields: Field[] = [
       },
       {
         label: {
-          en: 'Images',
-          pl: 'Zdjęcia',
+          en: 'Media',
+          pl: 'Media',
         },
         fields: [
           {
@@ -298,6 +298,30 @@ export const offersFields: Field[] = [
                 },
               },
             ],
+          },
+          {
+            name: 'video',
+            type: 'upload',
+            relationTo: 'offer-video-uploads',
+            label: {
+              en: 'Promotional Video',
+              pl: 'Film Promocyjny',
+            },
+            admin: {
+              description: {
+                en: 'Upload a short promotional video for your offer. (max 50 MB, mp4 or webm)',
+                pl: 'Prześlij krótki film promocyjny do swojej oferty. (maks. 50 MB, mp4 lub webm)',
+              },
+            },
+          },
+          {
+            name: 'videoPreview',
+            type: 'ui',
+            admin: {
+              components: {
+                Field: '/components/payload/fields/offerVideoPreview',
+              },
+            },
           },
         ],
       },

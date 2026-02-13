@@ -358,7 +358,7 @@ export default function ImageCarousel({
 
       <CarouselContent>
         {slides.map((slide, index) => (
-          <CarouselItem key={slide.id} className="basis-3/4 md:basis-1/2 lg:basis-1/3">
+          <CarouselItem key={slide.id} className={slides.length === 4 ? 'basis-3/4 md:basis-1/2' : 'basis-3/4 md:basis-1/2 lg:basis-1/3'}>
             <CarouselCard
               slide={slide}
               isActive={current === index}

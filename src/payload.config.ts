@@ -14,6 +14,7 @@ import { Media } from './collections/uploads/Media'
 import { Offers } from '@/collections/Offers'
 import { ProfilePictures } from '@/collections/uploads/ProfilePictures'
 import { OfferUploads } from '@/collections/uploads/OfferUploads'
+import { OfferVideoUploads } from '@/collections/uploads/OfferVideoUploads'
 
 // i18n
 import { en } from '@payloadcms/translations/languages/en'
@@ -137,6 +138,7 @@ export default buildConfig({
     Media,
     ProfilePictures,
     OfferUploads,
+    OfferVideoUploads,
 
     // Help
     HelpTickets,
@@ -183,9 +185,9 @@ export default buildConfig({
   sharp,
   upload: {
     abortOnLimit: true,
-    responseOnLimit: 'File size exceeds the maximum limit of 5MB.',
+    responseOnLimit: 'File size exceeds the maximum limit.',
     limits: {
-      fileSize: 5 * 1024 * 1024, // 5MB in bytes
+      fileSize: 50 * 1024 * 1024, // 50MB — accommodates video uploads
     },
   },
   plugins,

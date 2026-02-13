@@ -26,6 +26,7 @@ import { default as default_d4bd505028530c1383bc60f48596a0c8 } from '../../../co
 import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { default as default_1fe6cf5e93660301ab4066777495aeef } from '../../../components/payload/fields/offerContentInstructions'
 import { default as default_0a5dfb31e73e2ac0df839a9fa014bd79 } from '../../../components/payload/fields/offerMainImageCell'
+import { default as default_a49143c253cd43673783da90c91454b7 } from '../../../components/payload/fields/offerVideoPreview'
 import { default as default_133738e3839d3dd2ada085fc82bb57a4 } from '../../../components/payload/fields/roleSelect'
 import { default as default_23e76fb30bcf0ed97f8a1a994d9bc683 } from '../../../components/payload/fields/upgradeSubscription'
 import { default as default_748b6b240038a6900c9a0c51602bd414 } from '../../../components/payload/fields/becomeServiceProvider'
@@ -78,6 +79,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BlocksFeatureClient": BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/payload/fields/offerContentInstructions#default": default_1fe6cf5e93660301ab4066777495aeef,
   "/components/payload/fields/offerMainImageCell#default": default_0a5dfb31e73e2ac0df839a9fa014bd79,
+  "/components/payload/fields/offerVideoPreview#default": default_a49143c253cd43673783da90c91454b7,
   "/components/payload/fields/roleSelect#default": default_133738e3839d3dd2ada085fc82bb57a4,
   "/components/payload/fields/upgradeSubscription#default": default_23e76fb30bcf0ed97f8a1a994d9bc683,
   "/components/payload/fields/becomeServiceProvider#default": default_748b6b240038a6900c9a0c51602bd414,

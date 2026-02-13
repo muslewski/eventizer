@@ -60,6 +60,7 @@ export const Offers: CollectionConfig = {
     price: true,
     hasPriceRange: true,
     serviceArea: true,
+    video: true,
     meta: {
       image: true,
     },

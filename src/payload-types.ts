@@ -79,6 +79,7 @@ export interface Config {
     media: Media;
     'profile-pictures': ProfilePicture;
     'offer-uploads': OfferUpload;
+    'offer-video-uploads': OfferVideoUpload;
     'help-tickets': HelpTicket;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -105,6 +106,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'profile-pictures': ProfilePicturesSelect<false> | ProfilePicturesSelect<true>;
     'offer-uploads': OfferUploadsSelect<false> | OfferUploadsSelect<true>;
+    'offer-video-uploads': OfferVideoUploadsSelect<false> | OfferVideoUploadsSelect<true>;
     'help-tickets': HelpTicketsSelect<false> | HelpTicketsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -534,6 +536,10 @@ export interface Offer {
       }[]
     | null;
   /**
+   * Upload a short promotional video for your offer. (max 50 MB, mp4 or webm)
+   */
+  video?: (number | null) | OfferVideoUpload;
+  /**
    * Phone number related to the offer.
    */
   phone?: string | null;
@@ -606,6 +612,32 @@ export interface OfferUpload {
   id: number;
   /**
    * User who uploaded this file.
+   */
+  user?: (number | null) | User;
+  title: string;
+  prefix?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * Upload and manage videos related to offers. (max 50 MB, mp4/webm)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offer-video-uploads".
+ */
+export interface OfferVideoUpload {
+  id: number;
+  /**
+   * User who uploaded this video.
    */
   user?: (number | null) | User;
   title: string;
@@ -1141,6 +1173,10 @@ export interface PayloadLockedDocument {
         value: number | OfferUpload;
       } | null)
     | ({
+        relationTo: 'offer-video-uploads';
+        value: number | OfferVideoUpload;
+      } | null)
+    | ({
         relationTo: 'help-tickets';
         value: number | HelpTicket;
       } | null)
@@ -1480,6 +1516,7 @@ export interface OffersSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  video?: T;
   phone?: T;
   email?: T;
   serviceArea?: T;
@@ -1681,6 +1718,26 @@ export interface ProfilePicturesSelect<T extends boolean = true> {
  * via the `definition` "offer-uploads_select".
  */
 export interface OfferUploadsSelect<T extends boolean = true> {
+  user?: T;
+  title?: T;
+  prefix?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "offer-video-uploads_select".
+ */
+export interface OfferVideoUploadsSelect<T extends boolean = true> {
   user?: T;
   title?: T;
   prefix?: T;

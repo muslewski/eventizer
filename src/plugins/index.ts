@@ -29,6 +29,9 @@ export const plugins: Plugin[] = [
       'offer-uploads': {
         prefix: 'Offer Uploads',
       },
+      'offer-video-uploads': {
+        prefix: 'Offer Videos',
+      },
     },
     token: process.env.BLOB_READ_WRITE_TOKEN || '',
   }),

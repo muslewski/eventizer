@@ -1,5 +1,6 @@
 export { OfferHero } from './OfferHero'
 export { OfferShortInfo } from './OfferShortInfo'
+export { OfferVideo } from './OfferVideo'
 export { OfferGallery } from './OfferGallery'
 export { OfferDetails } from './OfferDetails'
 export { ContactInfo } from './ContactInfo'
