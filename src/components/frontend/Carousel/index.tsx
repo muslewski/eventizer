@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dialog'
 import Image from 'next/image'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export type { CarouselSlide }
@@ -52,6 +52,7 @@ export default function ImageCarousel({
   const [api, setApi] = useState<CarouselApi>()
   const [current, setCurrent] = useState(0)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const [lightboxLoading, setLightboxLoading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const animationRef = useRef<number | null>(null)
@@ -98,6 +99,9 @@ export default function ImageCarousel({
   const handleSelect = useCallback(
     (index: number) => {
       api?.scrollTo(index)
+      // Reset autoplay timer to prevent double-advance glitch
+      const autoplay = api?.plugins()?.autoplay as { reset?: () => void } | undefined
+      if (autoplay?.reset) autoplay.reset()
     },
     [api],
   )
@@ -162,7 +166,21 @@ export default function ImageCarousel({
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [autoplayPlugin])
 
+  const navigateLightbox = useCallback(
+    (newIndex: number) => {
+      setLightboxLoading(true)
+      setLightboxIndex(newIndex)
+    },
+    [],
+  )
+
   if (slides.length === 0) return null
+
+  // Precompute adjacent indices for preloading
+  const prevLightboxIndex =
+    lightboxIndex !== null ? (lightboxIndex - 1 + slides.length) % slides.length : null
+  const nextLightboxIndex =
+    lightboxIndex !== null ? (lightboxIndex + 1) % slides.length : null
 
   const lightboxDialog = lightbox && lightboxIndex !== null && (
     <Dialog open onOpenChange={() => setLightboxIndex(null)}>
@@ -177,27 +195,63 @@ export default function ImageCarousel({
 
         {/* Main image area */}
         <div className="relative w-full flex-1 min-h-0">
+          {/* Loading spinner overlay */}
+          {lightboxLoading && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
+              <Loader2 className="size-8 animate-spin text-muted-foreground" />
+            </div>
+          )}
+
           <Image
+            key={lightboxIndex}
             src={slides[lightboxIndex]!.imageUrl}
             alt={slides[lightboxIndex]!.imageAlt}
             fill
-            className="object-contain"
+            className={cn(
+              'object-contain transition-opacity duration-200',
+              lightboxLoading ? 'opacity-0' : 'opacity-100',
+            )}
             sizes="100vw"
             priority
+            onLoad={() => setLightboxLoading(false)}
           />
+
+          {/* Preload adjacent images (hidden, off-screen) */}
+          {slides.length > 1 && prevLightboxIndex !== null && prevLightboxIndex !== lightboxIndex && (
+            <Image
+              key={`preload-prev-${prevLightboxIndex}`}
+              src={slides[prevLightboxIndex]!.imageUrl}
+              alt=""
+              fill
+              className="sr-only pointer-events-none opacity-0"
+              sizes="1px"
+              aria-hidden
+            />
+          )}
+          {slides.length > 1 && nextLightboxIndex !== null && nextLightboxIndex !== lightboxIndex && (
+            <Image
+              key={`preload-next-${nextLightboxIndex}`}
+              src={slides[nextLightboxIndex]!.imageUrl}
+              alt=""
+              fill
+              className="sr-only pointer-events-none opacity-0"
+              sizes="1px"
+              aria-hidden
+            />
+          )}
 
           {/* Navigation arrows */}
           {slides.length > 1 && (
             <>
               <button
-                onClick={() => setLightboxIndex((lightboxIndex - 1 + slides.length) % slides.length)}
+                onClick={() => navigateLightbox((lightboxIndex - 1 + slides.length) % slides.length)}
                 className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-foreground/10 hover:bg-foreground/20 text-foreground transition-colors"
                 aria-label="Previous image"
               >
                 <ChevronLeft className="size-6" />
               </button>
               <button
-                onClick={() => setLightboxIndex((lightboxIndex + 1) % slides.length)}
+                onClick={() => navigateLightbox((lightboxIndex + 1) % slides.length)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-foreground/10 hover:bg-foreground/20 text-foreground transition-colors"
                 aria-label="Next image"
               >
@@ -219,7 +273,7 @@ export default function ImageCarousel({
               {slides.map((_, i) => (
                 <button
                   key={i}
-                  onClick={() => setLightboxIndex(i)}
+                  onClick={() => navigateLightbox(i)}
                   aria-label={`Go to image ${i + 1}`}
                   className={cn(
                     'rounded-full transition-all duration-200',

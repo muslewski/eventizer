@@ -67,10 +67,16 @@ function Carousel({
 
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev()
+    // Reset autoplay timer to prevent double-advance glitch
+    const autoplay = api?.plugins()?.autoplay as { reset?: () => void } | undefined
+    if (autoplay?.reset) autoplay.reset()
   }, [api])
 
   const scrollNext = React.useCallback(() => {
     api?.scrollNext()
+    // Reset autoplay timer to prevent double-advance glitch
+    const autoplay = api?.plugins()?.autoplay as { reset?: () => void } | undefined
+    if (autoplay?.reset) autoplay.reset()
   }, [api])
 
   const handleKeyDown = React.useCallback(

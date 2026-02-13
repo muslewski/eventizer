@@ -1,8 +1,11 @@
+'use client'
+
 import { Offer, OfferUpload } from '@/payload-types'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import Image from 'next/image'
 import { Quote } from 'lucide-react'
 import { TitleH3 } from '@/components/frontend/Content/TitleH3'
+import { motion } from 'motion/react'
 
 interface OfferShortInfoProps {
   offer: Offer
@@ -18,14 +21,33 @@ export const OfferShortInfo: React.FC<OfferShortInfoProps> = ({ offer }) => {
     <section className="py-16 flex flex-col justify-center sm:flex-row items-center gap-6 sm:gap-8 md:gap-12 mx-auto max-w-4xl">
       {/* Circle main image */}
       {mainImage && mainImage.url && (
-        <div className="relative shrink-0">
-          <div className="relative w-28 h-28 sm:w-36 sm:h-36 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-primary/20 shadow-2xl shadow-primary/10">
+        <motion.div
+          className="relative shrink-0"
+          initial={{ opacity: 0, scale: 0.5, rotate: -12 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{
+            default: { duration: 0.9, ease: 'easeOut' },
+            scale: { duration: 0.9, ease: 'easeOut' },
+          }}
+          whileHover={{
+            scale: 1.1,
+            rotate: -3,
+            transition: { type: 'spring', stiffness: 300, damping: 12 },
+          }}
+          whileTap={{
+            scale: 0.95,
+            rotate: 2,
+            transition: { type: 'spring', stiffness: 400, damping: 15 },
+          }}
+        >
+          <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-60 md:h-60 rounded-full overflow-hidden border-4 border-primary/20 shadow-2xl shadow-primary/10 transition-shadow duration-300 hover:shadow-3xl hover:shadow-primary/20 hover:border-primary/40">
             <Image
               src={mainImage.url}
               alt={mainImage.title || offer.title}
               fill
               className="object-cover"
-              sizes="(max-width: 640px) 112px, (max-width: 768px) 144px, 192px"
+              sizes="(max-width: 640px) 144px, (max-width: 768px) 176px, 240px"
             />
           </div>
           {/* Decorative ring */}
@@ -33,7 +55,7 @@ export const OfferShortInfo: React.FC<OfferShortInfoProps> = ({ offer }) => {
             className="absolute -inset-2 rounded-full border-2 border-dashed border-primary/30 animate-spin-slow"
             style={{ animationDuration: '20s' }}
           />
-        </div>
+        </motion.div>
       )}
 
       {/* Short description */}
