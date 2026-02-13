@@ -92,7 +92,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconU
                   data={offer.content}
                   enableGutter={false}
                   enableProse
-                  //   className="prose-lg max-w-none"
+                    className="prose-lg max-w-none"
                 />
               )}
             </CardContent>
