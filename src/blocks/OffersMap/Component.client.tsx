@@ -6,6 +6,7 @@ import { useTheme } from 'next-themes'
 import { MapPin, ArrowRight, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
+import { Skeleton } from '@/components/ui/skeleton'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { OfferPin } from '@/blocks/OffersMap/Component'
@@ -54,6 +55,8 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null)
   const [mapReady, setMapReady] = useState(false)
   const [selectedPin, setSelectedPin] = useState<OfferPin | null>(null)
+  const [mainImageLoaded, setMainImageLoaded] = useState(false)
+  const [iconLoaded, setIconLoaded] = useState(false)
 
   // Cleanup markers helper
   const clearMarkers = useCallback(() => {
@@ -66,6 +69,8 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
   // Close info card
   const closeInfoCard = useCallback(() => {
     setSelectedPin(null)
+    setMainImageLoaded(false)
+    setIconLoaded(false)
     infoWindowRef.current?.close()
   }, [])
 
@@ -118,6 +123,8 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
 
       // Click handler — select this pin
       marker.addListener('gmp-click', () => {
+        setMainImageLoaded(false)
+        setIconLoaded(false)
         setSelectedPin(pin)
 
         // Smoothly pan to the pin, offset slightly upward so the card doesn't obscure it
@@ -195,12 +202,16 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
                   {/* Main image as rounded header */}
                   {selectedPin.mainImageUrl && (
                     <div className="relative w-full h-32 overflow-hidden">
+                      {!mainImageLoaded && (
+                        <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
+                      )}
                       <Image
                         src={selectedPin.mainImageUrl}
                         alt={selectedPin.title}
                         fill
-                        className="object-cover"
+                        className={`object-cover transition-opacity duration-300 ${mainImageLoaded ? 'opacity-100' : 'opacity-0'}`}
                         sizes="320px"
+                        onLoad={() => setMainImageLoaded(true)}
                       />
                       {/* Gradient overlay for text readability */}
                       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
@@ -209,12 +220,16 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
                       {selectedPin.categoryIconUrl && (
                         <div className="absolute bottom-2 left-3">
                           <div className="size-16 rounded-full bg-background/50 backdrop-blur-md border border-border/50 flex items-center justify-center shadow-[inset_0_2px_6px_rgba(0,0,0,0.25),0_2px_8px_rgba(0,0,0,0.15)] p-3">
+                            {!iconLoaded && (
+                              <Skeleton className="absolute inset-3 rounded-full" />
+                            )}
                             <Image
                               src={selectedPin.categoryIconUrl}
                               alt={selectedPin.categoryName ?? 'Kategoria'}
                               width={40}
                               height={40}
-                              className="object-contain dark:invert"
+                              className={`object-contain dark:invert transition-opacity duration-300 ${iconLoaded ? 'opacity-100' : 'opacity-0'}`}
+                              onLoad={() => setIconLoaded(true)}
                             />
                           </div>
                         </div>

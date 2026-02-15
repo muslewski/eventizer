@@ -13,6 +13,7 @@ interface BlockHeaderProps {
   lines?: boolean
   gap?: boolean
   planet?: boolean
+  questionMark?: boolean
   spotlight?: boolean
   grid?: boolean
   aurora?: boolean
@@ -29,6 +30,7 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
   lines = false,
   gap = false,
   planet = false,
+  questionMark = false,
   spotlight = false,
   grid = false,
   aurora = false,
@@ -48,12 +50,17 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
     </div>
   )
 
-  const effects = (planet || spotlight || grid || aurora) && (
+  const effects = (planet || questionMark || spotlight || grid || aurora) && (
     <div
       className={cn('absolute inset-0 pointer-events-none w-full', overflowHidden && 'overflow-hidden')}
     >
       {planet && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-50 h-50 bg-linear-to-br from-primary/50 via-transparent to-accent/5 rounded-full blur-sm" />
+      )}
+      {questionMark && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18rem] font-bold leading-none text-primary/25 dark:text-primary/15 blur-[6px] select-none" aria-hidden>
+          ?
+        </div>
       )}
       {spotlight && (
         <div className="absolute top-1/2 left-2/5 -translate-x-1/2 -translate-y-1/2 w-35 -rotate-45 h-100 bg-linear-to-br from-primary/5 via-accent-foreground/5 to-transparent rounded-full blur-3xl" />
