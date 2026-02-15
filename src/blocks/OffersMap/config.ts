@@ -18,7 +18,7 @@ export const OffersMap: Block = {
       name: 'heading',
       type: 'text',
       required: true,
-      defaultValue: 'Nasze oferty na mapie',
+      defaultValue: 'Wszystkie oferty na mapie',
       label: {
         en: 'Heading',
         pl: 'Nagłówek',

@@ -33,6 +33,16 @@ export default function BackgroundVideo({ backgroundVideo, poster }: BackgroundV
     const container = containerRef.current
     if (!video || !container) return
 
+    // Force iOS to treat video as non-interactive
+    video.setAttribute('webkit-playsinline', 'true')
+    video.setAttribute('x-webkit-airplay', 'deny')
+    video.muted = true
+    video.controls = false
+
+    // Show video only once it actually starts playing (hides iOS play button)
+    const handlePlaying = () => setIsLoaded(true)
+    video.addEventListener('playing', handlePlaying)
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -48,12 +58,11 @@ export default function BackgroundVideo({ backgroundVideo, poster }: BackgroundV
 
     observer.observe(container)
 
-    return () => observer.disconnect()
+    return () => {
+      video.removeEventListener('playing', handlePlaying)
+      observer.disconnect()
+    }
   }, [shouldLoad])
-
-  const handleCanPlay = () => {
-    setIsLoaded(true)
-  }
 
   if (!backgroundVideo.url) return null
 
@@ -63,8 +72,8 @@ export default function BackgroundVideo({ backgroundVideo, poster }: BackgroundV
       className={cn(
         'absolute inset-0 hide-video-on-reduce animate-zoom-in will-change-transform backface-hidden transform-gpu',
       )}
-      style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.9s ease-in-out' }}
     >
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       {shouldLoad && (
         <video
           ref={videoRef}
@@ -72,10 +81,12 @@ export default function BackgroundVideo({ backgroundVideo, poster }: BackgroundV
           loop
           muted
           playsInline
+          controls={false}
+          disableRemotePlayback
+          disablePictureInPicture
           preload="auto"
-          poster={poster}
-          onCanPlay={handleCanPlay}
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none background-video"
+          style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.9s ease-in-out' }}
         >
           <source src={backgroundVideo.url} type={backgroundVideo.mimeType || 'video/mp4'} />
         </video>

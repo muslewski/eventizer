@@ -32,7 +32,7 @@ export const LivePreviewOffer: React.FC<{
     <>
       <OfferHero offer={data} />
 
-      <div className="pt-16 flex flex-col gap-10 lg:gap-26 w-full">
+      <div className="pt-16 flex flex-col gap-24 lg:gap-26 w-full">
 
       <OfferMap offer={data} />
       <OfferShortInfo offer={data} />

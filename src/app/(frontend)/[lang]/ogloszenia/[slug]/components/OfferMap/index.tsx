@@ -192,12 +192,12 @@ export const OfferMap: React.FC<OfferMapProps> = ({ offer }) => {
  * Larger radius → more zoomed out.
  */
 function getZoomForRadius(radiusKm: number): number {
-  if (radiusKm <= 5) return 12
-  if (radiusKm <= 10) return 11
-  if (radiusKm <= 25) return 10
-  if (radiusKm <= 50) return 9
-  if (radiusKm <= 100) return 8
-  if (radiusKm <= 200) return 7
-  if (radiusKm <= 300) return 6
-  return 5
+  if (radiusKm <= 5) return 11
+  if (radiusKm <= 10) return 10
+  if (radiusKm <= 25) return 9
+  if (radiusKm <= 50) return 8
+  if (radiusKm <= 100) return 7
+  if (radiusKm <= 200) return 6
+  if (radiusKm <= 300) return 5
+  return 4
 }

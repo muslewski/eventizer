@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dialog'
 import Image from 'next/image'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
-import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export type { CarouselSlide }
@@ -186,15 +186,30 @@ export default function ImageCarousel({
     <Dialog open onOpenChange={() => setLightboxIndex(null)}>
       <DialogContent
         className="sm:max-w-[100vw] max-w-[100vw] w-screen h-screen max-h-screen p-0 pt-12 bg-background border-none rounded-none flex flex-col items-center justify-center gap-0"
-        showCloseButton
+        showCloseButton={false}
       >
         <VisuallyHidden>
           <DialogTitle>{slides[lightboxIndex]?.imageAlt}</DialogTitle>
           <DialogDescription>Image preview</DialogDescription>
         </VisuallyHidden>
 
-        {/* Main image area */}
-        <div className="relative w-full flex-1 min-h-0">
+        {/* Custom close button — larger and easier to tap on mobile */}
+        <button
+          onClick={() => setLightboxIndex(null)}
+          className="absolute top-4 right-4 z-50 p-3 sm:p-2 rounded-full bg-foreground/10 hover:bg-foreground/20 text-foreground transition-colors"
+          aria-label="Close lightbox"
+        >
+          <X className="size-7 sm:size-5" />
+        </button>
+
+        {/* Main image area — tap empty space to close on mobile */}
+        <div
+          className="relative w-full flex-1 min-h-0"
+          onClick={(e) => {
+            // Close only when tapping the empty area, not the image or buttons
+            if (e.target === e.currentTarget) setLightboxIndex(null)
+          }}
+        >
           {/* Loading spinner overlay */}
           {lightboxLoading && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50">
@@ -344,7 +359,7 @@ export default function ImageCarousel({
           strength={3}
           zIndex={10}
           width="48px"
-          mobileWidth="32px"
+          mobileWidth="12px"
         />
         <GradualBlurMemo
           preset="right"
@@ -352,7 +367,7 @@ export default function ImageCarousel({
           strength={3}
           zIndex={10}
           width="48px"
-          mobileWidth="32px"
+          mobileWidth="12px"
         />
       </div>
 

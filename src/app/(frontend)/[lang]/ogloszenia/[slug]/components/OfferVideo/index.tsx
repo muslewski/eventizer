@@ -76,9 +76,10 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
             whileHover={!isPlaying ? { scale: 1.015 } : {}}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
+               <div className="relative w-full aspect-video bg-black">
           <video
             ref={videoRef}
-            className="w-full max-h-[600px] object-contain"
+            className="w-full max-h-[600px] object-contain aspect-video"
             controls={hasStarted}
             preload="metadata"
             playsInline
@@ -89,7 +90,7 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
           >
             <source src={`${videoData.url}#t=0.001`} type={videoData.mimeType} />
             Your browser does not support the video tag.
-          </video>
+          </video></div>
 
           {/* Inner shadow overlay */}
           <div

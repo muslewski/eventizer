@@ -64,8 +64,8 @@ export default function CarouselCard({ slide, isActive, onClick }: CarouselCardP
         />
 
         {/* Gradient overlays */}
-        <div className="absolute inset-0 z-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
-        <div className="absolute inset-0 z-0 bg-linear-to-br from-transparent via-transparent to-black/40" />
+        <div className="absolute inset-0 z-0 bg-linear-to-t dark:from-background/80 via-background/20 to-transparent" />
+        <div className="absolute inset-0 z-0 bg-linear-to-br from-transparent via-transparent to-background/40" />
       </div>
 
       <CardHeader>
