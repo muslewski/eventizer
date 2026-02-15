@@ -19,8 +19,13 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
     if (!offer.video) return null
     const video = isExpandedDoc<OfferVideoUpload>(offer.video) ? offer.video : null
     if (!video?.url) return null
+
+    // Use the public proxy route so the browser doesn't send auth cookies
+    // (the direct Payload URL returns 403 for logged-in non-owners)
+    const proxyUrl = `/api/offer-video/${encodeURIComponent(video.filename ?? '')}`
+
     return {
-      url: video.url,
+      url: proxyUrl,
       title: video.title || offer.title,
       mimeType: video.mimeType ?? 'video/mp4',
     }

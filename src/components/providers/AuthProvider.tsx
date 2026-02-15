@@ -16,7 +16,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthUIProvider
       basePath="/auth"
-      redirectTo="/ogloszenia"
+      redirectTo="/"
       authClient={authClient}
       navigate={router.push}
       replace={router.replace}
