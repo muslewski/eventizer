@@ -1,13 +1,19 @@
+'use client'
+
 import { Offer } from '@/payload-types'
 import { ContactDetails } from './ContactDetails'
 import { SocialMedia } from './SocialMedia'
 import { TitleH2 } from '@/components/frontend/Content/TitleH2'
+import { useRootAuth } from '@/providers/RootAuthProvider'
 
 interface ContactInfoProps {
   offer: Offer
 }
 
 export const ContactInfo: React.FC<ContactInfoProps> = ({ offer }) => {
+  const { user } = useRootAuth()
+  const isAuthenticated = !!user
+
   const hasSocialMedia =
     offer.socialMedia &&
     (offer.socialMedia.facebook ||
@@ -42,8 +48,8 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ offer }) => {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:items-start gap-6 sm:gap-8 lg:gap-12 w-full min-w-0">
-        {hasContactInfo && <ContactDetails offer={offer} />}
-        {hasSocialMedia && <SocialMedia offer={offer} />}
+        {hasContactInfo && <ContactDetails offer={offer} isAuthenticated={isAuthenticated} />}
+        {hasSocialMedia && <SocialMedia offer={offer} isAuthenticated={isAuthenticated} />}
       </div>
     </section>
   )

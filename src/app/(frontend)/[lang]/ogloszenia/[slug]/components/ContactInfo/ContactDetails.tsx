@@ -9,7 +9,6 @@ import { POLISH_PROVINCES } from '@/lib/provinces'
 import { Phone, Mail, MapPin, LockKeyhole } from 'lucide-react'
 import Link from 'next/link'
 import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
-import { useRootAuth } from '@/providers/RootAuthProvider'
 
 const PLACEHOLDER_PHONE = '+48 *** *** ***'
 const PLACEHOLDER_EMAIL = '***@***.***'
@@ -22,11 +21,10 @@ const getProvinceLabel = (value: string): string => {
 
 interface ContactDetailsProps {
   offer: Offer
+  isAuthenticated: boolean
 }
 
-export const ContactDetails: React.FC<ContactDetailsProps> = ({ offer }) => {
-  const { user } = useRootAuth()
-  const isAuthenticated = !!user
+export const ContactDetails: React.FC<ContactDetailsProps> = ({ offer, isAuthenticated }) => {
 
   const displayPhone = isAuthenticated ? offer.phone : PLACEHOLDER_PHONE
   const displayEmail = isAuthenticated ? offer.email : PLACEHOLDER_EMAIL

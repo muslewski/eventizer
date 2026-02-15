@@ -30,7 +30,7 @@ const InfoRow: React.FC<InfoRowProps> = ({
   label,
   value,
   variant = 'primary',
-  valueClassName = 'font-medium text-sm',
+  valueClassName = 'font-medium text-lg',
 }) => {
   const isPrimary = variant === 'primary'
 
@@ -44,7 +44,7 @@ const InfoRow: React.FC<InfoRowProps> = ({
         {iconContent}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[11px] sm:text-xs text-muted-foreground">{label}</p>
+        <p className="text-sm text-muted-foreground">{label}</p>
         <p className={valueClassName}>{value}</p>
       </div>
     </div>
@@ -163,7 +163,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconU
                     ? `${(offer.priceFrom ?? 0).toLocaleString('pl-PL')} - ${(offer.priceTo ?? 0).toLocaleString('pl-PL')} zł`
                     : `${(offer.price ?? 0).toLocaleString('pl-PL')} zł`
                 }
-                valueClassName="font-bold text-base sm:text-lg"
+                valueClassName="font-bold text-lg sm:text-xl"
               />
 
               {/* Created at */}
@@ -172,7 +172,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconU
                 iconContent={<CalendarPlus className="size-5 text-muted-foreground" />}
                 label="Data dodania"
                 value={formatDate(offer.createdAt)}
-                valueClassName="text-xs sm:text-sm text-muted-foreground"
+                valueClassName="text-muted-foreground"
               />
 
               {/* Updated at */}
@@ -181,7 +181,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconU
                 iconContent={<CalendarClock className="size-5 text-muted-foreground" />}
                 label="Ostatnia aktualizacja"
                 value={formatDate(offer.updatedAt)}
-                valueClassName="text-xs sm:text-sm text-muted-foreground"
+                valueClassName="text-muted-foreground"
               />
             </CardContent>
           </Card>
