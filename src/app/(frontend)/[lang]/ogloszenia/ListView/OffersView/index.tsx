@@ -84,7 +84,7 @@ export default function OffersView({
                   // rating={4.5}
                   // reviewCount={27}
                   categoryName={offer.categoryName ?? undefined}
-                  serviceArea={offer.serviceArea ?? undefined}
+                  city={offer.location?.city ?? undefined}
                   priceMin={offer.priceFrom || 0}
                   priceMax={offer.priceTo || 0}
                   price={offer.price || undefined}

@@ -21,6 +21,7 @@
   "dependencies": {
     "@daveyplate/better-auth-ui": "^3.3.9",
     "@formatjs/intl-localematcher": "^0.7.5",
+    "@googlemaps/js-api-loader": "^2.0.2",
     "@payloadcms/db-vercel-postgres": "3.75.0",
     "@payloadcms/email-resend": "3.75.0",
     "@payloadcms/live-preview-react": "3.75.0",
@@ -82,6 +83,7 @@
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
     "use-debounce": "^10.1.0",
+    "use-places-autocomplete": "^4.0.1",
     "vaul": "^1.1.2"
   },
   "devDependencies": {

@@ -5,6 +5,7 @@ import type { Offer, OfferVideoUpload } from '@/payload-types'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import { Clapperboard, Play } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
+import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 
 interface OfferVideoProps {
   offer: Offer
@@ -58,9 +59,14 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
       viewport={{ once: true, margin: '-80px' }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
     >
- 
+      <BlockHeader
+        heading="Film promocyjny"
+        description="Zobacz krótką prezentację usługi przygotowaną przez usługodawcę."
+        gap
+        lines
+      />
 
-      <div className="w-full max-w-4xl mx-auto px-4">
+      <div className="w-full max-w-4xl mx-auto px-4 mt-16">
         {/* Outer border wrapper — never scaled, so border stays crisp */}
         <div className="relative rounded-[0.8rem] overflow-hidden">
           {/* Inner content — scales on hover without affecting the border */}

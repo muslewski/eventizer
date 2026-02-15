@@ -77,7 +77,7 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
 
   return (
     <div className={cn('flex flex-col items-center gap-8 w-full', className)}>
-      <BlockHeader heading={heading} description={description} planet />
+      <BlockHeader heading={heading} description={description} />
 
       {/* Display switch button */}
       <div className="w-full max-w-xl py-2 flex">

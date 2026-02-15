@@ -1,6 +1,5 @@
 import type { Field } from 'payload'
 import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
-import { POLISH_PROVINCES } from '@/lib/provinces'
 import { offerLexical } from '@/fields/offerLexical'
 import {
   MetaDescriptionField,
@@ -360,53 +359,113 @@ export const offersFields: Field[] = [
             },
           },
           {
-            name: 'serviceArea',
-            type: 'select',
-            hasMany: true,
-            required: true,
+            name: 'location',
+            type: 'group',
             label: {
-              en: 'Service Area',
-              pl: 'Województwo',
-            },
-            options: POLISH_PROVINCES,
-            admin: {
-              description: {
-                en: 'Select the province where this offer is available.',
-                pl: 'Wybierz województwo, w którym ta oferta jest dostępna.',
-              },
-            },
-            index: true, // Index for faster search queries
-          },
-          {
-            name: 'isWithoutAddress',
-            type: 'checkbox',
-            label: {
-              en: 'Offer without address',
-              pl: 'Oferta bez adresu',
-            },
-            defaultValue: false,
-            admin: {
-              description: {
-                en: 'Check if this offer does not have a specific address.',
-                pl: 'Zaznacz, jeśli ta oferta nie posiada konkretnego adresu.',
-              },
-            },
-          },
-          {
-            name: 'address',
-            type: 'text',
-            label: {
-              en: 'Address',
-              pl: 'Adres',
+              en: 'Location',
+              pl: 'Lokalizacja',
             },
             admin: {
               description: {
-                en: 'Address related to the offer.',
-                pl: 'Adres związany z ofertą.',
+                en: 'Search for your address using Google Places autocomplete.',
+                pl: 'Wyszukaj swój adres za pomocą autouzupełniania Google Places.',
               },
-              condition: (data) => !data?.isWithoutAddress,
             },
-            required: true,
+            fields: [
+              {
+                name: 'address',
+                type: 'text',
+                required: true,
+                label: {
+                  en: 'Address',
+                  pl: 'Adres',
+                },
+                admin: {
+                  components: {
+                    Field: '/components/payload/fields/locationPicker',
+                  },
+                },
+              },
+              {
+                name: 'city',
+                type: 'text',
+                label: {
+                  en: 'City',
+                  pl: 'Miasto',
+                },
+                index: true,
+                admin: {
+                  readOnly: true,
+                  condition: (data, siblingData, { user }) => {
+                    return isClientRoleEqualOrHigher('moderator', user)
+                  },
+                },
+              },
+              {
+                name: 'lat',
+                type: 'number',
+                label: {
+                  en: 'Latitude',
+                  pl: 'Szerokość geograficzna',
+                },
+                index: true,
+                admin: {
+                  readOnly: true,
+                  step: 0.000001,
+                  condition: (data, siblingData, { user }) => {
+                    return isClientRoleEqualOrHigher('moderator', user)
+                  },
+                },
+              },
+              {
+                name: 'lng',
+                type: 'number',
+                label: {
+                  en: 'Longitude',
+                  pl: 'Długość geograficzna',
+                },
+                index: true,
+                admin: {
+                  readOnly: true,
+                  step: 0.000001,
+                  condition: (data, siblingData, { user }) => {
+                    return isClientRoleEqualOrHigher('moderator', user)
+                  },
+                },
+              },
+              {
+                name: 'placeId',
+                type: 'text',
+                label: {
+                  en: 'Google Place ID',
+                  pl: 'Google Place ID',
+                },
+                admin: {
+                  readOnly: true,
+                  condition: (data, siblingData, { user }) => {
+                    return isClientRoleEqualOrHigher('moderator', user)
+                  },
+                },
+              },
+              {
+                name: 'serviceRadius',
+                type: 'number',
+                label: {
+                  en: 'Service Radius (km)',
+                  pl: 'Zasięg usługi (km)',
+                },
+                defaultValue: 50,
+                min: 1,
+                max: 500,
+                required: true,
+                admin: {
+                  description: {
+                    en: 'How far from your location are you willing to provide services? (in km)',
+                    pl: 'Jak daleko od swojej lokalizacji jesteś w stanie świadczyć usługi? (w km)',
+                  },
+                },
+              },
+            ],
           },
           {
             name: 'socialMedia',

@@ -27,6 +27,7 @@ import { BlocksFeatureClient as BlocksFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { default as default_1fe6cf5e93660301ab4066777495aeef } from '../../../components/payload/fields/offerContentInstructions'
 import { default as default_0a5dfb31e73e2ac0df839a9fa014bd79 } from '../../../components/payload/fields/offerMainImageCell'
 import { default as default_a49143c253cd43673783da90c91454b7 } from '../../../components/payload/fields/offerVideoPreview'
+import { default as default_2abe8ae7aeba72970a8aa5dfaae3c3b4 } from '../../../components/payload/fields/locationPicker'
 import { default as default_133738e3839d3dd2ada085fc82bb57a4 } from '../../../components/payload/fields/roleSelect'
 import { default as default_23e76fb30bcf0ed97f8a1a994d9bc683 } from '../../../components/payload/fields/upgradeSubscription'
 import { default as default_748b6b240038a6900c9a0c51602bd414 } from '../../../components/payload/fields/becomeServiceProvider'
@@ -80,6 +81,7 @@ export const importMap = {
   "/components/payload/fields/offerContentInstructions#default": default_1fe6cf5e93660301ab4066777495aeef,
   "/components/payload/fields/offerMainImageCell#default": default_0a5dfb31e73e2ac0df839a9fa014bd79,
   "/components/payload/fields/offerVideoPreview#default": default_a49143c253cd43673783da90c91454b7,
+  "/components/payload/fields/locationPicker#default": default_2abe8ae7aeba72970a8aa5dfaae3c3b4,
   "/components/payload/fields/roleSelect#default": default_133738e3839d3dd2ada085fc82bb57a4,
   "/components/payload/fields/upgradeSubscription#default": default_23e76fb30bcf0ed97f8a1a994d9bc683,
   "/components/payload/fields/becomeServiceProvider#default": default_748b6b240038a6900c9a0c51602bd414,

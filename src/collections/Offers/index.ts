@@ -59,7 +59,13 @@ export const Offers: CollectionConfig = {
     priceTo: true,
     price: true,
     hasPriceRange: true,
-    serviceArea: true,
+    location: {
+      address: true,
+      city: true,
+      lat: true,
+      lng: true,
+      serviceRadius: true,
+    },
     video: true,
     meta: {
       image: true,

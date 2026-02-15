@@ -6,6 +6,7 @@ import { Bebas_Neue, Montserrat } from 'next/font/google'
 import Header from '@/components/frontend/Header'
 import Footer from '@/components/frontend/Footer'
 import { RootAuthProvider } from '@/providers/RootAuthProvider'
+import { GoogleMapsProvider } from '@/components/providers/GoogleMapsProvider'
 import { Analytics } from '@vercel/analytics/next'
 import { SuppressHydrationWarnings } from '@/components/providers/SuppressHydrationWarnings'
 
@@ -58,6 +59,7 @@ export default async function RootLayout({
         <SuppressHydrationWarnings />
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <RootAuthProvider>
+            <GoogleMapsProvider>
             <div className="w-full px-4 sm:px-8 transition-[padding] duration-900 ease-in-out">
               <main className="w-full relative">
                 <Header />
@@ -66,6 +68,7 @@ export default async function RootLayout({
             </div>
             <Footer />
             <Toaster />
+            </GoogleMapsProvider>
           </RootAuthProvider>
         </ThemeProvider>
         <Analytics />

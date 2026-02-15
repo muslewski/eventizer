@@ -14,7 +14,9 @@ type Args = {
     kategoria?: string
     szukaj?: string
     sortuj?: SortOption
-    region?: string
+    lat?: string
+    lng?: string
+    odleglosc?: string
     minCena?: string
     maxCena?: string
   }>
@@ -22,7 +24,7 @@ type Args = {
 
 export default async function Page({ params, searchParams }: Args) {
   const payload = await getPayload({ config })
-  const { strona, kategoria, szukaj, sortuj, region, minCena, maxCena } = await searchParams
+  const { strona, kategoria, szukaj, sortuj, lat, lng, odleglosc, minCena, maxCena } = await searchParams
 
   return (
     <>
@@ -33,7 +35,9 @@ export default async function Page({ params, searchParams }: Args) {
         kategoria={kategoria}
         szukaj={szukaj}
         sortuj={sortuj}
-        region={region}
+        lat={lat}
+        lng={lng}
+        odleglosc={odleglosc}
         minCena={minCena ? Number(minCena) : undefined}
         maxCena={maxCena ? Number(maxCena) : undefined}
       />

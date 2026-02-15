@@ -38,7 +38,7 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
   children,
 }) => {
   const content = (
-    <div className="text-center flex flex-col items-center gap-6">
+    <div className="text-center flex flex-col items-center gap-6 w-full">
       {badge && <Badge variant={badge.variant ?? 'golden'}>{badge.label}</Badge>}
       <div className="flex flex-col items-center">
         <TitleH2 align="center" title={heading} />
@@ -50,7 +50,7 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
 
   const effects = (planet || spotlight || grid || aurora) && (
     <div
-      className={cn('absolute inset-0 pointer-events-none', overflowHidden && 'overflow-hidden')}
+      className={cn('absolute inset-0 pointer-events-none w-full', overflowHidden && 'overflow-hidden')}
     >
       {planet && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-50 h-50 bg-linear-to-br from-primary/50 via-transparent to-accent/5 rounded-full blur-sm" />
@@ -82,7 +82,7 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
 
   if (!lines && !gap) {
     return (
-      <div className={cn('relative flex flex-col items-center', className)}>
+      <div className={cn('relative flex flex-col items-center w-full', className)}>
         {effects}
         {content}
       </div>
@@ -91,7 +91,7 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
 
   if (gap && !lines) {
     return (
-      <div className={cn('relative flex flex-col items-center py-16', className)}>
+      <div className={cn('relative flex flex-col items-center py-16 w-full', className)}>
         {effects}
         {content}
       </div>
@@ -99,7 +99,7 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
   }
 
   return (
-    <div className={cn('flex flex-col gap-16 relative', className)}>
+    <div className={cn('flex flex-col gap-16 relative w-full', className)}>
       {effects}
 
       {/* Top line */}

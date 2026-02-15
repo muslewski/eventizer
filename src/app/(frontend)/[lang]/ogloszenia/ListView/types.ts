@@ -16,7 +16,9 @@ export interface OfferSearchParams {
   kategoria?: string
   szukaj?: string
   sortuj?: SortOption
-  region?: string
+  lat?: string
+  lng?: string
+  odleglosc?: string
   minCena?: string
   maxCena?: string
 }
@@ -27,7 +29,9 @@ export interface ParsedSearchParams {
   kategoria?: string
   szukaj?: string
   sortuj: SortOption
-  region?: string
+  lat?: number
+  lng?: number
+  odleglosc?: number
   minCena?: number
   maxCena?: number
 }

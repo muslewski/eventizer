@@ -4,7 +4,7 @@ import { Offer, OfferUpload } from '@/payload-types'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import Image from 'next/image'
 import { Quote } from 'lucide-react'
-import { TitleH3 } from '@/components/frontend/Content/TitleH3'
+import { TitleH2 } from '@/components/frontend/Content/TitleH2'
 import { motion } from 'motion/react'
 
 interface OfferShortInfoProps {
@@ -63,7 +63,7 @@ export const OfferShortInfo: React.FC<OfferShortInfoProps> = ({ offer }) => {
       {offer.shortDescription && (
         <div className="flex-1 min-w-0 text-center sm:text-left flex flex-col items-center sm:items-start mt-2 gap-4 relative">
           <div className="w-fit">
-            <TitleH3 title="W skrócie" />
+            <TitleH2 title="W skrócie" />
           </div>
           <div className="relative pl-4 sm:pl-5 border-l-2 border-primary/40">
             <Quote className="absolute -left-3 -top-1 size-5 sm:size-6 text-primary/30 fill-primary/10" />

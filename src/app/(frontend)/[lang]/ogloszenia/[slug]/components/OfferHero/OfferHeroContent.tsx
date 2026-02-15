@@ -2,7 +2,6 @@ import { Offer } from '@/payload-types'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Tag } from 'lucide-react'
 import BlurText from '@/components/react-bits/BlurText'
-import { POLISH_PROVINCES } from '@/lib/provinces'
 
 interface OfferHeroContentProps {
   offer: Offer
@@ -23,11 +22,6 @@ const formatPrice = (offer: Offer) => {
   return `${priceFrom.toLocaleString('pl-PL')} - ${priceTo.toLocaleString('pl-PL')} zł`
 }
 
-const getProvinceLabel = (value: string): string => {
-  const province = POLISH_PROVINCES.find((p) => p.value === value)
-  return province?.label.pl || value
-}
-
 export const OfferHeroContent: React.FC<OfferHeroContentProps> = ({ offer }) => {
   return (
     <div className="h-full relative flex flex-col justify-end gap-6 sm:gap-10">
@@ -41,20 +35,14 @@ export const OfferHeroContent: React.FC<OfferHeroContentProps> = ({ offer }) => 
           </Badge>
         )}
 
-        {/* Service area badges */}
-        {offer.serviceArea && offer.serviceArea.length > 0 && (
+        {/* Location badge */}
+        {offer.location?.city && (
           <div className="flex flex-wrap gap-2">
-            {offer.serviceArea.slice(0, 3).map((area) => (
-              <Badge key={area} variant="blend" className="gap-1.5 opacity-75">
-                <MapPin className="size-3" />
-                {getProvinceLabel(area)}
-              </Badge>
-            ))}
-            {offer.serviceArea.length > 3 && (
-              <Badge variant="blend" className="opacity-75">
-                +{offer.serviceArea.length - 3}
-              </Badge>
-            )}
+            <Badge variant="blend" className="gap-1.5 opacity-75">
+              <MapPin className="size-3" />
+              {offer.location.city}
+              {offer.location.serviceRadius && ` • ${offer.location.serviceRadius} km`}
+            </Badge>
           </div>
         )}
       </div>

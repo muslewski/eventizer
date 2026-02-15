@@ -9,7 +9,7 @@ interface OfferListCardProps {
   title: string
   description: string
   categoryName?: string
-  serviceArea?: string[]
+  city?: string
   priceMin: number
   priceMax: number
   price?: number
@@ -22,7 +22,7 @@ export const OfferListCard = ({
   title,
   description,
   categoryName,
-  serviceArea,
+  city,
   priceMin,
   priceMax,
   price,
@@ -71,7 +71,7 @@ export const OfferListCard = ({
 
           <p className="line-clamp-3 w-full">{description}</p>
 
-          {(categoryName || (serviceArea && serviceArea.length > 0)) && (
+          {(categoryName || city) && (
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               {categoryName ? (
                 <span className="inline-flex items-center rounded-md border px-2 py-1 bg-background">
@@ -81,10 +81,9 @@ export const OfferListCard = ({
                 </span>
               ) : null}
 
-              {serviceArea && serviceArea.length > 0 ? (
+              {city ? (
                 <span className="inline-flex items-center rounded-md border px-2 py-1 bg-background">
-                  {serviceArea.slice(0, 2).join(', ')}
-                  {serviceArea.length > 2 ? ` +${serviceArea.length - 2}` : ''}
+                  📍 {city}
                 </span>
               ) : null}
             </div>

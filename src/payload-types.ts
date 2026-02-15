@@ -216,6 +216,7 @@ export interface Page {
     | HowItWorksBlock
     | SocialMediaBlock
     | ServiceCategoriesBlock
+    | OffersMapBlock
   )[];
   meta?: {
     title?: string | null;
@@ -548,34 +549,19 @@ export interface Offer {
    */
   email?: string | null;
   /**
-   * Select the province where this offer is available.
+   * Search for your address using Google Places autocomplete.
    */
-  serviceArea: (
-    | 'dolnoslaskie'
-    | 'kujawsko-pomorskie'
-    | 'lubelskie'
-    | 'lubuskie'
-    | 'lodzkie'
-    | 'malopolskie'
-    | 'mazowieckie'
-    | 'opolskie'
-    | 'podkarpackie'
-    | 'podlaskie'
-    | 'pomorskie'
-    | 'slaskie'
-    | 'swietokrzyskie'
-    | 'warminsko-mazurskie'
-    | 'wielkopolskie'
-    | 'zachodniopomorskie'
-  )[];
-  /**
-   * Check if this offer does not have a specific address.
-   */
-  isWithoutAddress?: boolean | null;
-  /**
-   * Address related to the offer.
-   */
-  address?: string | null;
+  location: {
+    address: string;
+    city?: string | null;
+    lat?: number | null;
+    lng?: number | null;
+    placeId?: string | null;
+    /**
+     * How far from your location are you willing to provide services? (in km)
+     */
+    serviceRadius: number;
+  };
   /**
    * Add your social media links to help clients find you. (optional)
    */
@@ -901,6 +887,17 @@ export interface SubscriptionPlan {
   skipSync?: boolean | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OffersMapBlock".
+ */
+export interface OffersMapBlock {
+  heading: string;
+  description: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'offersMap';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1273,6 +1270,7 @@ export interface PagesSelect<T extends boolean = true> {
         howItWorks?: T | HowItWorksBlockSelect<T>;
         socialMedia?: T | SocialMediaBlockSelect<T>;
         serviceCategories?: T | ServiceCategoriesBlockSelect<T>;
+        offersMap?: T | OffersMapBlockSelect<T>;
       };
   meta?:
     | T
@@ -1493,6 +1491,16 @@ export interface ServiceCategoriesBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OffersMapBlock_select".
+ */
+export interface OffersMapBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "offers_select".
  */
 export interface OffersSelect<T extends boolean = true> {
@@ -1519,9 +1527,16 @@ export interface OffersSelect<T extends boolean = true> {
   video?: T;
   phone?: T;
   email?: T;
-  serviceArea?: T;
-  isWithoutAddress?: T;
-  address?: T;
+  location?:
+    | T
+    | {
+        address?: T;
+        city?: T;
+        lat?: T;
+        lng?: T;
+        placeId?: T;
+        serviceRadius?: T;
+      };
   socialMedia?:
     | T
     | {

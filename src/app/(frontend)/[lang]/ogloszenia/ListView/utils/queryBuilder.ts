@@ -4,6 +4,42 @@ import type { ParsedSearchParams, OffersQueryResult, PaginationInfo } from '../t
 import { getSortField, requiresInMemorySort, sortOffersInMemory } from './sorting'
 
 /**
+ * Calculate bounding box for a given center point and radius in km.
+ * Used to create a rough DB-level filter before precise Haversine check.
+ */
+function getBoundingBox(lat: number, lng: number, radiusKm: number) {
+  const latDelta = radiusKm / 111.32
+  const lngDelta = radiusKm / (111.32 * Math.cos((lat * Math.PI) / 180))
+  return {
+    minLat: lat - latDelta,
+    maxLat: lat + latDelta,
+    minLng: lng - lngDelta,
+    maxLng: lng + lngDelta,
+  }
+}
+
+/**
+ * Haversine distance between two points in km.
+ */
+function haversineDistance(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number,
+): number {
+  const R = 6371 // Earth's radius in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180
+  const dLng = ((lng2 - lng1) * Math.PI) / 180
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2)
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+}
+
+/**
  * Build base where conditions that apply to all queries
  */
 export function buildBaseConditions(params: ParsedSearchParams): Where[] {
@@ -18,10 +54,19 @@ export function buildBaseConditions(params: ParsedSearchParams): Where[] {
     })
   }
 
-  // Add region/serviceArea filter
-  if (params.region) {
+  // Add geo bounding box filter for location-based search
+  if (params.lat !== undefined && params.lng !== undefined && params.odleglosc !== undefined) {
+    // Use a generous bounding box (search radius + max possible service radius of 500km)
+    const maxRadius = params.odleglosc + 500
+    const bbox = getBoundingBox(params.lat, params.lng, maxRadius)
+
     conditions.push({
-      serviceArea: { contains: params.region },
+      and: [
+        { 'location.lat': { greater_than_equal: bbox.minLat } },
+        { 'location.lat': { less_than_equal: bbox.maxLat } },
+        { 'location.lng': { greater_than_equal: bbox.minLng } },
+        { 'location.lng': { less_than_equal: bbox.maxLng } },
+      ],
     })
   }
 
@@ -129,6 +174,29 @@ function deduplicateOffers(offers: Offer[]): Offer[] {
     if (seenIds.has(offer.id)) return false
     seenIds.add(offer.id)
     return true
+  })
+}
+
+/**
+ * Filter offers by precise Haversine distance.
+ * An offer matches if: distance(searchPoint, offerPoint) <= searchRadius + offer.serviceRadius
+ */
+function filterByDistance(
+  offers: Offer[],
+  searchLat: number,
+  searchLng: number,
+  searchRadiusKm: number,
+): Offer[] {
+  return offers.filter((offer) => {
+    const offerLat = offer.location?.lat
+    const offerLng = offer.location?.lng
+    const offerRadius = offer.location?.serviceRadius ?? 0
+
+    // Skip offers without coordinates
+    if (offerLat == null || offerLng == null) return false
+
+    const distance = haversineDistance(searchLat, searchLng, offerLat, offerLng)
+    return distance <= searchRadiusKm + offerRadius
   })
 }
 
@@ -314,10 +382,74 @@ export async function queryOffers(
   params: ParsedSearchParams,
 ): Promise<OffersQueryResult> {
   const baseConditions = buildBaseConditions(params)
+  const hasGeoFilter =
+    params.lat !== undefined && params.lng !== undefined && params.odleglosc !== undefined
+
+  // If geo filter is active, we need to fetch all bounding-box matches,
+  // apply precise Haversine filter, then paginate in-memory
+  if (hasGeoFilter) {
+    return queryWithGeoFilter(payload, params, baseConditions)
+  }
 
   if (params.szukaj?.trim()) {
     return queryWithSearch(payload, params, baseConditions)
   }
 
   return queryWithoutSearch(payload, params, baseConditions)
+}
+
+/**
+ * Query offers with geo-based filtering.
+ * Fetches all bounding-box matches, applies Haversine filter, then paginates.
+ */
+async function queryWithGeoFilter(
+  payload: BasePayload,
+  params: ParsedSearchParams,
+  baseConditions: Where[],
+): Promise<OffersQueryResult> {
+  const { page, limit, sortuj, lat, lng, odleglosc } = params
+  const sortField = getSortField(sortuj)
+
+  const baseWhere: Where = baseConditions.length === 1 ? baseConditions[0] : { and: baseConditions }
+
+  // Also add search conditions if present
+  let where: Where = baseWhere
+  if (params.szukaj?.trim()) {
+    where = {
+      and: [
+        ...baseConditions,
+        {
+          or: [
+            { title: { contains: params.szukaj.trim() } },
+            { shortDescription: { contains: params.szukaj.trim() } },
+          ],
+        },
+      ],
+    }
+  }
+
+  // Fetch all bounding-box matches (limit: 0 = unlimited)
+  const result = await payload.find({
+    collection: 'offers',
+    where,
+    limit: 0,
+    sort: sortField,
+    overrideAccess: true,
+  })
+
+  // Apply precise Haversine distance filter
+  let filtered = filterByDistance(result.docs, lat!, lng!, odleglosc!)
+
+  // Apply in-memory sorting if needed
+  if (requiresInMemorySort(sortuj)) {
+    filtered = sortOffersInMemory(filtered, sortuj)
+  }
+
+  const pagination = calculatePagination(filtered.length, limit, page)
+  const offset = (pagination.currentPage - 1) * limit
+
+  return {
+    offers: filtered.slice(offset, offset + limit),
+    pagination,
+  }
 }

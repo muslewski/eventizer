@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { Offer, OfferUpload } from '@/payload-types'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import ImageCarousel, { type CarouselSlide } from '@/components/frontend/Carousel'
+import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 
 interface OfferGalleryProps {
   offer: Offer
@@ -31,7 +32,12 @@ export const OfferGallery: React.FC<OfferGalleryProps> = ({ offer }) => {
   if (slides.length === 0) return null
 
   return (
-    <section className="w-full flex items-center justify-center">
+    <section className="w-full flex flex-col items-center justify-center gap-5">
+      <BlockHeader
+        heading="Galeria"
+        description="Zobacz zdjęcia przedstawiające usługę i dotychczasowe realizacje."
+        gap
+      />
       <ImageCarousel slides={slides} autoplayDelay={4500} ariaLabel="Galeria oferty" lightbox />
     </section>
   )

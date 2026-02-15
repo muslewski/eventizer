@@ -24,7 +24,9 @@ interface ClientListViewProps {
   categoryData?: ServiceCategory[]
   pagination: PaginationInfo
   currentSort: SortOption
-  currentRegion?: string
+  currentLat?: number
+  currentLng?: number
+  currentDistance?: number
   minCena?: number
   maxCena?: number
 }
@@ -34,7 +36,9 @@ export default function ClientListView({
   categoryData,
   pagination,
   currentSort,
-  currentRegion,
+  currentLat,
+  currentLng,
+  currentDistance,
   minCena,
   maxCena,
 }: ClientListViewProps) {
@@ -53,7 +57,9 @@ export default function ClientListView({
         {/* Search Bar */}
         <SearchBar
           currentSort={currentSort}
-          currentRegion={currentRegion}
+          currentLat={currentLat}
+          currentLng={currentLng}
+          currentDistance={currentDistance}
           minPrice={minCena}
           maxPrice={maxCena}
         />

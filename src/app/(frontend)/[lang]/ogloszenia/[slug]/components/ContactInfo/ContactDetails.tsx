@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
-import { POLISH_PROVINCES } from '@/lib/provinces'
 import { Phone, Mail, MapPin, LockKeyhole } from 'lucide-react'
 import Link from 'next/link'
 import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
@@ -13,11 +12,6 @@ import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
 const PLACEHOLDER_PHONE = '+48 *** *** ***'
 const PLACEHOLDER_EMAIL = '***@***.***'
 const PLACEHOLDER_ADDRESS = '** ******** **, **-*** ********'
-
-const getProvinceLabel = (value: string): string => {
-  const province = POLISH_PROVINCES.find((p) => p.value === value)
-  return province?.label.pl || value
-}
 
 interface ContactDetailsProps {
   offer: Offer
@@ -28,7 +22,7 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({ offer, isAuthent
 
   const displayPhone = isAuthenticated ? offer.phone : PLACEHOLDER_PHONE
   const displayEmail = isAuthenticated ? offer.email : PLACEHOLDER_EMAIL
-  const displayAddress = isAuthenticated ? offer.address : PLACEHOLDER_ADDRESS
+  const displayAddress = isAuthenticated ? offer.location?.address : PLACEHOLDER_ADDRESS
 
   return (
     <div className="w-full min-w-0 lg:w-1/2">
@@ -62,7 +56,7 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({ offer, isAuthent
               </div>
             )}
 
-            {offer.phone && (offer.email || offer.address) && <Separator />}
+            {offer.phone && (offer.email || offer.location?.address) && <Separator />}
 
             {/* Email */}
             {offer.email && (
@@ -82,10 +76,10 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({ offer, isAuthent
               </div>
             )}
 
-            {offer.email && offer.address && <Separator />}
+            {offer.email && offer.location?.address && <Separator />}
 
             {/* Address */}
-            {offer.address && !offer.isWithoutAddress && (
+            {offer.location?.address && (
               <div className="flex items-start gap-4">
                 <div className="p-3 rounded-full bg-primary/10 text-primary">
                   <MapPin className="size-5" />
@@ -97,19 +91,20 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({ offer, isAuthent
               </div>
             )}
 
-            {/* Service Areas */}
-            {offer.serviceArea && offer.serviceArea.length > 0 && (
+            {/* Service Radius */}
+            {offer.location?.serviceRadius && (
               <>
                 <Separator />
                 <div>
-                  <p className="text-sm text-muted-foreground mb-3">Obszar działania</p>
+                  <p className="text-sm text-muted-foreground mb-3">Zasięg usługi</p>
                   <div className="flex flex-wrap gap-2">
-                    {offer.serviceArea.map((area) => (
-                      <Badge key={area} variant="secondary" className="gap-1.5">
-                        <MapPin className="size-3" />
-                        {getProvinceLabel(area)}
-                      </Badge>
-                    ))}
+                    <Badge variant="secondary" className="gap-1.5">
+                      <MapPin className="size-3" />
+                      {offer.location?.city || 'Lokalizacja'}
+                    </Badge>
+                    <Badge variant="outline" className="gap-1.5">
+                      {offer.location.serviceRadius} km
+                    </Badge>
                   </div>
                 </div>
               </>

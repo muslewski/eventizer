@@ -21,7 +21,7 @@ export const ContactInfo: React.FC<ContactInfoProps> = ({ offer }) => {
       offer.socialMedia.tiktok ||
       offer.socialMedia.linkedin)
 
-  const hasContactInfo = offer.phone || offer.email || offer.address
+  const hasContactInfo = offer.phone || offer.email || offer.location?.address
 
   if (!hasContactInfo && !hasSocialMedia) {
     return null
