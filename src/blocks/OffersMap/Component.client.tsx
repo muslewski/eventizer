@@ -290,7 +290,7 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
           </AnimatePresence>
 
           {/* Stats overlay */}
-          <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:left-4 sm:bottom-4">
+          <div className="absolute bottom-4 left-4 right-4 right-auto sm:left-4 sm:bottom-4">
             <div className="bg-background/90 backdrop-blur-md rounded-xl border border-border/50 px-4 py-3 shadow-xl flex items-center gap-3 max-w-xs">
               <div className="size-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                 <MapPin className="size-4 text-primary" />
