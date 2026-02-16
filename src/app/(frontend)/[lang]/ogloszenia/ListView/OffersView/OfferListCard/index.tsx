@@ -1,7 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -30,6 +33,8 @@ export const OfferListCard = ({
   imageUrl,
   slug,
 }: OfferListCardProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false)
+
   const formatPrice = () => {
     // Single price offer
     if (!hasPriceRange) {
@@ -47,15 +52,27 @@ export const OfferListCard = ({
     <Card className="w-full flex xl:flex-row flex-col py-0 sm:py-0 h-120 sm:h-130 xl:h-48  items-center bg-transparent bg-linear-to-r from-stone-200 dark:from-stone-900/60 to-background/35 rounded-2xl overflow-hidden">
       <Link
         href={`/ogloszenia/${slug}`}
-        className="w-full xl:max-w-3xs h-full bottom-0 top-0 rounded-2xl bg-white/10 relative overflow-hidden "
+        className="w-full xl:max-w-3xs h-full bottom-0 top-0 rounded-2xl bg-white/10 relative overflow-hidden"
       >
+        {/* Skeleton + icon shown until image loads */}
+        {imageUrl && !imageLoaded && (
+          <Skeleton className="absolute inset-0 w-full h-full rounded-none flex items-center justify-center">
+            <ImageIcon className="size-8 text-muted-foreground/40 animate-pulse" />
+          </Skeleton>
+        )}
         {imageUrl && (
           <Image
             src={imageUrl}
             alt={title}
             fill
-            className="object-cover hover:scale-105 transition-transform duration-300 ease-in-out"
+            className={`object-cover hover:scale-105 transition-all duration-300 ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={() => setImageLoaded(true)}
           />
+        )}
+        {!imageUrl && (
+          <div className="absolute inset-0 flex items-center justify-center bg-muted/30">
+            <ImageIcon className="size-8 text-muted-foreground/30" />
+          </div>
         )}
       </Link>
 

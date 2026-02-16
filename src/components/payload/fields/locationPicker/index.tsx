@@ -194,7 +194,7 @@ export const LocationPicker: TextFieldClientComponent = (props) => {
       : null
 
   return (
-    <div ref={containerRef} style={{ position: 'relative' }}>
+    <div ref={containerRef} style={{ position: 'relative' }} className="pb-4">
       <FieldLabel
         label={field.label || 'Address'}
         required={field.required}
