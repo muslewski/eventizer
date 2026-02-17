@@ -351,8 +351,8 @@ export default function ImageCarousel({
       plugins={autoplayPlugin ? [autoplayPlugin] : []}
       aria-label={ariaLabel}
     >
-      {/* Gradual blur edges */}
-      <div className="absolute -top-4 left-0 right-0 bottom-4 sm:rounded-4xl overflow-hidden to-transparent z-10 pointer-events-none">
+      {/* Gradual blur edges — hidden on mobile for performance */}
+      <div className="hidden sm:block absolute -top-4 left-0 right-0 bottom-4 sm:rounded-4xl overflow-hidden to-transparent z-10 pointer-events-none">
         <GradualBlurMemo
           preset="left"
           exponential

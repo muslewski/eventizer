@@ -5,6 +5,7 @@ import { DashboardBanner } from './DashboardBanner'
 import { DashboardGroup } from './DashboardGroup'
 import { SubscriptionExpiredBanner } from './SubscriptionExpiredBanner'
 import { CheckoutSuccessHandler } from './CheckoutSuccessHandler'
+import { CreateOfferCTA } from './CreateOfferCTA'
 import type { I18nClient } from '@payloadcms/translations'
 import { adminGroups } from '@/lib/adminGroups'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
@@ -121,6 +122,10 @@ const Dashboard: FC<DashboardProps> = async (props) => {
         {showExpiredBanner && !isCheckoutSuccess && (
           <SubscriptionExpiredBanner serviceCategory={typedUser?.serviceCategory} />
         )}
+
+        {/* Quick action: create new offer (service-providers with active subscription only) */}
+        {isServiceProvider && !showExpiredBanner && <CreateOfferCTA />}
+
         {/* Featured Groups */}
         {featuredGroups.map(({ label, entities }, index) => (
           <DashboardGroup
