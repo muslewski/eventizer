@@ -4,6 +4,7 @@ import { FC, Fragment } from 'react'
 import { DashboardBanner } from './DashboardBanner'
 import { DashboardGroup } from './DashboardGroup'
 import { SubscriptionExpiredBanner } from './SubscriptionExpiredBanner'
+import { CheckoutSuccessHandler } from './CheckoutSuccessHandler'
 import type { I18nClient } from '@payloadcms/translations'
 import { adminGroups } from '@/lib/adminGroups'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
@@ -28,6 +29,10 @@ const Dashboard: FC<DashboardProps> = async (props) => {
       },
     },
   } = props
+
+  // Detect post-checkout redirect (Stripe redirects to /app?checkout=success)
+  const resolvedSearchParams = props.searchParams ? await props.searchParams : {}
+  const isCheckoutSuccess = resolvedSearchParams?.checkout === 'success'
 
   // Check if user needs a subscription expired banner
   const typedUser = user as User | null
@@ -85,7 +90,10 @@ const Dashboard: FC<DashboardProps> = async (props) => {
       showExpiredBanner = false
     } else {
       // No active subscription
-      if (isServiceProvider) {
+      // If checkout just completed, skip the banner (webhook may still be processing)
+      if (isCheckoutSuccess) {
+        showExpiredBanner = false
+      } else if (isServiceProvider) {
         showExpiredBanner = true
       } else if (isClient) {
         // Client who was previously a paying customer (subscription was deleted)
@@ -106,8 +114,11 @@ const Dashboard: FC<DashboardProps> = async (props) => {
     <Fragment>
       <DashboardBanner />
       <div className="mt-10 mx-4 md:mx-10 lg:mx-16 mb-16 flex flex-col gap-8">
-        {/* Subscription expired banner for service-providers */}
-        {showExpiredBanner && (
+        {/* Post-checkout success handler — shows success message and auto-refreshes */}
+        {isCheckoutSuccess && <CheckoutSuccessHandler />}
+
+        {/* Subscription expired banner for service-providers (hidden during checkout flow) */}
+        {showExpiredBanner && !isCheckoutSuccess && (
           <SubscriptionExpiredBanner serviceCategory={typedUser?.serviceCategory} />
         )}
         {/* Featured Groups */}

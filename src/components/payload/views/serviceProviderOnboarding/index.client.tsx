@@ -294,7 +294,7 @@ export function ServiceProviderOnboardingClient({
         const { url } = await createCheckoutSession({
           priceId: selectedPriceId,
           userId: user.id,
-          successUrl: '/app',
+          successUrl: '/app?checkout=success',
           cancelUrl: isRenewMode
             ? '/app/onboarding/service-provider?renew=true'
             : '/app/onboarding/service-provider',
