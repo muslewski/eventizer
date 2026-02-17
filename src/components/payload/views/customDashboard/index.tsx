@@ -8,6 +8,8 @@ import type { I18nClient } from '@payloadcms/translations'
 import { adminGroups } from '@/lib/adminGroups'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
 import { isReturningCustomer } from '@/actions/stripe/isReturningCustomer'
+import { getActiveSubscription } from '@/actions/stripe/getActiveSubscription'
+import { getStripeCustomerId } from '@/actions/stripe/getStripeCustomerId'
 import type { User } from '@/payload-types'
 
 type DashboardProps = {
@@ -41,12 +43,40 @@ const Dashboard: FC<DashboardProps> = async (props) => {
       // User has an active subscription
       if (isClient) {
         // Self-healing: client with active subscription should be a service-provider
-        // This can happen if customer.subscription.deleted fired for an old subscription
-        // while a new one was already active
+        // This can happen if checkout.session.completed webhook wasn't received
+        // (e.g. not selected in Stripe Dashboard production webhook events)
+        const updateData: Record<string, unknown> = { role: 'service-provider' }
+
+        // Try to restore category info from Stripe subscription metadata
+        // (set via subscription_data.metadata during checkout session creation)
+        try {
+          const customerId = await getStripeCustomerId(typedUser.id)
+          if (customerId) {
+            const subscription = await getActiveSubscription(customerId)
+            if (subscription?.metadata) {
+              const categoryNames = subscription.metadata.categoryNames
+                ? JSON.parse(subscription.metadata.categoryNames)
+                : null
+              const categorySlugs = subscription.metadata.categorySlugs
+                ? JSON.parse(subscription.metadata.categorySlugs)
+                : null
+
+              if (categoryNames && Array.isArray(categoryNames)) {
+                updateData.serviceCategory = categoryNames.join(' > ')
+              }
+              if (categorySlugs && Array.isArray(categorySlugs)) {
+                updateData.serviceCategorySlug = categorySlugs.join('/')
+              }
+            }
+          }
+        } catch (metadataError) {
+          payload.logger.error(`Dashboard self-heal: Error reading subscription metadata: ${metadataError}`)
+        }
+
         await payload.update({
           collection: 'users',
           id: typedUser.id,
-          data: { role: 'service-provider' },
+          data: updateData,
         })
         payload.logger.info(
           `Dashboard self-heal: Promoted user ${typedUser.id} from client to service-provider (has active subscription)`,

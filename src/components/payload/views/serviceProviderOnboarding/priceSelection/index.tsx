@@ -150,11 +150,9 @@ export function PriceSelection({
     >
       <CardHeader className="pb-3">
         <CardTitle className="text-lg">Wybierz okres rozliczeniowy</CardTitle>
-        {/* {planName && (
-          <CardDescription>
-            Plan: <strong>{planName}</strong>
-          </CardDescription>
-        )} */}
+        <CardDescription>
+          Z kodem <strong>EVENTIZER100</strong> za darmo do 6 miesięcy.
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-3">

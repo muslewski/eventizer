@@ -313,9 +313,128 @@ export const plugins: Plugin[] = [
       },
 
       // Hey so sometimes we have already created customer in stripe yet we don't have him in payload, so then we should make sure to at least truck him by subscription. Or not.
-      // 'customer.subscription.created': async ({ event, payload }) => {
-      //   const subscription = event.data.object as { id: string; customer: string }
-      // },
+      // Redundant fallback: if checkout.session.completed webhook is missed (e.g. not selected in
+      // Stripe Dashboard production webhook), this handler promotes the user via subscription metadata.
+      'customer.subscription.created': async ({ event, payload }) => {
+        const subscription = event.data.object as {
+          id: string
+          customer: string
+          status: string
+          metadata: Record<string, string> | null
+        }
+
+        console.log(
+          `🪝 customer.subscription.created: Subscription ${subscription.id} with status ${subscription.status}`,
+        )
+
+        // Only act on active or trialing subscriptions
+        if (subscription.status !== 'active' && subscription.status !== 'trialing') {
+          console.log(
+            `customer.subscription.created: Subscription status is ${subscription.status}, skipping promotion`,
+          )
+          return
+        }
+
+        const userId = subscription.metadata?.userId
+        if (!userId) {
+          console.log(
+            'customer.subscription.created: No userId in subscription metadata, skipping',
+          )
+          return
+        }
+
+        try {
+          const numericUserId = Number(userId)
+
+          // Check if user is already a service-provider (checkout.session.completed may have handled it)
+          const existingUser = await payload.findByID({
+            collection: 'users',
+            id: numericUserId,
+            depth: 0,
+          })
+
+          if (existingUser?.role === 'service-provider') {
+            console.log(
+              `customer.subscription.created: User ${numericUserId} already service-provider, skipping`,
+            )
+            return
+          }
+
+          // Parse category data from subscription metadata
+          const categoryNames = subscription.metadata?.categoryNames
+            ? JSON.parse(subscription.metadata.categoryNames)
+            : null
+          const categorySlugs = subscription.metadata?.categorySlugs
+            ? JSON.parse(subscription.metadata.categorySlugs)
+            : null
+
+          const updateData: Record<string, unknown> = {
+            role: 'service-provider',
+          }
+
+          if (categoryNames && Array.isArray(categoryNames)) {
+            updateData.serviceCategory = categoryNames.join(' > ')
+          }
+          if (categorySlugs && Array.isArray(categorySlugs)) {
+            updateData.serviceCategorySlug = categorySlugs.join('/')
+          }
+
+          await payload.update({
+            collection: 'users',
+            id: numericUserId,
+            data: updateData,
+          })
+
+          // Safety net: ensure stripe-customers record is linked
+          const customerId =
+            typeof subscription.customer === 'string'
+              ? subscription.customer
+              : (subscription.customer as any)?.id
+
+          if (customerId) {
+            const existingRecord = await payload.find({
+              collection: 'stripe-customers',
+              where: { stripeID: { equals: customerId } },
+              limit: 1,
+            })
+
+            if (existingRecord.docs[0]) {
+              const linkedUser = existingRecord.docs[0].user
+              const linkedUserId =
+                typeof linkedUser === 'object' && linkedUser ? linkedUser.id : linkedUser
+
+              if (linkedUserId !== numericUserId) {
+                await payload.update({
+                  collection: 'stripe-customers',
+                  id: existingRecord.docs[0].id,
+                  data: { user: numericUserId },
+                })
+              }
+            } else {
+              const userDoc = await payload.findByID({
+                collection: 'users',
+                id: numericUserId,
+                depth: 0,
+              })
+
+              await payload.create({
+                collection: 'stripe-customers',
+                data: {
+                  stripeID: customerId,
+                  email: userDoc?.email || undefined,
+                  user: numericUserId,
+                },
+              })
+            }
+          }
+
+          console.log(
+            `customer.subscription.created: User ${numericUserId} promoted to service-provider (fallback handler)`,
+          )
+        } catch (error) {
+          console.error('customer.subscription.created: Error promoting user:', error)
+        }
+      },
       'customer.deleted': async ({ event, payload }) => {
         const customer = event.data.object as { id: string }
 

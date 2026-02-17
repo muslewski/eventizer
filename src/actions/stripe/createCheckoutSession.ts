@@ -136,9 +136,18 @@ export async function createCheckoutSession({
     // Get or create Stripe customer (prevents duplicate customers)
     const customerId = userEmail ? await getOrCreateStripeCustomer(userId, userEmail) : undefined
 
+    // Check the price interval to determine promo code eligibility
+    // Promotion codes are only allowed for monthly and 6-month plans, not yearly
+    const price = await stripe.prices.retrieve(priceId)
+    const isYearlyPlan =
+      price.recurring?.interval === 'year' ||
+      (price.recurring?.interval === 'month' && (price.recurring?.interval_count ?? 0) >= 12)
+    const allowPromoCodes = !isYearlyPlan
+
     // Create Stripe Checkout session with the user-selected price
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
+      allow_promotion_codes: allowPromoCodes,
       line_items: [
         {
           price: priceId,
@@ -151,6 +160,15 @@ export async function createCheckoutSession({
         userId,
         categoryNames: JSON.stringify(categoryNames),
         categorySlugs: JSON.stringify(categorySlugs),
+      },
+      // Also store metadata on the subscription itself so that
+      // customer.subscription.created / updated webhooks can read it
+      subscription_data: {
+        metadata: {
+          userId: userId.toString(),
+          categoryNames: JSON.stringify(categoryNames),
+          categorySlugs: JSON.stringify(categorySlugs),
+        },
       },
       // Use customer ID if available, otherwise fallback to email
       ...(customerId ? { customer: customerId } : { customer_email: userEmail }),
