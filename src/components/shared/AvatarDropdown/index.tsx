@@ -29,6 +29,7 @@ import {
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import { getInitials, hasRole } from './utils'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
 import { isReturningCustomer } from '@/actions/stripe/isReturningCustomer'
 
@@ -40,6 +41,8 @@ export interface AvatarDropdownProps {
   showHomeLink?: boolean
   /** Custom logout handler - if not provided, renders a link to /app/sign-out */
   onLogout?: () => void
+  /** Optional label displayed next to the avatar (e.g. role name on mobile) */
+  label?: string
 }
 
 export function AvatarDropdown({
@@ -47,6 +50,7 @@ export function AvatarDropdown({
   variant = 'frontend',
   showHomeLink = false,
   onLogout,
+  label,
 }: AvatarDropdownProps) {
   const isServiceProvider = hasRole(user, 'service-provider')
   const isModerator = hasRole(user, 'moderator')
@@ -86,11 +90,21 @@ export function AvatarDropdown({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="rounded-full! overflow-hidden">
+        <Button
+          variant="outline"
+          size={label ? 'default' : 'icon'}
+          className={cn(
+            'rounded-full! overflow-hidden',
+            label && 'gap-2 pl-0.5 pr-3',
+          )}
+        >
           <Avatar className="h-9 w-9 cursor-pointer bg-white dark:bg-background/10">
             <AvatarImage src={imageUrl ?? ''} />
             <AvatarFallback className="bg-base-900/40">{getInitials(user)}</AvatarFallback>
           </Avatar>
+          {label && (
+            <span className="text-sm font-medium text-foreground/70">{label}</span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">

@@ -15,6 +15,19 @@ import { navLinks } from '@/components/frontend/Header/shared'
 import AnimatedMenuIcon from '@/components/frontend/Header/AnimatedMenuIcon'
 import HeaderLogo from '@/components/frontend/Header/Logo'
 
+function getRolePanelLabel(role: string | null | undefined): string {
+  switch (role) {
+    case 'admin':
+      return 'Panel admina'
+    case 'moderator':
+      return 'Panel moderatora'
+    case 'service-provider':
+      return 'Panel usługodawcy'
+    default:
+      return 'Panel klienta'
+  }
+}
+
 const overlayVariants = {
   closed: {
     opacity: 0,
@@ -132,7 +145,7 @@ export default function FullScreenMenu({ normalizedPathname }: { normalizedPathn
               className="flex flex-col items-center gap-3 w-full max-w-xs"
             >
               {user ? (
-                <HeaderAvatar />
+                <HeaderAvatar label={getRolePanelLabel(user.role)} />
               ) : (
                 <>
                   <Button
