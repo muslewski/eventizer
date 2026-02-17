@@ -13,6 +13,8 @@ interface CreateCheckoutSessionParams {
   categoryNames: string[]
   categorySlugs: string[]
   userEmail?: string
+  /** Pre-validated Stripe promotion code ID (from validatePromoCode action) */
+  promotionCodeId?: string
 }
 
 /**
@@ -128,6 +130,7 @@ export async function createCheckoutSession({
   categoryNames,
   categorySlugs,
   userEmail,
+  promotionCodeId,
 }: CreateCheckoutSessionParams) {
   try {
     const headerList = await headers()
@@ -144,10 +147,17 @@ export async function createCheckoutSession({
       (price.recurring?.interval === 'month' && (price.recurring?.interval_count ?? 0) >= 12)
     const allowPromoCodes = !isYearlyPlan
 
+    // Build promo/discount config:
+    // If user already entered a promo code on our UI, apply it via discounts.
+    // Otherwise, let Stripe Checkout show its own promo code field.
+    const promoConfig = promotionCodeId
+      ? { discounts: [{ promotion_code: promotionCodeId }] }
+      : { allow_promotion_codes: allowPromoCodes }
+
     // Create Stripe Checkout session with the user-selected price
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      allow_promotion_codes: allowPromoCodes,
+      ...promoConfig,
       line_items: [
         {
           price: priceId,

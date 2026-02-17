@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { StripePriceDetails } from '@/actions/stripe/products/getStripePrices'
+import { validatePromoCode, type ValidatePromoCodeResult } from '@/actions/stripe/validatePromoCode'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { Check, Loader2 } from 'lucide-react'
+import { Check, Loader2, Tag, X, CircleCheck } from 'lucide-react'
 
 interface PriceSelectionProps {
   prices: StripePriceDetails[]
@@ -13,6 +15,8 @@ interface PriceSelectionProps {
   isLoading?: boolean
   planName?: string
   currentPriceId?: string
+  /** Called when promo code is validated or cleared */
+  onPromoCodeChange?: (promoCodeId: string | null) => void
 }
 
 function getIntervalLabel(interval: string, intervalCount: number): string {
@@ -40,6 +44,26 @@ function formatPrice(amount: number, currency: string): string {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(amount / 100)
+}
+
+/** Check if a price is a yearly plan */
+function isYearlyPrice(price: StripePriceDetails): boolean {
+  if (!price.recurring) return false
+  return (
+    price.recurring.interval === 'year' ||
+    (price.recurring.interval === 'month' && price.recurring.intervalCount >= 12)
+  )
+}
+
+/** Apply promo discount to an amount */
+function applyDiscount(
+  amount: number,
+  percentOff?: number | null,
+  amountOff?: number | null,
+): number {
+  if (percentOff) return Math.round(amount * (1 - percentOff / 100))
+  if (amountOff) return Math.max(0, amount - amountOff)
+  return amount
 }
 
 function getMonthlyEquivalent(
@@ -98,7 +122,29 @@ export function PriceSelection({
   isLoading = false,
   planName,
   currentPriceId,
+  onPromoCodeChange,
 }: PriceSelectionProps) {
+  const [promoInput, setPromoInput] = useState('')
+  const [promoValidating, setPromoValidating] = useState(false)
+  const [promoResult, setPromoResult] = useState<ValidatePromoCodeResult | null>(null)
+  const [promoExpanded, setPromoExpanded] = useState(false)
+
+  const handleApplyPromo = async () => {
+    if (!promoInput.trim()) return
+    setPromoValidating(true)
+    const result = await validatePromoCode(promoInput, selectedPriceId || undefined)
+    setPromoResult(result)
+    setPromoValidating(false)
+    if (result.valid) {
+      onPromoCodeChange?.(result.promotionCodeId ?? null)
+    }
+  }
+
+  const handleClearPromo = () => {
+    setPromoInput('')
+    setPromoResult(null)
+    onPromoCodeChange?.(null)
+  }
   if (isLoading) {
     return (
       <Card className="border-2 border-[var(--theme-elevation-150)] bg-[var(--theme-elevation-50)]">
@@ -162,6 +208,14 @@ export function PriceSelection({
           const isSelected = selectedPriceId === price.id
           const isCurrent = currentPriceId === price.id
           const isBestValue = price.id === bestValueId
+          const isYearly = isYearlyPrice(price)
+          const hasPromo = promoResult?.valid === true
+          const promoApplies = hasPromo && !isYearly
+
+          const effectiveAmount = promoApplies
+            ? applyDiscount(price.unitAmount, promoResult.percentOff, promoResult.amountOff)
+            : price.unitAmount
+
           const intervalLabel = getIntervalLabel(
             price.recurring.interval,
             price.recurring.intervalCount,
@@ -170,9 +224,10 @@ export function PriceSelection({
             price.recurring.interval,
             price.recurring.intervalCount,
           )
-          const formattedTotal = formatPrice(price.unitAmount, price.currency)
+          const formattedTotal = formatPrice(effectiveAmount, price.currency)
+          const originalFormatted = promoApplies ? formatPrice(price.unitAmount, price.currency) : null
           const monthlyEquiv = getMonthlyEquivalent(
-            price.unitAmount,
+            effectiveAmount,
             price.recurring.interval,
             price.recurring.intervalCount,
           )
@@ -181,7 +236,13 @@ export function PriceSelection({
           return (
             <button
               key={price.id}
-              onClick={() => onPriceSelect(price.id)}
+              onClick={() => {
+                onPriceSelect(price.id)
+                // If selecting a yearly plan while promo is active, clear the promo
+                if (isYearly && promoResult?.valid) {
+                  handleClearPromo()
+                }
+              }}
               className={cn(
                 'w-full flex items-center gap-4 p-4 rounded-lg border-2 transition-all text-left',
                 'hover:border-accent/40 hover:bg-accent/5',
@@ -216,9 +277,19 @@ export function PriceSelection({
                       Najlepsza wartość
                     </Badge>
                   )}
-                  {savings && (
+                  {savings && !promoApplies && (
                     <Badge variant="default" className="text-[0.55rem]">
                       -{savings}%
+                    </Badge>
+                  )}
+                  {promoApplies && (
+                    <Badge variant="default" className="text-[0.55rem] bg-green-600">
+                      Kod zastosowany
+                    </Badge>
+                  )}
+                  {hasPromo && isYearly && (
+                    <Badge variant="outline" className="text-[0.55rem] text-muted-foreground">
+                      Kod nie dotyczy
                     </Badge>
                   )}
                 </div>
@@ -231,7 +302,12 @@ export function PriceSelection({
 
               {/* Total price */}
               <div className="flex-shrink-0 text-right">
-                <span className="text-lg font-bold text-[var(--theme-text)]">
+                {originalFormatted && (
+                  <span className="text-sm text-[var(--theme-elevation-400)] line-through mr-2">
+                    {originalFormatted}
+                  </span>
+                )}
+                <span className={cn('text-lg font-bold', promoApplies ? 'text-green-600 dark:text-green-400' : 'text-[var(--theme-text)]')}>
                   {formattedTotal}
                 </span>
                 <span className="text-sm text-[var(--theme-elevation-500)] ml-1">
@@ -241,6 +317,89 @@ export function PriceSelection({
             </button>
           )
         })}
+
+        {/* Promo code section */}
+        <div className="pt-2 border-t border-[var(--theme-elevation-100)]">
+          {promoResult?.valid ? (
+            // Applied state
+            <div className="flex items-center justify-between gap-2 rounded-lg bg-green-500/10 border border-green-500/30 px-4 py-3">
+              <div className="flex items-center gap-2 min-w-0">
+                <CircleCheck className="h-4 w-4 shrink-0 text-green-600 dark:text-green-400" />
+                <span className="text-sm font-medium text-green-800 dark:text-green-300 truncate">
+                  {promoResult.couponName}
+                  {promoResult.percentOff
+                    ? ` (−${promoResult.percentOff}%)`
+                    : promoResult.amountOff
+                      ? ` (−${(promoResult.amountOff / 100).toFixed(0)} ${promoResult.currency?.toUpperCase()})`
+                      : ''}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleClearPromo}
+                className="shrink-0 p-1 rounded-md text-green-700 hover:bg-green-500/20 dark:text-green-400 transition-colors"
+                aria-label="Usuń kod promocyjny"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          ) : (
+            // Input state
+            <>
+              {!promoExpanded ? (
+                <button
+                  type="button"
+                  onClick={() => setPromoExpanded(true)}
+                  className="flex items-center gap-1.5 text-sm text-[var(--theme-elevation-500)] hover:text-[var(--theme-text)] transition-colors"
+                >
+                  <Tag className="h-3.5 w-3.5" />
+                  Masz kod promocyjny?
+                </button>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoInput}
+                      onChange={(e) => {
+                        setPromoInput(e.target.value.toUpperCase())
+                        if (promoResult && !promoResult.valid) setPromoResult(null)
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault()
+                          handleApplyPromo()
+                        }
+                      }}
+                      placeholder="Wpisz kod"
+                      className="flex-1 rounded-md border border-[var(--theme-elevation-200)] bg-[var(--theme-elevation-0)] px-3 py-2 text-sm placeholder:text-[var(--theme-elevation-400)] focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent/40"
+                      disabled={promoValidating}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyPromo}
+                      disabled={promoValidating || !promoInput.trim()}
+                      className={cn(
+                        'rounded-md px-4 py-2 text-sm font-medium transition-colors',
+                        'bg-accent/10 text-accent-foreground hover:bg-accent/20',
+                        'disabled:opacity-50 disabled:cursor-not-allowed',
+                      )}
+                    >
+                      {promoValidating ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        'Zastosuj'
+                      )}
+                    </button>
+                  </div>
+                  {promoResult && !promoResult.valid && (
+                    <p className="text-xs text-destructive">{promoResult.error}</p>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </CardContent>
     </Card>
   )

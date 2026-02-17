@@ -111,6 +111,7 @@ export function ServiceProviderOnboardingClient({
   const [availablePrices, setAvailablePrices] = useState<StripePriceDetails[]>([])
   const [selectedPriceId, setSelectedPriceId] = useState<string | null>(null)
   const [isPricesLoading, setIsPricesLoading] = useState(false)
+  const [promoCodeId, setPromoCodeId] = useState<string | null>(null)
 
   // someone with an active subscription
   const isWithSubscription = currentSubscription?.hasSubscription
@@ -301,6 +302,7 @@ export function ServiceProviderOnboardingClient({
           categoryNames,
           categorySlugs,
           userEmail: user.email || undefined,
+          promotionCodeId: promoCodeId || undefined,
         })
 
         if (url) {
@@ -463,6 +465,7 @@ export function ServiceProviderOnboardingClient({
           isLoading={isPricesLoading}
           planName={requiredPlan?.name ?? undefined}
           currentPriceId={isEditMode ? currentSubscription?.currentPriceId : undefined}
+          onPromoCodeChange={setPromoCodeId}
         />
       )}
 
