@@ -43,6 +43,8 @@ export interface AvatarDropdownProps {
   onLogout?: () => void
   /** Optional label displayed next to the avatar (e.g. role name on mobile) */
   label?: string
+  /** Hide the outline border around the avatar button */
+  noBorder?: boolean
 }
 
 export function AvatarDropdown({
@@ -51,6 +53,7 @@ export function AvatarDropdown({
   showHomeLink = false,
   onLogout,
   label,
+  noBorder = false,
 }: AvatarDropdownProps) {
   const isServiceProvider = hasRole(user, 'service-provider')
   const isModerator = hasRole(user, 'moderator')
@@ -91,10 +94,11 @@ export function AvatarDropdown({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="outline"
+          variant={noBorder ? 'ghost' : 'outline'}
           size={label ? 'default' : 'icon'}
           className={cn(
             'rounded-full! overflow-hidden',
+            noBorder && 'border-none shadow-none',
             label && 'gap-2 pl-0.5 pr-3',
           )}
         >
@@ -103,7 +107,7 @@ export function AvatarDropdown({
             <AvatarFallback className="bg-base-900/40">{getInitials(user)}</AvatarFallback>
           </Avatar>
           {label && (
-            <span className="text-sm font-medium text-foreground/70">{label}</span>
+            <span className="text-3xl sm:text-4xl font-bebas tracking-wide text-foreground/40">{label}</span>
           )}
         </Button>
       </DropdownMenuTrigger>

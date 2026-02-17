@@ -3,10 +3,10 @@
 import { AvatarDropdown } from '@/components/shared/AvatarDropdown'
 import { useRootAuth } from '@/providers/RootAuthProvider'
 
-export function HeaderAvatar({ label }: { label?: string }) {
+export function HeaderAvatar({ label, noBorder }: { label?: string; noBorder?: boolean }) {
   const { user, logout } = useRootAuth()
 
   if (!user) return null
 
-  return <AvatarDropdown user={user} variant="frontend" onLogout={logout} label={label} />
+  return <AvatarDropdown user={user} variant="frontend" onLogout={logout} label={label} noBorder={noBorder} />
 }

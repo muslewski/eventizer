@@ -129,15 +129,8 @@ export default function FullScreenMenu({ normalizedPathname }: { normalizedPathn
               ))}
             </nav>
 
-            {/* Divider */}
+             {/* Divider */}
             <motion.div variants={itemVariants} className="w-16 h-px bg-foreground/10" />
-
-            {/* Settings */}
-            <motion.div variants={itemVariants} className="flex items-center gap-4">
-              <ModeToggle variant="ghost" />
-              <LanguageSwitcher variant="ghost" />
-              <ReduceMotionToggle variant="ghost" />
-            </motion.div>
 
             {/* CTA / Avatar */}
             <motion.div
@@ -145,7 +138,7 @@ export default function FullScreenMenu({ normalizedPathname }: { normalizedPathn
               className="flex flex-col items-center gap-3 w-full max-w-xs"
             >
               {user ? (
-                <HeaderAvatar label={getRolePanelLabel(user.role)} />
+                <HeaderAvatar label={getRolePanelLabel(user.role)} noBorder />
               ) : (
                 <>
                   <Button
@@ -168,6 +161,16 @@ export default function FullScreenMenu({ normalizedPathname }: { normalizedPathn
                   </Button>
                 </>
               )}
+            </motion.div>
+
+            {/* Divider */}
+            <motion.div variants={itemVariants} className="w-16 h-px bg-foreground/10" />
+
+            {/* Settings */}
+            <motion.div variants={itemVariants} className="flex items-center gap-4">
+              <ModeToggle variant="ghost" />
+              <LanguageSwitcher variant="ghost" />
+              <ReduceMotionToggle variant="ghost" />
             </motion.div>
           </motion.div>
         </motion.div>
