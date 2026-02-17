@@ -84,11 +84,14 @@ export const OfferUploads: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
-      required: true,
+      required: false,
       label: {
         en: 'Title',
         pl: 'Tytuł',
       },
+      admin: { 
+        condition: (data, siblingData, { user }) => isClientRoleEqualOrHigher('moderator', user),
+      }
     },
     // {
     //   name: 'description',

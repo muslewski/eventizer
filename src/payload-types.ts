@@ -600,7 +600,7 @@ export interface OfferUpload {
    * User who uploaded this file.
    */
   user?: (number | null) | User;
-  title: string;
+  title?: string | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -626,7 +626,7 @@ export interface OfferVideoUpload {
    * User who uploaded this video.
    */
   user?: (number | null) | User;
-  title: string;
+  title?: string | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
