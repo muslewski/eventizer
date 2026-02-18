@@ -37,5 +37,10 @@
       "source.fixAll.eslint": "explicit"
     }
   },
-  "cSpell.words": ["eventizer"]
+  "cSpell.words": [
+    "eventizer"
+  ],
+  "chat.tools.terminal.autoApprove": {
+    "bunx": true
+  }
 }

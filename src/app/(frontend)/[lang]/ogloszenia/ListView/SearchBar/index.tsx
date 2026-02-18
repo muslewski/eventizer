@@ -4,6 +4,7 @@ import Search from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/Search
 import PriceRangeInputs from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/Settings/PriceRange'
 import LocationSearch from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/Settings/LocationSearch'
 import SortSelect from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/Settings/SortSelect'
+import ActiveFilters from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/ActiveFilters'
 import { SortOption } from '@/app/(frontend)/[lang]/ogloszenia/ListView/types'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Settings2Icon } from 'lucide-react'
@@ -24,7 +25,8 @@ export default function SearchBar({
   maxPrice?: number
 }) {
   return (
-    <div className="flex w-full gap-2 sm:gap-6 h-16 min-h-16">
+    <div className="flex flex-col gap-3">
+      <div className="flex w-full gap-2 sm:gap-6 h-16 min-h-16">
       {/* Search */}
       <Search />
 
@@ -57,6 +59,17 @@ export default function SearchBar({
           </div>
         </PopoverContent>
       </Popover>
+      </div>
+
+      {/* Active filter badges */}
+      <ActiveFilters
+        currentSort={currentSort}
+        currentLat={currentLat}
+        currentLng={currentLng}
+        currentDistance={currentDistance}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+      />
     </div>
   )
 }

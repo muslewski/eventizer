@@ -2,15 +2,16 @@
 
 import { SearchIcon, XIcon } from 'lucide-react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
-import { useCallback, useState, useTransition, useRef, useEffect } from 'react'
+import { useCallback, useState, useRef, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { cn } from '@/lib/utils'
+import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 
 export default function Search() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
-  const [isPending, startTransition] = useTransition()
+  const { isPending, startTransition } = useListViewTransition()
 
   const initialValue = searchParams.get('szukaj') ?? ''
   const [value, setValue] = useState(initialValue)

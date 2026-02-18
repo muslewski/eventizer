@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ChevronDown, ChevronRight, LayoutGrid } from 'lucide-react'
-import { useState, useEffect, useTransition, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 
 interface SubcategoryLevel1 {
   id: string
@@ -22,7 +23,7 @@ export default function CategorySelection({ categoryData }: { categoryData?: Ser
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition()
+  const { isPending, startTransition } = useListViewTransition()
 
   const currentKategoria = searchParams.get('kategoria')
 

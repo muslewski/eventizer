@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useTransition } from 'react'
+import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 import {
   Select,
   SelectContent,
@@ -38,7 +38,7 @@ export default function LocationSearch({
 }: LocationSearchProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition()
+  const { isPending, startTransition } = useListViewTransition()
   const { isLoaded } = useGoogleMaps()
 
   const [inputValue, setInputValue] = useState('')

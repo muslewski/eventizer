@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import SearchBar from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar'
 import CategorySelection from '@/app/(frontend)/[lang]/ogloszenia/ListView/CategorySelection'
 import { SortOption } from '@/app/(frontend)/[lang]/ogloszenia/ListView/types'
+import { ListViewTransitionProvider } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 
 export interface PaginationInfo {
   currentPage: number
@@ -45,6 +46,7 @@ export default function ClientListView({
   const pathname = usePathname()
 
   return (
+    <ListViewTransitionProvider>
     <div
       className="flex flex-col md:flex-row w-full -mt-8 pt-8 gap-8 md:h-screen md:max-h-screen "
       id="oferty"
@@ -53,7 +55,7 @@ export default function ClientListView({
       <CategorySelection categoryData={categoryData} />
 
       {/* Main Search bar and offers */}
-      <div className="w-full max-w-575 h-full min-w-0 py-0 flex flex-col gap-8 ">
+      <div className="w-full max-w-575 h-full min-w-0 py-0 flex flex-col gap-4">
         {/* Search Bar */}
         <SearchBar
           currentSort={currentSort}
@@ -80,5 +82,6 @@ export default function ClientListView({
         </div>
       </div> */}
     </div>
+    </ListViewTransitionProvider>
   )
 }

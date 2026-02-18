@@ -11,14 +11,20 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
+import { cn } from '@/lib/utils'
 import { useSearchParams } from 'next/navigation'
+import { useCallback } from 'react'
 
 export default function PaginationControls({
   pagination,
   pathname,
+  isPending,
+  onNavigate,
 }: {
   pagination: PaginationInfo
   pathname: string
+  isPending?: boolean
+  onNavigate?: (page: number) => void
 }) {
   const searchParams = useSearchParams()
   const { currentPage, totalPages, hasPrevPage, hasNextPage, prevPage, nextPage } = pagination
@@ -32,6 +38,16 @@ export default function PaginationControls({
 
     return `${pathname}?${params.toString()}`
   }
+
+  // Navigate to page using parent's onNavigate callback
+  const handlePageClick = useCallback(
+    (page: number | undefined, e: React.MouseEvent) => {
+      e.preventDefault()
+      if (!page || !onNavigate) return
+      onNavigate(page)
+    },
+    [onNavigate],
+  )
 
   // Generate page numbers to display
   const getPageNumbers = () => {
@@ -82,12 +98,13 @@ export default function PaginationControls({
     )
 
   return (
-    <Pagination>
+    <Pagination className={cn('transition-opacity duration-200', isPending && 'opacity-50 pointer-events-none')}>
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
             href={buildPageUrl(prevPage)}
-            aria-disabled={!hasPrevPage}
+            onClick={(e) => handlePageClick(prevPage, e)}
+            aria-disabled={!hasPrevPage || isPending}
             className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
             text="Poprzednia"
           />
@@ -100,7 +117,11 @@ export default function PaginationControls({
             </PaginationItem>
           ) : (
             <PaginationItem key={page}>
-              <PaginationLink href={buildPageUrl(page)} isActive={page === currentPage}>
+              <PaginationLink
+                href={buildPageUrl(page)}
+                onClick={(e) => handlePageClick(page, e)}
+                isActive={page === currentPage}
+              >
                 {page}
               </PaginationLink>
             </PaginationItem>
@@ -110,7 +131,8 @@ export default function PaginationControls({
         <PaginationItem>
           <PaginationNext
             href={buildPageUrl(nextPage)}
-            aria-disabled={!hasNextPage}
+            onClick={(e) => handlePageClick(nextPage, e)}
+            aria-disabled={!hasNextPage || isPending}
             className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
             text="Następna"
           />

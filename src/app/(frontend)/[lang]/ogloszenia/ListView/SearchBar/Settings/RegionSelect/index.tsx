@@ -9,8 +9,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useTransition } from 'react'
+import { useCallback } from 'react'
 import { cn } from '@/lib/utils'
+import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 
 interface RegionSelectProps {
   currentRegion?: string
@@ -19,7 +20,7 @@ interface RegionSelectProps {
 export default function RegionSelect({ currentRegion }: RegionSelectProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition()
+  const { isPending, startTransition } = useListViewTransition()
 
   const handleRegionChange = useCallback(
     (value: string) => {

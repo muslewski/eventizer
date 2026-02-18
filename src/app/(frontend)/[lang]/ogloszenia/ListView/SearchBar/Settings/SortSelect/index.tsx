@@ -10,8 +10,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useTransition } from 'react'
+import { useCallback } from 'react'
 import { cn } from '@/lib/utils'
+import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 
 interface SortSelectProps {
   currentSort: SortOption
@@ -20,7 +21,7 @@ interface SortSelectProps {
 export default function SortSelect({ currentSort }: SortSelectProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition()
+  const { isPending, startTransition } = useListViewTransition()
 
   const handleSortChange = useCallback(
     (value: SortOption) => {

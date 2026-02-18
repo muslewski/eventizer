@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback } from 'react'
 import { PaginationInfo } from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.client'
 import { OfferListCard } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard'
+import { OfferCardSkeleton } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/Skeleton'
 import PaginationControls from '@/app/(frontend)/[lang]/ogloszenia/ListView/PaginationControls'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
@@ -11,7 +12,9 @@ import type { Offer, OfferUpload } from '@/payload-types'
 import { cn } from '@/lib/utils'
 import { motion, type Transition } from 'framer-motion'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { SearchX, Plus } from 'lucide-react'
+import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 
 const cardVariants = {
   hidden: {
@@ -37,6 +40,10 @@ export default function OffersView({
   pagination: PaginationInfo
   pathname: string
 }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { isPending, startTransition } = useListViewTransition()
+
   const [isAtTop, setIsAtTop] = useState(true)
   const [isAtBottom, setIsAtBottom] = useState(false)
   const viewportRef = useRef<HTMLDivElement>(null!)
@@ -52,6 +59,24 @@ export default function OffersView({
     setIsAtBottom(scrollTop + clientHeight >= scrollHeight - threshold)
   }, [])
 
+  const handlePageNavigate = useCallback(
+    (page: number) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set('strona', String(page))
+
+      // Scroll the offers viewport to top when changing page
+      viewportRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+
+      startTransition(() => {
+        router.push(`${pathname}?${params.toString()}`, { scroll: false })
+      })
+    },
+    [router, searchParams, pathname],
+  )
+
+  // Number of skeleton cards to show (match current page size or default)
+  const skeletonCount = offers?.length || pagination.totalDocs > 0 ? Math.min(offers?.length ?? 5, 10) : 5
+
   return (
     <div className="relative w-full h-[calc(100%-90px)]">
       <ScrollArea
@@ -61,8 +86,14 @@ export default function OffersView({
         onScrollCapture={handleScroll}
       >
         <div className="flex flex-col gap-6 items-center w-full sm:pr-6">
-          {/* Map offers */}
-          {offers && offers.length > 0 ? (
+          {/* Show skeletons during page transition */}
+          {isPending ? (
+            Array.from({ length: skeletonCount }).map((_, index) => (
+              <div key={`skeleton-${index}`} className="w-full">
+                <OfferCardSkeleton />
+              </div>
+            ))
+          ) : offers && offers.length > 0 ? (
             offers.map((offer, index) => (
               <motion.div
                 key={offer.id}
@@ -120,7 +151,12 @@ export default function OffersView({
           )}
 
           {/* Pagination controls */}
-          <PaginationControls pagination={pagination} pathname={pathname} />
+          <PaginationControls
+            pagination={pagination}
+            pathname={pathname}
+            isPending={isPending}
+            onNavigate={handlePageNavigate}
+          />
         </div>
       </ScrollArea>
 

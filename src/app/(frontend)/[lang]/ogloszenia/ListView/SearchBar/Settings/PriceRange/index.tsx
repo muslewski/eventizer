@@ -2,8 +2,9 @@
 
 import { Input } from '@/components/ui/input'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useState, useEffect, useTransition } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
+import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 
 interface PriceRangeInputsProps {
   minPrice?: number
@@ -13,7 +14,7 @@ interface PriceRangeInputsProps {
 export default function PriceRangeInputs({ minPrice, maxPrice }: PriceRangeInputsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [isPending, startTransition] = useTransition()
+  const { isPending, startTransition } = useListViewTransition()
 
   // Read from URL params directly
   const minFromUrl = searchParams.get('minCena') ?? ''
