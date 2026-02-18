@@ -155,7 +155,7 @@ export const plugins: Plugin[] = [
                   await payload.update({
                     collection: 'stripe-customers',
                     id: existingRecord.docs[0].id,
-                    data: { user: numericUserId },
+                    data: { user: numericUserId, skipSync: true },
                   })
                   console.log(
                     `checkout.session.completed: Linked stripe-customers record to user ${numericUserId}`,
@@ -175,6 +175,7 @@ export const plugins: Plugin[] = [
                     stripeID: session.customer,
                     email: userDoc?.email || undefined,
                     user: numericUserId,
+                    skipSync: true,
                   },
                 })
                 console.log(
@@ -407,7 +408,7 @@ export const plugins: Plugin[] = [
                 await payload.update({
                   collection: 'stripe-customers',
                   id: existingRecord.docs[0].id,
-                  data: { user: numericUserId },
+                  data: { user: numericUserId, skipSync: true },
                 })
               }
             } else {
@@ -423,6 +424,7 @@ export const plugins: Plugin[] = [
                   stripeID: customerId,
                   email: userDoc?.email || undefined,
                   user: numericUserId,
+                  skipSync: true,
                 },
               })
             }

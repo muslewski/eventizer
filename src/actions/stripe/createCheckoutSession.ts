@@ -98,17 +98,20 @@ async function ensurePayloadCustomerRecord(
         await payload.update({
           collection: 'stripe-customers',
           id: existing.docs[0].id,
-          data: { user: userId },
+          data: { user: userId, skipSync: true },
         })
       }
     } else {
       // No Payload record — create one linked to the user
+      // IMPORTANT: skipSync prevents the Stripe plugin's beforeValidate hook
+      // from creating a SECOND Stripe customer (it would overwrite our stripeID)
       await payload.create({
         collection: 'stripe-customers',
         data: {
           stripeID: stripeCustomerId,
           email,
           user: userId,
+          skipSync: true,
         },
       })
     }
