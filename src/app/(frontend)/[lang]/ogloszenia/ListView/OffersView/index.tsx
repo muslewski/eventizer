@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useTransition } from 'react'
 import { PaginationInfo } from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.client'
 import { OfferListCard } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard'
 import { OfferCardSkeleton } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/Skeleton'
@@ -14,7 +14,6 @@ import { motion, type Transition } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { SearchX, Plus } from 'lucide-react'
-import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 
 const cardVariants = {
   hidden: {
@@ -42,7 +41,7 @@ export default function OffersView({
 }) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { isPending, startTransition } = useListViewTransition()
+  const [isPending, startTransition] = useTransition()
 
   const [isAtTop, setIsAtTop] = useState(true)
   const [isAtBottom, setIsAtBottom] = useState(false)
@@ -102,7 +101,7 @@ export default function OffersView({
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ delay: index * 0.1 }} // Staggered animation
-                className="w-full"
+                className="w-full "
               >
                 <OfferListCard
                   imageUrl={

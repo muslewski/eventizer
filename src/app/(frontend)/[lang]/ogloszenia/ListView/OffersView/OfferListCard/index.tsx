@@ -77,11 +77,11 @@ export const OfferListCard = ({
       </Link>
 
       {/* Content */}
-      <div className="xl:pb-6 xl:pt-6 sm:pb-6 sm:pt-0 pb-6 pt-6 flex flex-col lg:flex-row gap-8 justify-between  w-full min-w-0 px-6 xl:px-0 xl:pr-6">
+      <div className="xl:pb-6 xl:pt-6 sm:pb-6 sm:pt-0 pb-6 pt-6 flex flex-col xl:flex-row gap-8  justify-between  w-full min-w-0 px-6 xl:px-0 xl:pr-6">
         <div className="w-full min-w-0 flex flex-col gap-2">
           <Link
             href={`/ogloszenia/${slug}`}
-            className="block min-w-0 font-bebas text-3xl sm:text-4xl leading-[0.95] text-foreground truncate hover:text-muted-foreground transition-colors"
+            className="block min-w-0 font-bebas text-3xl sm:text-4xl leading-[0.95] text-foreground line-clamp-2 xl:truncate hover:text-muted-foreground transition-colors"
           >
             {title}
           </Link>
@@ -106,7 +106,7 @@ export const OfferListCard = ({
             </div>
           )}
         </div>
-        <CardDescription className="flex flex-row gap-3 flex-wrap lg:flex-col items-start lg:items-end justify-between w-full lg:w-fit">
+        <CardDescription className="flex flex-row gap-3 flex-wrap xl:flex-col items-start xl:items-end justify-between w-full lg:w-fit">
           <div className="px-4 py-2.5 rounded-xl bg-background/80 border border-border/50 backdrop-blur-sm">
             <div className="font-bebas text-xl sm:text-2xl text-foreground/75 whitespace-nowrap leading-tight tracking-wide">
               {formatPrice()}
