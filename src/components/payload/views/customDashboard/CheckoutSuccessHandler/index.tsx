@@ -47,10 +47,6 @@ export function CheckoutSuccessHandler() {
 
         if (result.ready) {
           setPhase('ready')
-          // Small delay so user sees the "ready" state, then redirect
-          setTimeout(() => {
-            if (!cancelled) redirectToDashboard()
-          }, 800)
           return
         }
 
@@ -78,6 +74,17 @@ export function CheckoutSuccessHandler() {
       clearInterval(intervalId)
     }
   }, [phase, user?.id, redirectToDashboard])
+
+  // Separate effect: once phase is 'ready', redirect after a brief delay
+  useEffect(() => {
+    if (phase !== 'ready') return
+
+    const timer = setTimeout(() => {
+      redirectToDashboard()
+    }, 800)
+
+    return () => clearTimeout(timer)
+  }, [phase, redirectToDashboard])
 
   return (
     <div className="max-w-3xl rounded-lg border-2 border-green-500/30 bg-green-500/5 px-6 py-5">
