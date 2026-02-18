@@ -37,7 +37,7 @@ const CustomBeforeNav: React.FC = () => {
       )}
     >
       <Link
-        href="/app"
+        href="/"
         className={cn(
           `${baseClass}__link`,
           'relative block w-fit group',
