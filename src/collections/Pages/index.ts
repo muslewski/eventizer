@@ -29,6 +29,7 @@ import { HowItWorks } from '@/blocks/HowItWorks/config'
 import { SocialMedia } from '@/blocks/SocialMedia/config'
 import { ServiceCategoriesBlock } from '@/blocks/ServiceCategories/config'
 import { OffersMap } from '@/blocks/OffersMap/config'
+import { Video } from '@/blocks/Video/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -95,6 +96,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 SocialMedia,
                 ServiceCategoriesBlock,
                 OffersMap,
+                Video,
               ],
               required: true,
               admin: {

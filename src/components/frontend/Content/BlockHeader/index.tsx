@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils'
 import { TitleH2 } from '@/components/frontend/Content/TitleH2'
 import { Badge, type badgeVariants } from '@/components/ui/badge'
 import type { VariantProps } from 'class-variance-authority'
+import type { LucideIcon } from 'lucide-react'
 
 interface BlockHeaderProps {
   heading: string
@@ -17,6 +18,7 @@ interface BlockHeaderProps {
   spotlight?: boolean
   grid?: boolean
   aurora?: boolean
+  icon?: LucideIcon
   overflowHidden?: boolean
   cornerAccentColor?: string // e.g. 'accent', 'pink-400'
   className?: string
@@ -34,6 +36,7 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
   spotlight = false,
   grid = false,
   aurora = false,
+  icon: Icon,
   overflowHidden = false,
   cornerAccentColor = 'accent',
   className,
@@ -50,7 +53,7 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
     </div>
   )
 
-  const effects = (planet || questionMark || spotlight || grid || aurora) && (
+  const effects = (planet || questionMark || spotlight || grid || aurora || Icon) && (
     <div
       className={cn('absolute inset-0 pointer-events-none w-full', overflowHidden && 'overflow-hidden')}
     >
@@ -60,6 +63,11 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
       {questionMark && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[18rem] font-bold leading-none text-primary/25 dark:text-primary/15 blur-[6px] select-none" aria-hidden>
           ?
+        </div>
+      )}
+      {Icon && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 blur-[6px] select-none" aria-hidden>
+          <Icon className="w-72 h-72 text-primary/25 dark:text-primary/15" strokeWidth={0.75} />
         </div>
       )}
       {spotlight && (

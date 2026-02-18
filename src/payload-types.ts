@@ -217,6 +217,7 @@ export interface Page {
     | SocialMediaBlock
     | ServiceCategoriesBlock
     | OffersMapBlock
+    | VideoBlock
   )[];
   meta?: {
     title?: string | null;
@@ -901,6 +902,21 @@ export interface OffersMapBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  heading: string;
+  description: string;
+  /**
+   * Upload an MP4 or WebM video file.
+   */
+  video: number | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'video';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-sessions".
  */
 export interface UserSession {
@@ -1271,6 +1287,7 @@ export interface PagesSelect<T extends boolean = true> {
         socialMedia?: T | SocialMediaBlockSelect<T>;
         serviceCategories?: T | ServiceCategoriesBlockSelect<T>;
         offersMap?: T | OffersMapBlockSelect<T>;
+        video?: T | VideoBlockSelect<T>;
       };
   meta?:
     | T
@@ -1496,6 +1513,17 @@ export interface ServiceCategoriesBlockSelect<T extends boolean = true> {
 export interface OffersMapBlockSelect<T extends boolean = true> {
   heading?: T;
   description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock_select".
+ */
+export interface VideoBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  video?: T;
   id?: T;
   blockName?: T;
 }

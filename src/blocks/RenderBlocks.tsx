@@ -16,6 +16,7 @@ import { HowItWorksBlock } from '@/blocks/HowItWorks/Component'
 import { SocialMediaBlock } from '@/blocks/SocialMedia/Component'
 import { ServiceCategoriesBlock } from '@/blocks/ServiceCategories/Component'
 import { OffersMapBlock } from '@/blocks/OffersMap/Component'
+import { VideoBlock } from '@/blocks/Video/Component'
 
 const blockComponents = {
   //   archive: ArchiveBlock,
@@ -27,6 +28,7 @@ const blockComponents = {
   socialMedia: SocialMediaBlock,
   serviceCategories: ServiceCategoriesBlock,
   offersMap: OffersMapBlock,
+  video: VideoBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   //   formBlock: FormBlock,
