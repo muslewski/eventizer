@@ -1,6 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
 import { CheckCircle, Loader2 } from 'lucide-react'
 import { useAuth } from '@payloadcms/ui'
@@ -13,7 +12,6 @@ import type { User } from '@/payload-types'
  * instead of relying on fixed delays that can't account for webhook timing.
  */
 export function CheckoutSuccessHandler() {
-  const router = useRouter()
   const { user } = useAuth<User>()
   const [phase, setPhase] = useState<'success' | 'polling' | 'ready'>('success')
   const [attempts, setAttempts] = useState(0)
@@ -22,9 +20,10 @@ export function CheckoutSuccessHandler() {
   const POLL_INTERVAL = 2000
 
   const redirectToDashboard = useCallback(() => {
-    router.replace('/app')
-    router.refresh()
-  }, [router])
+    // Hard navigation to force full server re-render (router.replace + refresh
+    // doesn't work because we're already on /app — the server component won't re-run)
+    window.location.href = '/app'
+  }, [])
 
   useEffect(() => {
     // Phase 1: Show success message briefly
