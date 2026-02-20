@@ -4,7 +4,13 @@ import type { CollectionConfig } from 'payload'
 
 import { offersAccess } from './access'
 import { offersFields } from './fields'
-import { enforceMaxOffers, validateCategory, populateCategoryData } from './hooks'
+import {
+  enforceMaxOffers,
+  validateCategory,
+  populateCategoryData,
+  revalidateFeaturedOffers,
+  revalidateFeaturedOffersOnDelete,
+} from './hooks'
 import { MAX_OFFERS_PER_USER } from './hooks/enforceMaxOffers'
 
 export const Offers: CollectionConfig = {
@@ -78,6 +84,8 @@ export const Offers: CollectionConfig = {
     beforeOperation: [enforceMaxOffers],
     beforeValidate: [validateCategory],
     beforeChange: [populateCategoryData],
+    afterChange: [revalidateFeaturedOffers],
+    afterDelete: [revalidateFeaturedOffersOnDelete],
   },
 
   fields: offersFields,

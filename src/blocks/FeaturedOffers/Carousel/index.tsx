@@ -4,7 +4,23 @@ import { useMemo } from 'react'
 import { Offer, OfferUpload } from '@/payload-types'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import ImageCarousel, { type CarouselSlide } from '@/components/frontend/Carousel'
-import { getCategoryLabel } from '@/blocks/FeaturedOffers/Carousel/OfferCard'
+// import { getCategoryLabel } from '@/blocks/FeaturedOffers/Carousel/OfferCard'
+
+/**
+ * Extracts the last segment from a category path.
+ * Example: "Muzyka i rozrywka → DJ" returns "DJ"
+ */
+export function getCategoryLabel(categoryName: string | null | undefined): string {
+  if (!categoryName) return 'Brak kategorii'
+
+  const parts = categoryName.split('→')
+  return parts[parts.length - 1].trim()
+}
+
+interface OfferCardProps {
+  offer: Offer
+  isActive: boolean
+}
 
 export default function OffersCarousel({ offers }: { offers: Offer[] }) {
   const slides: CarouselSlide[] = useMemo(

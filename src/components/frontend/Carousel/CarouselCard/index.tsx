@@ -68,7 +68,7 @@ export default function CarouselCard({ slide, isActive, onClick }: CarouselCardP
         {/* <div className="absolute inset-0 z-0 bg-linear-to-br from-transparent via-transparent to-background/40" /> */}
         {/* If slide label then also add linear-to-br from black to transparent */}
         {slide.label && (
-          <div className="absolute inset-0 z-0 bg-linear-to-b from-black/75 via-transparent to-transparent" />
+          <div className="absolute inset-0 z-0 bg-linear-to-b dark:from-black/75 from-white/40 via-transparent to-transparent" />
         )}
       </div>
 
