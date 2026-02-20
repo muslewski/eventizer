@@ -15,7 +15,9 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 
       payload.logger.info(`Revalidating page at path: ${path}`)
 
-      revalidatePath(path)
+      // Use 'layout' type to ensure all locale variants (e.g. /pl, /en, /pl/slug)
+      // are revalidated, not just the literal path
+      revalidatePath(path, 'layout')
       revalidateTag('pages-sitemap', 'default')
     }
 
@@ -25,7 +27,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 
       payload.logger.info(`Revalidating old page at path: ${oldPath}`)
 
-      revalidatePath(oldPath)
+      revalidatePath(oldPath, 'layout')
       revalidateTag('pages-sitemap', 'default')
     }
   }
@@ -35,7 +37,7 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
 export const revalidateDelete: CollectionAfterDeleteHook<Page> = ({ doc, req: { context } }) => {
   if (!context.disableRevalidate) {
     const path = doc?.slug === 'home' ? '/' : `/${doc?.slug}`
-    revalidatePath(path)
+    revalidatePath(path, 'layout')
     revalidateTag('pages-sitemap', 'default')
   }
 
