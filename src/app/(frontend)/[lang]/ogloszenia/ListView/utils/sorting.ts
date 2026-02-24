@@ -19,6 +19,9 @@ export function getSortField(sortOption: SortOption): string {
     case 'price-asc':
     case 'price-desc':
       return '-createdAt' // Default sort when price sorting is applied
+    // Random sorting handled in-memory after fetching
+    case 'random':
+      return '-createdAt' // Fetch order doesn't matter, will be shuffled
     default:
       return '-createdAt'
   }
@@ -28,7 +31,7 @@ export function getSortField(sortOption: SortOption): string {
  * Check if sorting requires in-memory processing
  */
 export function requiresInMemorySort(sortOption: SortOption): boolean {
-  return sortOption === 'price-asc' || sortOption === 'price-desc'
+  return sortOption === 'price-asc' || sortOption === 'price-desc' || sortOption === 'random'
 }
 
 /**
@@ -49,6 +52,18 @@ export function calculateEffectivePrice(offer: Offer): number {
 }
 
 /**
+ * Fisher-Yates shuffle for random ordering
+ */
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
+/**
  * Sort offers in-memory for complex sorting requirements
  */
 export function sortOffersInMemory(offers: Offer[], sortOption: SortOption): Offer[] {
@@ -56,18 +71,22 @@ export function sortOffersInMemory(offers: Offer[], sortOption: SortOption): Off
     return offers
   }
 
-  const sorted = [...offers]
-
   switch (sortOption) {
-    case 'price-asc':
+    case 'random':
+      return shuffleArray(offers)
+    case 'price-asc': {
+      const sorted = [...offers]
       sorted.sort((a, b) => calculateEffectivePrice(a) - calculateEffectivePrice(b))
-      break
-    case 'price-desc':
+      return sorted
+    }
+    case 'price-desc': {
+      const sorted = [...offers]
       sorted.sort((a, b) => calculateEffectivePrice(b) - calculateEffectivePrice(a))
-      break
+      return sorted
+    }
+    default:
+      return offers
   }
-
-  return sorted
 }
 
 /**
@@ -75,6 +94,7 @@ export function sortOffersInMemory(offers: Offer[], sortOption: SortOption): Off
  */
 export function parseSortOption(value?: string): SortOption {
   const validOptions: SortOption[] = [
+    'random',
     'newest',
     'oldest',
     'price-asc',
@@ -86,13 +106,14 @@ export function parseSortOption(value?: string): SortOption {
     return value as SortOption
   }
 
-  return 'newest' // Default sort option
+  return 'random' // Default sort option - randomized for fairness
 }
 
 /**
  * Sort option display labels (for UI)
  */
 export const sortOptionLabels: Record<SortOption, string> = {
+  random: 'Losowe',
   newest: 'Najnowsze',
   oldest: 'Najstarsze',
   'price-asc': 'Cena: od najniższej',

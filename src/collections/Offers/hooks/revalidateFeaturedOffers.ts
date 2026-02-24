@@ -3,31 +3,43 @@ import { revalidatePath } from 'next/cache'
 import type { Offer } from '@/payload-types'
 
 /**
- * When a published offer changes, revalidate all pages so FeaturedOffers blocks
- * (and any other blocks referencing offers) reflect the latest data.
+ * Revalidate all pages when an offer changes so that every block depending on
+ * offer data (FeaturedOffers, OffersMap, etc.) reflects the latest state.
  *
  * We use revalidatePath('/', 'layout') which marks ALL cached pages as stale.
  * This is fine because:
  * - Offers change infrequently (manual user action)
  * - Pages are re-generated lazily on next request (no upfront cost)
  * - Targeted path matching is unreliable with locale-based routing ([lang]/[slug])
+ *
+ * We revalidate when:
+ * - A published offer is updated (image, link, location, title, etc.)
+ * - An offer is newly published
+ * - A previously published offer is unpublished / reverted to draft
  */
-export const revalidateFeaturedOffers: CollectionAfterChangeHook<Offer> = ({
+export const revalidateOffer: CollectionAfterChangeHook<Offer> = ({
   doc,
+  previousDoc,
   req: { payload, context },
 }) => {
   if (context.disableRevalidate) return doc
 
-  // Only revalidate when the offer is published
-  if (doc._status !== 'published') return doc
+  const isPublished = doc._status === 'published'
+  const wasPublished = previousDoc?._status === 'published'
 
-  payload.logger.info(`Revalidating all pages — published offer ${doc.id} ("${doc.title}") was updated`)
+  // Revalidate if the offer is currently published OR was previously published
+  // (covers: update while published, newly published, and unpublished/reverted)
+  if (!isPublished && !wasPublished) return doc
+
+  payload.logger.info(
+    `Revalidating all pages — offer ${doc.id} ("${doc.title}") changed [${wasPublished ? 'published' : 'draft'} → ${isPublished ? 'published' : 'draft'}]`,
+  )
   revalidatePath('/', 'layout')
 
   return doc
 }
 
-export const revalidateFeaturedOffersOnDelete: CollectionAfterDeleteHook<Offer> = ({
+export const revalidateOfferOnDelete: CollectionAfterDeleteHook<Offer> = ({
   doc,
   req: { payload, context },
 }) => {

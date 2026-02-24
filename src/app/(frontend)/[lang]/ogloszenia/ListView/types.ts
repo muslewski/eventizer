@@ -1,6 +1,7 @@
 import type { Offer, ServiceCategory } from '@/payload-types'
 
 export type SortOption =
+  | 'random'
   | 'newest'
   | 'oldest'
   | 'price-asc'

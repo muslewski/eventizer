@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { useGoogleMaps } from '@/components/providers/GoogleMapsProvider'
 import { useTheme } from 'next-themes'
-import { MapPin, ArrowRight, X } from 'lucide-react'
+import { MapPin, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -17,12 +17,39 @@ const MAP_ID = '4adcad22af12764877070f55'
 const POLAND_CENTER = { lat: 51.92, lng: 19.15 }
 const POLAND_ZOOM = 6
 
+/** Group of pins sharing the same location */
+interface PinGroup {
+  lat: number
+  lng: number
+  pins: OfferPin[]
+}
+
 interface OffersMapClientProps {
   heading: string
   description: string
   pins: OfferPin[]
   totalOffers: number
   className?: string
+}
+
+/** Round coordinates to ~1m precision to group overlapping markers */
+function coordKey(lat: number, lng: number): string {
+  return `${lat.toFixed(5)},${lng.toFixed(5)}`
+}
+
+/** Group pins that share the same (or very close) coordinates */
+function groupPinsByLocation(pins: OfferPin[]): PinGroup[] {
+  const map = new Map<string, PinGroup>()
+  for (const pin of pins) {
+    const key = coordKey(pin.lat, pin.lng)
+    const existing = map.get(key)
+    if (existing) {
+      existing.pins.push(pin)
+    } else {
+      map.set(key, { lat: pin.lat, lng: pin.lng, pins: [pin] })
+    }
+  }
+  return Array.from(map.values())
 }
 
 /** Format price for display */
@@ -54,9 +81,16 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([])
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null)
   const [mapReady, setMapReady] = useState(false)
-  const [selectedPin, setSelectedPin] = useState<OfferPin | null>(null)
+  const [selectedGroup, setSelectedGroup] = useState<PinGroup | null>(null)
+  const [selectedIndex, setSelectedIndex] = useState(0)
   const [mainImageLoaded, setMainImageLoaded] = useState(false)
   const [iconLoaded, setIconLoaded] = useState(false)
+
+  // The currently displayed pin in the info card
+  const selectedPin = selectedGroup ? selectedGroup.pins[selectedIndex] ?? null : null
+
+  // Group pins by location
+  const pinGroups = useMemo(() => groupPinsByLocation(pins), [pins])
 
   // Cleanup markers helper
   const clearMarkers = useCallback(() => {
@@ -68,7 +102,8 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
 
   // Close info card
   const closeInfoCard = useCallback(() => {
-    setSelectedPin(null)
+    setSelectedGroup(null)
+    setSelectedIndex(0)
     setMainImageLoaded(false)
     setIconLoaded(false)
     infoWindowRef.current?.close()
@@ -103,32 +138,74 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
     const accentColor = styles.getPropertyValue('--color-brand-500').trim()
     const accentColorDark = styles.getPropertyValue('--color-brand-700').trim()
 
-    // Create markers for all pins
+    // Create one marker per location group
     const newMarkers: google.maps.marker.AdvancedMarkerElement[] = []
 
-    for (const pin of pins) {
-      const pinElement = new google.maps.marker.PinElement({
-        scale: 0.8,
-        background: accentColor,
-        borderColor: accentColorDark,
-        glyphColor: '#ffffff',
-      })
+    for (const group of pinGroups) {
+      const count = group.pins.length
+      let content: HTMLElement
 
+      if (count > 1) {
+        // Badge marker showing the number of offers at this location
+        const wrapper = document.createElement('div')
+        wrapper.style.position = 'relative'
+        wrapper.style.cursor = 'pointer'
+
+        const pinEl = new google.maps.marker.PinElement({
+          scale: 1,
+          background: accentColor,
+          borderColor: accentColorDark,
+          glyphColor: '#ffffff',
+        })
+        wrapper.appendChild(pinEl.element)
+
+        const badge = document.createElement('div')
+        badge.textContent = String(count)
+        badge.style.cssText = `
+          position: absolute; top: -6px; right: -10px;
+          background: ${accentColorDark}; color: #fff;
+          font-size: 11px; font-weight: 700;
+          min-width: 20px; height: 20px;
+          border-radius: 10px; display: flex;
+          align-items: center; justify-content: center;
+          padding: 0 5px; border: 2px solid #fff;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+          pointer-events: none; z-index: 1;
+        `
+        wrapper.appendChild(badge)
+        content = wrapper
+      } else {
+        const pinEl = new google.maps.marker.PinElement({
+          scale: 0.8,
+          background: accentColor,
+          borderColor: accentColorDark,
+          glyphColor: '#ffffff',
+        })
+        content = pinEl.element
+      }
+
+      const firstPin = group.pins[0]
       const marker = new google.maps.marker.AdvancedMarkerElement({
         map,
-        position: { lat: pin.lat, lng: pin.lng },
-        title: pin.city ? `${pin.title} — ${pin.city}` : pin.title,
-        content: pinElement.element,
+        position: { lat: group.lat, lng: group.lng },
+        title:
+          count > 1
+            ? `${count} ofert — ${firstPin.city ?? ''}`
+            : firstPin.city
+              ? `${firstPin.title} — ${firstPin.city}`
+              : firstPin.title,
+        content,
       })
 
-      // Click handler — select this pin
+      // Click handler — select this group
       marker.addListener('gmp-click', () => {
         setMainImageLoaded(false)
         setIconLoaded(false)
-        setSelectedPin(pin)
+        setSelectedIndex(0)
+        setSelectedGroup(group)
 
-        // Smoothly pan to the pin, offset slightly upward so the card doesn't obscure it
-        map.panTo({ lat: pin.lat, lng: pin.lng })
+        // Smoothly pan to the pin
+        map.panTo({ lat: group.lat, lng: group.lng })
       })
 
       newMarkers.push(marker)
@@ -142,7 +219,7 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
       mapInstanceRef.current = null
       setMapReady(false)
     }
-  }, [isLoaded, pins, isDark, clearMarkers, closeInfoCard])
+  }, [isLoaded, pinGroups, isDark, clearMarkers, closeInfoCard])
 
   // Update color scheme when theme changes
   useEffect(() => {
@@ -183,7 +260,7 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
           <AnimatePresence>
             {selectedPin && (
               <motion.div
-                key={selectedPin.id}
+                key={`${selectedPin.id}-${selectedIndex}`}
                 initial={{ opacity: 0, y: 16, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.97 }}
@@ -198,6 +275,40 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
                   >
                     <X className="size-3.5 text-muted-foreground" />
                   </button>
+
+                  {/* Group navigation (prev / next) */}
+                  {selectedGroup && selectedGroup.pins.length > 1 && (
+                    <div className="absolute top-2 left-2 z-20 flex items-center gap-1">
+                      <button
+                        onClick={() => {
+                          setMainImageLoaded(false)
+                          setIconLoaded(false)
+                          setSelectedIndex(
+                            (prev) =>
+                              (prev - 1 + selectedGroup.pins.length) % selectedGroup.pins.length,
+                          )
+                        }}
+                        className="size-7 rounded-full bg-background/80 backdrop-blur-sm border border-border/50 flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
+                      >
+                        <ChevronLeft className="size-3.5 text-muted-foreground" />
+                      </button>
+                      <span className="text-[11px] font-medium text-white bg-black/50 backdrop-blur-sm rounded-full px-2 py-0.5 tabular-nums">
+                        {selectedIndex + 1}/{selectedGroup.pins.length}
+                      </span>
+                      <button
+                        onClick={() => {
+                          setMainImageLoaded(false)
+                          setIconLoaded(false)
+                          setSelectedIndex(
+                            (prev) => (prev + 1) % selectedGroup.pins.length,
+                          )
+                        }}
+                        className="size-7 rounded-full bg-background/80 backdrop-blur-sm border border-border/50 flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
+                      >
+                        <ChevronRight className="size-3.5 text-muted-foreground" />
+                      </button>
+                    </div>
+                  )}
 
                   {/* Main image as rounded header */}
                   {selectedPin.mainImageUrl && (

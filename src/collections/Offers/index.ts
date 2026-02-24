@@ -8,8 +8,8 @@ import {
   enforceMaxOffers,
   validateCategory,
   populateCategoryData,
-  revalidateFeaturedOffers,
-  revalidateFeaturedOffersOnDelete,
+  revalidateOffer,
+  revalidateOfferOnDelete,
 } from './hooks'
 import { MAX_OFFERS_PER_USER } from './hooks/enforceMaxOffers'
 
@@ -84,8 +84,8 @@ export const Offers: CollectionConfig = {
     beforeOperation: [enforceMaxOffers],
     beforeValidate: [validateCategory],
     beforeChange: [populateCategoryData],
-    afterChange: [revalidateFeaturedOffers],
-    afterDelete: [revalidateFeaturedOffersOnDelete],
+    afterChange: [revalidateOffer],
+    afterDelete: [revalidateOfferOnDelete],
   },
 
   fields: offersFields,

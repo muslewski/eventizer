@@ -27,7 +27,7 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
     (value: SortOption) => {
       const params = new URLSearchParams(searchParams.toString())
 
-      if (value === 'newest') {
+      if (value === 'random') {
         params.delete('sortuj')
       } else {
         params.set('sortuj', value)
@@ -44,6 +44,7 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
   )
 
   const sortOptions: SortOption[] = [
+    'random',
     'newest',
     'oldest',
     'price-asc',

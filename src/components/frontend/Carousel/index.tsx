@@ -185,7 +185,7 @@ export default function ImageCarousel({
   const lightboxDialog = lightbox && lightboxIndex !== null && (
     <Dialog open onOpenChange={() => setLightboxIndex(null)}>
       <DialogContent
-        className="sm:max-w-[100vw] max-w-[100vw] w-screen h-screen max-h-screen p-0 pt-12 bg-background border-none rounded-none flex flex-col items-center justify-center gap-0"
+        className="sm:max-w-[100vw] max-w-[100vw] w-screen h-dvh max-h-dvh p-0 pt-[max(env(safe-area-inset-top),0.75rem)] bg-background border-none rounded-none flex flex-col items-center justify-center gap-0"
         showCloseButton={false}
       >
         <VisuallyHidden>
@@ -196,7 +196,7 @@ export default function ImageCarousel({
         {/* Custom close button — larger and easier to tap on mobile */}
         <button
           onClick={() => setLightboxIndex(null)}
-          className="absolute top-4 right-4 z-50 p-3 sm:p-2 rounded-full bg-foreground/10 hover:bg-foreground/20 text-foreground transition-colors"
+          className="absolute top-[max(env(safe-area-inset-top,0.5rem),0.5rem)] right-4 z-50 p-3 sm:p-2 rounded-full bg-foreground/10 hover:bg-foreground/20 text-foreground transition-colors"
           aria-label="Close lightbox"
         >
           <X className="size-7 sm:size-5" />

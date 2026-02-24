@@ -86,7 +86,7 @@ export default function ActiveFilters({
   const hasPriceMax = maxPrice !== undefined && maxPrice > 0
   const hasSearch = !!currentSearch
   const hasCategory = !!currentCategory
-  const hasNonDefaultSort = currentSort !== 'newest'
+  const hasNonDefaultSort = currentSort !== 'random'
 
   const hasAnyFilter = hasLocation || hasPriceMin || hasPriceMax || hasSearch || hasCategory || hasNonDefaultSort
 
