@@ -9,7 +9,186 @@ import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { Skeleton } from '@/components/ui/skeleton'
 import Image from 'next/image'
 import Link from 'next/link'
-import type { OfferPin } from '@/blocks/OffersMap/Component'
+import type { OfferPin, MapCategory } from '@/blocks/OffersMap/Component'
+
+/* ─── Category filter bar with drag-scroll & arrows ─── */
+
+interface CategoryFilterBarProps {
+  categories: MapCategory[]
+  activeCategories: Set<string>
+  totalCount: number
+  onToggle: (slug: string) => void
+  onClearAll: () => void
+}
+
+function CategoryFilterBar({
+  categories,
+  activeCategories,
+  totalCount,
+  onToggle,
+  onClearAll,
+}: CategoryFilterBarProps) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+  const isDragging = useRef(false)
+  const startX = useRef(0)
+  const scrollLeft = useRef(0)
+  const hasDragged = useRef(false)
+
+  // Check scroll overflow
+  const updateArrows = useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    setCanScrollLeft(el.scrollLeft > 2)
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2)
+  }, [])
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    updateArrows()
+    el.addEventListener('scroll', updateArrows, { passive: true })
+    const ro = new ResizeObserver(updateArrows)
+    ro.observe(el)
+    return () => {
+      el.removeEventListener('scroll', updateArrows)
+      ro.disconnect()
+    }
+  }, [updateArrows, categories])
+
+  // Drag-to-scroll handlers
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    const el = scrollRef.current
+    if (!el) return
+    isDragging.current = true
+    hasDragged.current = false
+    startX.current = e.clientX
+    scrollLeft.current = el.scrollLeft
+    el.setPointerCapture(e.pointerId)
+    el.style.cursor = 'grabbing'
+    el.style.userSelect = 'none'
+  }, [])
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return
+    const dx = e.clientX - startX.current
+    if (Math.abs(dx) > 3) hasDragged.current = true
+    scrollRef.current!.scrollLeft = scrollLeft.current - dx
+  }, [])
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return
+    isDragging.current = false
+    const el = scrollRef.current
+    if (!el) return
+    el.releasePointerCapture(e.pointerId)
+    el.style.cursor = ''
+    el.style.userSelect = ''
+  }, [])
+
+  // Prevent click if user dragged
+  const guardClick = useCallback((cb: () => void) => {
+    return () => {
+      if (hasDragged.current) return
+      cb()
+    }
+  }, [])
+
+  const scrollBy = useCallback((dir: number) => {
+    scrollRef.current?.scrollBy({ left: dir * 200, behavior: 'smooth' })
+  }, [])
+
+  return (
+    <div className="w-full max-w-6xl mx-auto relative">
+      {/* Left arrow */}
+      {canScrollLeft && (
+        <button
+          onClick={() => scrollBy(-1)}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 size-8 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 shadow-md flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
+          aria-label="Scroll left"
+        >
+          <ChevronLeft className="size-4 text-foreground" />
+        </button>
+      )}
+
+      {/* Scrollable track */}
+      <div
+        ref={scrollRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        className="flex items-center gap-2 overflow-x-auto py-1 cursor-grab select-none"
+        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none', paddingLeft: canScrollLeft ? 36 : 4, paddingRight: canScrollRight ? 36 : 4, transition: 'padding 0.2s ease' }}
+      >
+        {/* "All" button */}
+        <button
+          onClick={guardClick(onClearAll)}
+          className={`shrink-0 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all cursor-pointer ${
+            activeCategories.size === 0
+              ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+              : 'border-border/60 bg-background/80 text-muted-foreground hover:bg-muted hover:text-foreground'
+          }`}
+        >
+          <MapPin className="size-4" />
+          Wszystkie
+          <span className="text-xs opacity-70">{totalCount}</span>
+        </button>
+
+        {categories.map((cat) => {
+          const isActive = activeCategories.has(cat.slug)
+          const displayName = cat.name.includes('→')
+            ? cat.name.split('→').pop()?.trim()
+            : cat.name
+
+          return (
+            <button
+              key={cat.slug}
+              onClick={guardClick(() => onToggle(cat.slug))}
+              className={`shrink-0 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all cursor-pointer ${
+                isActive
+                  ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                  : 'border-border/60 bg-background/80 text-muted-foreground hover:bg-muted hover:text-foreground'
+              }`}
+            >
+              {cat.iconUrl ? (
+                <Image
+                  src={cat.iconUrl}
+                  alt={displayName ?? ''}
+                  width={18}
+                  height={18}
+                  className={`object-contain size-[18px] ${isActive ? 'invert' : 'dark:invert'}`}
+                />
+              ) : null}
+              {displayName}
+              <span className="text-xs opacity-70">{cat.count}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Right arrow */}
+      {canScrollRight && (
+        <button
+          onClick={() => scrollBy(1)}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 size-8 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 shadow-md flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
+          aria-label="Scroll right"
+        >
+          <ChevronRight className="size-4 text-foreground" />
+        </button>
+      )}
+
+      {/* Edge fade gradients */}
+      {canScrollLeft && (
+        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent pointer-events-none z-[5]" />
+      )}
+      {canScrollRight && (
+        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none z-[5]" />
+      )}
+    </div>
+  )
+}
 
 const MAP_ID = '4adcad22af12764877070f55'
 
@@ -28,6 +207,7 @@ interface OffersMapClientProps {
   heading: string
   description: string
   pins: OfferPin[]
+  categories: MapCategory[]
   totalOffers: number
   className?: string
 }
@@ -70,6 +250,7 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
   heading,
   description,
   pins,
+  categories,
   totalOffers,
   className,
 }) => {
@@ -85,12 +266,19 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [mainImageLoaded, setMainImageLoaded] = useState(false)
   const [iconLoaded, setIconLoaded] = useState(false)
+  const [activeCategories, setActiveCategories] = useState<Set<string>>(new Set())
 
   // The currently displayed pin in the info card
   const selectedPin = selectedGroup ? selectedGroup.pins[selectedIndex] ?? null : null
 
-  // Group pins by location
-  const pinGroups = useMemo(() => groupPinsByLocation(pins), [pins])
+  // Filter pins by selected categories (empty set = show all)
+  const filteredPins = useMemo(() => {
+    if (activeCategories.size === 0) return pins
+    return pins.filter((pin) => pin.categorySlug && activeCategories.has(pin.categorySlug))
+  }, [pins, activeCategories])
+
+  // Group filtered pins by location
+  const pinGroups = useMemo(() => groupPinsByLocation(filteredPins), [filteredPins])
 
   // Cleanup markers helper
   const clearMarkers = useCallback(() => {
@@ -109,7 +297,31 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
     infoWindowRef.current?.close()
   }, [])
 
-  // Initialize map
+  // Toggle a category in the filter
+  const toggleCategory = useCallback(
+    (slug: string) => {
+      setActiveCategories((prev) => {
+        const next = new Set(prev)
+        if (next.has(slug)) {
+          next.delete(slug)
+        } else {
+          next.add(slug)
+        }
+        return next
+      })
+      // Close any open info card when filter changes
+      closeInfoCard()
+    },
+    [closeInfoCard],
+  )
+
+  // Clear all filters
+  const clearFilters = useCallback(() => {
+    setActiveCategories(new Set())
+    closeInfoCard()
+  }, [closeInfoCard])
+
+  // Initialize map (once)
   useEffect(() => {
     if (!isLoaded || !mapRef.current || mapInstanceRef.current) return
 
@@ -132,6 +344,24 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
     map.addListener('click', () => {
       closeInfoCard()
     })
+
+    setMapReady(true)
+
+    return () => {
+      clearMarkers()
+      mapInstanceRef.current = null
+      setMapReady(false)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded])
+
+  // Create / update markers when pinGroups change (filter or data change)
+  useEffect(() => {
+    const map = mapInstanceRef.current
+    if (!map || !mapReady) return
+
+    // Clear previous markers
+    clearMarkers()
 
     // Read accent color from CSS custom properties
     const styles = getComputedStyle(document.documentElement)
@@ -212,14 +442,7 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
     }
 
     markersRef.current = newMarkers
-    setMapReady(true)
-
-    return () => {
-      clearMarkers()
-      mapInstanceRef.current = null
-      setMapReady(false)
-    }
-  }, [isLoaded, pinGroups, isDark, clearMarkers, closeInfoCard])
+  }, [pinGroups, mapReady, clearMarkers])
 
   // Update color scheme when theme changes
   useEffect(() => {
@@ -249,6 +472,17 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
         planet
         aurora
       />
+
+      {/* Category filter bar */}
+      {categories.length > 1 && (
+        <CategoryFilterBar
+          categories={categories}
+          activeCategories={activeCategories}
+          totalCount={pins.length}
+          onToggle={toggleCategory}
+          onClearAll={clearFilters}
+        />
+      )}
 
       {/* Map container */}
       <div className="w-full max-w-6xl mx-auto">
@@ -408,9 +642,13 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-medium text-foreground">
-                  {formatNumber(totalOffers)} ofert na mapie
+                  {formatNumber(filteredPins.length)} ofert na mapie
                 </p>
-                <p className="text-xs text-muted-foreground">Cała Polska</p>
+                <p className="text-xs text-muted-foreground">
+                  {activeCategories.size > 0
+                    ? `${activeCategories.size} ${activeCategories.size === 1 ? 'kategoria' : activeCategories.size < 5 ? 'kategorie' : 'kategorii'}`
+                    : 'Cała Polska'}
+                </p>
               </div>
             </div>
           </div>
