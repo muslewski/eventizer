@@ -65,24 +65,27 @@ function CategoryFilterBar({
     hasDragged.current = false
     startX.current = e.clientX
     scrollLeft.current = el.scrollLeft
-    el.setPointerCapture(e.pointerId)
-    el.style.cursor = 'grabbing'
-    el.style.userSelect = 'none'
   }, [])
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
     if (!isDragging.current) return
     const dx = e.clientX - startX.current
-    if (Math.abs(dx) > 3) hasDragged.current = true
+    if (Math.abs(dx) > 3) {
+      hasDragged.current = true
+      const el = scrollRef.current
+      if (el) {
+        el.style.cursor = 'grabbing'
+        el.style.userSelect = 'none'
+      }
+    }
     scrollRef.current!.scrollLeft = scrollLeft.current - dx
   }, [])
 
-  const onPointerUp = useCallback((e: React.PointerEvent) => {
+  const onPointerUp = useCallback(() => {
     if (!isDragging.current) return
     isDragging.current = false
     const el = scrollRef.current
     if (!el) return
-    el.releasePointerCapture(e.pointerId)
     el.style.cursor = ''
     el.style.userSelect = ''
   }, [])
@@ -262,6 +265,7 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([])
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null)
   const [mapReady, setMapReady] = useState(false)
+  const [mapVersion, setMapVersion] = useState(0)
   const [selectedGroup, setSelectedGroup] = useState<PinGroup | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [mainImageLoaded, setMainImageLoaded] = useState(false)
@@ -321,9 +325,15 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
     closeInfoCard()
   }, [closeInfoCard])
 
-  // Initialize map (once)
+  // Initialize map (recreates when theme changes for Cloud-styled maps)
   useEffect(() => {
-    if (!isLoaded || !mapRef.current || mapInstanceRef.current) return
+    if (!isLoaded || !mapRef.current) return
+
+    // Clean up previous instance if any (e.g. theme change)
+    if (mapInstanceRef.current) {
+      clearMarkers()
+      mapInstanceRef.current = null
+    }
 
     const map = new google.maps.Map(mapRef.current, {
       center: POLAND_CENTER,
@@ -346,14 +356,14 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
     })
 
     setMapReady(true)
+    setMapVersion((v) => v + 1)
 
     return () => {
       clearMarkers()
       mapInstanceRef.current = null
       setMapReady(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded])
+  }, [isLoaded, isDark, clearMarkers, closeInfoCard])
 
   // Create / update markers when pinGroups change (filter or data change)
   useEffect(() => {
@@ -442,15 +452,7 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
     }
 
     markersRef.current = newMarkers
-  }, [pinGroups, mapReady, clearMarkers])
-
-  // Update color scheme when theme changes
-  useEffect(() => {
-    if (!mapInstanceRef.current || !mapReady) return
-    mapInstanceRef.current.setOptions({
-      colorScheme: isDark ? 'DARK' : 'LIGHT',
-    })
-  }, [isDark, mapReady])
+  }, [pinGroups, mapReady, mapVersion, clearMarkers])
 
   // Format number with space separator (Polish style)
   const formatNumber = (n: number) => n.toLocaleString('pl-PL')

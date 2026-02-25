@@ -48,12 +48,13 @@ export const Background: React.FC<BackgroundProps> = ({
     lightBackgroundImage && isExpandedDoc<Media>(lightBackgroundImage)
   const hasLightVideo =
     lightBackgroundVideo && isExpandedDoc<Media>(lightBackgroundVideo)
+  const hasAnyLightBg = hasLightImage || hasLightVideo
 
   return (
     <>
-      {/* Background image — hidden in light mode when a light variant is provided */}
+      {/* Background image — hidden in light mode when any light variant is provided */}
       {backgroundImage && isExpandedDoc<Media>(backgroundImage) && (
-        <div className={hasLightImage ? 'contents dark:contents hidden' : 'contents'}>
+        <div className={hasAnyLightBg ? 'contents dark:contents hidden' : 'contents'}>
           <BackgroundImage backgroundImage={backgroundImage} />
         </div>
       )}
@@ -65,9 +66,9 @@ export const Background: React.FC<BackgroundProps> = ({
         </div>
       )}
 
-      {/* Background video — hidden in light mode when a light variant is provided */}
+      {/* Background video — hidden in light mode when any light variant is provided */}
       {backgroundVideo && isExpandedDoc<Media>(backgroundVideo) && (
-        <div className={hasLightVideo ? 'contents dark:contents hidden' : 'contents'}>
+        <div className={hasAnyLightBg ? 'contents dark:contents hidden' : 'contents'}>
           <BackgroundVideo backgroundVideo={backgroundVideo} />
         </div>
       )}

@@ -19,6 +19,19 @@ export default async function HeroView({ payload }: HeroViewProps) {
 
   const backgroundImage = docs[0] || null
 
+  // find light background image offers-background-light-compressed.jpeg
+  const { docs: lightDocs } = await payload.find({
+    collection: 'media',
+    where: {
+      filename: {
+        equals: 'offers-background2-light-compressed.jpeg',
+      },
+    },
+    limit: 1,
+  })
+
+  const lightBackgroundImage = lightDocs[0] || null
+
   // find background video
   const { docs: videoDocs } = await payload.find({
     collection: 'media',
@@ -36,6 +49,7 @@ export default async function HeroView({ payload }: HeroViewProps) {
     <HighImpactHero
       title="Znajdź specjalistów, którzy uczynią Twoje wydarzenie wyjątkowym"
       backgroundImage={backgroundImage}
+      lightBackgroundImage={lightBackgroundImage}
       backgroundVideo={backgroundVideo}
       showScrollIndicator
     />
