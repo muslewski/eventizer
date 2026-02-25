@@ -190,31 +190,21 @@ export const NavClient: FC<Props> = ({ groups }) => {
                   <Link
                     className={cn(
                       'group relative flex items-center gap-2 px-2 py-1.5 rounded-md',
-                      'no-underline transition-colors duration-150',
-                      'hover:bg-accent/10',
-                      activeCollection && 'bg-accent/10',
+                      'no-underline transition-all duration-200',
+                      activeCollection
+                        ? 'bg-gradient-to-r from-accent/20 to-accent/5 border border-accent/30 shadow-sm !text-accent'
+                        : '!text-muted-foreground hover:!text-foreground hover:bg-accent/10 hover:pl-2.5',
                     )}
                     href={href}
                     id={id}
                     key={i}
                     prefetch={false}
                   >
-                    <motion.div
-                      variants={itemVariants}
-                      initial={shouldAnimate ? undefined : false}
-                      className="flex items-center gap-2 min-w-0"
-                    >
-                      {activeCollection && (
-                        <motion.div
-                          layoutId="activeIndicator"
-                          className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-full bg-accent"
-                        />
-                      )}
-
+                    <div className="flex items-center gap-2 min-w-0">
                       {Icon && (
                         <Icon
                           className={cn(
-                            'size-4 shrink-0 transition-colors duration-150',
+                            'size-4 shrink-0 transition-colors duration-200',
                             activeCollection
                               ? 'text-accent'
                               : 'text-muted-foreground group-hover:text-accent/70',
@@ -224,15 +214,15 @@ export const NavClient: FC<Props> = ({ groups }) => {
 
                       <span
                         className={cn(
-                          'text-sm truncate',
+                          'text-sm truncate transition-colors duration-200',
                           activeCollection
-                            ? 'text-accent-foreground dark:text-accent font-medium'
-                            : 'text-muted-foreground group-hover:text-foreground',
+                            ? 'font-medium'
+                            : '',
                         )}
                       >
                         {getTranslation(label, i18n)}
                       </span>
-                    </motion.div>
+                    </div>
                   </Link>
                 )
               })}

@@ -19,12 +19,13 @@ type Args = {
     odleglosc?: string
     minCena?: string
     maxCena?: string
+    seed?: string
   }>
 }
 
 export default async function Page({ params, searchParams }: Args) {
   const payload = await getPayload({ config })
-  const { strona, kategoria, szukaj, sortuj, lat, lng, odleglosc, minCena, maxCena } = await searchParams
+  const { strona, kategoria, szukaj, sortuj, lat, lng, odleglosc, minCena, maxCena, seed } = await searchParams
 
   return (
     <>
@@ -40,6 +41,7 @@ export default async function Page({ params, searchParams }: Args) {
         odleglosc={odleglosc}
         minCena={minCena ? Number(minCena) : undefined}
         maxCena={maxCena ? Number(maxCena) : undefined}
+        seed={seed}
       />
     </>
   )

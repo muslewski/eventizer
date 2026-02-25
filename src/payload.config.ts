@@ -75,7 +75,7 @@ export default buildConfig({
     },
 
     components: {
-      header: ['@/components/payload/customHeader'],
+      // header: ['@/components/payload/customHeader'],
       views: {
         'onboarding-service-provider': {
           Component: '@/components/payload/views/serviceProviderOnboarding',

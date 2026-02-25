@@ -251,8 +251,8 @@ async function queryWithSearch(
     const descOnlyResults = allResults.docs.filter((doc) => !titleIds.has(doc.id))
 
     // Sort each group separately, then combine (title matches first)
-    const sortedTitles = sortOffersInMemory(titleResults.docs, sortuj)
-    const sortedDesc = sortOffersInMemory(descOnlyResults, sortuj)
+    const sortedTitles = sortOffersInMemory(titleResults.docs, sortuj, params.seed)
+    const sortedDesc = sortOffersInMemory(descOnlyResults, sortuj, params.seed)
 
     const allSorted = [...sortedTitles, ...sortedDesc]
     offersData = allSorted.slice(offset, offset + limit)
@@ -341,7 +341,7 @@ async function queryWithoutSearch(
       where: baseWhere,
     })
 
-    const sortedOffers = sortOffersInMemory(result.docs, sortuj)
+    const sortedOffers = sortOffersInMemory(result.docs, sortuj, params.seed)
     const pagination = calculatePagination(result.totalDocs, limit, page)
     const offset = (pagination.currentPage - 1) * limit
 
@@ -442,7 +442,7 @@ async function queryWithGeoFilter(
 
   // Apply in-memory sorting if needed
   if (requiresInMemorySort(sortuj)) {
-    filtered = sortOffersInMemory(filtered, sortuj)
+    filtered = sortOffersInMemory(filtered, sortuj, params.seed)
   }
 
   const pagination = calculatePagination(filtered.length, limit, page)

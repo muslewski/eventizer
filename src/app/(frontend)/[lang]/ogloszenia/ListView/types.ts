@@ -22,6 +22,7 @@ export interface OfferSearchParams {
   odleglosc?: string
   minCena?: string
   maxCena?: string
+  seed?: string
 }
 
 export interface ParsedSearchParams {
@@ -35,6 +36,7 @@ export interface ParsedSearchParams {
   odleglosc?: number
   minCena?: number
   maxCena?: number
+  seed?: number
 }
 
 export interface PaginationInfo {

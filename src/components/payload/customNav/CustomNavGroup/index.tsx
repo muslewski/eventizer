@@ -1,8 +1,8 @@
 'use client'
 
-import { Collapsible } from '@payloadcms/ui'
 import React, { FC, ReactNode, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { ChevronDown } from 'lucide-react'
 
 type Props = {
   children: ReactNode
@@ -12,54 +12,50 @@ type Props = {
 }
 
 export const CustomNavGroup: FC<Props> = ({ children, isOpen = true, label, onToggle }) => {
-  const [collapsed, setCollapsed] = useState(!isOpen)
+  const [open, setOpen] = useState(isOpen)
 
-  // Update collapsed state when isOpen prop changes
   useEffect(() => {
-    setCollapsed(!isOpen)
+    setOpen(isOpen)
   }, [isOpen])
 
-  const handleToggle = (newCollapsed: boolean) => {
-    setCollapsed(newCollapsed)
-    onToggle(!newCollapsed)
+  const handleToggle = () => {
+    const newOpen = !open
+    setOpen(newOpen)
+    onToggle(newOpen)
   }
 
   return (
-    <Collapsible
-      className={cn(
-        'nav-group mb-2 relative',
-        '[&_.collapsible__toggle-wrap]:p-1',
-        '[&_.collapsible__toggle-wrap_span]:hidden',
-        '[&_.collapsible__toggle]:text-accent/60 [&_.collapsible__toggle]:transition-colors',
-        'hover:[&_.collapsible__toggle]:text-accent',
-      )}
-      isCollapsed={collapsed}
-      collapsibleStyle="default"
-      header={
-        <div className="group flex items-center gap-1.5 cursor-pointer px-1 py-0.5 rounded-md transition-colors hover:bg-accent/5">
-          {/* Decorative dot */}
-          <div
+    <div className="nav-group mb-2 relative">
+      <button
+        type="button"
+        onClick={handleToggle}
+        className="group flex items-center gap-1 cursor-pointer px-1 py-1 rounded-lg transition-colors duration-200 bg-background border-0 hover:bg-accent/5 w-full"
+      >
+        <div className="h-7 w-7 shrink-0 flex items-center justify-center rounded-md transition-all duration-200">
+          <ChevronDown
             className={cn(
-              'w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-300',
-              collapsed
-                ? 'bg-accent/30'
-                : 'bg-accent shadow-[0_0_6px_color-mix(in_srgb,var(--accent)_50%,transparent)]',
+              'h-4 w-4 transition-transform duration-200',
+              !open && '-rotate-90',
+              !open ? 'text-muted-foreground' : 'text-accent',
             )}
           />
-          <span
-            className={cn(
-              'text-xs font-semibold tracking-wider uppercase truncate',
-              collapsed ? 'text-muted-foreground' : 'text-accent-foreground dark:text-accent',
-              'group-hover:text-accent dark:group-hover:text-accent',
-            )}
-          >
-            {label}
-          </span>
         </div>
-      }
-      onToggle={handleToggle}
-    >
-      <div className="pl-1 pt-0.5 pb-1">{children}</div>
-    </Collapsible>
+        <span
+          className={cn(
+            'text-sm font-medium truncate transition-colors duration-200',
+            !open ? 'text-muted-foreground' : 'text-accent-foreground dark:text-accent',
+            'group-hover:text-accent dark:group-hover:text-accent',
+          )}
+        >
+          {label}
+        </span>
+      </button>
+
+      {open && (
+        <div className="flex flex-col gap-0.5 py-1.5 pl-2 border-l-2 border-accent/20 ml-4">
+          {children}
+        </div>
+      )}
+    </div>
   )
 }

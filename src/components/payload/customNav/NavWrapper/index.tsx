@@ -14,8 +14,7 @@ export const NavWrapper: React.FC<{
     <aside
       className={[
         baseClass,
-        // 'bg-linear-to-b from-base-100/50 to-base-50 dark:from-base-850/50 dark:to-base-950',
-        'bg-base-0 dark:bg-base-950 border-r border-border/50',
+        'border-r border-border/50',
         navOpen && `${baseClass}--nav-open`,
         shouldAnimate && `${baseClass}--nav-animate`,
         hydrated && `${baseClass}--nav-hydrated`,

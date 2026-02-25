@@ -198,6 +198,11 @@ table {
   display: none;
   pointer-events: none;
 }
+
+/* Force nav link color to inherit from Tailwind classes, not Payload defaults */
+.nav-group a {
+  color: inherit;
+}
 /* ------------------------------------------ */
 
 @layer base {

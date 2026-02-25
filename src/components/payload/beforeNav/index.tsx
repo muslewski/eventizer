@@ -75,12 +75,12 @@ const CustomBeforeNav: React.FC = () => {
           )}
         />
       </Link>
-      <Button variant="golden" asChild className="no-underline">
+      {/* <Button variant="golden" asChild className="no-underline">
         <Link href="/ogloszenia#oferty" prefetch>
           <StarIcon className="size-4" />
           Przejdź do ogłoszeń
         </Link>
-      </Button>
+      </Button> */}
     </div>
   )
 }

@@ -7,6 +7,8 @@ import { NavClient } from './index.client'
 import { NavHamburger } from './NavHamburger'
 import { CustomLogoutButton } from './CustomLogoutButton'
 import { HomeButton } from './HomeButton'
+import { NavQuickLinks } from './NavQuickLinks'
+import type { User } from '@/payload-types'
 
 export const baseClass = 'nav'
 
@@ -66,7 +68,7 @@ const Nav: FC<ServerProps> = async (props) => {
 
   return (
     <NavWrapper baseClass={baseClass}>
-      <nav className={`${baseClass}__wrap p-2 flex flex-col h-full`}>
+      <nav className={`${baseClass}__wrap pt-2 pr-2 pb-2 flex flex-col h-full`}>
         {RenderServerComponent({
           clientProps: {
             documentSubViewType,
@@ -84,6 +86,8 @@ const Nav: FC<ServerProps> = async (props) => {
             user,
           },
         })}
+        <NavQuickLinks userRole={(user as User).role} userId={(user as User).id} />
+        <div className="h-px bg-border/50 mb-3" />
         <NavClient groups={groups} />
         {RenderServerComponent({
           clientProps: {

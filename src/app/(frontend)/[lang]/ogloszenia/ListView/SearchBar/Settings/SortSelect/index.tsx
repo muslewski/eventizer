@@ -29,8 +29,12 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
 
       if (value === 'random') {
         params.delete('sortuj')
+        // Generate a fresh seed for the new random order
+        params.set('seed', String(Math.floor(Math.random() * 2147483647) + 1))
       } else {
         params.set('sortuj', value)
+        // Remove seed when not using random sort
+        params.delete('seed')
       }
 
       // Reset to page 1 when sorting changes
