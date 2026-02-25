@@ -77,7 +77,7 @@ export default function OffersView({
   const skeletonCount = offers?.length || pagination.totalDocs > 0 ? Math.min(offers?.length ?? 5, 10) : 5
 
   return (
-    <div className="relative w-full h-[calc(100%-90px)]">
+    <div className="relative w-full  h-[calc(100%-90px)]">
       <ScrollArea
         className="w-full h-full overflow-hidden"
         type="always"

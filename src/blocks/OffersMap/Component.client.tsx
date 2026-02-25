@@ -156,9 +156,9 @@ function CategoryFilterBar({
                 <Image
                   src={cat.iconUrl}
                   alt={displayName ?? ''}
-                  width={18}
-                  height={18}
-                  className={`object-contain size-[18px] ${isActive ? 'invert' : 'dark:invert'}`}
+                  width={22}
+                  height={22}
+                  className={`object-contain size-[22px] ${isActive ? 'invert' : 'dark:invert'}`}
                 />
               ) : null}
               {displayName}

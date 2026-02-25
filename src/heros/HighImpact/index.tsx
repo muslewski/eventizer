@@ -12,13 +12,20 @@ export const HighImpactHero: React.FC<HighImpactHeroProps> = ({
   links,
   backgroundImage,
   backgroundVideo,
+  lightBackgroundImage,
+  lightBackgroundVideo,
   title,
   showScrollIndicator,
   children,
 }) => {
   return (
     <HighImpactHeroClient>
-      <Background backgroundImage={backgroundImage} backgroundVideo={backgroundVideo} />
+      <Background
+        backgroundImage={backgroundImage}
+        backgroundVideo={backgroundVideo}
+        lightBackgroundImage={lightBackgroundImage}
+        lightBackgroundVideo={lightBackgroundVideo}
+      />
       {children ? (
         children
       ) : (

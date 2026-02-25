@@ -78,15 +78,16 @@ export const OfferListCard = ({
 
       {/* Content */}
       <div className="xl:pb-6 xl:pt-6 sm:pb-6 sm:pt-0 pb-6 pt-6 flex flex-col xl:flex-row gap-8  justify-between  w-full min-w-0 px-6 xl:px-0 xl:pr-6">
-        <div className="w-full min-w-0 flex flex-col gap-2">
+        <div className="w-full min-w-0 flex flex-col gap-2 overflow-hidden">
+          {/* Title */}
           <Link
             href={`/ogloszenia/${slug}`}
-            className="block min-w-0 font-bebas text-3xl sm:text-4xl leading-[0.95] text-foreground line-clamp-2 xl:truncate hover:text-muted-foreground transition-colors"
+            className="block min-w-0 overflow-hidden font-bebas text-3xl sm:text-4xl leading-[0.95] text-foreground line-clamp-2 xl:line-clamp-1 hover:text-muted-foreground transition-colors"
           >
             {title}
           </Link>
 
-          <p className="line-clamp-3 w-full">{description}</p>
+          <p className="line-clamp-3 xl:line-clamp-2 w-full">{description}</p>
 
           {(categoryName || city) && (
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">

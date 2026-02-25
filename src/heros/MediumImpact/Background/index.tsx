@@ -32,22 +32,52 @@ const BackgroundVideo = dynamic(() => import('@/components/heros/BackgroundVideo
 interface BackgroundProps {
   backgroundImage: Page['hero']['backgroundImage']
   backgroundVideo: Page['hero']['backgroundVideo']
+  lightBackgroundImage?: Page['hero']['lightBackgroundImage']
+  lightBackgroundVideo?: Page['hero']['lightBackgroundVideo']
 }
 
 // TODO:
 // - Add parallax effect / fixed background
 
-export const Background: React.FC<BackgroundProps> = ({ backgroundImage, backgroundVideo }) => {
+export const Background: React.FC<BackgroundProps> = ({
+  backgroundImage,
+  backgroundVideo,
+  lightBackgroundImage,
+  lightBackgroundVideo,
+}) => {
+  const hasLightImage =
+    lightBackgroundImage && isExpandedDoc<Media>(lightBackgroundImage)
+  const hasLightVideo =
+    lightBackgroundVideo && isExpandedDoc<Media>(lightBackgroundVideo)
+
   return (
     <>
-      {/* Background image */}
+      {/* Background image — hidden in light mode when a light variant is provided */}
       {backgroundImage && isExpandedDoc<Media>(backgroundImage) && (
-        <BackgroundImage backgroundImage={backgroundImage} />
+        <div className={hasLightImage ? 'contents dark:contents hidden' : 'contents'}>
+          <BackgroundImage backgroundImage={backgroundImage} />
+        </div>
       )}
 
-      {/* Background video that appears when loaded without bloating initial render */}
+      {/* Light theme background image */}
+      {hasLightImage && (
+        <div className="contents dark:hidden">
+          <BackgroundImage backgroundImage={lightBackgroundImage} />
+        </div>
+      )}
+
+      {/* Background video — hidden in light mode when a light variant is provided */}
       {backgroundVideo && isExpandedDoc<Media>(backgroundVideo) && (
-        <BackgroundVideo backgroundVideo={backgroundVideo} />
+        <div className={hasLightVideo ? 'contents dark:contents hidden' : 'contents'}>
+          <BackgroundVideo backgroundVideo={backgroundVideo} />
+        </div>
+      )}
+
+      {/* Light theme background video */}
+      {hasLightVideo && (
+        <div className="contents dark:hidden">
+          <BackgroundVideo backgroundVideo={lightBackgroundVideo} />
+        </div>
       )}
 
       {/* Animated noise texture overlay */}

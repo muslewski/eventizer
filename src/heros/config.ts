@@ -76,6 +76,47 @@ export const hero: Field = {
       },
     },
 
+    // Light theme background variants
+    {
+      type: 'collapsible',
+      label: {
+        en: 'Light Theme Backgrounds',
+        pl: 'Tła dla jasnego motywu',
+      },
+      admin: {
+        description: {
+          en: 'Optional alternative backgrounds displayed when the site is in light theme. Falls back to the default backgrounds if not set.',
+          pl: 'Opcjonalne alternatywne tła wyświetlane, gdy strona jest w jasnym motywie. Jeśli nie ustawione, używane są domyślne tła.',
+        },
+      },
+      fields: [
+        {
+          name: 'lightBackgroundImage',
+          type: 'upload',
+          relationTo: 'media',
+          label: {
+            pl: 'Tło (jasny motyw)',
+            en: 'Background Image (Light Theme)',
+          },
+        },
+        {
+          name: 'lightBackgroundVideo',
+          type: 'upload',
+          relationTo: 'media',
+          label: {
+            pl: 'Wideo w tle (jasny motyw)',
+            en: 'Background Video (Light Theme)',
+          },
+          admin: {
+            description: {
+              en: 'Optional background video for light theme. Will load after the background image to avoid impacting initial load performance.',
+              pl: 'Opcjonalne wideo w tle dla jasnego motywu. Załaduje się po obrazie w tle, aby nie wpływać na wydajność początkowego ładowania.',
+            },
+          },
+        },
+      ],
+    },
+
     // Specific for Medium Impact Hero
     {
       type: 'collapsible',

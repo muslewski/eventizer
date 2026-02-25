@@ -201,6 +201,11 @@ export interface Page {
      * Optional background video to display behind the hero content. Will load after the background image to avoid impacting initial load performance.
      */
     backgroundVideo?: (number | null) | Media;
+    lightBackgroundImage?: (number | null) | Media;
+    /**
+     * Optional background video for light theme. Will load after the background image to avoid impacting initial load performance.
+     */
+    lightBackgroundVideo?: (number | null) | Media;
     informationTitle1?: string | null;
     informationValue1?: string | null;
     informationTitle2?: string | null;
@@ -1269,6 +1274,8 @@ export interface PagesSelect<T extends boolean = true> {
         backgroundImage?: T;
         showScrollIndicator?: T;
         backgroundVideo?: T;
+        lightBackgroundImage?: T;
+        lightBackgroundVideo?: T;
         informationTitle1?: T;
         informationValue1?: T;
         informationTitle2?: T;
