@@ -51,16 +51,35 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
       style={
         {
           '--card-border-color': borderColor,
-          borderColor: borderColor,
         } as React.CSSProperties
       }
-      className="group flex flex-col items-center gap-3 p-4 sm:p-6 rounded-2xl border-2 bg-card/50 backdrop-blur-sm hover:bg-card hover:shadow-lg hover:shadow-[var(--card-border-color)]/20 transition-all duration-300 cursor-pointer"
+      className="group relative rounded-2xl p-px dark:p-0.5 cursor-pointer hover:shadow-lg hover:shadow-[var(--card-border-color)]/20 transition-all duration-300 w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.75rem)] md:w-[calc(25%-0.75rem)]"
     >
-      {/* Icon container */}
+      {/* Gradient border layer */}
       <div
-        style={{ borderColor: iconBorderColor }}
-        className="relative size-16 sm:size-20 rounded-xl bg-muted/50 p-2 sm:p-3 border-2 transition-all duration-300"
-      >
+        className="absolute inset-0 rounded-2xl transition-opacity duration-300 dark:hidden"
+        style={{
+          background: `linear-gradient(to bottom, var(--accent), transparent 50%, var(--accent))`,
+        }}
+      />
+      <div
+        className="absolute inset-0 rounded-2xl transition-opacity duration-300 hidden dark:block"
+        style={{
+          background: `linear-gradient(to bottom, ${borderColor}, transparent 50%, ${borderColor})`,
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative flex flex-col items-center gap-3 p-4 sm:p-6 rounded-2xl bg-background/95 dark:bg-card/50 backdrop-blur-sm group-hover:bg-white dark:group-hover:bg-card transition-all duration-300 h-full">
+        {/* Icon container */}
+        <div className="relative rounded-xl p-[2px] transition-all duration-300">
+          <div
+            className="absolute inset-0 rounded-xl"
+            style={{
+              background: `linear-gradient(to bottom, ${iconBorderColor}, transparent 40%, transparent 60%, ${iconBorderColor})`,
+            }}
+          />
+          <div className="relative size-16 sm:size-20 rounded-xl bg-white dark:bg-muted/50 p-2 sm:p-3">
         {iconUrl ? (
           <>
             {!isImageLoaded && (
@@ -83,7 +102,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
             </span>
           </div>
         )}
-      </div>
+          </div>
+        </div>
 
       {/* Category name */}
       <span className="text-sm sm:text-base font-medium text-center line-clamp-2 transition-colors duration-300">
@@ -96,6 +116,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
           {category.subcategory_level_1.length} podkategorii
         </span>
       )}
+      </div>
     </button>
   )
 }

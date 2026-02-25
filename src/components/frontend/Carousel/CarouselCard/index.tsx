@@ -64,11 +64,11 @@ export default function CarouselCard({ slide, isActive, onClick }: CarouselCardP
         />
 
         {/* Gradient overlays */}
-        <div className="absolute inset-0 z-0 bg-linear-to-t dark:from-background/80 via-background/20 to-transparent" />
+        <div className="absolute inset-0 z-0 bg-linear-to-t dark:from-background/80 dark:via-background/20 to-transparent" />
         {/* <div className="absolute inset-0 z-0 bg-linear-to-br from-transparent via-transparent to-background/40" /> */}
         {/* If slide label then also add linear-to-br from black to transparent */}
         {slide.label && (
-          <div className="absolute inset-0 z-0 bg-linear-to-b dark:from-black/75 from-white/40 via-transparent to-transparent" />
+          <div className="absolute inset-0 z-0 bg-linear-to-br from-black/75 via-transparent to-transparent" />
         )}
       </div>
 
@@ -81,12 +81,12 @@ export default function CarouselCard({ slide, isActive, onClick }: CarouselCardP
               onClick={() => window.scrollTo(0, 0)}
               prefetch={true}
               // mix-blend-overlay
-              className="font-bebas text-2xl sm:text-3xl lg:text-4xl xl:text-5xl hover:scale-105 transition-transform duration-300"
+              className="font-bebas text-white text-2xl sm:text-3xl lg:text-4xl xl:text-5xl hover:scale-105 transition-transform duration-300"
             >
               {slide.label}
             </Link>
           ) : (
-            <span className="font-bebas text-2xl sm:text-3xl lg:text-4xl xl:text-5xl">
+            <span className="font-bebas text-white text-2xl sm:text-3xl lg:text-4xl xl:text-5xl">
               {slide.label}
             </span>
           ))}

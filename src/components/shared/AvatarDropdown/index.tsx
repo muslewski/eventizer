@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { ProfilePicture, User } from '@/payload-types'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import {
   LayoutDashboard,
@@ -42,7 +43,7 @@ export interface AvatarDropdownProps {
   /** Custom logout handler - if not provided, renders a link to /app/sign-out */
   onLogout?: () => void
   /** Optional label displayed next to the avatar (e.g. role name on mobile) */
-  label?: string
+  label?: ReactNode
   /** Hide the outline border around the avatar button */
   noBorder?: boolean
 }
@@ -107,7 +108,7 @@ export function AvatarDropdown({
             <AvatarFallback className="bg-base-900/40">{getInitials(user)}</AvatarFallback>
           </Avatar>
           {label && (
-            <span className="text-3xl sm:text-4xl font-bebas tracking-wide text-foreground/40">{label}</span>
+            <span className="leading-none">{label}</span>
           )}
         </Button>
       </DropdownMenuTrigger>

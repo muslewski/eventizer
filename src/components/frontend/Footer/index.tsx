@@ -283,7 +283,7 @@ export default function Footer() {
             transition={{ type: 'spring', stiffness: 400 }}
             className="h-12 *:mix-blend-difference"
           >
-            <HeaderLogo />
+            <HeaderLogo variant="footer" />
           </motion.div>
           <motion.p
             initial={{ opacity: 0 }}

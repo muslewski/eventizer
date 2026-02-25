@@ -1,9 +1,17 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { cn } from '@/lib/utils'
 
 import Logo from '@/assets/eventizer-icon-1.png'
 
-export default function HeaderLogo() {
+interface HeaderLogoProps {
+  variant?: 'header' | 'sticky' | 'footer'
+}
+
+export default function HeaderLogo({ variant = 'header' }: HeaderLogoProps) {
+  const isSticky = variant === 'sticky'
+  const isFooter = variant === 'footer'
+
   return (
     <Link
       href="/"
@@ -17,7 +25,16 @@ export default function HeaderLogo() {
           className="mix-blend-normal! object-contain h-full w-auto drop-shadow-lg transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(250,189,35,0.5)]"
         />
       </div>
-      <h3 className="text-3xl font-bebas tracking-wide text-white/10 text-shadow-sm text-shadow-white/20 transition-all duration-300 group-hover:from-accent/10 group-hover:via-accent/60 group-hover:to-accent">
+      <h3
+        className={cn(
+          'text-3xl font-bebas tracking-wide text-shadow-sm transition-all duration-300 group-hover:from-accent/10 group-hover:via-accent/60 group-hover:to-accent',
+          isFooter
+            ? 'text-accent/60 dark:text-white/10 dark:text-shadow-white/20'
+            : isSticky
+              ? 'text-base-800/75 dark:text-white/10 text-shadow-base-400/20 dark:text-shadow-white/20'
+              : 'text-white/10 text-shadow-white/20',
+        )}
+      >
         Eventizer
       </h3>
     </Link>

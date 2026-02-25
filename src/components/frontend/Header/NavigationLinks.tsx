@@ -38,10 +38,20 @@ export default function NavigationLinks({
   categories,
 }: NavigationLinksProps) {
   const isHeader = variant === 'header'
+  const isSticky = variant === 'sticky'
+
+  // Sticky variant: dark text on light, white on dark; header variant: always white
+  const linkColor = isSticky
+    ? 'text-base-700 dark:text-white/70 after:from-base-700 after:to-base-500 dark:after:from-white dark:after:to-white/50'
+    : 'text-white/70 after:from-white after:to-white/50'
+
+  const triggerHoverColor = isSticky
+    ? 'hover:text-base-700 focus:text-base-700 data-[state=open]:text-base-700 dark:hover:text-white/70 dark:focus:text-white/70 dark:data-[state=open]:text-white/70'
+    : 'hover:text-white/70 focus:text-white/70 data-[state=open]:text-white/70'
 
   return (
     <NavigationMenu viewport={false} className="max-w-none">
-      <NavigationMenuList className={cn(isHeader ? 'gap-10' : 'gap-6')}>
+      <NavigationMenuList className={cn(isHeader ? 'gap-6 lg:gap-10' : 'gap-6')}>
         {navLinks.map((link, index) => {
           const hasDropdown = link.href === '/ogloszenia'
 
@@ -55,12 +65,13 @@ export default function NavigationLinks({
                       variant="link"
                       asChild
                       className={cn(
-                        'text-white/70 after:from-white after:to-white/50 h-9 px-0 py-0',
+                        linkColor,
+                        'h-9 px-0 py-0',
                         normalizedPathname === link.href && 'after:scale-x-100',
                       )}
                     >
-                      <Link href={link.href} prefetch className="">
-                        <NavigationMenuTrigger className="bg-transparent! hover:bg-transparent! focus:bg-transparent! data-[state=open]:bg-transparent! h-auto! rounded-none! h-9 px-4! py-2! shadow-none! focus-visible:ring-0! focus-visible:outline-none! cursor-pointer!  hover:text-white/70 focus:text-white/70 data-[state=open]:text-white/70">
+                      <Link href={link.href} prefetch >
+                        <NavigationMenuTrigger className={cn("bg-transparent! hover:bg-transparent! focus:bg-transparent! data-[state=open]:bg-transparent! h-auto! rounded-none! h-9 px-4! py-2! shadow-none! focus-visible:ring-0! focus-visible:outline-none! cursor-pointer!", triggerHoverColor, isSticky ? "" : "text-sm xl:text-[15px]!")}>
                           {link.label}
                         </NavigationMenuTrigger>
                       </Link>
@@ -73,8 +84,9 @@ export default function NavigationLinks({
                   <Button
                     variant="link"
                     asChild
+                    size={isSticky ? 'default' : 'base'}
                     className={cn(
-                      'text-white/70 after:from-white after:to-white/50',
+                      linkColor,
                       normalizedPathname === link.href && 'after:scale-x-100',
                     )}
                   >

@@ -48,7 +48,7 @@ export default function StickyHeader({ categories }: StickyHeaderProps) {
       className={cn(
         'fixed z-50 top-4 left-1/2 -translate-x-1/2',
         'h-14 w-[min(96vw,75rem)] rounded-full',
-        'border border-white/15 bg-base-900/90 dark:bg-base-900/40 backdrop-blur-xl shadow-lg shadow-black/20',
+        'border border-base-300/50 dark:border-white/15 bg-white/60 dark:bg-base-900/40 backdrop-blur-lg shadow-lg shadow-black/10 dark:shadow-black/20',
         'flex items-center justify-between px-5 gap-6',
         !pastThreshold && 'pointer-events-none',
       )}
@@ -61,7 +61,7 @@ export default function StickyHeader({ categories }: StickyHeaderProps) {
       transition={{ duration: 0.5, ease: 'easeInOut' }}
     >
       {/* Logo – compact */}
-      <HeaderLogo />
+      <HeaderLogo variant="sticky" />
 
       {/* Nav links – desktop only */}
       <nav className="hidden md:flex items-center gap-6">
@@ -75,14 +75,14 @@ export default function StickyHeader({ categories }: StickyHeaderProps) {
       {/* Settings + CTA */}
       <div className="flex items-center gap-4">
         <div className="hidden md:flex items-center gap-3">
-          <ModeToggle variant="ghost" className="text-white" />
-          <LanguageSwitcher variant="link" className="text-white" />
-          <ReduceMotionToggle variant="ghost" className="text-white" />
+          <ModeToggle variant="ghost" className="text-base-700 dark:text-white" />
+          <LanguageSwitcher variant="link" className="text-base-700 dark:text-white" />
+          <ReduceMotionToggle variant="ghost" className="text-base-700 dark:text-white" />
         </div>
 
         {/* Desktop: avatar or sign-in */}
         <div className="hidden lg:block">
-          <HeaderCTA />
+          <HeaderCTA variant="sticky" />
         </div>
 
         {/* Mobile/Tablet: hamburger */}
@@ -90,7 +90,7 @@ export default function StickyHeader({ categories }: StickyHeaderProps) {
           variant="ghost"
           size="icon"
           onClick={toggleMobileMenu}
-          className="lg:hidden text-white/80 hover:text-white"
+          className="lg:hidden text-base-600 hover:text-base-900 dark:text-white/80 dark:hover:text-white"
           aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
         >
           <AnimatedMenuIcon isOpen={isMobileMenuOpen} />

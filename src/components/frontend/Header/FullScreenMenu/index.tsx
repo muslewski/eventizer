@@ -138,7 +138,15 @@ export default function FullScreenMenu({ normalizedPathname }: { normalizedPathn
               className="flex flex-col items-center gap-3 w-full max-w-xs"
             >
               {user ? (
-                <HeaderAvatar label={getRolePanelLabel(user.role)} noBorder />
+                <HeaderAvatar
+                  variant="mobile"
+                  label={
+                    <span className="text-3xl sm:text-4xl font-bebas tracking-wide text-foreground/40">
+                      {getRolePanelLabel(user.role)}
+                    </span>
+                  }
+                  noBorder
+                />
               ) : (
                 <>
                   <Button

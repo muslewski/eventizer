@@ -82,7 +82,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 px-4 sm:px-8 max-w-6xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-4 px-4 sm:px-8 max-w-6xl mx-auto">
           {categories.map((category, index) => (
             <CategoryCard
               key={category.id}

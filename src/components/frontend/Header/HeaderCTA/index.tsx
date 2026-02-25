@@ -15,7 +15,11 @@ const variants = {
 
 const transition = { duration: 0.25, ease: 'easeInOut' as const }
 
-export default function HeaderCTA() {
+interface HeaderCTAProps {
+  variant?: 'header' | 'sticky'
+}
+
+export default function HeaderCTA({ variant = 'header' }: HeaderCTAProps) {
   const { user, status } = useRootAuth()
 
   return (
@@ -29,7 +33,7 @@ export default function HeaderCTA() {
             animate="animate"
             exit="exit"
             transition={transition}
-            className="h-8 w-8 rounded-full bg-white/10 animate-pulse"
+            className="h-8 w-8 rounded-full bg-base-300/50 dark:bg-white/10 animate-pulse"
           />
         ) : user ? (
           <motion.div
@@ -53,13 +57,13 @@ export default function HeaderCTA() {
             transition={transition}
             className="flex items-center gap-2"
           >
-            <Button variant="golden" asChild>
+            <Button variant="golden" asChild size={variant === 'sticky' ? "default" : "base"}>
               <Link href="/auth/sign-in/service-provider" prefetch>
                 Panel usługodawcy
               </Link>
             </Button>
 
-            <Button variant="blend" asChild>
+            <Button size={variant === 'sticky' ? "default" : "base"} variant={variant === 'sticky' ? 'default' : 'blend'} asChild>
               <Link href="/auth/sign-in" prefetch>
                 Zaloguj się
               </Link>
