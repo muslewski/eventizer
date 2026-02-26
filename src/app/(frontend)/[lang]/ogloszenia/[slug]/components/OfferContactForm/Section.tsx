@@ -13,7 +13,7 @@ export const OfferContactFormSection: React.FC<OfferContactFormSectionProps> = (
   const isAuthenticated = !!user
 
   return (
-    <section className="mx-auto w-full space-y-6 sm:space-y-8">
+    <section className="mx-auto w-full max-w-3xl space-y-6 sm:space-y-8">
       {/* Decorative accent divider */}
       <div className="flex items-center justify-center gap-3" aria-hidden="true">
         <div className="h-1.5 w-1.5 rounded-full bg-primary/40" />

@@ -1,4 +1,5 @@
 import { EmailTemplate } from '@daveyplate/better-auth-ui/server'
+import type { WebsiteFormType } from '@/actions/submitWebsiteContactForm'
 
 interface EmailVerificationTemplateProps {
   userName: string
@@ -164,5 +165,132 @@ export function EmailPasswordResetTemplate({ userName, url }: EmailVerificationT
     imageUrl: 'http://eventizer.pl/api/media/file/eventizer-icon-1.png',
     baseUrl: 'https://eventizer.pl',
     url,
+  })
+}
+
+// ─── Website contact form templates ───────────────────────────────────────────────────────────────────────────────
+
+export const websiteFormTypeLabels: Record<WebsiteFormType, string> = {
+  organization: 'Organizacja eventu',
+  question: 'Pytanie ogólne',
+  'service-problem': 'Problem z serwisem',
+}
+
+interface WebsiteFormClientConfirmationProps {
+  senderName: string
+  type: WebsiteFormType
+}
+
+export function EmailWebsiteFormClientConfirmationTemplate({
+  senderName,
+  type,
+}: WebsiteFormClientConfirmationProps) {
+  return EmailTemplate({
+    action: 'Przejdź do Eventizer',
+    content: (
+      <>
+        <p style={{ fontSize: '16px', marginBottom: '8px' }}>{`Cześć ${senderName}! 👋`}</p>
+        <p style={{ fontSize: '15px', lineHeight: '1.6', marginBottom: '8px' }}>
+          Twoje zgłoszenie (<strong>{websiteFormTypeLabels[type]}</strong>) zostało przez nas
+          odebrane. Dziękujemy za kontakt!
+        </p>
+        <p style={{ fontSize: '15px', lineHeight: '1.6' }}>
+          Wrócimy do Ciebie najszybciej jak to możliwe — zazwyczaj w ciągu 1-2 dni roboczych.
+        </p>
+      </>
+    ),
+    heading: 'Formularz został przesłany ✅',
+    siteName: 'Eventizer',
+    imageUrl: 'http://eventizer.pl/api/media/file/eventizer-icon-1.png',
+    baseUrl: 'https://eventizer.pl',
+    url: 'https://eventizer.pl',
+  })
+}
+
+interface WebsiteFormInternalNotificationProps {
+  senderName: string
+  senderEmail: string
+  type: WebsiteFormType
+  message: string
+  eventDate?: string
+  eventLocation?: string
+  eventGuestCount?: string
+}
+
+export function EmailWebsiteFormInternalNotificationTemplate({
+  senderName,
+  senderEmail,
+  type,
+  message,
+  eventDate,
+  eventLocation,
+  eventGuestCount,
+}: WebsiteFormInternalNotificationProps) {
+  const isOrganization = type === 'organization'
+  return EmailTemplate({
+    action: 'Odpowiedz klientowi',
+    content: (
+      <>
+        <p style={{ fontSize: '15px', lineHeight: '1.6', marginBottom: '12px' }}>
+          Przesłano nowy formularz kontaktowy ze strony <strong>eventizer.pl</strong>.
+        </p>
+        <table
+          style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            marginBottom: '16px',
+            fontSize: '14px',
+          }}
+        >
+          <tbody>
+            <tr>
+              <td style={{ padding: '8px', fontWeight: 600, width: '35%' }}>Typ zapytania:</td>
+              <td style={{ padding: '8px' }}>{websiteFormTypeLabels[type]}</td>
+            </tr>
+            <tr style={{ backgroundColor: '#f9f9f9' }}>
+              <td style={{ padding: '8px', fontWeight: 600 }}>Nadawca:</td>
+              <td style={{ padding: '8px' }}>{senderName}</td>
+            </tr>
+            <tr>
+              <td style={{ padding: '8px', fontWeight: 600 }}>Email:</td>
+              <td style={{ padding: '8px' }}>
+                <a href={`mailto:${senderEmail}`}>{senderEmail}</a>
+              </td>
+            </tr>
+            {isOrganization && eventDate && (
+              <tr style={{ backgroundColor: '#f9f9f9' }}>
+                <td style={{ padding: '8px', fontWeight: 600 }}>Termin eventu:</td>
+                <td style={{ padding: '8px' }}>{eventDate}</td>
+              </tr>
+            )}
+            {isOrganization && eventLocation && (
+              <tr>
+                <td style={{ padding: '8px', fontWeight: 600 }}>Lokalizacja:</td>
+                <td style={{ padding: '8px' }}>{eventLocation}</td>
+              </tr>
+            )}
+            {isOrganization && eventGuestCount && (
+              <tr style={{ backgroundColor: '#f9f9f9' }}>
+                <td style={{ padding: '8px', fontWeight: 600 }}>Liczba gości:</td>
+                <td style={{ padding: '8px' }}>{eventGuestCount}</td>
+              </tr>
+            )}
+            <tr style={{ backgroundColor: isOrganization ? undefined : '#f9f9f9' }}>
+              <td style={{ padding: '8px', fontWeight: 600, verticalAlign: 'top' }}>Wiadomość:</td>
+              <td style={{ padding: '8px', whiteSpace: 'pre-wrap' }}>{message}</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style={{ fontSize: '13px', color: '#888' }}>
+          Odpowiedz bezpośrednio na:{' '}
+          <a href={`mailto:${senderEmail}`}>{senderEmail}</a>
+        </p>
+      </>
+    ),
+    heading: `Nowe zgłoszenie: ${websiteFormTypeLabels[type]} 📩`,
+    siteName: 'Eventizer',
+    imageUrl: 'http://eventizer.pl/api/media/file/eventizer-icon-1.png',
+    baseUrl: 'https://eventizer.pl',
+    url: `mailto:${senderEmail}`,
   })
 }

@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ShoppingCart, MessageCircleQuestion, AlertTriangle, LockKeyhole, Send, Loader2 } from 'lucide-react'
+import { ShoppingCart, MessageCircleQuestion, AlertTriangle, LockKeyhole, Send, Loader2, CheckCircle2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -119,6 +120,12 @@ export const OfferContactForm: React.FC<OfferContactFormProps> = ({
   }
 
   return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+    >
     <Card className="bg-transparent border-border/50 relative overflow-hidden">
       <CardHeader className="border-b">
         <CardTitle className="flex items-center font-normal gap-4 sm:gap-6 text-xl font-montserrat">
@@ -129,10 +136,18 @@ export const OfferContactForm: React.FC<OfferContactFormProps> = ({
 
       <div className="relative">
         <CardContent className={`pt-6 ${!isAuthenticated ? 'select-none blur-sm pointer-events-none' : ''}`} aria-hidden={!isAuthenticated}>
+          <AnimatePresence mode="wait">
           {submitted ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
-              <div className="size-14 rounded-full bg-primary/10 flex items-center justify-center">
-                <Send className="size-6 text-primary" />
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className="flex flex-col items-center justify-center gap-3 py-10 text-center"
+            >
+              <div className="size-14 rounded-full bg-emerald-500/15 flex items-center justify-center ring-1 ring-emerald-500/30">
+                <CheckCircle2 className="size-7 text-emerald-500" />
               </div>
               <p className="text-lg font-medium">Wiadomość wysłana!</p>
               <p className="text-sm text-muted-foreground max-w-sm">
@@ -141,8 +156,15 @@ export const OfferContactForm: React.FC<OfferContactFormProps> = ({
               <Button variant="outline" size="sm" className="mt-2" onClick={() => { setSubmitted(false); form.reset() }}>
                 Wyślij kolejną wiadomość
               </Button>
-            </div>
+            </motion.div>
           ) : (
+            <motion.div
+              key="form"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 {/* Type selector */}
@@ -164,9 +186,9 @@ export const OfferContactForm: React.FC<OfferContactFormProps> = ({
                                   type="button"
                                   onClick={() => field.onChange(value)}
                                   className={cn(
-                                    'flex flex-col items-center justify-center gap-2 rounded-lg border px-2 py-3 text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                                    'flex flex-col items-center justify-center gap-2 rounded-lg border px-2 py-3 text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:scale-[1.03] active:scale-[0.97]',
                                     isActive
-                                      ? 'border-primary bg-primary/10 text-primary shadow-sm'
+                                      ? 'border-primary bg-primary/10 text-primary shadow-sm shadow-primary/20'
                                       : 'border-border/60 bg-background/40 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-foreground',
                                   )}
                                 >
@@ -259,7 +281,9 @@ export const OfferContactForm: React.FC<OfferContactFormProps> = ({
                 </Button>
               </form>
             </Form>
+            </motion.div>
           )}
+          </AnimatePresence>
         </CardContent>
 
         {/* Auth overlay */}
@@ -276,5 +300,6 @@ export const OfferContactForm: React.FC<OfferContactFormProps> = ({
         )}
       </div>
     </Card>
+    </motion.div>
   )
 }

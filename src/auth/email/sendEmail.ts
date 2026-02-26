@@ -3,8 +3,11 @@ import {
   EmailVerificationTemplate,
   EmailFormConfirmationToClientTemplate,
   EmailFormNotificationToProviderTemplate,
+  EmailWebsiteFormClientConfirmationTemplate,
+  EmailWebsiteFormInternalNotificationTemplate,
   type FormType,
 } from '@/auth/email/email-template'
+import type { WebsiteFormType } from '@/actions/submitWebsiteContactForm'
 import React from 'react'
 import { Resend } from 'resend'
 
@@ -134,5 +137,47 @@ export function sendFormNotificationToProvider({
       message,
     }),
     text: `Cześć ${providerName},\n\nOtrzymałeś nowe zapytanie od klienta ${senderName} (${senderEmail}) dotyczące oferty „${offerTitle}".\n\nWiadomość:\n${message}\n\nEventizer`,
+  })
+}
+// ─── Website contact form ───────────────────────────────────────────────────────────────────────────────
+
+interface WebsiteFormConfirmationParams {
+  to: string
+  senderName: string
+  type: WebsiteFormType
+}
+
+export function sendWebsiteFormConfirmationToClient({
+  to,
+  senderName,
+  type,
+}: WebsiteFormConfirmationParams): void {
+  sendEmail({
+    to,
+    subject: 'Twoje zgłoszenie zostało przesłane ✅',
+    react: EmailWebsiteFormClientConfirmationTemplate({ senderName, type }),
+    text: `Cześć ${senderName},\n\nTwoje zgłoszenie zostało przez nas odebrane. Wrócimy do Ciebie najszybciej jak to możliwe.\n\nEventizer`,
+  })
+}
+
+interface WebsiteFormInternalParams {
+  senderName: string
+  senderEmail: string
+  type: WebsiteFormType
+  message: string
+  eventDate?: string
+  eventLocation?: string
+  eventGuestCount?: string
+}
+
+export function sendWebsiteFormInternalNotification(params: WebsiteFormInternalParams): void {
+  // TODO: change to eventizer inbox once we have our own email address
+  const INTERNAL_INBOX = 'studio@sightstorm.pl'
+
+  sendEmail({
+    to: INTERNAL_INBOX,
+    subject: `[Eventizer] Nowe zgłoszenie: ${params.senderName}`,
+    react: EmailWebsiteFormInternalNotificationTemplate(params),
+    text: `Nowe zgłoszenie ze strony eventizer.pl\n\nTyp: ${params.type}\nNadawca: ${params.senderName} (${params.senderEmail})\n\nWiadomość:\n${params.message}`,
   })
 }

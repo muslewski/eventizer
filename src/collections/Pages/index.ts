@@ -30,6 +30,7 @@ import { SocialMedia } from '@/blocks/SocialMedia/config'
 import { ServiceCategoriesBlock } from '@/blocks/ServiceCategories/config'
 import { OffersMap } from '@/blocks/OffersMap/config'
 import { Video } from '@/blocks/Video/config'
+import { ContactFormBlock } from '@/blocks/ContactForm/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -97,6 +98,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 ServiceCategoriesBlock,
                 OffersMap,
                 Video,
+                ContactFormBlock,
               ],
               required: true,
               admin: {

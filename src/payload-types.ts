@@ -225,6 +225,7 @@ export interface Page {
     | ServiceCategoriesBlock
     | OffersMapBlock
     | VideoBlock
+    | ContactFormBlock
   )[];
   meta?: {
     title?: string | null;
@@ -924,6 +925,19 @@ export interface VideoBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactFormBlock".
+ */
+export interface ContactFormBlock {
+  heading: string;
+  description?: string | null;
+  organizationLabel?: string | null;
+  organizationDescription?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contactForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-sessions".
  */
 export interface UserSession {
@@ -1320,6 +1334,7 @@ export interface PagesSelect<T extends boolean = true> {
         serviceCategories?: T | ServiceCategoriesBlockSelect<T>;
         offersMap?: T | OffersMapBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
+        contactForm?: T | ContactFormBlockSelect<T>;
       };
   meta?:
     | T
@@ -1556,6 +1571,18 @@ export interface VideoBlockSelect<T extends boolean = true> {
   heading?: T;
   description?: T;
   video?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactFormBlock_select".
+ */
+export interface ContactFormBlockSelect<T extends boolean = true> {
+  heading?: T;
+  description?: T;
+  organizationLabel?: T;
+  organizationDescription?: T;
   id?: T;
   blockName?: T;
 }
