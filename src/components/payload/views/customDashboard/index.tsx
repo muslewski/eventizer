@@ -6,13 +6,17 @@ import { DashboardGroup } from './DashboardGroup'
 import { SubscriptionExpiredBanner } from './SubscriptionExpiredBanner'
 import { CheckoutSuccessHandler } from './CheckoutSuccessHandler'
 import { CreateOfferCTA } from './CreateOfferCTA'
+import { UserOfferCard } from './UserOfferCard'
+import { OfferLimitToast } from './OfferLimitToast'
 import type { I18nClient } from '@payloadcms/translations'
 import { adminGroups } from '@/lib/adminGroups'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
 import { isReturningCustomer } from '@/actions/stripe/isReturningCustomer'
 import { getActiveSubscription } from '@/actions/stripe/getActiveSubscription'
 import { getStripeCustomerId } from '@/actions/stripe/getStripeCustomerId'
-import type { User } from '@/payload-types'
+import { resolveCategoryIconUrl } from '@/actions/resolveCategoryIconUrl'
+import { getRolesAtOrAbove } from '@/access/utilities'
+import type { User, Offer } from '@/payload-types'
 
 type DashboardProps = {
   navGroups: ReturnType<typeof groupNavItems>
@@ -104,6 +108,25 @@ const Dashboard: FC<DashboardProps> = async (props) => {
     }
   }
 
+  // Fetch user's offer (if service-provider with active subscription)
+  let userOffer: Offer | null = null
+  let categoryIconUrl: string | null = null
+
+  if (isServiceProvider && !showExpiredBanner && typedUser) {
+    const offerResult = await payload.find({
+      collection: 'offers',
+      where: { user: { equals: typedUser.id } },
+      sort: 'createdAt',
+      limit: 1,
+      depth: 1,
+    })
+    userOffer = offerResult.docs[0] ?? null
+
+    if (userOffer?.categorySlug) {
+      categoryIconUrl = await resolveCategoryIconUrl(userOffer.categorySlug)
+    }
+  }
+
   const featuredGroups = navGroups.filter(
     ({ label }) => label === adminGroups.featured.en || label === adminGroups.featured.pl,
   )
@@ -115,6 +138,9 @@ const Dashboard: FC<DashboardProps> = async (props) => {
     <Fragment>
       <DashboardBanner />
       <div className="mt-10 mx-4 md:mx-10 lg:mx-16 mb-16 flex flex-col gap-8">
+        {/* Toast for offer limit redirect */}
+        <OfferLimitToast />
+
         {/* Post-checkout success handler — shows success message and auto-refreshes */}
         {isCheckoutSuccess && <CheckoutSuccessHandler />}
 
@@ -123,42 +149,56 @@ const Dashboard: FC<DashboardProps> = async (props) => {
           <SubscriptionExpiredBanner serviceCategory={typedUser?.serviceCategory} />
         )}
 
-        {/* Quick action: create new offer (service-providers with active subscription only) */}
-        {isServiceProvider && !showExpiredBanner && <CreateOfferCTA />}
-
-        {/* Featured Groups */}
-        {featuredGroups.map(({ label, entities }, index) => (
-          <DashboardGroup
-            key={`featured-${index}`}
-            label={label}
-            entities={entities}
-            adminRoute={adminRoute}
-            i18n={i18n as I18nClient}
-            payload={payload}
-            user={user}
-            isFeatured
-          />
-        ))}
-
-        {/* Separator */}
-        {featuredGroups.length > 0 && regularGroups.length > 0 && (
-          <div className="h-px w-full bg-(--theme-border-color)" />
+        {/* Offer card or create CTA for active service-providers */}
+        {isServiceProvider && !showExpiredBanner && (
+          userOffer ? (
+            <UserOfferCard
+              offer={userOffer}
+              categoryIconUrl={categoryIconUrl}
+              adminRoute={adminRoute}
+            />
+          ) : (
+            <CreateOfferCTA />
+          )
         )}
 
-        {/* Regular Groups */}
-        {regularGroups.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {regularGroups.map(({ label, entities }, entityIndex) => (
-              <DashboardGroup
-                key={entityIndex}
-                label={label}
-                entities={entities}
-                adminRoute={adminRoute}
-                i18n={i18n as I18nClient}
-                payload={payload}
-              />
-            ))}
-          </div>
+        {/* Featured Groups — only visible to moderators and admins */}
+        {typedUser && getRolesAtOrAbove('moderator').includes(typedUser.role) &&
+          featuredGroups.map(({ label, entities }, index) => (
+            <DashboardGroup
+              key={`featured-${index}`}
+              label={label}
+              entities={entities}
+              adminRoute={adminRoute}
+              i18n={i18n as I18nClient}
+              payload={payload}
+              user={user}
+              isFeatured
+            />
+          ))}
+
+        {/* Separator + Regular Groups — only visible to moderators and admins */}
+        {typedUser && getRolesAtOrAbove('moderator').includes(typedUser.role) && (
+          <>
+            {featuredGroups.length > 0 && regularGroups.length > 0 && (
+              <div className="h-px w-full bg-(--theme-border-color)" />
+            )}
+
+            {regularGroups.length > 0 && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {regularGroups.map(({ label, entities }, entityIndex) => (
+                  <DashboardGroup
+                    key={entityIndex}
+                    label={label}
+                    entities={entities}
+                    adminRoute={adminRoute}
+                    i18n={i18n as I18nClient}
+                    payload={payload}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </Fragment>

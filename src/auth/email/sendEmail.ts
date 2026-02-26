@@ -4,6 +4,9 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+const MAX_RETRIES = 3
+const RETRY_DELAY_MS = 1500
+
 interface SendEmailParams {
   to: string
   subject: string
@@ -12,25 +15,39 @@ interface SendEmailParams {
   html?: string
 }
 
+async function sendEmailWithRetry(
+  params: Omit<SendEmailParams, 'to'> & { from: string; to: string },
+  attempt = 1,
+): Promise<void> {
+  try {
+    const { error } = await resend.emails.send(params)
+    if (error) {
+      throw new Error(error.message)
+    }
+  } catch (error) {
+    if (attempt < MAX_RETRIES) {
+      console.warn(
+        `[sendEmail] Attempt ${attempt} failed for ${params.to}. Retrying in ${RETRY_DELAY_MS}ms…`,
+        error,
+      )
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS * attempt))
+      return sendEmailWithRetry(params, attempt + 1)
+    }
+    console.error(
+      `[sendEmail] All ${MAX_RETRIES} attempts failed for ${params.to}:`,
+      error,
+    )
+  }
+}
+
 export function sendEmail({ to, subject, text, html, react }: SendEmailParams): void {
   if (!process.env.EMAIL_FROM_ADDRESS) {
     throw new Error('EMAIL_FROM_ADDRESS is not set in environment variables.')
   }
   const from = process.env.EMAIL_FROM_ADDRESS
 
-  // Fire and forget - don't await to prevent timing attacks
-  resend.emails
-    .send({
-      from,
-      to,
-      subject,
-      text,
-      html,
-      react,
-    })
-    .catch((error) => {
-      console.error('Failed to send email:', error)
-    })
+  // Fire and forget (preserves timing-safe auth responses) but with internal retry
+  void sendEmailWithRetry({ from, to, subject, text, html, react })
 }
 
 export function sendVerificationEmail(

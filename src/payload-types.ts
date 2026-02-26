@@ -474,7 +474,7 @@ export interface FeaturedOffersBlock {
   blockType: 'featuredOffers';
 }
 /**
- * Manage and create service offers available to your clients. (limit 10 offers)
+ * Manage and create service offers available to your clients. (limit 1 offers)
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "offers".

@@ -2,7 +2,7 @@ import { isClientRoleEqualOrHigher } from '@/access/utilities'
 import { redirect } from 'next/navigation'
 import type { CollectionBeforeOperationHook } from 'payload'
 
-export const MAX_OFFERS_PER_USER = 10
+export const MAX_OFFERS_PER_USER = 1
 
 export const enforceMaxOffers: CollectionBeforeOperationHook = async ({ operation, req }) => {
   // Enforce max offers per user
@@ -14,11 +14,11 @@ export const enforceMaxOffers: CollectionBeforeOperationHook = async ({ operatio
           equals: req.user.id,
         },
       },
-      limit: 0, // we only need the count
+      limit: 1,
     })
 
     if (existingOffers.totalDocs >= MAX_OFFERS_PER_USER) {
-      redirect('/app/offers-limit-reached')
+      redirect('/app?limit=reached')
     }
   }
 }

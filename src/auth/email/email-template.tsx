@@ -10,15 +10,20 @@ export function EmailVerificationTemplate({ userName, url }: EmailVerificationTe
     action: 'Zweryfikuj swój email',
     content: (
       <>
-        <p>{`Witaj ${userName},`}</p>
-        <p>Kliknij przycisk poniżej, aby zweryfikować swój adres email.</p>
+        <p style={{ fontSize: '16px', marginBottom: '8px' }}>{`Cześć ${userName}! 👋`}</p>
+        <p style={{ fontSize: '15px', lineHeight: '1.6', marginBottom: '8px' }}>
+          Dziękujemy za rejestrację w <strong>Eventizer</strong> — platformie do zarządzania
+          ogłoszeniami eventowymi.
+        </p>
+        <p style={{ fontSize: '15px', lineHeight: '1.6' }}>
+          Kliknij przycisk poniżej, aby zweryfikować swój adres email i aktywować konto.
+          Link jest ważny przez <strong>24 godziny</strong>.
+        </p>
       </>
     ),
-
     heading: 'Zweryfikuj swój email',
     siteName: 'Eventizer',
-    imageUrl: 'https://drive.google.com/uc?id=1lFmeTTRsEzMt78s-HCxGbKbP4hcRXjnL', // TODO Replace to real link
-    baseUrl: 'https://localhost:3000/app',
+    baseUrl: 'https://eventizer.pl',
     url,
   })
 }
@@ -28,15 +33,21 @@ export function EmailPasswordResetTemplate({ userName, url }: EmailVerificationT
     action: 'Resetuj swoje hasło',
     content: (
       <>
-        <p>{`Witaj ${userName},`}</p>
-        <p>Kliknij przycisk poniżej, aby zresetować swoje hasło.</p>
+        <p style={{ fontSize: '16px', marginBottom: '8px' }}>{`Cześć ${userName}! 👋`}</p>
+        <p style={{ fontSize: '15px', lineHeight: '1.6', marginBottom: '8px' }}>
+          Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta w{' '}
+          <strong>Eventizer</strong>.
+        </p>
+        <p style={{ fontSize: '15px', lineHeight: '1.6' }}>
+          Kliknij przycisk poniżej, aby ustawić nowe hasło. Link jest ważny przez{' '}
+          <strong>1 godzinę</strong>. Jeśli to nie Ty wysłałeś(-aś) tę prośbę, zignoruj
+          tę wiadomość — Twoje konto pozostaje bezpieczne.
+        </p>
       </>
     ),
-
     heading: 'Resetuj swoje hasło',
     siteName: 'Eventizer',
-    imageUrl: 'https://drive.google.com/uc?id=1lFmeTTRsEzMt78s-HCxGbKbP4hcRXjnL', // TODO Replace to real link
-    baseUrl: 'https://localhost:3000/app',
+    baseUrl: 'https://eventizer.pl',
     url,
   })
 }

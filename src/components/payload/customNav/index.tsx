@@ -9,6 +9,7 @@ import { CustomLogoutButton } from './CustomLogoutButton'
 import { HomeButton } from './HomeButton'
 import { NavQuickLinks } from './NavQuickLinks'
 import type { User } from '@/payload-types'
+import { getRolesAtOrAbove } from '@/access/utilities'
 
 export const baseClass = 'nav'
 
@@ -87,8 +88,12 @@ const Nav: FC<ServerProps> = async (props) => {
           },
         })}
         <NavQuickLinks userRole={(user as User).role} userId={(user as User).id} />
-        <div className="h-px bg-border/50 mb-3" />
-        <NavClient groups={groups} />
+        {getRolesAtOrAbove('moderator').includes((user as User).role) && (
+          <>
+            <div className="h-px bg-border/50 mb-3" />
+            <NavClient groups={groups} />
+          </>
+        )}
         {RenderServerComponent({
           clientProps: {
             documentSubViewType,
