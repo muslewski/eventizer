@@ -1,4 +1,10 @@
-import { EmailPasswordResetTemplate, EmailVerificationTemplate } from '@/auth/email/email-template'
+import {
+  EmailPasswordResetTemplate,
+  EmailVerificationTemplate,
+  EmailFormConfirmationToClientTemplate,
+  EmailFormNotificationToProviderTemplate,
+  type FormType,
+} from '@/auth/email/email-template'
 import React from 'react'
 import { Resend } from 'resend'
 
@@ -73,5 +79,60 @@ export function sendResetPasswordEmail(
     subject: 'Resetuj swoje hasło',
     react: EmailPasswordResetTemplate({ userName: user.name || 'Użytkowniku', url }),
     text: `Witaj ${user.name || 'Użytkowniku'},\n\nKliknij poniższy link, aby zresetować swoje hasło:\n\n${url}\n\nEventizer`,
+  })
+}
+
+interface FormConfirmationParams {
+  to: string
+  senderName: string
+  offerTitle: string
+  type: FormType
+}
+
+export function sendFormConfirmationToClient({
+  to,
+  senderName,
+  offerTitle,
+  type,
+}: FormConfirmationParams): void {
+  sendEmail({
+    to,
+    subject: 'Twoja wiadomość została wysłana ✅',
+    react: EmailFormConfirmationToClientTemplate({ senderName, offerTitle, type }),
+    text: `Cześć ${senderName},\n\nTwoja wiadomość dotycząca oferty „${offerTitle}" została wysłana do usługodawcy.\n\nUsługodawca wkrótce się z Tobą skontaktuje.\n\nEventizer`,
+  })
+}
+
+interface FormNotificationParams {
+  to: string
+  providerName: string
+  senderName: string
+  senderEmail: string
+  offerTitle: string
+  type: FormType
+  message: string
+}
+
+export function sendFormNotificationToProvider({
+  to,
+  providerName,
+  senderName,
+  senderEmail,
+  offerTitle,
+  type,
+  message,
+}: FormNotificationParams): void {
+  sendEmail({
+    to,
+    subject: `Nowe zapytanie od klienta: ${senderName}`,
+    react: EmailFormNotificationToProviderTemplate({
+      providerName,
+      senderName,
+      senderEmail,
+      offerTitle,
+      type,
+      message,
+    }),
+    text: `Cześć ${providerName},\n\nOtrzymałeś nowe zapytanie od klienta ${senderName} (${senderEmail}) dotyczące oferty „${offerTitle}".\n\nWiadomość:\n${message}\n\nEventizer`,
   })
 }

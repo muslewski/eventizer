@@ -81,6 +81,7 @@ export interface Config {
     'offer-uploads': OfferUpload;
     'offer-video-uploads': OfferVideoUpload;
     'help-tickets': HelpTicket;
+    'submitted-forms': SubmittedForm;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-folders': FolderInterface;
@@ -108,6 +109,7 @@ export interface Config {
     'offer-uploads': OfferUploadsSelect<false> | OfferUploadsSelect<true>;
     'offer-video-uploads': OfferVideoUploadsSelect<false> | OfferVideoUploadsSelect<true>;
     'help-tickets': HelpTicketsSelect<false> | HelpTicketsSelect<true>;
+    'submitted-forms': SubmittedFormsSelect<false> | SubmittedFormsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
@@ -1028,6 +1030,25 @@ export interface HelpTicket {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "submitted-forms".
+ */
+export interface SubmittedForm {
+  id: number;
+  type: 'order' | 'question' | 'problem';
+  status: 'new' | 'read' | 'replied';
+  senderName: string;
+  senderEmail: string;
+  senderUserId?: string | null;
+  message: string;
+  offer: number | Offer;
+  offerTitle: string;
+  provider: number | User;
+  providerEmail: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1197,6 +1218,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'help-tickets';
         value: number | HelpTicket;
+      } | null)
+    | ({
+        relationTo: 'submitted-forms';
+        value: number | SubmittedForm;
       } | null)
     | ({
         relationTo: 'payload-folders';
@@ -1813,6 +1838,24 @@ export interface HelpTicketsSelect<T extends boolean = true> {
   description?: T;
   user?: T;
   isSolved?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "submitted-forms_select".
+ */
+export interface SubmittedFormsSelect<T extends boolean = true> {
+  type?: T;
+  status?: T;
+  senderName?: T;
+  senderEmail?: T;
+  senderUserId?: T;
+  message?: T;
+  offer?: T;
+  offerTitle?: T;
+  provider?: T;
+  providerEmail?: T;
   updatedAt?: T;
   createdAt?: T;
 }

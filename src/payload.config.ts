@@ -21,6 +21,7 @@ import { en } from '@payloadcms/translations/languages/en'
 import { pl } from '@payloadcms/translations/languages/pl'
 import { customTranslations } from '@/translations/custom-translations'
 import { HelpTickets } from '@/collections/HelpTickets'
+import { SubmittedForms } from '@/collections/SubmittedForms'
 import { SubscriptionPlans } from '@/collections/SubscriptionPlans'
 import { ServiceCategories } from '@/collections/ServiceCategories'
 import { StripeCustomers } from '@/collections/Customers'
@@ -142,6 +143,7 @@ export default buildConfig({
 
     // Help
     HelpTickets,
+    SubmittedForms,
   ],
   i18n: {
     fallbackLanguage: 'pl',
