@@ -87,7 +87,7 @@ export const ProfilePictures: CollectionConfig = {
     },
   ],
   upload: {
-    mimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+    mimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/heic', 'image/heif'],
     // resize images to 1000px to 1000px
     resizeOptions: {
       width: 1000,

@@ -114,7 +114,7 @@ export const OfferUploads: CollectionConfig = {
     // },
   ],
   upload: {
-    mimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+    mimeTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/heic', 'image/heif'],
     resizeOptions: {
       width: 1920,
       height: 1080,

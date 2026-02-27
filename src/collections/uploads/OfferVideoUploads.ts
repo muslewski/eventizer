@@ -34,8 +34,8 @@ export const OfferVideoUploads: CollectionConfig = {
   admin: {
     hidden: ({ user }) => !isClientRoleEqualOrHigher('moderator', user),
     description: {
-      en: 'Upload and manage videos related to offers. (max 50 MB, mp4/webm)',
-      pl: 'Przesyłaj i zarządzaj filmami związanymi z ofertami. (maks. 50 MB, mp4/webm)',
+      en: 'Upload and manage videos related to offers. (max 50 MB, mp4/webm/mov/avi/mkv)',
+      pl: 'Przesyłaj i zarządzaj filmami związanymi z ofertami. (maks. 50 MB, mp4/webm/mov/avi/mkv)',
     },
     group: adminGroups.uploads,
     defaultColumns: ['filename', 'user', 'updatedAt', 'createdAt'],
@@ -97,7 +97,15 @@ export const OfferVideoUploads: CollectionConfig = {
     },
   ],
   upload: {
-    mimeTypes: ['video/mp4', 'video/webm'],
+    mimeTypes: [
+      'video/mp4',
+      'video/webm',
+      'video/quicktime',  // .mov
+      'video/x-msvideo',  // .avi
+      'video/x-matroska', // .mkv
+      'video/mpeg',       // .mpeg / .mpg
+      'video/ogg',        // .ogv
+    ],
     // No sharp processing for videos — skip resizeOptions/formatOptions
     // File size is enforced by the global upload limit + collection validation
   },
