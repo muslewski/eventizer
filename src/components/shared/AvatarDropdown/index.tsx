@@ -33,6 +33,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
 import { isReturningCustomer } from '@/actions/stripe/isReturningCustomer'
+import { getUserFirstOfferId } from '@/actions/getUserFirstOfferId'
 
 export interface AvatarDropdownProps {
   user: User
@@ -63,6 +64,7 @@ export function AvatarDropdown({
   // Check subscription status for service-providers, and returning customer status for clients
   const [hasActiveSubscription, setHasActiveSubscription] = useState<boolean | null>(null)
   const [isReturning, setIsReturning] = useState<boolean>(false)
+  const [firstOfferId, setFirstOfferId] = useState<number | null>(null)
 
   const isClient = !isServiceProvider && !isModerator && !isAdmin
 
@@ -80,6 +82,12 @@ export function AvatarDropdown({
         })
       }
     })
+
+    if (isServiceProvider) {
+      getUserFirstOfferId(user.id).then((id) => {
+        setFirstOfferId(id)
+      })
+    }
   }, [isServiceProvider, isClient, user.id])
 
   let imageUrl: string | null = null
@@ -182,9 +190,16 @@ export function AvatarDropdown({
 
           {(isServiceProvider || isModerator || isAdmin) && (
             <DropdownMenuItem asChild>
-              <Link href="/app/collections/offers" className="cursor-pointer">
+              <Link
+                href={
+                  isServiceProvider && firstOfferId
+                    ? `/app/collections/offers/${firstOfferId}`
+                    : '/app/collections/offers'
+                }
+                className="cursor-pointer"
+              >
                 <FileText className="mr-2 h-4 w-4" />
-                Zarządzaj ofertami
+                {isServiceProvider ? 'Zarządzaj ofertą' : 'Zarządzaj ofertami'}
               </Link>
             </DropdownMenuItem>
           )}

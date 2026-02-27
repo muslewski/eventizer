@@ -32,21 +32,44 @@ type QuickLink = {
 
 export function NavQuickLinks({ userRole, userId }: NavQuickLinksProps) {
   const pathname = usePathname()
-  const [hasActiveSubscription, setHasActiveSubscription] = useState<boolean | null>(null)
-  const [firstOfferId, setFirstOfferId] = useState<number | null>(null)
 
   const isServiceProvider = userRole === 'service-provider'
+
+  const subKey = `nav-sub-${userId}`
+  const offerKey = `nav-offer-${userId}`
+
+  const [hasActiveSubscription, setHasActiveSubscription] = useState<boolean | null>(() => {
+    if (!isServiceProvider) return null
+    try {
+      const v = sessionStorage.getItem(subKey)
+      return v === null ? null : v === 'true'
+    } catch {
+      return null
+    }
+  })
+  const [firstOfferId, setFirstOfferId] = useState<number | null>(() => {
+    if (!isServiceProvider) return null
+    try {
+      const v = sessionStorage.getItem(offerKey)
+      if (v === null || v === '' || v === 'null') return null
+      return Number(v)
+    } catch {
+      return null
+    }
+  })
 
   useEffect(() => {
     if (isServiceProvider) {
       getCurrentSubscriptionDetails(userId).then((details) => {
         setHasActiveSubscription(details.hasSubscription)
+        try { sessionStorage.setItem(subKey, String(details.hasSubscription)) } catch {}
       })
       getUserFirstOfferId(userId).then((id) => {
         setFirstOfferId(id)
+        try { sessionStorage.setItem(offerKey, String(id ?? '')) } catch {}
       })
     }
-  }, [isServiceProvider, userId])
+  }, [isServiceProvider, userId, subKey, offerKey])
 
   const links: QuickLink[] = [
     {
