@@ -19,6 +19,7 @@ const generateURL: GenerateURL<Page> = ({ doc }) => {
 
 export const plugins: Plugin[] = [
   vercelBlobStorage({
+    clientUploads: true,
     collections: {
       media: {
         prefix: 'Media',
