@@ -79,7 +79,7 @@ export const OfferVideoUploads: CollectionConfig = {
           en: 'User who uploaded this video.',
           pl: 'Użytkownik, który przesłał ten film.',
         },
-        readOnly: true,
+        // readOnly: true,
         condition: (data, siblingData, { user }) => isClientRoleEqualOrHigher('moderator', user),
       },
     },
