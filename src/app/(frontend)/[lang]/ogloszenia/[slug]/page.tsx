@@ -27,12 +27,14 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
     return {}
   }
 
-  // Fall back to mainImage if no SEO meta image is set
+  // Fall back to offer fields if SEO meta fields are not set
   const docWithFallbackImage = {
     ...offer,
     slug: offer.link,
     meta: {
       ...offer.meta,
+      title: offer.meta?.title ?? offer.title ?? null,
+      description: offer.meta?.description ?? offer.shortDescription ?? null,
       image: offer.meta?.image ?? offer.mainImage ?? null,
     },
   }

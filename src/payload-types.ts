@@ -624,7 +624,7 @@ export interface OfferUpload {
   focalY?: number | null;
 }
 /**
- * Upload and manage videos related to offers. (max 50 MB, mp4/webm)
+ * Upload and manage videos related to offers. (max 50 MB, mp4/webm/mov/avi/mkv)
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "offer-video-uploads".
