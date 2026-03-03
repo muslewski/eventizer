@@ -285,6 +285,10 @@ export interface User {
    * Machine-readable slug for the service category (e.g., 'music/dj/wedding-dj').
    */
   serviceCategorySlug?: string | null;
+  /**
+   * Maximum number of offers this user can create. Default is 1. Increase for enterprise accounts.
+   */
+  maxOffers?: number | null;
   name: string;
   email: string;
   emailVerified: boolean;
@@ -477,7 +481,7 @@ export interface FeaturedOffersBlock {
   blockType: 'featuredOffers';
 }
 /**
- * Manage and create service offers available to your clients. (limit 1 offers)
+ * Manage and create service offers available to your clients.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "offers".
@@ -1654,6 +1658,7 @@ export interface UsersSelect<T extends boolean = true> {
   role?: T;
   serviceCategory?: T;
   serviceCategorySlug?: T;
+  maxOffers?: T;
   name?: T;
   email?: T;
   emailVerified?: T;

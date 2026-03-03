@@ -87,7 +87,11 @@ const Nav: FC<ServerProps> = async (props) => {
             user,
           },
         })}
-        <NavQuickLinks userRole={(user as User).role} userId={(user as User).id} />
+        <NavQuickLinks
+          userRole={(user as User).role}
+          userId={(user as User).id}
+          maxOffers={(user as User).maxOffers}
+        />
         {getRolesAtOrAbove('moderator').includes((user as User).role) && (
           <>
             <div className="h-px bg-border/50 mb-3" />

@@ -11,7 +11,6 @@ import {
   revalidateOffer,
   revalidateOfferOnDelete,
 } from './hooks'
-import { MAX_OFFERS_PER_USER } from './hooks/enforceMaxOffers'
 
 export const Offers: CollectionConfig = {
   slug: 'offers',
@@ -35,8 +34,8 @@ export const Offers: CollectionConfig = {
     // hide api url in admin panel
     hideAPIURL: true,
     description: {
-      en: `Manage and create service offers available to your clients. (limit ${MAX_OFFERS_PER_USER} offers)`,
-      pl: `Zarządzaj i twórz oferty usług dostępne dla Twoich klientów. (limit ${MAX_OFFERS_PER_USER} ofert)`,
+      en: `Manage and create service offers available to your clients.`,
+      pl: `Zarządzaj i twórz oferty usług dostępne dla Twoich klientów.`,
     },
     // preview: (doc, { req }) => `${req.protocol}//${req.host}/ogloszenia/${doc.slug}`,
     // livePreview: {

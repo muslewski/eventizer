@@ -21,6 +21,8 @@ import { getUserFirstOfferId } from '@/actions/getUserFirstOfferId'
 type NavQuickLinksProps = {
   userRole: Role
   userId: number
+  /** Personal offer limit set by an admin. Defaults to 1. */
+  maxOffers?: number | null
 }
 
 type QuickLink = {
@@ -30,10 +32,13 @@ type QuickLink = {
   variant?: 'destructive'
 }
 
-export function NavQuickLinks({ userRole, userId }: NavQuickLinksProps) {
+export function NavQuickLinks({ userRole, userId, maxOffers }: NavQuickLinksProps) {
   const pathname = usePathname()
 
   const isServiceProvider = userRole === 'service-provider'
+  // Treat null/undefined as the default limit of 1
+  const effectiveMaxOffers = maxOffers ?? 1
+  const hasMultipleOfferLimit = effectiveMaxOffers > 1
 
   const subKey = `nav-sub-${userId}`
   const offerKey = `nav-offer-${userId}`
@@ -47,8 +52,9 @@ export function NavQuickLinks({ userRole, userId }: NavQuickLinksProps) {
       return null
     }
   })
+  // firstOfferId is only needed for single-offer mode
   const [firstOfferId, setFirstOfferId] = useState<number | null>(() => {
-    if (!isServiceProvider) return null
+    if (!isServiceProvider || hasMultipleOfferLimit) return null
     try {
       const v = sessionStorage.getItem(offerKey)
       if (v === null || v === '' || v === 'null') return null
@@ -64,12 +70,15 @@ export function NavQuickLinks({ userRole, userId }: NavQuickLinksProps) {
         setHasActiveSubscription(details.hasSubscription)
         try { sessionStorage.setItem(subKey, String(details.hasSubscription)) } catch {}
       })
-      getUserFirstOfferId(userId).then((id) => {
-        setFirstOfferId(id)
-        try { sessionStorage.setItem(offerKey, String(id ?? '')) } catch {}
-      })
+      // Only fetch the single offer ID when not in multi-offer mode
+      if (!hasMultipleOfferLimit) {
+        getUserFirstOfferId(userId).then((id) => {
+          setFirstOfferId(id)
+          try { sessionStorage.setItem(offerKey, String(id ?? '')) } catch {}
+        })
+      }
     }
-  }, [isServiceProvider, userId, subKey, offerKey])
+  }, [isServiceProvider, userId, subKey, offerKey, hasMultipleOfferLimit])
 
   const links: QuickLink[] = [
     {
@@ -91,7 +100,15 @@ export function NavQuickLinks({ userRole, userId }: NavQuickLinksProps) {
 
   // Subscription-related links for service providers
   if (isServiceProvider) {
-    if (firstOfferId) {
+    if (hasMultipleOfferLimit) {
+      // Multi-offer mode: always link to the full collection
+      links.push({
+        href: '/app/collections/offers',
+        label: 'Zarządzaj ofertami',
+        icon: FileText,
+      })
+    } else if (firstOfferId) {
+      // Single-offer mode: link directly to the offer
       links.push({
         href: `/app/collections/offers/${firstOfferId}`,
         label: 'Zarządzaj ofertą',

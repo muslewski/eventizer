@@ -209,6 +209,30 @@ export const Users: CollectionConfig = {
               },
             },
             {
+              name: 'maxOffers',
+              type: 'number',
+              defaultValue: 1,
+              min: 1,
+              label: {
+                en: 'Max Offers',
+                pl: 'Limit Ofert',
+              },
+              admin: {
+                position: 'sidebar',
+                description: {
+                  en: 'Maximum number of offers this user can create. Default is 1. Increase for enterprise accounts.',
+                  pl: 'Maksymalna liczba ofert, które użytkownik może utworzyć. Domyślnie 1. Zwiększ dla kont firmowych.',
+                },
+                condition: (data, siblingData, { user }) => {
+                  return isClientRoleEqualOrHigher('admin', user)
+                },
+              },
+              access: {
+                read: fieldAdminOrHigher,
+                update: fieldAdminOrHigher,
+              },
+            },
+            {
               name: 'name',
               type: 'text',
               required: true,
@@ -277,6 +301,19 @@ export const Users: CollectionConfig = {
                 condition: (data) => data?.role === 'client',
                 components: {
                   Field: '/components/payload/fields/becomeServiceProvider',
+                },
+              },
+            },
+            {
+              name: 'changePassword',
+              type: 'ui',
+              label: {
+                en: 'Change Password',
+                pl: 'Zmień Hasło',
+              },
+              admin: {
+                components: {
+                  Field: '/components/payload/fields/changePassword',
                 },
               },
             },

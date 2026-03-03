@@ -33,7 +33,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
 import { isReturningCustomer } from '@/actions/stripe/isReturningCustomer'
-import { getUserFirstOfferId } from '@/actions/getUserFirstOfferId'
+import { getUserOffersInfo } from '@/actions/getUserOffersInfo'
 
 export interface AvatarDropdownProps {
   user: User
@@ -64,9 +64,13 @@ export function AvatarDropdown({
   // Check subscription status for service-providers, and returning customer status for clients
   const [hasActiveSubscription, setHasActiveSubscription] = useState<boolean | null>(null)
   const [isReturning, setIsReturning] = useState<boolean>(false)
+  // Tracks actual offer count and first offer id for service providers
   const [firstOfferId, setFirstOfferId] = useState<number | null>(null)
+  const [offerCount, setOfferCount] = useState<number>(0)
 
   const isClient = !isServiceProvider && !isModerator && !isAdmin
+  // Base plural label on how many offers the user actually has
+  const hasMultipleOffers = offerCount > 1
 
   useEffect(() => {
     // Always check actual subscription status regardless of role
@@ -84,8 +88,9 @@ export function AvatarDropdown({
     })
 
     if (isServiceProvider) {
-      getUserFirstOfferId(user.id).then((id) => {
-        setFirstOfferId(id)
+      getUserOffersInfo(user.id).then(({ firstId, count }) => {
+        setFirstOfferId(firstId)
+        setOfferCount(count)
       })
     }
   }, [isServiceProvider, isClient, user.id])
@@ -192,14 +197,14 @@ export function AvatarDropdown({
             <DropdownMenuItem asChild>
               <Link
                 href={
-                  isServiceProvider && firstOfferId
+                  isServiceProvider && !hasMultipleOffers && firstOfferId
                     ? `/app/collections/offers/${firstOfferId}`
                     : '/app/collections/offers'
                 }
                 className="cursor-pointer"
               >
                 <FileText className="mr-2 h-4 w-4" />
-                {isServiceProvider ? 'Zarządzaj ofertą' : 'Zarządzaj ofertami'}
+                {isServiceProvider && !hasMultipleOffers ? 'Zarządzaj ofertą' : 'Zarządzaj ofertami'}
               </Link>
             </DropdownMenuItem>
           )}

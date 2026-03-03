@@ -7,6 +7,7 @@ import { SubscriptionExpiredBanner } from './SubscriptionExpiredBanner'
 import { CheckoutSuccessHandler } from './CheckoutSuccessHandler'
 import { CreateOfferCTA } from './CreateOfferCTA'
 import { UserOfferCard } from './UserOfferCard'
+import { UserOffersSection } from './UserOffersSection'
 import { OfferLimitToast } from './OfferLimitToast'
 import type { I18nClient } from '@payloadcms/translations'
 import { adminGroups } from '@/lib/adminGroups'
@@ -108,22 +109,49 @@ const Dashboard: FC<DashboardProps> = async (props) => {
     }
   }
 
-  // Fetch user's offer (if service-provider with active subscription)
+  // Fetch user's offer(s) — amount depends on their personal maxOffers limit
   let userOffer: Offer | null = null
   let categoryIconUrl: string | null = null
+  // Multi-offer mode state
+  let userOffers: { offer: Offer; categoryIconUrl: string | null }[] = []
+  let userOffersTotalDocs = 0
+
+  const effectiveMaxOffers = typedUser?.maxOffers ?? 1
+  const hasMultipleOfferLimit = effectiveMaxOffers > 1
 
   if (isServiceProvider && !showExpiredBanner && typedUser) {
-    const offerResult = await payload.find({
-      collection: 'offers',
-      where: { user: { equals: typedUser.id } },
-      sort: 'createdAt',
-      limit: 1,
-      depth: 1,
-    })
-    userOffer = offerResult.docs[0] ?? null
+    if (hasMultipleOfferLimit) {
+      // Enterprise mode: fetch up to 3 most recent offers for the dashboard preview
+      const offerResult = await payload.find({
+        collection: 'offers',
+        where: { user: { equals: typedUser.id } },
+        sort: '-createdAt',
+        limit: 3,
+        depth: 1,
+      })
+      userOffersTotalDocs = offerResult.totalDocs
+      userOffers = await Promise.all(
+        offerResult.docs.map(async (offer) => ({
+          offer,
+          categoryIconUrl: offer.categorySlug
+            ? await resolveCategoryIconUrl(offer.categorySlug)
+            : null,
+        })),
+      )
+    } else {
+      // Standard single-offer mode
+      const offerResult = await payload.find({
+        collection: 'offers',
+        where: { user: { equals: typedUser.id } },
+        sort: 'createdAt',
+        limit: 1,
+        depth: 1,
+      })
+      userOffer = offerResult.docs[0] ?? null
 
-    if (userOffer?.categorySlug) {
-      categoryIconUrl = await resolveCategoryIconUrl(userOffer.categorySlug)
+      if (userOffer?.categorySlug) {
+        categoryIconUrl = await resolveCategoryIconUrl(userOffer.categorySlug)
+      }
     }
   }
 
@@ -149,9 +177,17 @@ const Dashboard: FC<DashboardProps> = async (props) => {
           <SubscriptionExpiredBanner serviceCategory={typedUser?.serviceCategory} />
         )}
 
-        {/* Offer card or create CTA for active service-providers */}
+        {/* Offer card(s) or create CTA for active service-providers */}
         {isServiceProvider && !showExpiredBanner && (
-          userOffer ? (
+          hasMultipleOfferLimit ? (
+            // Enterprise: show up to 3 recent offers with "Zobacz wszystkie" button
+            <UserOffersSection
+              offers={userOffers}
+              totalDocs={userOffersTotalDocs}
+              adminRoute={adminRoute}
+            />
+          ) : userOffer ? (
+            // Standard: show the single offer card
             <UserOfferCard
               offer={userOffer}
               categoryIconUrl={categoryIconUrl}
