@@ -143,12 +143,14 @@ export function AvatarDropdown({
               </Link>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem asChild>
-            <Link href="/app" className="cursor-pointer">
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Panel główny
-            </Link>
-          </DropdownMenuItem>
+          {!isClient && (
+            <DropdownMenuItem asChild>
+              <Link href="/app" className="cursor-pointer">
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                Panel główny
+              </Link>
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem asChild>
             <Link href="/ogloszenia#oferty" className="cursor-pointer">
               <Megaphone className="mr-2 h-4 w-4" />

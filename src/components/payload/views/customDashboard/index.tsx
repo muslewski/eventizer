@@ -6,6 +6,7 @@ import { DashboardGroup } from './DashboardGroup'
 import { SubscriptionExpiredBanner } from './SubscriptionExpiredBanner'
 import { CheckoutSuccessHandler } from './CheckoutSuccessHandler'
 import { CreateOfferCTA } from './CreateOfferCTA'
+import { BecomeServiceProviderCTA } from './BecomeServiceProviderCTA'
 import { UserOfferCard } from './UserOfferCard'
 import { UserOffersSection } from './UserOffersSection'
 import { OfferLimitToast } from './OfferLimitToast'
@@ -197,6 +198,9 @@ const Dashboard: FC<DashboardProps> = async (props) => {
             <CreateOfferCTA />
           )
         )}
+
+        {/* CTA for clients to become service providers */}
+        {isClient && !showExpiredBanner && <BecomeServiceProviderCTA />}
 
         {/* Featured Groups — only visible to moderators and admins */}
         {typedUser && getRolesAtOrAbove('moderator').includes(typedUser.role) &&
