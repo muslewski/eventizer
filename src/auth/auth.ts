@@ -31,16 +31,24 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    sendResetPassword: async ({ user, url, token }, request) => {
-      void sendResetPasswordEmail(user, url)
+    sendResetPassword: async ({ user, url }) => {
+      try {
+        sendResetPasswordEmail(user, url)
+      } catch (error) {
+        console.error('[auth] Failed to schedule reset-password email:', error)
+      }
     },
   },
   emailVerification: {
     sendOnSignUp: true,
-    sendOnSignIn: true, // Added missing comma here
+    sendOnSignIn: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      void sendVerificationEmail(user, url)
+      try {
+        sendVerificationEmail(user, url)
+      } catch (error) {
+        console.error('[auth] Failed to schedule verification email:', error)
+      }
     },
   },
 

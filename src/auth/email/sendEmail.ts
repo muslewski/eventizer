@@ -51,8 +51,15 @@ async function sendEmailWithRetry(
 
 export function sendEmail({ to, subject, text, html, react }: SendEmailParams): void {
   if (!process.env.EMAIL_FROM_ADDRESS) {
-    throw new Error('EMAIL_FROM_ADDRESS is not set in environment variables.')
+    console.error('[sendEmail] EMAIL_FROM_ADDRESS is not set. Skipping email send.')
+    return
   }
+
+  if (!process.env.RESEND_API_KEY) {
+    console.error('[sendEmail] RESEND_API_KEY is not set. Skipping email send.')
+    return
+  }
+
   const from = process.env.EMAIL_FROM_ADDRESS
 
   // Fire and forget (preserves timing-safe auth responses) but with internal retry
@@ -63,8 +70,6 @@ export function sendVerificationEmail(
   user: { email: string; name?: string | null },
   url: string,
 ): void {
-  console.log('SEND VERIFICATION 2')
-
   sendEmail({
     to: user.email,
     subject: 'Zweryfikuj swój email',
