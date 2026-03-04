@@ -57,6 +57,9 @@ const ServiceProviderOnboarding = async ({
     }
   }
 
+  // Beta mode: show the free beta option on the pricing step
+  const showBetaOption = process.env.BETA_MODE === 'true'
+
   // Determine page title and description
   const getTitle = () => {
     if (isEditMode) return 'Zmień kategorię lub plan'
@@ -94,6 +97,7 @@ const ServiceProviderOnboarding = async ({
             isRenewMode={isRenewMode}
             currentSubscription={subscriptionDetails}
             initialCategoryPath={initialCategoryPath}
+            showBetaOption={showBetaOption}
           />
         </div>
       </Gutter>

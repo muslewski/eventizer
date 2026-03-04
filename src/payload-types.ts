@@ -289,6 +289,10 @@ export interface User {
    * Maximum number of offers this user can create. Default is 1. Increase for enterprise accounts.
    */
   maxOffers?: number | null;
+  /**
+   * User activated the free beta plan instead of a paid Stripe subscription.
+   */
+  betaAccess?: boolean | null;
   name: string;
   email: string;
   emailVerified: boolean;
@@ -1659,6 +1663,7 @@ export interface UsersSelect<T extends boolean = true> {
   serviceCategory?: T;
   serviceCategorySlug?: T;
   maxOffers?: T;
+  betaAccess?: T;
   name?: T;
   email?: T;
   emailVerified?: T;

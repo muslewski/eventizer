@@ -13,12 +13,27 @@ export interface CurrentSubscriptionDetails {
   currentPlan?: SubscriptionPlan
   currentPeriodEnd?: string
   cancelAtPeriodEnd?: boolean
+  /** True when the user is on the free beta plan (no Stripe subscription) */
+  isBetaUser?: boolean
 }
 
 export async function getCurrentSubscriptionDetails(
   userId: number,
 ): Promise<CurrentSubscriptionDetails> {
   try {
+    // --- Beta short-circuit ---
+    // If the user has betaAccess set, treat them as having an active subscription
+    // without hitting Stripe at all.
+    const payload = await getPayload({ config })
+    const userRecord = await payload.findByID({
+      collection: 'users',
+      id: userId,
+      depth: 0,
+    })
+    if (userRecord?.betaAccess) {
+      return { hasSubscription: true, isBetaUser: true }
+    }
+
     const customerId = await getStripeCustomerId(userId)
     if (!customerId) {
       return { hasSubscription: false }
@@ -39,8 +54,7 @@ export async function getCurrentSubscriptionDetails(
         ? subscriptionItem.price.product
         : subscriptionItem.price.product.id
 
-    // Get the plan from Payload
-    const payload = await getPayload({ config })
+    // Get the plan from Payload (reuse the payload instance from above)
     const plans = await payload.find({
       collection: 'subscription-plans',
       where: { stripeID: { equals: currentProductId } },

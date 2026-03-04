@@ -233,6 +233,29 @@ export const Users: CollectionConfig = {
               },
             },
             {
+              name: 'betaAccess',
+              type: 'checkbox',
+              defaultValue: false,
+              label: {
+                en: 'Beta Access',
+                pl: 'Dostęp Beta',
+              },
+              admin: {
+                position: 'sidebar',
+                description: {
+                  en: 'User activated the free beta plan instead of a paid Stripe subscription.',
+                  pl: 'Użytkownik aktywował darmowy plan beta zamiast płatnej subskrypcji Stripe.',
+                },
+                // condition: (data, siblingData, { user }) => {
+                //   return isClientRoleEqualOrHigher('admin', user)
+                // },
+              },
+              access: {
+                // read: fieldAdminOrHigher,
+                update: fieldAdminOrHigher,
+              },
+            },
+            {
               name: 'name',
               type: 'text',
               required: true,

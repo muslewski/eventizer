@@ -6,7 +6,10 @@ import { validatePromoCode, type ValidatePromoCodeResult } from '@/actions/strip
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { Check, Loader2, Tag, X, CircleCheck } from 'lucide-react'
+import { Check, Loader2, Tag, X, CircleCheck, Sparkles } from 'lucide-react'
+
+/** Sentinel value used when the user picks the free beta option */
+export const BETA_PRICE_ID = 'BETA'
 
 interface PriceSelectionProps {
   prices: StripePriceDetails[]
@@ -17,6 +20,8 @@ interface PriceSelectionProps {
   currentPriceId?: string
   /** Called when promo code is validated or cleared */
   onPromoCodeChange?: (promoCodeId: string | null) => void
+  /** When true, renders a special free-beta option at the top of the list */
+  showBetaOption?: boolean
 }
 
 function getIntervalLabel(interval: string, intervalCount: number): string {
@@ -123,6 +128,7 @@ export function PriceSelection({
   planName,
   currentPriceId,
   onPromoCodeChange,
+  showBetaOption = false,
 }: PriceSelectionProps) {
   const [promoInput, setPromoInput] = useState('')
   const [promoValidating, setPromoValidating] = useState(false)
@@ -202,6 +208,52 @@ export function PriceSelection({
       </CardHeader>
 
       <CardContent className="space-y-3">
+        {/* Free beta option */}
+        {showBetaOption && (
+          <button
+            onClick={() => onPriceSelect(BETA_PRICE_ID)}
+            className={cn(
+              'w-full flex items-start gap-4 p-4 rounded-lg border-2 transition-all text-left',
+              'hover:border-emerald-500/50 hover:bg-emerald-500/5',
+              selectedPriceId === BETA_PRICE_ID
+                ? 'border-emerald-500/70 bg-emerald-500/10'
+                : 'border-[var(--theme-elevation-150)] bg-[var(--theme-elevation-0)]',
+            )}
+          >
+            {/* Selection indicator */}
+            <div
+              className={cn(
+                'flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors mt-0.5',
+                selectedPriceId === BETA_PRICE_ID
+                  ? 'border-emerald-500 bg-emerald-500 text-white'
+                  : 'border-[var(--theme-elevation-300)]',
+              )}
+            >
+              {selectedPriceId === BETA_PRICE_ID && <Check className="w-3.5 h-3.5" />}
+            </div>
+
+            {/* Beta info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-semibold text-[var(--theme-text)]">Darmowa wersja beta</span>
+                <Badge className="text-[0.55rem] bg-emerald-500 hover:bg-emerald-500 text-white border-0">
+                  <Sparkles className="w-2.5 h-2.5 mr-1" />
+                  BETA
+                </Badge>
+              </div>
+              <p className="text-sm text-[var(--theme-elevation-500)] mt-1">
+                Wybierz tę opcję, a ominie cię formularz płatności kompletnie. Opcja dostępna wyłącznie przez okres beta.
+              </p>
+            </div>
+
+            {/* Free label */}
+            <div className="flex-shrink-0 text-right">
+              <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">0 zł</span>
+              <span className="text-sm text-[var(--theme-elevation-500)] ml-1">/ beta</span>
+            </div>
+          </button>
+        )}
+
         {sortedPrices.map((price) => {
           if (!price.recurring || price.unitAmount === null) return null
 

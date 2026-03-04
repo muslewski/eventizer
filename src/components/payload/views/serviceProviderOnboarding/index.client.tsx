@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button'
 import { ServiceCategory, SubscriptionPlan, User } from '@/payload-types'
 import { useState, useEffect, useCallback } from 'react'
 import { createCheckoutSession } from '@/actions/stripe/createCheckoutSession'
+import { activateBetaAccess } from '@/actions/stripe/activateBetaAccess'
 import { getStripePrices, StripePriceDetails } from '@/actions/stripe/products/getStripePrices'
+import { BETA_PRICE_ID } from '@/components/payload/views/serviceProviderOnboarding/priceSelection'
 import { updateUserServiceCategory } from '@/actions/user/updateUserServiceCategory'
 import { updateSubscription } from '@/actions/stripe/updateSubscription'
 import { revertToClient } from '@/actions/user/revertToClient'
@@ -23,6 +25,7 @@ interface ServiceProviderOnboardingClientProps {
   isRenewMode?: boolean
   currentSubscription?: CurrentSubscriptionDetails
   initialCategoryPath?: number[]
+  showBetaOption?: boolean
 }
 
 // Helper to check if category selection is complete
@@ -99,6 +102,7 @@ export function ServiceProviderOnboardingClient({
   isRenewMode = false,
   currentSubscription,
   initialCategoryPath = [],
+  showBetaOption = false,
 }: ServiceProviderOnboardingClientProps) {
   const router = useRouter()
   const [selectedCategories, setSelectedCategories] = useState<ServiceCategory[]>([])
@@ -279,6 +283,23 @@ export function ServiceProviderOnboardingClient({
           return
         }
 
+        // --- Free beta path ---
+        if (selectedPriceId === BETA_PRICE_ID) {
+          const betaResult = await activateBetaAccess({
+            userId: user.id,
+            categoryNames,
+            categorySlugs,
+          })
+
+          if (!betaResult.success) {
+            throw new Error(betaResult.error || 'Nie udało się aktywować dostępu beta.')
+          }
+
+          // Hard navigation so the session picks up the new role immediately
+          window.location.href = '/app?checkout=success'
+          return
+        }
+
         // Save category preference first (will be applied after payment via Stripe webhook)
         const updateResult = await updateUserServiceCategory({
           userId: String(user.id),
@@ -323,6 +344,7 @@ export function ServiceProviderOnboardingClient({
 
   const getSubmitButtonText = () => {
     if (isSubmitting) return 'Przetwarzanie...'
+    if (selectedPriceId === BETA_PRICE_ID) return 'Aktywuj dostęp beta'
     if (isRenewMode) return 'Odnów subskrypcję'
     if (!isEditMode) return 'Kontynuuj'
 
@@ -465,8 +487,7 @@ export function ServiceProviderOnboardingClient({
           isLoading={isPricesLoading}
           planName={requiredPlan?.name ?? undefined}
           currentPriceId={isEditMode ? currentSubscription?.currentPriceId : undefined}
-          onPromoCodeChange={setPromoCodeId}
-        />
+          onPromoCodeChange={setPromoCodeId}          showBetaOption={showBetaOption && !isEditMode}        />
       )}
 
       {getChangeAlert()}
@@ -493,6 +514,7 @@ export function ServiceProviderOnboardingClient({
               isSubmitting ||
               !isComplete ||
               !selectedPriceId
+              // BETA_PRICE_ID is a valid selectedPriceId, so no extra check needed
             }
             size="lg"
             className={cn(
