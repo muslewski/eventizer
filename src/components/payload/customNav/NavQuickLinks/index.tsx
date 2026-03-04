@@ -160,6 +160,7 @@ export function NavQuickLinks({ userRole, userId, maxOffers }: NavQuickLinksProp
           <Link
             key={link.href}
             href={link.href}
+            prefetch
             className={cn(
               'group relative flex items-center gap-2 px-2 py-1.5 rounded-md',
               'no-underline transition-all duration-200',

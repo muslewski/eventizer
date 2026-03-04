@@ -65,6 +65,7 @@ export function HeaderAvatar({
       <Link
         href={href}
         onClick={onClick}
+        prefetch
         className="flex items-center gap-2 pl-0.5 pr-3 rounded-full transition-opacity hover:opacity-80"
       >
         <Avatar className="h-9 w-9 bg-white dark:bg-background/10">
