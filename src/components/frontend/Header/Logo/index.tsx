@@ -1,6 +1,10 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { removeLocalePrefix } from '@/components/frontend/Header/shared'
 
 import Logo from '@/assets/eventizer-icon-1.png'
 
@@ -9,13 +13,23 @@ interface HeaderLogoProps {
 }
 
 export default function HeaderLogo({ variant = 'header' }: HeaderLogoProps) {
+  const pathname = usePathname()
+  const normalizedPathname = removeLocalePrefix(pathname)
   const isSticky = variant === 'sticky'
   const isFooter = variant === 'footer'
+
+  const handleLogoClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (normalizedPathname !== '/') return
+
+    event.preventDefault()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   return (
     <Link
       href="/"
       prefetch
+      onClick={handleLogoClick}
       className="group h-full flex items-center gap-3 transition-transform duration-300 hover:scale-105"
     >
       <div className="relative h-8 w-8">
@@ -31,7 +45,7 @@ export default function HeaderLogo({ variant = 'header' }: HeaderLogoProps) {
           isFooter
             ? 'text-accent/60 dark:text-white/10 dark:text-shadow-white/20'
             : isSticky
-              ? 'text-base-800/75 dark:text-white/10 text-shadow-base-400/20 dark:text-shadow-white/20'
+              ? 'text-brand-500/75 dark:text-white/10 text-shadow-base-400/20 dark:text-shadow-white/20'
               : 'text-white/10 text-shadow-white/20',
         )}
       >

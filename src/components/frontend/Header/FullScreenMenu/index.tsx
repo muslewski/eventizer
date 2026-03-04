@@ -89,7 +89,7 @@ export default function FullScreenMenu({ normalizedPathname }: { normalizedPathn
 
           {/* Top bar with logo and close */}
           <div className="relative z-10 flex items-center justify-between px-12 sm:px-15 md:px-16 h-fit pt-7 md:pt-10 shrink-0">
-            <HeaderLogo />
+            <HeaderLogo variant="sticky" />
             <Button
               variant="ghost"
               onClick={close}
