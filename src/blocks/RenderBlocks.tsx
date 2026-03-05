@@ -19,6 +19,7 @@ import { OffersMapBlock } from '@/blocks/OffersMap/Component'
 import { VideoBlock } from '@/blocks/Video/Component'
 import { ContactFormBlock } from '@/blocks/ContactForm/Component'
 import { BetaBannerBlock } from '@/blocks/BetaBanner/Component'
+import { MissionBlock } from '@/blocks/Mission/Component'
 
 const blockComponents = {
   //   archive: ArchiveBlock,
@@ -33,6 +34,7 @@ const blockComponents = {
   video: VideoBlock,
   contactForm: ContactFormBlock,
   betaBanner: BetaBannerBlock,
+  mission: MissionBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   //   formBlock: FormBlock,

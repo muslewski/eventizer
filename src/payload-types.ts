@@ -227,6 +227,7 @@ export interface Page {
     | VideoBlock
     | ContactFormBlock
     | BetaBannerBlock
+    | MissionBlock
   )[];
   meta?: {
     title?: string | null;
@@ -980,6 +981,29 @@ export interface BetaBannerBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MissionBlock".
+ */
+export interface MissionBlock {
+  badge: string;
+  heading: string;
+  description: string;
+  secondaryDescription?: string | null;
+  /**
+   * Core values displayed as stacked cards on the right
+   */
+  values: {
+    icon: 'sparkles' | 'eye' | 'handshake' | 'lightbulb' | 'heart' | 'shield' | 'target' | 'zap' | 'compass' | 'globe';
+    title: string;
+    description: string;
+    accentColor?: ('primary' | 'accent' | 'blue' | 'emerald' | 'violet' | 'rose') | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mission';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-sessions".
  */
 export interface UserSession {
@@ -1378,6 +1402,7 @@ export interface PagesSelect<T extends boolean = true> {
         video?: T | VideoBlockSelect<T>;
         contactForm?: T | ContactFormBlockSelect<T>;
         betaBanner?: T | BetaBannerBlockSelect<T>;
+        mission?: T | MissionBlockSelect<T>;
       };
   meta?:
     | T
@@ -1648,6 +1673,27 @@ export interface BetaBannerBlockSelect<T extends boolean = true> {
   ctaLabel?: T;
   ctaLink?: T;
   footnote?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MissionBlock_select".
+ */
+export interface MissionBlockSelect<T extends boolean = true> {
+  badge?: T;
+  heading?: T;
+  description?: T;
+  secondaryDescription?: T;
+  values?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        accentColor?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
