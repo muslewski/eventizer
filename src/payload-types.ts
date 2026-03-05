@@ -226,6 +226,7 @@ export interface Page {
     | OffersMapBlock
     | VideoBlock
     | ContactFormBlock
+    | BetaBannerBlock
   )[];
   meta?: {
     title?: string | null;
@@ -946,6 +947,39 @@ export interface ContactFormBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BetaBannerBlock".
+ */
+export interface BetaBannerBlock {
+  /**
+   * Small badge label displayed above the heading
+   */
+  badge: string;
+  heading: string;
+  description: string;
+  /**
+   * List of benefits shown as feature cards
+   */
+  benefits: {
+    icon: 'zap' | 'gift' | 'shield' | 'trendingUp' | 'users' | 'star' | 'clock' | 'rocket' | 'heart' | 'eye';
+    title: string;
+    description: string;
+    id?: string | null;
+  }[];
+  ctaLabel: string;
+  /**
+   * URL the button links to
+   */
+  ctaLink: string;
+  /**
+   * Small text displayed below the CTA button
+   */
+  footnote?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'betaBanner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-sessions".
  */
 export interface UserSession {
@@ -1343,6 +1377,7 @@ export interface PagesSelect<T extends boolean = true> {
         offersMap?: T | OffersMapBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
         contactForm?: T | ContactFormBlockSelect<T>;
+        betaBanner?: T | BetaBannerBlockSelect<T>;
       };
   meta?:
     | T
@@ -1591,6 +1626,28 @@ export interface ContactFormBlockSelect<T extends boolean = true> {
   description?: T;
   organizationLabel?: T;
   organizationDescription?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BetaBannerBlock_select".
+ */
+export interface BetaBannerBlockSelect<T extends boolean = true> {
+  badge?: T;
+  heading?: T;
+  description?: T;
+  benefits?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  ctaLabel?: T;
+  ctaLink?: T;
+  footnote?: T;
   id?: T;
   blockName?: T;
 }
