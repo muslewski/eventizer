@@ -1,6 +1,34 @@
 import { isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
-import { CollectionConfig, Field } from 'payload'
+import { revalidatePath } from 'next/cache'
+import { CollectionConfig, CollectionAfterChangeHook, CollectionAfterDeleteHook, Field } from 'payload'
+import type { ServiceCategory } from '@/payload-types'
+
+const revalidateServiceCategories: CollectionAfterChangeHook<ServiceCategory> = ({
+  doc,
+  req: { payload, context },
+}) => {
+  if (context.disableRevalidate) return doc
+
+  payload.logger.info(
+    `Revalidating all pages — service category ${doc.id} ("${doc.name}") changed`,
+  )
+  revalidatePath('/', 'layout')
+
+  return doc
+}
+
+const revalidateServiceCategoriesOnDelete: CollectionAfterDeleteHook<ServiceCategory> = ({
+  doc,
+  req: { payload, context },
+}) => {
+  if (context.disableRevalidate) return doc
+
+  payload.logger.info(`Revalidating all pages — service category ${doc.id} was deleted`)
+  revalidatePath('/', 'layout')
+
+  return doc
+}
 
 // Common fields shared by all levels of categories
 const commonCategoryFields: Field[] = [
@@ -131,6 +159,10 @@ export const ServiceCategories: CollectionConfig = {
     group: adminGroups.settings,
     defaultColumns: ['name', 'slug', 'requiredPlan'],
     hidden: ({ user }) => !isClientRoleEqualOrHigher('admin', user),
+  },
+  hooks: {
+    afterChange: [revalidateServiceCategories],
+    afterDelete: [revalidateServiceCategoriesOnDelete],
   },
   fields: createCategoryFields(2), // Set maxDepth to 2 for subcategories
 }
