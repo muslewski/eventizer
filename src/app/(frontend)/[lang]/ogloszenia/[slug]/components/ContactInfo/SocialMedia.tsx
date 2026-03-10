@@ -44,6 +44,11 @@ const socialMediaConfig = [
   },
 ]
 
+function normalizeUrl(url: string): string {
+  if (/^https?:\/\//i.test(url)) return url
+  return `https://${url}`
+}
+
 interface SocialMediaProps {
   offer: Offer
   isAuthenticated: boolean
@@ -72,7 +77,7 @@ export const SocialMedia: React.FC<SocialMediaProps> = ({ offer, isAuthenticated
                 return (
                   <Link
                     key={key}
-                    href={url}
+                    href={normalizeUrl(url)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`inline-flex items-center gap-3 h-auto px-6 py-4 rounded-xl border border-border/50 bg-background/50 text-sm font-medium transition-all duration-300 ${hoverClass} hover:shadow-md hover:scale-[1.03] active:scale-[0.98]`}
