@@ -21,9 +21,11 @@ export const OfferHero: React.FC<OfferHeroProps> = ({ offer }) => {
       }
     : null
 
+  const title = offer.title.length > 80 ? `${offer.title.slice(0, 80)}…` : offer.title
+
   return (
-    <HighImpactHero backgroundImage={heroBackgroundImage as Media} title={offer.title}>
-      <OfferHeroContent offer={offer} />
+    <HighImpactHero backgroundImage={heroBackgroundImage as Media} title={title}>
+      <OfferHeroContent offer={offer} title={title} />
     </HighImpactHero>
   )
 }

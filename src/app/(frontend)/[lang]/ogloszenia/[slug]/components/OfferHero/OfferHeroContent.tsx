@@ -5,6 +5,7 @@ import BlurText from '@/components/react-bits/BlurText'
 
 interface OfferHeroContentProps {
   offer: Offer
+  title: string
 }
 
 const formatPrice = (offer: Offer) => {
@@ -22,7 +23,7 @@ const formatPrice = (offer: Offer) => {
   return `${priceFrom.toLocaleString('pl-PL')} - ${priceTo.toLocaleString('pl-PL')} zł`
 }
 
-export const OfferHeroContent: React.FC<OfferHeroContentProps> = ({ offer }) => {
+export const OfferHeroContent: React.FC<OfferHeroContentProps> = ({ offer, title }) => {
   return (
     <div className="h-full relative flex flex-col justify-end gap-6 sm:gap-10">
       {/* Top section with category badges */}
@@ -49,7 +50,7 @@ export const OfferHeroContent: React.FC<OfferHeroContentProps> = ({ offer }) => 
 
       {/* Title */}
       <h1 className="xl:text-8xl md:text-6xl text-4xl sm:text-5xl font-bebas max-w-7xl text-white mix-blend-difference transform-gpu leading-[0.9]">
-        <BlurText text={offer.title} animateBy="letters" direction="bottom" delay={50} />
+        <BlurText text={title} animateBy="letters" direction="bottom" delay={50} />
       </h1>
 
       {/* Bottom section */}

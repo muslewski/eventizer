@@ -34,6 +34,11 @@ export const offersFields: Field[] = [
     name: 'title',
     type: 'text',
     required: true,
+    admin: {
+      components: {
+        afterInput: ['/components/payload/fields/titleCharCounter'],
+      }
+    },
     defaultValue: () => {
       const now = new Date()
       const day = now.getDate().toString().padStart(2, '0')
