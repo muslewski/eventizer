@@ -189,6 +189,10 @@ export async function getOfferCategories(): Promise<GetOfferCategoriesResult> {
     const numericUserId = typeof userId === 'string' ? parseInt(userId, 10) : userId
     const userPlan = await getUserPlanLevel(numericUserId)
 
+    // Admins can select any category regardless of subscription plan restrictions.
+    const effectivePlanLevel = user.role === 'admin' ? Number.MAX_SAFE_INTEGER : userPlan.level
+    const effectivePlanName = user.role === 'admin' ? 'Admin (unrestricted)' : userPlan.name
+
     // Fetch all service categories with their required plans
     const { docs: categories } = await payload.find({
       collection: 'service-categories',
@@ -198,14 +202,14 @@ export async function getOfferCategories(): Promise<GetOfferCategoriesResult> {
     })
 
     // Build nested tree and flatten for the UI
-    const categoryTree = buildCategoryTree(categories, userPlan.level, userDefaultCategory)
+    const categoryTree = buildCategoryTree(categories, effectivePlanLevel, userDefaultCategory)
     const flatCategories = flattenTree(categoryTree)
 
     return {
       categories: flatCategories,
       userPlanInfo: {
-        currentPlanLevel: userPlan.level,
-        currentPlanName: userPlan.name,
+        currentPlanLevel: effectivePlanLevel,
+        currentPlanName: effectivePlanName,
         userDefaultCategory,
       },
     }
