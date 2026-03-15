@@ -59,14 +59,16 @@ export default function ClientListView({
       {/* Main Search bar and offers */}
       <div className="w-full max-w-575 h-full min-w-0 py-0 flex flex-col gap-4">
         {/* Search Bar */}
-        <SearchBar
-          currentSort={currentSort}
-          currentLat={currentLat}
-          currentLng={currentLng}
-          currentDistance={currentDistance}
-          minPrice={minCena}
-          maxPrice={maxCena}
-        />
+        <div id="offers-search-anchor">
+          <SearchBar
+            currentSort={currentSort}
+            currentLat={currentLat}
+            currentLng={currentLng}
+            currentDistance={currentDistance}
+            minPrice={minCena}
+            maxPrice={maxCena}
+          />
+        </div>
 
         {/* Display offers */}
         <OffersView offers={offers} pagination={pagination} pathname={pathname} seed={seed} />

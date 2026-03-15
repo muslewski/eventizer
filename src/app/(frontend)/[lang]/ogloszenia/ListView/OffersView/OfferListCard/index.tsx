@@ -52,7 +52,7 @@ export const OfferListCard = ({
     <Card className="w-full flex xl:flex-row flex-col py-0 sm:py-0 min-h-120 sm:min-h-130 xl:min-h-48  items-center bg-transparent bg-linear-to-r from-stone-200 dark:from-stone-900/60 to-background/35 rounded-2xl overflow-hidden">
       <Link
         href={`/ogloszenia/${slug}`}
-        className="w-full xl:max-w-3xs h-full bottom-0 top-0 rounded-2xl bg-white/10 relative overflow-hidden min-h-72"
+        className="w-full xl:max-w-3xs h-full bottom-0 top-0 rounded-2xl bg-white/10 relative overflow-hidden min-h-64 md:min-h-80 xl:min-h-48"
       >
         {/* Skeleton + icon shown until image loads */}
         {imageUrl && !imageLoaded && (

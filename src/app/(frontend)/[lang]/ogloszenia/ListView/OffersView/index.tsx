@@ -82,11 +82,16 @@ export default function OffersView({
       // Scroll the offers viewport to top when changing page
       viewportRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
 
+      // Also scroll the page to the top of the offers section (search bar anchor)
+      const anchor =
+        document.getElementById('offers-search-anchor') ?? document.getElementById('oferty')
+      anchor?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
       startTransition(() => {
         router.push(`${pathname}?${params.toString()}`, { scroll: false })
       })
     },
-    [router, searchParams, pathname],
+    [router, searchParams, pathname, seed],
   )
 
   // Number of skeleton cards to show (match current page size or default)
