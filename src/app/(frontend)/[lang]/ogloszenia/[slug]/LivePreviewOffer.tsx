@@ -1,7 +1,17 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useLivePreview } from '@payloadcms/live-preview-react'
-import { OfferHero, OfferShortInfo, OfferMap, OfferVideo, OfferGallery, OfferDetails, ContactInfo, OfferContactFormSection } from './components'
+import {
+  OfferHero,
+  OfferShortInfo,
+  OfferMap,
+  OfferVideo,
+  OfferGallery,
+  OfferDetails,
+  ContactInfo,
+  OfferContactFormSection,
+  MobileContactActions,
+} from './components'
 import type { Offer } from '@/payload-types' // adjust import path
 import { resolveCategoryIconUrl } from '@/actions/resolveCategoryIconUrl'
 
@@ -32,7 +42,7 @@ export const LivePreviewOffer: React.FC<{
     <>
       <OfferHero offer={data} />
 
-      <div className="pt-16 flex flex-col gap-24 lg:gap-26 w-full">
+      <div className="pt-16 pb-24 md:pb-0 flex flex-col gap-24 lg:gap-26 w-full">
 
       <OfferMap offer={data} />
       <OfferShortInfo offer={data} />
@@ -47,6 +57,8 @@ export const LivePreviewOffer: React.FC<{
 
         <OfferContactFormSection offer={data} />
       </div>
+
+      <MobileContactActions offer={data} />
     </>
   )
 }
