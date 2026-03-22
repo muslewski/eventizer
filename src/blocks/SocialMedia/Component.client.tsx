@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { motion } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
@@ -25,6 +25,45 @@ interface SocialPlatform {
     description?: string | null
   } | null
 }
+
+interface PlatformConfig {
+  key: string
+  icon: IconType
+  name: string
+  gradient: string
+  shadowColor: string
+}
+
+const PLATFORM_CONFIG: PlatformConfig[] = [
+  {
+    key: 'instagram',
+    icon: FaInstagram,
+    name: 'Instagram',
+    gradient: 'from-purple-600 via-pink-500 to-orange-400',
+    shadowColor: 'shadow-pink-500/25',
+  },
+  {
+    key: 'facebook',
+    icon: FaFacebook,
+    name: 'Facebook',
+    gradient: 'from-blue-600 to-blue-500',
+    shadowColor: 'shadow-blue-500/25',
+  },
+  {
+    key: 'tiktok',
+    icon: FaTiktok,
+    name: 'TikTok',
+    gradient: 'from-gray-900 via-gray-800 to-gray-900',
+    shadowColor: 'shadow-gray-500/25',
+  },
+  {
+    key: 'twitter',
+    icon: FaXTwitter,
+    name: 'X',
+    gradient: 'from-gray-900 to-black',
+    shadowColor: 'shadow-gray-500/25',
+  },
+]
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -71,40 +110,18 @@ export const SocialMediaClient: React.FC<SocialMediaClientProps> = ({
   twitter,
   className,
 }) => {
-  const platforms: SocialPlatform[] = [
-    {
-      key: 'instagram',
-      icon: FaInstagram,
-      name: 'Instagram',
-      gradient: 'from-purple-600 via-pink-500 to-orange-400',
-      shadowColor: 'shadow-pink-500/25',
-      data: instagram,
-    },
-    {
-      key: 'facebook',
-      icon: FaFacebook,
-      name: 'Facebook',
-      gradient: 'from-blue-600 to-blue-500',
-      shadowColor: 'shadow-blue-500/25',
-      data: facebook,
-    },
-    {
-      key: 'tiktok',
-      icon: FaTiktok,
-      name: 'TikTok',
-      gradient: 'from-gray-900 via-gray-800 to-gray-900',
-      shadowColor: 'shadow-gray-500/25',
-      data: tiktok,
-    },
-    {
-      key: 'twitter',
-      icon: FaXTwitter,
-      name: 'X',
-      gradient: 'from-gray-900 to-black',
-      shadowColor: 'shadow-gray-500/25',
-      data: twitter,
-    },
-  ]
+  const platformData: Record<string, SocialPlatform['data']> = {
+    instagram,
+    facebook,
+    tiktok,
+    twitter,
+  }
+
+  const platforms = useMemo<SocialPlatform[]>(
+    () => PLATFORM_CONFIG.map((config) => ({ ...config, data: platformData[config.key] })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [instagram, facebook, tiktok, twitter],
+  )
 
   const enabledPlatforms = platforms.filter((p) => p.data?.enabled && p.data?.url)
 

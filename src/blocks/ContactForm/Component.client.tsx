@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -65,6 +65,12 @@ interface TypeCard {
   icon: React.ElementType
 }
 
+const MESSAGE_PLACEHOLDERS: Record<WebsiteFormType, string> = {
+  organization: 'Opisz event, który chcesz zorganizować: rodzaj imprezy, atrakcje, styl, budżet, wszelkie dodatkowe życzenia…',
+  question: 'Wpisz swoje pytanie — chętnie wyjaśnimy wszystkie wątpliwości dotyczące platformy, ofert lub procesu rejestracji…',
+  'service-problem': 'Opisz problem, który napotkałeś(-aś): co się stało, kiedy, na jakim urządzeniu, jaki komunikat błędu widziałeś(-aś)…',
+}
+
 // ─── Component ─────────────────────────────────────────────────────────────────
 
 export const ContactFormClient: React.FC<
@@ -88,21 +94,18 @@ export const ContactFormClient: React.FC<
   const selectedType = form.watch('type') as WebsiteFormType
   const isOrganization = selectedType === 'organization'
 
-  const typeCards: TypeCard[] = [
-    {
-      value: 'organization',
-      label: organizationLabel ?? 'Organizacja eventu',
-      icon: CalendarDays,
-    },
-    { value: 'question', label: 'Zadaj pytanie', icon: HelpCircle },
-    { value: 'service-problem', label: 'Problem z serwisem', icon: Wrench },
-  ]
-
-  const messagePlaceholders: Record<WebsiteFormType, string> = {
-    organization: 'Opisz event, który chcesz zorganizować: rodzaj imprezy, atrakcje, styl, budżet, wszelkie dodatkowe życzenia…',
-    question: 'Wpisz swoje pytanie — chętnie wyjaśnimy wszystkie wątpliwości dotyczące platformy, ofert lub procesu rejestracji…',
-    'service-problem': 'Opisz problem, który napotkałeś(-aś): co się stało, kiedy, na jakim urządzeniu, jaki komunikat błędu widziałeś(-aś)…',
-  }
+  const typeCards = useMemo<TypeCard[]>(
+    () => [
+      {
+        value: 'organization',
+        label: organizationLabel ?? 'Organizacja eventu',
+        icon: CalendarDays,
+      },
+      { value: 'question', label: 'Zadaj pytanie', icon: HelpCircle },
+      { value: 'service-problem', label: 'Problem z serwisem', icon: Wrench },
+    ],
+    [organizationLabel],
+  )
 
   const onSubmit = async (values: FormValues) => {
     const result = await submitWebsiteContactForm({
@@ -343,7 +346,7 @@ export const ContactFormClient: React.FC<
                       <FormLabel>Wiadomość</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder={messagePlaceholders[selectedType]}
+                          placeholder={MESSAGE_PLACEHOLDERS[selectedType]}
                           rows={6}
                           className="resize-none"
                           {...field}
