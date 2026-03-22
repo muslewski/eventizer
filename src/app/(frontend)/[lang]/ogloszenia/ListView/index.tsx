@@ -27,6 +27,7 @@ export default async function ListView({ payload, ...searchParams }: ListViewPro
   const categories = await payload.find({
     collection: 'service-categories',
     limit: 100,
+    depth: 0,
     overrideAccess: true,
   })
 

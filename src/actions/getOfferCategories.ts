@@ -196,7 +196,7 @@ export async function getOfferCategories(): Promise<GetOfferCategoriesResult> {
     // Fetch all service categories with their required plans
     const { docs: categories } = await payload.find({
       collection: 'service-categories',
-      depth: 2,
+      depth: 1,
       limit: 100,
       sort: 'name',
     })
