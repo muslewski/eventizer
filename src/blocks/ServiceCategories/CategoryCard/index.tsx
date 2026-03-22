@@ -1,10 +1,11 @@
 'use client'
 
-import { ServiceCategory, Media } from '@/payload-types'
+import { ServiceCategory } from '@/payload-types'
 import Image from 'next/image'
 import { useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ImageIcon } from 'lucide-react'
+import { getIconUrl } from '@/blocks/ServiceCategories/utils'
 
 interface CategoryCardProps {
   category: ServiceCategory
@@ -32,11 +33,6 @@ function interpolateColor(ratio: number, darker: boolean = false): string {
 
 export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, index, total }) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false)
-
-  const getIconUrl = (icon: (number | null) | Media | undefined): string | null => {
-    if (!icon || typeof icon === 'number') return null
-    return icon.url || null
-  }
 
   const iconUrl = getIconUrl(category.icon)
 

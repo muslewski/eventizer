@@ -19,6 +19,7 @@ import { ArrowRight, X, ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
+import { getIconUrl } from '@/blocks/ServiceCategories/utils'
 
 interface ServiceCategoriesClientProps {
   heading: string
@@ -61,11 +62,6 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
 
   const handleImageLoad = (id: string) => {
     setLoadedImages((prev) => new Set(prev).add(id))
-  }
-
-  const getIconUrl = (icon: (number | null) | Media | undefined): string | null => {
-    if (!icon || typeof icon === 'number') return null
-    return icon.url || null
   }
 
   const subcategories = (selectedCategory?.subcategory_level_1 as Subcategory[] | undefined) || []
