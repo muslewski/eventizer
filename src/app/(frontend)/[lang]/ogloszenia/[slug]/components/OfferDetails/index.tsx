@@ -1,3 +1,4 @@
+import React from 'react'
 import { Offer, OfferUpload, ProfilePicture, User } from '@/payload-types'
 import { RichText } from '@/components/payload/RichText'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
@@ -25,13 +26,13 @@ interface InfoRowProps {
   valueClassName?: string
 }
 
-const InfoRow: React.FC<InfoRowProps> = ({
+const InfoRow = React.memo(function InfoRow({
   iconContent,
   label,
   value,
   variant = 'primary',
   valueClassName = 'font-medium text-lg',
-}) => {
+}: InfoRowProps) {
   const isPrimary = variant === 'primary'
 
   return (
@@ -49,7 +50,7 @@ const InfoRow: React.FC<InfoRowProps> = ({
       </div>
     </div>
   )
-}
+})
 
 interface OfferDetailsProps {
   offer: Offer

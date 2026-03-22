@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardDescription } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -21,7 +21,7 @@ interface OfferListCardProps {
   slug: string
 }
 
-export const OfferListCard = ({
+const OfferListCard = ({
   title,
   description,
   categoryName,
@@ -124,3 +124,5 @@ export const OfferListCard = ({
     </Card>
   )
 }
+
+export default React.memo(OfferListCard)

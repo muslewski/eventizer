@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { Offer } from '@/payload-types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -18,7 +19,7 @@ interface ContactDetailsProps {
   isAuthenticated: boolean
 }
 
-export const ContactDetails: React.FC<ContactDetailsProps> = ({ offer, isAuthenticated }) => {
+const ContactDetailsComponent: React.FC<ContactDetailsProps> = ({ offer, isAuthenticated }) => {
 
   const displayPhone = isAuthenticated ? offer.phone : PLACEHOLDER_PHONE
   const displayEmail = isAuthenticated ? offer.email : PLACEHOLDER_EMAIL
@@ -128,3 +129,5 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({ offer, isAuthent
     </div>
   )
 }
+
+export const ContactDetails = React.memo(ContactDetailsComponent)

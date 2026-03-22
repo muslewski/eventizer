@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect, useTransition } from 'react'
 import { PaginationInfo } from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.client'
-import { OfferListCard } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard'
+import OfferListCard from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard'
 import { OfferCardSkeleton } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/Skeleton'
 import PaginationControls from '@/app/(frontend)/[lang]/ogloszenia/ListView/PaginationControls'
 import { ScrollArea } from '@/components/ui/scroll-area'
