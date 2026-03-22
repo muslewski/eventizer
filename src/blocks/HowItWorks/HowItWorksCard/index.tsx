@@ -66,6 +66,7 @@ export default function HowItWorksCard({
             src={stepNumber % 2 === 0 ? arrowDown : arrowDownSecond}
             alt=""
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-contain"
           />
         </div>

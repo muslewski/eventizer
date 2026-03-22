@@ -65,6 +65,7 @@ export const OfferListCard = ({
             src={imageUrl}
             alt={title}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className={`object-cover hover:scale-105 transition-all duration-300 ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}
           />

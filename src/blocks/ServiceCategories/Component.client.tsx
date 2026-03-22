@@ -127,6 +127,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                       src={getIconUrl(selectedCategory.icon)!}
                       alt={selectedCategory.name}
                       fill
+                      sizes="48px"
                       className={`object-contain p-2 dark:invert transition-opacity duration-200 ${!loadedImages.has(`main-${selectedCategory.id}`) ? 'opacity-0' : 'opacity-100'}`}
                       onLoad={() => handleImageLoad(`main-${selectedCategory.id}`)}
                     />
@@ -188,6 +189,7 @@ export const ServiceCategoriesClient: React.FC<ServiceCategoriesClientProps> = (
                               src={subcategoryIconUrl}
                               alt={subcategory.name}
                               fill
+                              sizes="48px"
                               className={`object-contain p-1 dark:invert group-hover:scale-110 transition-transform duration-200 ${!loadedImages.has(`sub-${subcategory.id}`) ? 'opacity-0' : 'opacity-100'}`}
                               onLoad={() => handleImageLoad(`sub-${subcategory.id}`)}
                             />

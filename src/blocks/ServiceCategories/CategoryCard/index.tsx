@@ -91,6 +91,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
               src={iconUrl}
               alt={category.name}
               fill
+              sizes="48px"
               className={`object-contain p-2 sm:p-4 dark:invert group-hover:scale-110 transition-transform duration-300 ${!isImageLoaded ? 'opacity-0' : 'opacity-100'}`}
               onLoad={() => setIsImageLoaded(true)}
             />
