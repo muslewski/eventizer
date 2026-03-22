@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import {
   Camera,
@@ -38,26 +38,51 @@ const orbitAtmosphereParticles = [
 ]
 
 export const OrbitVisualization: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+  const [reduceMotion, setReduceMotion] = useState(false)
+
+  useEffect(() => {
+    if (!containerRef.current) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.1 },
+    )
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const check = () =>
+      setReduceMotion(document.documentElement.classList.contains('reduce-motion'))
+    check()
+    const observer = new MutationObserver(check)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
+  }, [])
+
+  const active = isVisible && !reduceMotion
+
   return (
-    <div className="relative w-full aspect-square max-w-md mx-auto">
+    <div ref={containerRef} className="relative w-full aspect-square max-w-md mx-auto">
       <div className="absolute -inset-6 rounded-full bg-gradient-to-br from-primary/10 via-transparent to-accent/10 blur-3xl" />
       <div className="absolute inset-6 rounded-full bg-gradient-to-tr from-transparent via-primary/5 to-accent/5 blur-2xl" />
 
       <motion.div
         animate={{ rotate: 360 }}
-        transition={{ duration: 160, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 160, repeat: active ? Infinity : 0, ease: 'linear' }}
         className="absolute inset-3 rounded-full border border-primary/10"
       />
 
       <motion.div
         animate={{ rotate: 360 }}
-        transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 80, repeat: active ? Infinity : 0, ease: 'linear' }}
         className="absolute inset-0 rounded-full border border-dashed border-border/30"
       />
 
       <motion.div
         animate={{ rotate: -360 }}
-        transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 60, repeat: active ? Infinity : 0, ease: 'linear' }}
         className="absolute inset-8 sm:inset-12 rounded-full border border-dashed border-border/20"
       />
 
@@ -72,7 +97,7 @@ export const OrbitVisualization: React.FC = () => {
           animate={{ opacity: [0.15, 0.55, 0.15], scale: [1, 1.6, 1] }}
           transition={{
             duration: 2.8,
-            repeat: Infinity,
+            repeat: active ? Infinity : 0,
             ease: 'easeInOut',
             delay: particle.delay + index * 0.05,
           }}
@@ -89,7 +114,7 @@ export const OrbitVisualization: React.FC = () => {
         >
           <motion.div
             animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.15, 0.3] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            transition={{ duration: 3, repeat: active ? Infinity : 0, ease: 'easeInOut' }}
             className="absolute w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-primary/20 blur-lg"
           />
           <div className="relative flex items-center justify-center w-[116px] h-[116px] sm:w-[134px] sm:h-[134px]">
@@ -134,7 +159,7 @@ export const OrbitVisualization: React.FC = () => {
               animate={{ y: [0, -3, 0] }}
               transition={{
                 duration: 2.5 + i * 0.3,
-                repeat: Infinity,
+                repeat: active ? Infinity : 0,
                 ease: 'easeInOut',
                 delay: i * 0.4,
               }}
