@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { OfferPin, MapCategory } from '@/blocks/OffersMap/Component'
+import { pluralize } from '@/utilities/pluralize'
 
 /* ─── Category filter bar with drag-scroll & arrows ─── */
 
@@ -430,7 +431,7 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
         position: { lat: group.lat, lng: group.lng },
         title:
           count > 1
-            ? `${count} ofert — ${firstPin.city ?? ''}`
+            ? `${pluralize(count, 'oferta', 'oferty', 'ofert')} — ${firstPin.city ?? ''}`
             : firstPin.city
               ? `${firstPin.title} — ${firstPin.city}`
               : firstPin.title,
@@ -468,7 +469,7 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
       <BlockHeader
         heading={heading}
         description={description}
-        badge={{ label: `${formatNumber(totalOffers)} ofert`, variant: 'default' }}
+        badge={{ label: pluralize(totalOffers, 'oferta', 'oferty', 'ofert'), variant: 'default' }}
         lines
         grid
         planet
@@ -644,11 +645,11 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-medium text-foreground">
-                  {formatNumber(filteredPins.length)} ofert na mapie
+                  {pluralize(filteredPins.length, 'oferta', 'oferty', 'ofert')} na mapie
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {activeCategories.size > 0
-                    ? `${activeCategories.size} ${activeCategories.size === 1 ? 'kategoria' : activeCategories.size < 5 ? 'kategorie' : 'kategorii'}`
+                    ? pluralize(activeCategories.size, 'kategoria', 'kategorie', 'kategorii')
                     : 'Cała Polska'}
                 </p>
               </div>
