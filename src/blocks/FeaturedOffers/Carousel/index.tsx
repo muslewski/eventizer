@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Offer, OfferUpload } from '@/payload-types'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import ImageCarousel, { type CarouselSlide } from '@/components/frontend/Carousel'
@@ -22,10 +22,21 @@ interface OfferCardProps {
   isActive: boolean
 }
 
+const INITIAL_SLIDES = 3
+
 export default function OffersCarousel({ offers }: { offers: Offer[] }) {
+  const [allLoaded, setAllLoaded] = useState(false)
+
+  useEffect(() => {
+    const id = requestIdleCallback(() => setAllLoaded(true))
+    return () => cancelIdleCallback(id)
+  }, [])
+
+  const visibleOffers = allLoaded ? offers : offers.slice(0, INITIAL_SLIDES)
+
   const slides: CarouselSlide[] = useMemo(
     () =>
-      offers.map((offer) => {
+      visibleOffers.map((offer) => {
         const mainImage = isExpandedDoc<OfferUpload>(offer.mainImage) ? offer.mainImage : null
         return {
           id: String(offer.id),
@@ -39,7 +50,7 @@ export default function OffersCarousel({ offers }: { offers: Offer[] }) {
           },
         }
       }),
-    [offers],
+    [visibleOffers],
   )
 
   return <ImageCarousel slides={slides} ariaLabel="Featured offers carousel" />
