@@ -122,13 +122,11 @@ export const OrbitVisualization: React.FC = () => {
               src={eventizerLogoLight}
               alt="Eventizer"
               className="w-full h-full object-contain dark:hidden"
-              unoptimized
             />
             <Image
               src={eventizerLogoDark}
               alt="Eventizer"
               className="w-full h-full object-contain hidden dark:block"
-              unoptimized
             />
           </div>
         </motion.div>
