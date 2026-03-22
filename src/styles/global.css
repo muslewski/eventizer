@@ -6,6 +6,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Reduce motion support */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
 @layer base {
   * {
     @apply border-border/30 outline-ring/50;

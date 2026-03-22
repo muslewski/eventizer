@@ -110,6 +110,8 @@ const LightRays: React.FC<LightRaysProps> = ({
   const cleanupFunctionRef = useRef<(() => void) | null>(null)
   const [isVisible, setIsVisible] = useState(false)
   const isVisibleRef = useRef(false)
+  const [reduceMotion, setReduceMotion] = useState(false)
+  const reduceMotionRef = useRef(false)
   const hasInitializedRef = useRef(false)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
@@ -134,6 +136,18 @@ const LightRays: React.FC<LightRaysProps> = ({
         observerRef.current = null
       }
     }
+  }, [])
+
+  useEffect(() => {
+    const check = () => {
+      const val = document.documentElement.classList.contains('reduce-motion')
+      reduceMotionRef.current = val
+      setReduceMotion(val)
+    }
+    check()
+    const observer = new MutationObserver(check)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    return () => observer.disconnect()
   }, [])
 
   useEffect(() => {
@@ -335,8 +349,8 @@ void main() {
           return
         }
 
-        // Skip rendering if not visible (but keep loop alive)
-        if (!isVisibleRef.current) {
+        // Skip rendering if not visible or reduce-motion is active (but keep loop alive)
+        if (!isVisibleRef.current || reduceMotionRef.current) {
           animationIdRef.current = requestAnimationFrame(loop)
           return
         }
