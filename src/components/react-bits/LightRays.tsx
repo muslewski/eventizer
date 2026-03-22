@@ -109,6 +109,8 @@ const LightRays: React.FC<LightRaysProps> = ({
   const meshRef = useRef<Mesh | null>(null)
   const cleanupFunctionRef = useRef<(() => void) | null>(null)
   const [isVisible, setIsVisible] = useState(false)
+  const isVisibleRef = useRef(false)
+  const hasInitializedRef = useRef(false)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
@@ -117,7 +119,9 @@ const LightRays: React.FC<LightRaysProps> = ({
     observerRef.current = new IntersectionObserver(
       (entries) => {
         const entry = entries[0]
-        setIsVisible(entry.isIntersecting)
+        const visible = entry.isIntersecting
+        isVisibleRef.current = visible
+        setIsVisible(visible)
       },
       { threshold: 0 },
     )
@@ -135,6 +139,12 @@ const LightRays: React.FC<LightRaysProps> = ({
   useEffect(() => {
     if (!isVisible || !containerRef.current) return
 
+    // If already initialized and only visibility changed, skip — the render loop
+    // handles pause/resume via isVisibleRef without destroying the WebGL context
+    if (hasInitializedRef.current && rendererRef.current) return
+
+    hasInitializedRef.current = true
+
     if (cleanupFunctionRef.current) {
       cleanupFunctionRef.current()
       cleanupFunctionRef.current = null
@@ -148,7 +158,7 @@ const LightRays: React.FC<LightRaysProps> = ({
       if (!containerRef.current) return
 
       const renderer = new Renderer({
-        dpr: Math.min(window.devicePixelRatio, 2),
+        dpr: Math.min(window.devicePixelRatio, 1.5),
         alpha: true,
       })
       rendererRef.current = renderer
@@ -297,7 +307,7 @@ void main() {
       const updatePlacement = () => {
         if (!containerRef.current || !renderer) return
 
-        renderer.dpr = Math.min(window.devicePixelRatio, 2)
+        renderer.dpr = Math.min(window.devicePixelRatio, 1.5)
 
         const { clientWidth: wCSS, clientHeight: hCSS } = containerRef.current
         renderer.setSize(wCSS, hCSS)
@@ -313,10 +323,30 @@ void main() {
         uniforms.rayDir.value = dir
       }
 
+      let resizeTimeout: ReturnType<typeof setTimeout>
+      const debouncedResize = () => {
+        clearTimeout(resizeTimeout)
+        resizeTimeout = setTimeout(updatePlacement, 200)
+      }
+
+      let lastFrame = 0
       const loop = (t: number) => {
         if (!rendererRef.current || !uniformsRef.current || !meshRef.current) {
           return
         }
+
+        // Skip rendering if not visible (but keep loop alive)
+        if (!isVisibleRef.current) {
+          animationIdRef.current = requestAnimationFrame(loop)
+          return
+        }
+
+        // 30fps cap
+        if (t - lastFrame < 33.33) {
+          animationIdRef.current = requestAnimationFrame(loop)
+          return
+        }
+        lastFrame = t
 
         uniforms.iTime.value = t * 0.001
 
@@ -340,7 +370,7 @@ void main() {
         }
       }
 
-      window.addEventListener('resize', updatePlacement)
+      window.addEventListener('resize', debouncedResize)
       updatePlacement()
       animationIdRef.current = requestAnimationFrame(loop)
 
@@ -350,7 +380,8 @@ void main() {
           animationIdRef.current = null
         }
 
-        window.removeEventListener('resize', updatePlacement)
+        clearTimeout(resizeTimeout)
+        window.removeEventListener('resize', debouncedResize)
 
         if (renderer) {
           try {
@@ -377,6 +408,7 @@ void main() {
     initializeWebGL()
 
     return () => {
+      hasInitializedRef.current = false
       if (cleanupFunctionRef.current) {
         cleanupFunctionRef.current()
         cleanupFunctionRef.current = null
@@ -435,7 +467,12 @@ void main() {
   ])
 
   useEffect(() => {
+    let lastMouseUpdate = 0
     const handleMouseMove = (e: MouseEvent) => {
+      const now = performance.now()
+      if (now - lastMouseUpdate < 33.33) return // ~30hz
+      lastMouseUpdate = now
+
       if (!containerRef.current || !rendererRef.current) return
       const rect = containerRef.current.getBoundingClientRect()
       const x = (e.clientX - rect.left) / rect.width
