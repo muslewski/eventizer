@@ -1,4 +1,5 @@
 import { getPayload, Locale } from 'payload'
+import { cache } from 'react'
 import configPromise from '@payload-config'
 import { notFound } from 'next/navigation'
 import { OfferHero, OfferDetails, ContactInfo } from './components'
@@ -69,7 +70,7 @@ export default async function OfferPage({ params }: Args) {
   )
 }
 
-const queryOfferPageBySlug = async ({ slug, lang }: { slug: string; lang: Locale }) => {
+const queryOfferPageBySlug = cache(async ({ slug, lang }: { slug: string; lang: Locale }) => {
   const payload = await getPayload({
     config: configPromise,
   })
@@ -97,4 +98,4 @@ const queryOfferPageBySlug = async ({ slug, lang }: { slug: string; lang: Locale
   })
 
   return result.docs?.[0] || null
-}
+})
