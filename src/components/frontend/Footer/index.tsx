@@ -3,7 +3,7 @@
 import FooterList from '@/components/frontend/Footer/FooterList'
 import HeaderLogo from '@/components/frontend/Header/Logo'
 import { Button } from '@/components/ui/button'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { FaInstagram, FaFacebook } from 'react-icons/fa'
 import Link from 'next/link'
@@ -124,7 +124,7 @@ export default function Footer() {
               {
                 href: 'https://goo.gl/maps/example',
                 icon: MapPin,
-                text: 'ul. Przykładowa 1, 00-001 Warszawa',
+                text: 'Lublin',
                 external: true,
               },
             ].map((item, index) => (

@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { FC, useCallback, useState, useEffect, useMemo, useRef } from 'react'
 import { getNavIcon } from './navIconMap'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { CustomNavGroup } from './CustomNavGroup'
 import { cn } from '@/lib/utils'
 

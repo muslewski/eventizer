@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Construction, Clock, Rocket, Sparkles, Hammer, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { TitleH2 } from '@/components/frontend/Content/TitleH2'

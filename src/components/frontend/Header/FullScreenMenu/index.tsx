@@ -1,7 +1,7 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
-import type { Transition } from 'framer-motion'
+import { motion, AnimatePresence } from 'motion/react'
+import type { Transition } from 'motion/react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'

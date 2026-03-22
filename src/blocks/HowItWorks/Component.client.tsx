@@ -8,8 +8,8 @@ import { type HowItWorksBlock as HowItWorksProps } from '@/payload-types'
 import Image from 'next/image'
 import { useState } from 'react'
 import backgroundImage from '@/assets/howItWorks/how-it-works-background-compressed.png'
-import { AnimatePresence, motion } from 'framer-motion'
-import { type Transition } from 'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
+import { type Transition } from 'motion/react'
 import { User, Briefcase } from 'lucide-react'
 
 interface HowItWorksClientProps extends HowItWorksProps {

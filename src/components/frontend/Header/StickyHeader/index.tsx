@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { motion, useScroll, useMotionValueEvent } from 'motion/react'
 
 import HeaderLogo from '@/components/frontend/Header/Logo'
 import { Button } from '@/components/ui/button'

@@ -1,7 +1,7 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import type { Transition } from 'framer-motion'
+import { motion } from 'motion/react'
+import type { Transition } from 'motion/react'
 
 export default function AnimatedMenuIcon({ isOpen }: { isOpen: boolean }) {
   const springTransition: Transition = {

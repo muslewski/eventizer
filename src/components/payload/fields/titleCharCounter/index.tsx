@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormFields } from '@payloadcms/ui'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 
 const MAX_DISPLAY = 80
 const WARN_THRESHOLD = 72

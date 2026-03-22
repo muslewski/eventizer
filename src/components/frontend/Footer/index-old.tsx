@@ -45,7 +45,7 @@ export default function Footer() {
               <Button variant="link" className="text-primary/75 h-fit" asChild>
                 <Link href="https://goo.gl/maps/example" target="_blank" rel="noopener noreferrer">
                   <MapPin />
-                  <span className="text-wrap">ul. Przykładowa 1, 00-001 Warszawa</span>
+                  <span className="text-wrap">Lublin</span>
                 </Link>
               </Button>
             </li>

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { motion, type Variants, type Transition } from 'framer-motion'
+import { motion, type Variants, type Transition } from 'motion/react'
 import {
   Zap,
   Gift,
