@@ -6,6 +6,7 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '60mb',
     },
+    optimizePackageImports: ['lucide-react', 'motion', 'embla-carousel-react'],
   },
 
   serverExternalPackages: ['graphql'],
