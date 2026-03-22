@@ -7,6 +7,7 @@ import SearchBar from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar'
 import CategorySelection from '@/app/(frontend)/[lang]/ogloszenia/ListView/CategorySelection'
 import { SortOption } from '@/app/(frontend)/[lang]/ogloszenia/ListView/types'
 import { ListViewTransitionProvider } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
+import { GoogleMapsProvider } from '@/components/providers/GoogleMapsProvider'
 
 export interface PaginationInfo {
   currentPage: number
@@ -48,6 +49,7 @@ export default function ClientListView({
   const pathname = usePathname()
 
   return (
+    <GoogleMapsProvider>
     <ListViewTransitionProvider>
     <div
       className="flex flex-col md:flex-row w-full -mt-8 pt-8 gap-8 md:h-screen md:max-h-screen "
@@ -87,5 +89,6 @@ export default function ClientListView({
       </div> */}
     </div>
     </ListViewTransitionProvider>
+    </GoogleMapsProvider>
   )
 }

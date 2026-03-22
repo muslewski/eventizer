@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Offer } from '@/payload-types'
-import { useGoogleMaps } from '@/components/providers/GoogleMapsProvider'
+import { useGoogleMaps, GoogleMapsProvider } from '@/components/providers/GoogleMapsProvider'
 import { MapPin } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useTheme } from 'next-themes'
@@ -14,7 +14,7 @@ interface OfferMapProps {
   offer: Offer
 }
 
-export const OfferMap: React.FC<OfferMapProps> = ({ offer }) => {
+const OfferMapInner: React.FC<OfferMapProps> = ({ offer }) => {
   const { isLoaded } = useGoogleMaps()
   const { resolvedTheme } = useTheme()
   const isDark = resolvedTheme === 'dark'
@@ -186,6 +186,12 @@ export const OfferMap: React.FC<OfferMapProps> = ({ offer }) => {
     </motion.section>
   )
 }
+
+export const OfferMap: React.FC<OfferMapProps> = ({ offer }) => (
+  <GoogleMapsProvider>
+    <OfferMapInner offer={offer} />
+  </GoogleMapsProvider>
+)
 
 /**
  * Calculate appropriate zoom level based on service radius in km.

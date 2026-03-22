@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { useGoogleMaps } from '@/components/providers/GoogleMapsProvider'
+import { LazyGoogleMapsProvider } from '@/components/providers/LazyGoogleMapsProvider'
 import { useTheme } from 'next-themes'
 import { MapPin, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
@@ -250,7 +251,7 @@ function formatPrice(pin: OfferPin): string {
   return ''
 }
 
-export const OffersMapClient: React.FC<OffersMapClientProps> = ({
+const OffersMapClientInner: React.FC<OffersMapClientProps> = ({
   heading,
   description,
   pins,
@@ -670,3 +671,9 @@ export const OffersMapClient: React.FC<OffersMapClientProps> = ({
     </motion.section>
   )
 }
+
+export const OffersMapClient: React.FC<OffersMapClientProps> = (props) => (
+  <LazyGoogleMapsProvider>
+    <OffersMapClientInner {...props} />
+  </LazyGoogleMapsProvider>
+)
