@@ -47,7 +47,7 @@ export const BlockHeader: React.FC<BlockHeaderProps> = ({
       {badge && <Badge variant={badge.variant ?? 'golden'}>{badge.label}</Badge>}
       <div className="flex flex-col items-center">
         <TitleH2 align="center" title={heading} />
-        {description && <p className="text-muted-foreground max-w-2xl">{description}</p>}
+        {description && <p className="text-muted-foreground max-w-2xl px-4 sm:px-0">{description}</p>}
       </div>
       {children}
     </div>
