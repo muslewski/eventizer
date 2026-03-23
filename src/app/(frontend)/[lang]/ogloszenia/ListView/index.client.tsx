@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { Offer, ServiceCategory } from '@/payload-types'
 import OffersView from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView'
 import { usePathname } from 'next/navigation'
@@ -31,6 +32,7 @@ interface ClientListViewProps {
   currentDistance?: number
   minCena?: number
   maxCena?: number
+  seed?: number
 }
 
 export default function ClientListView({
@@ -43,8 +45,16 @@ export default function ClientListView({
   currentDistance,
   minCena,
   maxCena,
+  seed,
 }: ClientListViewProps) {
   const pathname = usePathname()
+
+  // Persist the server-generated seed as a cookie so pagination keeps the same random order
+  useEffect(() => {
+    if (seed !== undefined) {
+      document.cookie = `random-seed=${seed}; path=/; SameSite=Lax`
+    }
+  }, [seed])
 
   return (
     <GoogleMapsProvider>

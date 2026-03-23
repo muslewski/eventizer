@@ -46,6 +46,7 @@ export default async function ListView({ payload, ...searchParams }: ListViewPro
       currentDistance={params.odleglosc}
       minCena={params.minCena}
       maxCena={params.maxCena}
+      seed={params.seed}
     />
   )
 }
