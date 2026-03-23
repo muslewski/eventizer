@@ -6,8 +6,9 @@ import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListVi
 import type { SortOption } from '@/app/(frontend)/[lang]/ogloszenia/ListView/types'
 import { MapPin, ArrowUpDown, DollarSign, Search, Tag, X } from 'lucide-react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback } from 'react'
 import { useGoogleMaps } from '@/components/providers/GoogleMapsProvider'
+import { useReverseGeocode } from '../../hooks/useReverseGeocode'
 
 interface ActiveFiltersProps {
   currentSort: SortOption
@@ -35,37 +36,11 @@ export default function ActiveFilters({
   const currentSearch = searchParams.get('szukaj')
   const currentCategory = searchParams.get('kategoria')
 
-  // Resolve location name from coordinates
-  const [locationName, setLocationName] = useState<string | null>(null)
-  const prevCoordsRef = useRef<string | null>(null)
-
-  useEffect(() => {
-    const coordsKey = currentLat && currentLng ? `${currentLat},${currentLng}` : null
-
-    if (!coordsKey) {
-      setLocationName(null)
-      prevCoordsRef.current = null
-      return
-    }
-
-    // Skip if we already resolved this pair
-    if (coordsKey === prevCoordsRef.current) return
-    prevCoordsRef.current = coordsKey
-
-    if (!isLoaded) return
-
-    const geocoder = new google.maps.Geocoder()
-    geocoder.geocode(
-      { location: { lat: currentLat!, lng: currentLng! } },
-      (results, status) => {
-        if (status === 'OK' && results && results.length > 0) {
-          const locality = results.find((r) => r.types.includes('locality'))
-          const name = locality ? locality.formatted_address : results[0].formatted_address
-          setLocationName(name.split(',')[0])
-        }
-      },
-    )
-  }, [currentLat, currentLng, isLoaded])
+  const { locationName } = useReverseGeocode({
+    lat: currentLat,
+    lng: currentLng,
+    isLoaded,
+  })
 
   const removeParam = useCallback(
     (...keys: string[]) => {

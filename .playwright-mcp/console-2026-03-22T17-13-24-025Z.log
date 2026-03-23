@@ -1028,3 +1028,115 @@ Read more: https://nextjs.org/docs/messages/next-image-unconfigured-qualities @ 
 [ 4170877ms] [WARNING] Image with src "/api/offer-uploads/file/IMG_1524.webp" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3001/_next/static/chunks/a2186_next_dist_c97569e9._.js:2297
 [ 4170940ms] [WARNING] Image with src "/api/offer-uploads/file/IMG_1908-1.webp" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3001/_next/static/chunks/a2186_next_dist_c97569e9._.js:2297
 [ 4171024ms] [WARNING] Image with src "/api/offer-uploads/file/IMG_1843-4.webp" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes @ http://localhost:3001/_next/static/chunks/a2186_next_dist_c97569e9._.js:2297
+[ 4965911ms] [ERROR] ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx:5:1
+Export OfferListCard doesn't exist in target module
+  3 | import { useRef, useState, useCallback, useEffect, useTransition } from 'react'
+  4 | import { PaginationInfo } from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.client'
+> 5 | import { OfferListCard } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { OfferCardSkeleton } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/Skeleton'
+  7 | import PaginationControls from '@/app/(frontend)/[lang]/ogloszenia/ListView/PaginationControls'
+  8 | import { ScrollArea } from '@/components/ui/scroll-area'
+
+The export OfferListCard was not found in module [project]/src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/index.tsx [app-client] (ecmascript).
+The module has no exports at all.
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx [Client Component Browser]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Client Component Browser]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx [Client Component SSR]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Client Component SSR]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/page.tsx [Server Component] @ http://localhost:3001/_next/static/chunks/a2186_next_dist_c97569e9._.js:3127
+[ 4965911ms] [ERROR] ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx:5:1
+Export OfferListCard doesn't exist in target module
+  3 | import { useRef, useState, useCallback, useEffect, useTransition } from 'react'
+  4 | import { PaginationInfo } from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.client'
+> 5 | import { OfferListCard } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { OfferCardSkeleton } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/Skeleton'
+  7 | import PaginationControls from '@/app/(frontend)/[lang]/ogloszenia/ListView/PaginationControls'
+  8 | import { ScrollArea } from '@/components/ui/scroll-area'
+
+The export OfferListCard was not found in module [project]/src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/index.tsx [app-ssr] (ecmascript).
+The module has no exports at all.
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx [Client Component Browser]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Client Component Browser]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx [Client Component SSR]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Client Component SSR]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/page.tsx [Server Component] @ http://localhost:3001/_next/static/chunks/a2186_next_dist_c97569e9._.js:3127
+[ 4971243ms] [ERROR] ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx:5:1
+Export OfferListCard doesn't exist in target module
+  3 | import { useRef, useState, useCallback, useEffect, useTransition } from 'react'
+  4 | import { PaginationInfo } from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.client'
+> 5 | import { OfferListCard } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { OfferCardSkeleton } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/Skeleton'
+  7 | import PaginationControls from '@/app/(frontend)/[lang]/ogloszenia/ListView/PaginationControls'
+  8 | import { ScrollArea } from '@/components/ui/scroll-area'
+
+The export OfferListCard was not found in module [project]/src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/index.tsx [app-client] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx [Client Component Browser]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Client Component Browser]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx [Client Component SSR]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Client Component SSR]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/page.tsx [Server Component] @ http://localhost:3001/_next/static/chunks/a2186_next_dist_c97569e9._.js:3127
+[ 4971243ms] [ERROR] ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx:5:1
+Export OfferListCard doesn't exist in target module
+  3 | import { useRef, useState, useCallback, useEffect, useTransition } from 'react'
+  4 | import { PaginationInfo } from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.client'
+> 5 | import { OfferListCard } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard'
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import { OfferCardSkeleton } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/Skeleton'
+  7 | import PaginationControls from '@/app/(frontend)/[lang]/ogloszenia/ListView/PaginationControls'
+  8 | import { ScrollArea } from '@/components/ui/scroll-area'
+
+The export OfferListCard was not found in module [project]/src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/index.tsx [app-ssr] (ecmascript).
+Did you mean to import default?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx [Client Component Browser]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Client Component Browser]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/index.tsx [Client Component SSR]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Client Component SSR]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.client.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/ListView/index.tsx [Server Component]
+    ./src/app/(frontend)/[lang]/ogloszenia/page.tsx [Server Component] @ http://localhost:3001/_next/static/chunks/a2186_next_dist_c97569e9._.js:3127

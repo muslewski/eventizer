@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useCallback, useRef, useEffect } from 'react'
+import { useReverseGeocode } from '../../../hooks/useReverseGeocode'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 import {
@@ -62,32 +63,24 @@ export default function LocationSearch({
     }
   }, [isLoaded])
 
-  // Reverse-geocode current coordinates to show location name
+  const { locationName: reverseGeocodedName } = useReverseGeocode({
+    lat: currentLat,
+    lng: currentLng,
+    isLoaded,
+  })
+
   useEffect(() => {
-    if (currentLat && currentLng && isLoaded && !selectedLocation && !isClearingRef.current) {
-      const geocoder = new google.maps.Geocoder()
-      geocoder.geocode(
-        { location: { lat: currentLat, lng: currentLng } },
-        (results, status) => {
-          if (isClearingRef.current) return
-          if (status === 'OK' && results && results.length > 0) {
-            // Find a locality result
-            const locality = results.find((r) =>
-              r.types.includes('locality'),
-            )
-            const name = locality
-              ? locality.formatted_address
-              : results[0].formatted_address
-            setSelectedLocation(name.split(',')[0]) // Just city name
-          }
-        },
-      )
+    if (reverseGeocodedName && !selectedLocation && !isClearingRef.current) {
+      setSelectedLocation(reverseGeocodedName)
     }
-    // Reset clearing flag once lat/lng are actually gone
+  }, [reverseGeocodedName, selectedLocation])
+
+  // Reset clearing flag once lat/lng are actually gone
+  useEffect(() => {
     if (!currentLat && !currentLng) {
       isClearingRef.current = false
     }
-  }, [currentLat, currentLng, isLoaded, selectedLocation])
+  }, [currentLat, currentLng])
 
   // Close suggestions on outside click
   useEffect(() => {
