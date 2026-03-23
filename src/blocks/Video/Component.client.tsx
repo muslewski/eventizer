@@ -5,6 +5,7 @@ import { Play, PlayIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { cn } from '@/lib/utils'
+import { getVideoAspectClasses } from '@/lib/getVideoAspectClasses'
 
 interface VideoClientProps {
   heading: string
@@ -12,6 +13,7 @@ interface VideoClientProps {
   videoUrl: string
   videoTitle: string
   mimeType: string
+  aspectRatio?: string
   className?: string
 }
 
@@ -21,8 +23,10 @@ export const VideoClient: React.FC<VideoClientProps> = ({
   videoUrl,
   videoTitle,
   mimeType,
+  aspectRatio,
   className,
 }) => {
+  const aspectClasses = getVideoAspectClasses(aspectRatio)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
@@ -64,10 +68,10 @@ export const VideoClient: React.FC<VideoClientProps> = ({
             whileHover={!isPlaying ? { scale: 1.01 } : {}}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
-            <div className="relative w-full aspect-video bg-black">
+            <div className={cn('relative w-full bg-black', aspectClasses)}>
               <video
                 ref={videoRef}
-                className="w-full max-h-[600px] object-contain aspect-video"
+                className={cn('w-full object-contain', aspectClasses)}
                 controls={hasStarted}
                 preload="metadata"
                 playsInline

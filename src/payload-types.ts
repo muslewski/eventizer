@@ -929,6 +929,10 @@ export interface VideoBlock {
    * Upload an MP4 or WebM video file.
    */
   video: number | Media;
+  /**
+   * Choose the aspect ratio that matches your video.
+   */
+  aspectRatio?: ('16:9' | '9:16' | '1:1') | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'video';
@@ -1639,6 +1643,7 @@ export interface VideoBlockSelect<T extends boolean = true> {
   heading?: T;
   description?: T;
   video?: T;
+  aspectRatio?: T;
   id?: T;
   blockName?: T;
 }
