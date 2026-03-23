@@ -6,6 +6,8 @@ import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import { Clapperboard, Play } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
+import { cn } from '@/lib/utils'
+import { getVideoAspectClasses } from '@/lib/getVideoAspectClasses'
 
 interface OfferVideoProps {
   offer: Offer
@@ -32,6 +34,8 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
       mimeType: video.mimeType ?? 'video/mp4',
     }
   }, [offer.video, offer.title])
+
+  const aspectClasses = getVideoAspectClasses(offer.videoAspectRatio)
 
   const handlePlay = useCallback(() => {
     const video = videoRef.current
@@ -78,7 +82,7 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
           {videoError ? (
-            <div className="w-full aspect-video flex items-center justify-center bg-muted rounded-lg">
+            <div className={cn('w-full flex items-center justify-center bg-muted rounded-lg', aspectClasses)}>
               <div className="text-center text-muted-foreground">
                 <p>Nie udało się załadować wideo</p>
                 <button
@@ -91,10 +95,10 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
             </div>
           ) : (
             <>
-               <div className="relative w-full aspect-video bg-black">
+               <div className={cn('relative w-full bg-black', aspectClasses)}>
           <video
             ref={videoRef}
-            className="w-full max-h-[600px] object-contain aspect-video"
+            className={cn('w-full object-contain', aspectClasses)}
             controls={hasStarted}
             preload="metadata"
             playsInline

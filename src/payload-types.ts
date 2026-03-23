@@ -560,6 +560,10 @@ export interface Offer {
    */
   video?: (number | null) | OfferVideoUpload;
   /**
+   * Choose the aspect ratio that matches your video.
+   */
+  videoAspectRatio?: ('16:9' | '9:16' | '1:1') | null;
+  /**
    * Phone number related to the offer.
    */
   phone?: string | null;
@@ -1728,6 +1732,7 @@ export interface OffersSelect<T extends boolean = true> {
         id?: T;
       };
   video?: T;
+  videoAspectRatio?: T;
   phone?: T;
   email?: T;
   location?:
