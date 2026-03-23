@@ -87,8 +87,7 @@ export const Background: React.FC<BackgroundProps> = ({
       <HorizontalLines lines={lines} />
 
       {/* Primary gradient overlay */}
-      <div className="absolute inset-0 hidden dark:block bg-linear-to-br from-transparent via-black/30 to-black/90" />
-      <div className="absolute inset-0 block dark:hidden bg-linear-to-b from-transparent via-black/50 to-black/90" />
+      <div className="absolute inset-0  bg-linear-to-b from-transparent via-black/50 to-black/90" />
 
       {/* Accent color glow */}
       <div className="absolute bottom-0 left-5/6 sm:left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[100px] opacity-50 " />

@@ -568,7 +568,7 @@ export interface Offer {
    */
   email?: string | null;
   /**
-   * Search for your address using Google Places autocomplete.
+   * Search for your address or city. You can enter a specific address or just a city name if you serve the entire area.
    */
   location: {
     address: string;
