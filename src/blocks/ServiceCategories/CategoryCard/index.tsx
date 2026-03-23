@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ImageIcon } from 'lucide-react'
 import { getIconUrl } from '@/blocks/ServiceCategories/utils'
+import { pluralize } from '@/utilities/pluralize'
 
 interface CategoryCardProps {
   category: ServiceCategory
@@ -110,7 +111,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick, i
       {/* Subcategory count indicator */}
       {category.subcategory_level_1 && category.subcategory_level_1.length > 0 && (
         <span className="text-xs text-muted-foreground">
-          {category.subcategory_level_1.length} podkategorii
+          {pluralize(category.subcategory_level_1.length, 'podkategoria', 'podkategorie', 'podkategorii')}
         </span>
       )}
       </div>
