@@ -15,6 +15,7 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
+  const [videoError, setVideoError] = useState(false)
 
   const videoData = useMemo(() => {
     if (!offer.video) return null
@@ -76,6 +77,20 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
             whileHover={!isPlaying ? { scale: 1.015 } : {}}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
+          {videoError ? (
+            <div className="w-full aspect-video flex items-center justify-center bg-muted rounded-lg">
+              <div className="text-center text-muted-foreground">
+                <p>Nie udało się załadować wideo</p>
+                <button
+                  onClick={() => { setVideoError(false); videoRef.current?.load() }}
+                  className="mt-2 text-sm text-primary underline"
+                >
+                  Spróbuj ponownie
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
                <div className="relative w-full aspect-video bg-black">
           <video
             ref={videoRef}
@@ -87,6 +102,7 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
             onPause={handleVideoPause}
             onPlay={handleVideoPlay}
             onEnded={() => setIsPlaying(false)}
+            onError={() => setVideoError(true)}
           >
             <source src={`${videoData.url}#t=0.001`} type={videoData.mimeType} />
             Your browser does not support the video tag.
@@ -130,6 +146,8 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
               </motion.button>
             )}
           </AnimatePresence>
+            </>
+          )}
           </motion.div>
         </div>
       </div>

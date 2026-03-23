@@ -23,6 +23,7 @@ const OfferMapInner: React.FC<OfferMapProps> = ({ offer }) => {
   const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null)
   const circleRef = useRef<google.maps.Circle | null>(null)
   const [mapReady, setMapReady] = useState(false)
+  const [mapError, setMapError] = useState(false)
 
   const lat = offer.location?.lat
   const lng = offer.location?.lng
@@ -31,6 +32,14 @@ const OfferMapInner: React.FC<OfferMapProps> = ({ offer }) => {
 
   // Don't render if no location coordinates
   if (!lat || !lng) return null
+
+  useEffect(() => {
+    if (mapReady) return
+    const timeout = setTimeout(() => {
+      if (!mapReady) setMapError(true)
+    }, 10000)
+    return () => clearTimeout(timeout)
+  }, [mapReady])
 
   useEffect(() => {
     if (!isLoaded || !mapRef.current || mapInstanceRef.current) return
@@ -175,10 +184,14 @@ const OfferMapInner: React.FC<OfferMapProps> = ({ offer }) => {
           {/* Loading state */}
           {!mapReady && (
             <div className="absolute inset-0 bg-muted/50 flex items-center justify-center">
-              <div className="flex flex-col items-center gap-2">
-                <div className="size-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-                <p className="text-sm text-muted-foreground">Ładowanie mapy...</p>
-              </div>
+              {mapError ? (
+                <p className="text-sm text-muted-foreground">Nie udało się załadować mapy</p>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <div className="size-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                  <p className="text-sm text-muted-foreground">Ładowanie mapy...</p>
+                </div>
+              )}
             </div>
           )}
         </div>
