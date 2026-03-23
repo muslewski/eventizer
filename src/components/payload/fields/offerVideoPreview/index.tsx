@@ -9,7 +9,10 @@ import { useEffect, useState } from 'react'
  */
 export default function OfferVideoPreview() {
   const videoField = useFormFields(([fields]) => fields['video'])
+  const aspectRatioField = useFormFields(([fields]) => fields['videoAspectRatio'])
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
+
+  const aspectRatio = (aspectRatioField?.value as string) || '16:9'
 
   useEffect(() => {
     async function resolveUrl() {
@@ -74,13 +77,17 @@ export default function OfferVideoPreview() {
       </div>
       <div style={{ padding: '1rem', display: 'flex', justifyContent: 'center' }}>
         <video
+          key={aspectRatio}
           src={videoUrl}
           controls
           preload="metadata"
           style={{
-            maxWidth: '100%',
+            maxWidth: aspectRatio === '9:16' ? '240px' : '100%',
             maxHeight: '400px',
             borderRadius: '6px',
+            aspectRatio: aspectRatio === '9:16' ? '9/16' : aspectRatio === '1:1' ? '1/1' : '16/9',
+            objectFit: 'contain',
+            background: 'black',
           }}
         >
           Your browser does not support the video tag.
