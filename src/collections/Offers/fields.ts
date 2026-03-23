@@ -322,6 +322,27 @@ export const offersFields: Field[] = [
             },
           },
           {
+            name: 'videoAspectRatio',
+            type: 'select',
+            defaultValue: '16:9',
+            label: {
+              en: 'Video Aspect Ratio',
+              pl: 'Proporcje wideo',
+            },
+            options: [
+              { label: { en: 'Landscape (16:9)', pl: 'Poziome (16:9)' }, value: '16:9' },
+              { label: { en: 'Vertical (9:16)', pl: 'Pionowe (9:16)' }, value: '9:16' },
+              { label: { en: 'Square (1:1)', pl: 'Kwadratowe (1:1)' }, value: '1:1' },
+            ],
+            admin: {
+              description: {
+                en: 'Choose the aspect ratio that matches your video.',
+                pl: 'Wybierz proporcje odpowiadające Twojemu wideo.',
+              },
+              condition: (data) => Boolean(data?.video),
+            },
+          },
+          {
             name: 'videoPreview',
             type: 'ui',
             admin: {
