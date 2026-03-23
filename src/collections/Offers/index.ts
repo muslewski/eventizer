@@ -72,6 +72,7 @@ export const Offers: CollectionConfig = {
       serviceRadius: true,
     },
     video: true,
+    videoAspectRatio: true,
     meta: {
       image: true,
     },
