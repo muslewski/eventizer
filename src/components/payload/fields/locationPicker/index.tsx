@@ -116,7 +116,7 @@ export const LocationPicker: TextFieldClientComponent = (props) => {
         {
           input,
           componentRestrictions: { country: 'pl' },
-          types: ['address'],
+          types: ['geocode'],
         },
         (predictions, status) => {
           setIsLoading(false)
@@ -209,7 +209,7 @@ export const LocationPicker: TextFieldClientComponent = (props) => {
           readOnly={readOnly || !mapsLoaded}
           placeholder={
             mapsLoaded
-              ? 'Wpisz adres, aby wyszukać...'
+              ? 'Wpisz adres lub miasto...'
               : 'Ładowanie Google Maps...'
           }
           showError={addressField.showError}

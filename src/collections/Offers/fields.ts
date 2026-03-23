@@ -375,8 +375,8 @@ export const offersFields: Field[] = [
             },
             admin: {
               description: {
-                en: 'Search for your address using Google Places autocomplete.',
-                pl: 'Wyszukaj swój adres za pomocą autouzupełniania Google Places.',
+                en: 'Search for your address or city. You can enter a specific address or just a city name if you serve the entire area.',
+                pl: 'Wyszukaj swój adres lub miasto. Możesz podać dokładny adres lub samo miasto, jeśli obsługujesz cały obszar.',
               },
             },
             fields: [
