@@ -2,6 +2,7 @@ import ClientListView from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.cl
 import type { BasePayload } from 'payload'
 import type { OfferSearchParams } from './types'
 import { parseSearchParams, queryOffers } from './utils'
+import { cookies } from 'next/headers'
 
 interface ListViewProps {
   payload: BasePayload
@@ -17,7 +18,11 @@ interface ListViewProps {
 }
 
 export default async function ListView({ payload, ...searchParams }: ListViewProps) {
-  const params = await parseSearchParams(searchParams as OfferSearchParams)
+  const cookieStore = await cookies()
+  const cookieSeed = cookieStore.get('random-seed')?.value
+  const seed = cookieSeed ? Number(cookieSeed) : undefined
+
+  const params = parseSearchParams(searchParams as OfferSearchParams, seed)
 
   // Query offers with all filters and sorting
   const { offers, pagination } = await queryOffers(payload, params)
