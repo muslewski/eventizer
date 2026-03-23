@@ -7,7 +7,8 @@ import { Clapperboard, Play } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { cn } from '@/lib/utils'
-import { getVideoAspectClasses } from '@/lib/getVideoAspectClasses'
+import { getVideoAspectConfig } from '@/lib/getVideoAspectClasses'
+import { AspectRatio } from '@/components/ui/aspect-ratio'
 
 interface OfferVideoProps {
   offer: Offer
@@ -35,7 +36,7 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
     }
   }, [offer.video, offer.title])
 
-  const aspectClasses = getVideoAspectClasses(offer.videoAspectRatio)
+  const { ratio: numericRatio, wrapperClass } = getVideoAspectConfig(offer.videoAspectRatio)
 
   const handlePlay = useCallback(() => {
     const video = videoRef.current
@@ -71,7 +72,7 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
         lines
       />
 
-      <div className="w-full max-w-4xl mx-auto px-4 mt-16">
+      <div className={cn('w-full max-w-4xl mx-auto px-4 mt-16', wrapperClass)}>
         {/* Outer border wrapper — never scaled, so border stays crisp */}
         <div className="relative rounded-[0.8rem] overflow-hidden">
           {/* Inner content — scales on hover without affecting the border */}
@@ -82,7 +83,7 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
           {videoError ? (
-            <div className={cn('w-full flex items-center justify-center bg-muted rounded-lg', aspectClasses)}>
+            <AspectRatio ratio={numericRatio} className="flex items-center justify-center bg-muted rounded-lg">
               <div className="text-center text-muted-foreground">
                 <p>Nie udało się załadować wideo</p>
                 <button
@@ -92,25 +93,26 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
                   Spróbuj ponownie
                 </button>
               </div>
-            </div>
+            </AspectRatio>
           ) : (
             <>
-               <div className={cn('relative w-full bg-black', aspectClasses)}>
-          <video
-            ref={videoRef}
-            className={cn('w-full object-contain', aspectClasses)}
-            controls={hasStarted}
-            preload="metadata"
-            playsInline
-            controlsList="nodownload"
-            onPause={handleVideoPause}
-            onPlay={handleVideoPlay}
-            onEnded={() => setIsPlaying(false)}
-            onError={() => setVideoError(true)}
-          >
-            <source src={`${videoData.url}#t=0.001`} type={videoData.mimeType} />
-            Your browser does not support the video tag.
-          </video></div>
+            <AspectRatio ratio={numericRatio} className="bg-black">
+              <video
+                ref={videoRef}
+                className="w-full h-full object-contain"
+                controls={hasStarted}
+                preload="metadata"
+                playsInline
+                controlsList="nodownload"
+                onPause={handleVideoPause}
+                onPlay={handleVideoPlay}
+                onEnded={() => setIsPlaying(false)}
+                onError={() => setVideoError(true)}
+              >
+                <source src={`${videoData.url}#t=0.001`} type={videoData.mimeType} />
+                Your browser does not support the video tag.
+              </video>
+            </AspectRatio>
 
           {/* Inner shadow overlay */}
           <div

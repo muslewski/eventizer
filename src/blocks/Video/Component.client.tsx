@@ -5,7 +5,8 @@ import { Play, PlayIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { cn } from '@/lib/utils'
-import { getVideoAspectClasses } from '@/lib/getVideoAspectClasses'
+import { getVideoAspectConfig } from '@/lib/getVideoAspectClasses'
+import { AspectRatio } from '@/components/ui/aspect-ratio'
 
 interface VideoClientProps {
   heading: string
@@ -26,7 +27,7 @@ export const VideoClient: React.FC<VideoClientProps> = ({
   aspectRatio,
   className,
 }) => {
-  const aspectClasses = getVideoAspectClasses(aspectRatio)
+  const { ratio: numericRatio, wrapperClass } = getVideoAspectConfig(aspectRatio)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
@@ -58,7 +59,7 @@ export const VideoClient: React.FC<VideoClientProps> = ({
     >
       <BlockHeader heading={heading} description={description} gap lines />
 
-      <div className="w-full max-w-5xl mx-auto px-4 mt-16">
+      <div className={cn('w-full max-w-5xl mx-auto px-4 mt-16', wrapperClass)}>
         {/* Outer border wrapper — never scaled, so border stays crisp */}
         <div className="relative rounded-[0.8rem] overflow-hidden shadow-2xl">
           {/* Inner content — scales on hover without affecting the border */}
@@ -68,10 +69,10 @@ export const VideoClient: React.FC<VideoClientProps> = ({
             whileHover={!isPlaying ? { scale: 1.01 } : {}}
             transition={{ duration: 0.35, ease: 'easeOut' }}
           >
-            <div className={cn('relative w-full bg-black', aspectClasses)}>
+            <AspectRatio ratio={numericRatio} className="bg-black">
               <video
                 ref={videoRef}
-                className={cn('w-full object-contain', aspectClasses)}
+                className="w-full h-full object-contain"
                 controls={hasStarted}
                 preload="metadata"
                 playsInline
@@ -84,7 +85,7 @@ export const VideoClient: React.FC<VideoClientProps> = ({
                 <source src={`${videoUrl}#t=0.001`} type={mimeType} />
                 Your browser does not support the video tag.
               </video>
-            </div>
+            </AspectRatio>
 
             {/* Inner shadow overlay */}
             <div
