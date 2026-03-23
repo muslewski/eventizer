@@ -49,8 +49,15 @@ export async function GET(
 
   // Build response headers
   const responseHeaders = new Headers()
+  // Normalise MIME types that browsers can't stream (e.g. video/quicktime
+  // for .MOV files) to video/mp4 so the browser plays them inline instead
+  // of triggering a download.
+  const BROWSER_PLAYABLE = new Set(['video/mp4', 'video/webm', 'video/ogg'])
   const contentType = response.headers.get('content-type')
-  if (contentType) responseHeaders.set('Content-Type', contentType)
+  if (contentType) {
+    const mime = contentType.split(';')[0].trim().toLowerCase()
+    responseHeaders.set('Content-Type', BROWSER_PLAYABLE.has(mime) ? contentType : 'video/mp4')
+  }
   const contentLength = response.headers.get('content-length')
   if (contentLength) responseHeaders.set('Content-Length', contentLength)
   const acceptRanges = response.headers.get('accept-ranges')

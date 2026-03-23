@@ -29,10 +29,22 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
     // (the direct Payload URL returns 403 for logged-in non-owners)
     const proxyUrl = `/api/offer-video/${encodeURIComponent(video.filename ?? '')}`
 
+    // Browsers don't recognise types like video/quicktime (.MOV) or
+    // video/x-matroska (.MKV) and will skip the <source> entirely.
+    // Normalise to video/mp4 for anything the browser can't handle natively
+    // — most of these containers use H.264/AAC which browsers play fine.
+    const BROWSER_PLAYABLE_TYPES = new Set([
+      'video/mp4',
+      'video/webm',
+      'video/ogg',
+    ])
+    const rawMime = video.mimeType ?? 'video/mp4'
+    const safeMime = BROWSER_PLAYABLE_TYPES.has(rawMime) ? rawMime : 'video/mp4'
+
     return {
       url: proxyUrl,
       title: video.title || offer.title,
-      mimeType: video.mimeType ?? 'video/mp4',
+      mimeType: safeMime,
     }
   }, [offer.video, offer.title])
 
