@@ -31,7 +31,6 @@ interface ClientListViewProps {
   currentDistance?: number
   minCena?: number
   maxCena?: number
-  seed?: number
 }
 
 export default function ClientListView({
@@ -44,7 +43,6 @@ export default function ClientListView({
   currentDistance,
   minCena,
   maxCena,
-  seed,
 }: ClientListViewProps) {
   const pathname = usePathname()
 
@@ -73,7 +71,7 @@ export default function ClientListView({
         </div>
 
         {/* Display offers */}
-        <OffersView offers={offers} pagination={pagination} pathname={pathname} seed={seed} />
+        <OffersView offers={offers} pagination={pagination} pathname={pathname} />
       </div>
 
       {/* right side with selected offers */}

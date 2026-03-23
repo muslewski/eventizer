@@ -22,7 +22,6 @@ export interface OfferSearchParams {
   odleglosc?: string
   minCena?: string
   maxCena?: string
-  seed?: string
 }
 
 export interface ParsedSearchParams {

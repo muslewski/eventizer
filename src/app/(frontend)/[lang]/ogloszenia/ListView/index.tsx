@@ -14,11 +14,10 @@ interface ListViewProps {
   odleglosc?: string
   minCena?: number
   maxCena?: number
-  seed?: string
 }
 
 export default async function ListView({ payload, ...searchParams }: ListViewProps) {
-  const params = parseSearchParams(searchParams as OfferSearchParams)
+  const params = await parseSearchParams(searchParams as OfferSearchParams)
 
   // Query offers with all filters and sorting
   const { offers, pagination } = await queryOffers(payload, params)
@@ -42,7 +41,6 @@ export default async function ListView({ payload, ...searchParams }: ListViewPro
       currentDistance={params.odleglosc}
       minCena={params.minCena}
       maxCena={params.maxCena}
-      seed={params.seed}
     />
   )
 }

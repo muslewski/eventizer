@@ -1,18 +1,18 @@
 import type { OfferSearchParams, ParsedSearchParams } from '../types'
 import { parseSortOption } from './sorting'
+import { cookies } from 'next/headers'
 
 const DEFAULT_LIMIT = 10
 const DEFAULT_DISTANCE_KM = 50
 
 /**
  * Generate a random seed (integer) for deterministic shuffling.
- * Used when random sort is active and no seed is provided in the URL.
  */
 function generateSeed(): number {
   return Math.floor(Math.random() * 2147483647) + 1
 }
 
-export function parseSearchParams(params: OfferSearchParams): ParsedSearchParams {
+export async function parseSearchParams(params: OfferSearchParams): Promise<ParsedSearchParams> {
   const lat = params.lat ? Number(params.lat) : undefined
   const lng = params.lng ? Number(params.lng) : undefined
 
@@ -21,11 +21,13 @@ export function parseSearchParams(params: OfferSearchParams): ParsedSearchParams
 
   const sortuj = parseSortOption(params.sortuj)
 
-  // For random sort, use existing seed from URL or generate a new one
-  const seed =
-    sortuj === 'random'
-      ? (params.seed ? Number(params.seed) : generateSeed())
-      : undefined
+  // For random sort, read seed from cookie or generate a new one
+  let seed: number | undefined
+  if (sortuj === 'random') {
+    const cookieStore = await cookies()
+    const cookieSeed = cookieStore.get('random-seed')?.value
+    seed = cookieSeed ? Number(cookieSeed) : generateSeed()
+  }
 
   return {
     page: Number(params.strona) || 1,

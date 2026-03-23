@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useCallback, useEffect, useTransition } from 'react'
+import { useRef, useState, useCallback, useTransition } from 'react'
 import { PaginationInfo } from '@/app/(frontend)/[lang]/ogloszenia/ListView/index.client'
 import OfferListCard from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard'
 import { OfferCardSkeleton } from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView/OfferListCard/Skeleton'
@@ -34,12 +34,10 @@ export default function OffersView({
   offers,
   pagination,
   pathname,
-  seed,
 }: {
   offers: Offer[] | null
   pagination: PaginationInfo
   pathname: string
-  seed?: number
 }) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -48,15 +46,6 @@ export default function OffersView({
   const [isAtTop, setIsAtTop] = useState(true)
   const [isAtBottom, setIsAtBottom] = useState(false)
   const viewportRef = useRef<HTMLDivElement>(null!)
-
-  // Inject seed into URL on first render so all subsequent navigations preserve it
-  useEffect(() => {
-    if (seed !== undefined && !searchParams.has('seed')) {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set('seed', String(seed))
-      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
-    }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleScroll = useCallback(() => {
     const viewport = viewportRef.current
@@ -74,11 +63,6 @@ export default function OffersView({
       const params = new URLSearchParams(searchParams.toString())
       params.set('strona', String(page))
 
-      // Preserve the random seed across page navigations
-      if (seed !== undefined) {
-        params.set('seed', String(seed))
-      }
-
       // Scroll the offers viewport to top when changing page
       viewportRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
 
@@ -91,7 +75,7 @@ export default function OffersView({
         router.push(`${pathname}?${params.toString()}`, { scroll: false })
       })
     },
-    [router, searchParams, pathname, seed],
+    [router, searchParams, pathname],
   )
 
   // Number of skeleton cards to show (match current page size or default)

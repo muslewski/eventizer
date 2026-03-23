@@ -29,12 +29,13 @@ export default function SortSelect({ currentSort }: SortSelectProps) {
 
       if (value === 'random') {
         params.delete('sortuj')
-        // Generate a fresh seed for the new random order
-        params.set('seed', String(Math.floor(Math.random() * 2147483647) + 1))
+        // Generate a fresh seed and store in cookie for server-side access
+        const seed = Math.floor(Math.random() * 2147483647) + 1
+        document.cookie = `random-seed=${seed}; path=/; SameSite=Lax`
       } else {
         params.set('sortuj', value)
-        // Remove seed when not using random sort
-        params.delete('seed')
+        // Clear seed cookie when not using random sort
+        document.cookie = 'random-seed=; path=/; max-age=0'
       }
 
       // Reset to page 1 when sorting changes
