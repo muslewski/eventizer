@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react'
 import { Offer } from '@/payload-types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
