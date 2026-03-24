@@ -28,8 +28,13 @@ export default function OffersCarousel({ offers }: { offers: Offer[] }) {
   const [allLoaded, setAllLoaded] = useState(false)
 
   useEffect(() => {
-    const id = requestIdleCallback(() => setAllLoaded(true))
-    return () => cancelIdleCallback(id)
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(() => setAllLoaded(true))
+      return () => window.cancelIdleCallback(id)
+    } else {
+      const timer = setTimeout(() => setAllLoaded(true), 100)
+      return () => clearTimeout(timer)
+    }
   }, [])
 
   const visibleOffers = allLoaded ? offers : offers.slice(0, INITIAL_SLIDES)
