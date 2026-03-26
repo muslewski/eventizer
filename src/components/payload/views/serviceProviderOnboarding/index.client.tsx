@@ -266,8 +266,7 @@ export function ServiceProviderOnboardingClient({
             throw new Error(betaResult.error || 'Nie udało się zaktualizować kategorii.')
           }
 
-          router.push('/app')
-          router.refresh()
+          window.location.href = '/app'
           return
         }
 
