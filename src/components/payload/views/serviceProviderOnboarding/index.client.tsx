@@ -254,6 +254,23 @@ export function ServiceProviderOnboardingClient({
       const categorySlugs = selectedCategories.map((cat) => cat.slug)
 
       if (isEditMode && currentSubscription?.hasSubscription) {
+        // Beta users have no Stripe subscription — just update their category directly
+        if (currentSubscription.isBetaUser) {
+          const betaResult = await activateBetaAccess({
+            userId: user.id,
+            categoryNames,
+            categorySlugs,
+          })
+
+          if (!betaResult.success) {
+            throw new Error(betaResult.error || 'Nie udało się zaktualizować kategorii.')
+          }
+
+          router.push('/app')
+          router.refresh()
+          return
+        }
+
         // Handle subscription update (with optional interval change)
         const result = await updateSubscription({
           userId: user.id,
@@ -345,6 +362,7 @@ export function ServiceProviderOnboardingClient({
   const getSubmitButtonText = () => {
     if (isSubmitting) return 'Przetwarzanie...'
     if (selectedPriceId === BETA_PRICE_ID) return 'Aktywuj dostęp beta'
+    if (isBetaEdit) return 'Zmień kategorię'
     if (isRenewMode) return 'Odnów subskrypcję'
     if (!isEditMode) return 'Kontynuuj'
 
@@ -362,8 +380,23 @@ export function ServiceProviderOnboardingClient({
     }
   }
 
+  const isBetaEdit = isEditMode && currentSubscription?.isBetaUser === true
+
   const getChangeAlert = () => {
     if (!isComplete || !isEditMode) return null
+
+    if (isBetaEdit) {
+      return (
+        <Alert className="border-green-500/50 bg-green-500/10">
+          <CheckCircle className="h-4 w-4 text-green-600" />
+          <AlertTitle>Dostęp Beta</AlertTitle>
+          <AlertDescription>
+            Korzystasz z darmowego dostępu beta. Możesz swobodnie zmieniać kategorię do końca
+            okresu beta.
+          </AlertDescription>
+        </Alert>
+      )
+    }
 
     switch (changeType) {
       case 'upgrade':
@@ -439,7 +472,7 @@ export function ServiceProviderOnboardingClient({
         </Alert>
       )}
 
-      {isEditMode && currentSubscription?.currentPlan && (
+      {isEditMode && (currentSubscription?.currentPlan || currentSubscription?.isBetaUser) && (
         <Alert className="border-[var(--theme-elevation-200)]">
           <Info className="h-4 w-4" />
           {/* <AlertTitle>Aktualny plan: {currentSubscription.currentPlan.name}</AlertTitle> */}
@@ -478,8 +511,8 @@ export function ServiceProviderOnboardingClient({
         onSelectionChange={handleCategoryChange}
       />
 
-      {/* Price selection - always show when category is complete */}
-      {isComplete && (
+      {/* Price selection - show when category is complete (skip for beta users editing) */}
+      {isComplete && !isBetaEdit && (
         <PriceSelection
           prices={availablePrices}
           selectedPriceId={selectedPriceId}
@@ -513,8 +546,7 @@ export function ServiceProviderOnboardingClient({
             disabled={
               isSubmitting ||
               !isComplete ||
-              !selectedPriceId
-              // BETA_PRICE_ID is a valid selectedPriceId, so no extra check needed
+              (!selectedPriceId && !isBetaEdit)
             }
             size="lg"
             className={cn(
