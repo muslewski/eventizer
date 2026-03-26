@@ -2,25 +2,11 @@ import { Offer } from '@/payload-types'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Tag } from 'lucide-react'
 import BlurText from '@/components/react-bits/BlurText'
+import { formatOfferPrice } from '@/lib/formatOfferPrice'
 
 interface OfferHeroContentProps {
   offer: Offer
   title: string
-}
-
-const formatPrice = (offer: Offer) => {
-  if (!offer.hasPriceRange) {
-    return `${(offer.price ?? 0).toLocaleString('pl-PL')} zł`
-  }
-
-  const priceFrom = offer.priceFrom ?? 0
-  const priceTo = offer.priceTo ?? 0
-
-  if (priceFrom === priceTo) {
-    return `${priceFrom.toLocaleString('pl-PL')} zł`
-  }
-
-  return `${priceFrom.toLocaleString('pl-PL')} - ${priceTo.toLocaleString('pl-PL')} zł`
 }
 
 export const OfferHeroContent: React.FC<OfferHeroContentProps> = ({ offer, title }) => {
@@ -59,7 +45,7 @@ export const OfferHeroContent: React.FC<OfferHeroContentProps> = ({ offer, title
         <div className="flex items-center gap-4">
           <div className="px-6 py-3 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg">
             <p className="text-xl sm:text-2xl md:text-3xl font-montserrat font-semibold text-white">
-              {formatPrice(offer)}
+              {formatOfferPrice(offer)}
             </p>
             <p className="text-xs text-white/60 mt-1">
               {offer.hasPriceRange ? 'cena zależna od zakresu usługi' : 'cena z góry ustalona'}

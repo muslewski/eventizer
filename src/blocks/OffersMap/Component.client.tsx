@@ -8,6 +8,7 @@ import { MapPin, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'motion/react'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { Skeleton } from '@/components/ui/skeleton'
+import { formatOfferPrice } from '@/lib/formatOfferPrice'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { OfferPin, MapCategory } from '@/blocks/OffersMap/Component'
@@ -239,16 +240,7 @@ function groupPinsByLocation(pins: OfferPin[]): PinGroup[] {
 
 /** Format price for display */
 function formatPrice(pin: OfferPin): string {
-  if (!pin.hasPriceRange) {
-    return `${(pin.price ?? 0).toFixed(0)} zł`
-  }
-  if (pin.priceFrom != null && pin.priceTo != null) {
-    if (pin.priceFrom === pin.priceTo) return `${pin.priceFrom.toFixed(0)} zł`
-    return `${pin.priceFrom.toFixed(0)} – ${pin.priceTo.toFixed(0)} zł`
-  }
-  if (pin.priceFrom != null) return `od ${pin.priceFrom.toFixed(0)} zł`
-  if (pin.priceTo != null) return `do ${pin.priceTo.toFixed(0)} zł`
-  return ''
+  return formatOfferPrice(pin)
 }
 
 const OffersMapClientInner: React.FC<OffersMapClientProps> = ({

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
+import { formatOfferPrice } from '@/lib/formatOfferPrice'
 
 interface InfoRowProps {
   /** Icon or custom content rendered inside the circle */
@@ -159,11 +160,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconU
               <InfoRow
                 iconContent={<Banknote className="size-5 text-primary" />}
                 label="Cena"
-                value={
-                  offer.hasPriceRange
-                    ? `${(offer.priceFrom ?? 0).toLocaleString('pl-PL')} - ${(offer.priceTo ?? 0).toLocaleString('pl-PL')} zł`
-                    : `${(offer.price ?? 0).toLocaleString('pl-PL')} zł`
-                }
+                value={formatOfferPrice(offer)}
                 valueClassName="font-bold text-lg sm:text-xl"
               />
 

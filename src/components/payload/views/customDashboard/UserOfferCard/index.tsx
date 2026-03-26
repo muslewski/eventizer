@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Pencil, MapPin, Tag, ExternalLink } from 'lucide-react'
 import type { Offer, OfferUpload } from '@/payload-types'
+import { formatOfferPrice } from '@/lib/formatOfferPrice'
 
 interface UserOfferCardProps {
   offer: Offer
@@ -16,11 +17,7 @@ export function UserOfferCard({ offer, categoryIconUrl, adminRoute }: UserOfferC
   const imageUrl = mainImage?.url ?? null
 
   // Price display
-  const priceLabel = offer.hasPriceRange
-    ? `${(offer.priceFrom ?? 0).toFixed(2)} – ${(offer.priceTo ?? 0).toFixed(2)} zł`
-    : offer.price != null
-      ? `${offer.price.toFixed(2)} zł`
-      : null
+  const priceLabel = offer.price != null || offer.hasPriceRange ? formatOfferPrice(offer) : null
 
   const statusLabel = offer._status === 'published' ? 'Opublikowana' : 'Szkic'
   const isPublished = offer._status === 'published'
