@@ -156,11 +156,16 @@ export function NavQuickLinks({ userRole, userId, maxOffers }: NavQuickLinksProp
               : pathname === link.href || pathname.startsWith(link.href + '/')
         const Icon = link.icon
 
+        // Frontend routes (outside /app) need a full page reload to switch
+        // route groups and avoid stale Payload CSS (13px root font-size).
+        const isFrontendRoute = !link.href.startsWith('/app')
+        const Tag = isFrontendRoute ? 'a' : Link
+
         return (
-          <Link
+          <Tag
             key={link.href}
             href={link.href}
-            prefetch
+            {...(!isFrontendRoute ? { prefetch: true } : {})}
             className={cn(
               'group relative flex items-center gap-2 px-2 py-1.5 rounded-md',
               'no-underline transition-all duration-200',
@@ -191,7 +196,7 @@ export function NavQuickLinks({ userRole, userId, maxOffers }: NavQuickLinksProp
                 {link.label}
               </span>
             </div>
-          </Link>
+          </Tag>
         )
       })}
     </div>
