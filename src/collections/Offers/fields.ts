@@ -260,9 +260,9 @@ export const offersFields: Field[] = [
               pl: 'Galeria',
             },
             admin: {
-              components: {
-                beforeInput: ['/components/payload/fields/galleryBulkUpload'],
-              },
+              // components: {
+              //   beforeInput: ['/components/payload/fields/galleryBulkUpload'],
+              // },
               description: {
                 en: 'Add additional images for your offer slider/gallery.',
                 pl: 'Dodaj dodatkowe zdjęcia do slidera/galerii oferty.',
