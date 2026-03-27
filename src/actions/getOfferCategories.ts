@@ -189,9 +189,12 @@ export async function getOfferCategories(): Promise<GetOfferCategoriesResult> {
     const numericUserId = typeof userId === 'string' ? parseInt(userId, 10) : userId
     const userPlan = await getUserPlanLevel(numericUserId)
 
-    // Admins can select any category regardless of subscription plan restrictions.
-    const effectivePlanLevel = user.role === 'admin' ? Number.MAX_SAFE_INTEGER : userPlan.level
-    const effectivePlanName = user.role === 'admin' ? 'Admin (unrestricted)' : userPlan.name
+    // Admins and beta users can select any category regardless of subscription plan restrictions.
+    const isUnrestricted = user.role === 'admin' || user.betaAccess === true
+    const effectivePlanLevel = isUnrestricted ? Number.MAX_SAFE_INTEGER : userPlan.level
+    const effectivePlanName = isUnrestricted
+      ? (user.role === 'admin' ? 'Admin (unrestricted)' : 'Beta (unrestricted)')
+      : userPlan.name
 
     // Fetch all service categories with their required plans
     const { docs: categories } = await payload.find({

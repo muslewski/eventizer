@@ -4,8 +4,8 @@ import type { CollectionBeforeValidateHook } from 'payload'
 export const validateCategory: CollectionBeforeValidateHook = async ({ data, req, operation }) => {
   if (!data?.category || !req.user) return data
 
-  // Skip validation for admins/moderators
-  if (isClientRoleEqualOrHigher('moderator', req.user)) {
+  // Skip validation for admins/moderators and beta users
+  if (isClientRoleEqualOrHigher('moderator', req.user) || req.user.betaAccess === true) {
     return data
   }
 
