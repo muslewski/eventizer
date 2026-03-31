@@ -41,6 +41,12 @@ export const InstallApp: Block = {
         en: 'Heading',
         pl: 'Nagłówek',
       },
+      admin: {
+        description: {
+          en: 'Main heading text displayed in the install app card',
+          pl: 'Główny tekst nagłówka wyświetlany w karcie instalacji aplikacji',
+        },
+      },
     },
     {
       name: 'description',
@@ -53,6 +59,12 @@ export const InstallApp: Block = {
         en: 'Description',
         pl: 'Opis',
       },
+      admin: {
+        description: {
+          en: 'Supporting text displayed below the heading (mobile view)',
+          pl: 'Tekst pomocniczy wyświetlany pod nagłówkiem (widok mobilny)',
+        },
+      },
     },
     {
       name: 'iosButtonLabel',
@@ -64,6 +76,12 @@ export const InstallApp: Block = {
         en: 'iOS Button Label',
         pl: 'Tekst przycisku iOS',
       },
+      admin: {
+        description: {
+          en: 'Text on the iPhone install button',
+          pl: 'Tekst na przycisku instalacji iPhone',
+        },
+      },
     },
     {
       name: 'androidButtonLabel',
@@ -74,6 +92,12 @@ export const InstallApp: Block = {
       label: {
         en: 'Android Button Label',
         pl: 'Tekst przycisku Android',
+      },
+      admin: {
+        description: {
+          en: 'Text on the Android install button',
+          pl: 'Tekst na przycisku instalacji Android',
+        },
       },
     },
     {
@@ -103,6 +127,12 @@ export const InstallApp: Block = {
         en: 'QR Heading',
         pl: 'Nagłówek QR',
       },
+      admin: {
+        description: {
+          en: 'Heading text displayed next to the QR code (desktop view)',
+          pl: 'Tekst nagłówka wyświetlany obok kodu QR (widok desktopowy)',
+        },
+      },
     },
     {
       name: 'qrDescription',
@@ -115,6 +145,12 @@ export const InstallApp: Block = {
         en: 'QR Description',
         pl: 'Opis QR',
       },
+      admin: {
+        description: {
+          en: 'Supporting text displayed below the QR heading (desktop view)',
+          pl: 'Tekst pomocniczy wyświetlany pod nagłówkiem QR (widok desktopowy)',
+        },
+      },
     },
     {
       name: 'iosDialogTitle',
@@ -125,6 +161,12 @@ export const InstallApp: Block = {
       label: {
         en: 'iOS Dialog Title',
         pl: 'Tytuł okna iOS',
+      },
+      admin: {
+        description: {
+          en: 'Title of the iOS installation instructions dialog',
+          pl: 'Tytuł okna dialogowego z instrukcjami instalacji iOS',
+        },
       },
     },
     {
@@ -170,6 +212,12 @@ export const InstallApp: Block = {
       label: {
         en: 'Android Dialog Title',
         pl: 'Tytuł okna Android',
+      },
+      admin: {
+        description: {
+          en: 'Title of the Android installation instructions dialog',
+          pl: 'Tytuł okna dialogowego z instrukcjami instalacji Android',
+        },
       },
     },
     {
