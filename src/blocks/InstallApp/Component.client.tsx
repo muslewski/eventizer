@@ -156,7 +156,7 @@ const MobileView: React.FC<MobileViewProps> = ({
   const iosIsPrimary = platform === 'ios'
 
   return (
-    <section className={cn('w-full', className)}>
+    <section id="install-app" className={cn('w-full', className)}>
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -242,7 +242,8 @@ const DesktopView: React.FC<DesktopViewProps> = ({
   const [url, setUrl] = useState('')
 
   useEffect(() => {
-    setUrl(window.location.href)
+    const base = window.location.origin + window.location.pathname
+    setUrl(`${base}#install-app`)
   }, [])
 
   return (
