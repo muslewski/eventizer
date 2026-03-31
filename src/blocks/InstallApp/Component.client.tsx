@@ -353,9 +353,10 @@ export const InstallAppClient: React.FC<InstallAppClientProps> = ({
 
   useEffect(() => {
     if (isReady && window.location.hash === '#install-app') {
-      requestAnimationFrame(() => {
+      const timeout = setTimeout(() => {
         document.getElementById('install-app')?.scrollIntoView({ behavior: 'smooth' })
-      })
+      }, 500)
+      return () => clearTimeout(timeout)
     }
   }, [isReady])
 
