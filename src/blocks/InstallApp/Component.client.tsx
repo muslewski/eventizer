@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -85,6 +86,7 @@ const InstructionDialog: React.FC<InstructionDialogProps> = ({
     <DialogContent>
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
+        <DialogDescription className="sr-only">{title}</DialogDescription>
       </DialogHeader>
       <ol className="space-y-4 py-2">
         {steps.map((step, index) => (
@@ -115,6 +117,7 @@ interface PlatformButtonProps {
 
 const PlatformButton: React.FC<PlatformButtonProps> = ({ icon, label, variant }) => (
   <button
+    type="button"
     className={cn(
       'flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-colors cursor-pointer',
       variant === 'primary'
@@ -279,7 +282,7 @@ const DesktopView: React.FC<DesktopViewProps> = ({
           {/* QR Code */}
           <motion.div
             variants={fadeUp}
-            className="flex shrink-0 items-center justify-center rounded-xl bg-white p-4"
+            className="flex shrink-0 items-center justify-center rounded-xl bg-white p-4 shadow-sm border border-border/20"
           >
             {url && (
               <QRCodeSVG
@@ -357,7 +360,10 @@ export const InstallAppClient: React.FC<InstallAppClientProps> = ({
     }
 
     const ua = navigator.userAgent
-    if (/iPad|iPhone|iPod/.test(ua)) {
+    const isIOS =
+      /iPad|iPhone|iPod/.test(ua) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    if (isIOS) {
       setPlatform('ios')
     } else if (/Android/.test(ua)) {
       setPlatform('android')
