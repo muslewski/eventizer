@@ -109,26 +109,32 @@ const InstructionDialog: React.FC<InstructionDialogProps> = ({
 
 // --- Platform Button ---
 
-interface PlatformButtonProps {
+interface PlatformButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon: React.ReactNode
   label: string
   variant: 'primary' | 'secondary'
 }
 
-const PlatformButton: React.FC<PlatformButtonProps> = ({ icon, label, variant }) => (
-  <button
-    type="button"
-    className={cn(
-      'flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-colors cursor-pointer',
-      variant === 'primary'
-        ? 'bg-foreground text-background hover:bg-foreground/90'
-        : 'bg-foreground/10 text-foreground border border-border/40 hover:bg-foreground/15',
-    )}
-  >
-    {icon}
-    {label}
-  </button>
+const PlatformButton = React.forwardRef<HTMLButtonElement, PlatformButtonProps>(
+  ({ icon, label, variant, className, ...props }, ref) => (
+    <button
+      ref={ref}
+      type="button"
+      className={cn(
+        'flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-colors cursor-pointer',
+        variant === 'primary'
+          ? 'bg-foreground text-background hover:bg-foreground/90'
+          : 'bg-foreground/10 text-foreground border border-border/40 hover:bg-foreground/15',
+        className,
+      )}
+      {...props}
+    >
+      {icon}
+      {label}
+    </button>
+  ),
 )
+PlatformButton.displayName = 'PlatformButton'
 
 // --- Apple & Android Icons ---
 
