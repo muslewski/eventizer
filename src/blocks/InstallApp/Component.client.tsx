@@ -247,7 +247,7 @@ const DesktopView: React.FC<DesktopViewProps> = ({
   }, [])
 
   return (
-    <section className={cn('w-full max-w-5xl mx-auto px-4', className)}>
+    <section id="install-app" className={cn('w-full max-w-5xl mx-auto px-4', className)}>
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -351,7 +351,7 @@ export const InstallAppClient: React.FC<InstallAppClientProps> = ({
     setIsReady(true)
   }, [])
 
-  if (!isReady || isStandalone) return null
+  if (!isReady || isStandalone) return <div id="install-app" />
 
   if (platform === 'desktop') {
     return (
