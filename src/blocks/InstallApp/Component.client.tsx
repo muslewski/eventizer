@@ -247,7 +247,7 @@ const DesktopView: React.FC<DesktopViewProps> = ({
   }, [])
 
   return (
-    <section className={cn('w-full', className)}>
+    <section className={cn('w-full max-w-5xl mx-auto px-4', className)}>
       <motion.div
         variants={containerVariants}
         initial="hidden"
