@@ -228,6 +228,7 @@ export interface Page {
     | ContactFormBlock
     | BetaBannerBlock
     | MissionBlock
+    | InstallAppBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1012,6 +1013,49 @@ export interface MissionBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InstallAppBlock".
+ */
+export interface InstallAppBlock {
+  /**
+   * Small uppercase label displayed above the heading (mobile view)
+   */
+  label: string;
+  heading: string;
+  description: string;
+  iosButtonLabel: string;
+  androidButtonLabel: string;
+  /**
+   * Small uppercase label displayed above the heading (desktop view)
+   */
+  qrLabel: string;
+  qrHeading: string;
+  qrDescription: string;
+  iosDialogTitle: string;
+  /**
+   * Step-by-step instructions for adding to home screen on iOS Safari
+   */
+  iosSteps: {
+    text: string;
+    id?: string | null;
+  }[];
+  androidDialogTitle: string;
+  /**
+   * Step-by-step instructions for adding to home screen on Android
+   */
+  androidSteps: {
+    text: string;
+    id?: string | null;
+  }[];
+  /**
+   * Confirmation text shown below the steps in the dialog
+   */
+  doneMessage: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'installApp';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-sessions".
  */
 export interface UserSession {
@@ -1411,6 +1455,7 @@ export interface PagesSelect<T extends boolean = true> {
         contactForm?: T | ContactFormBlockSelect<T>;
         betaBanner?: T | BetaBannerBlockSelect<T>;
         mission?: T | MissionBlockSelect<T>;
+        installApp?: T | InstallAppBlockSelect<T>;
       };
   meta?:
     | T
@@ -1703,6 +1748,37 @@ export interface MissionBlockSelect<T extends boolean = true> {
         accentColor?: T;
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InstallAppBlock_select".
+ */
+export interface InstallAppBlockSelect<T extends boolean = true> {
+  label?: T;
+  heading?: T;
+  description?: T;
+  iosButtonLabel?: T;
+  androidButtonLabel?: T;
+  qrLabel?: T;
+  qrHeading?: T;
+  qrDescription?: T;
+  iosDialogTitle?: T;
+  iosSteps?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  androidDialogTitle?: T;
+  androidSteps?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  doneMessage?: T;
   id?: T;
   blockName?: T;
 }
