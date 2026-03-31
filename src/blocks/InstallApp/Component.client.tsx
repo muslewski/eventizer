@@ -349,6 +349,12 @@ export const InstallAppClient: React.FC<InstallAppClientProps> = ({
     }
 
     setIsReady(true)
+
+    if (window.location.hash === '#install-app') {
+      requestAnimationFrame(() => {
+        document.getElementById('install-app')?.scrollIntoView({ behavior: 'smooth' })
+      })
+    }
   }, [])
 
   if (!isReady || isStandalone) return <div id="install-app" />
