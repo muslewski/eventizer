@@ -33,6 +33,7 @@ import { Video } from '@/blocks/Video/config'
 import { ContactFormBlock } from '@/blocks/ContactForm/config'
 import { BetaBanner } from '@/blocks/BetaBanner/config'
 import { Mission } from '@/blocks/Mission/config'
+import { InstallApp } from '@/blocks/InstallApp/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -103,6 +104,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 ContactFormBlock,
                 BetaBanner,
                 Mission,
+                InstallApp,
               ],
               required: true,
               admin: {

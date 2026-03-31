@@ -20,6 +20,7 @@ import { VideoBlock } from '@/blocks/Video/Component'
 import { ContactFormBlock } from '@/blocks/ContactForm/Component'
 import { BetaBannerBlock } from '@/blocks/BetaBanner/Component'
 import { MissionBlock } from '@/blocks/Mission/Component'
+import { InstallAppBlock } from '@/blocks/InstallApp/Component'
 
 const blockComponents = {
   //   archive: ArchiveBlock,
@@ -35,6 +36,7 @@ const blockComponents = {
   contactForm: ContactFormBlock,
   betaBanner: BetaBannerBlock,
   mission: MissionBlock,
+  installApp: InstallAppBlock,
   content: ContentBlock,
   cta: CallToActionBlock,
   //   formBlock: FormBlock,
