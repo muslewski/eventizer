@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 import { QRCodeSVG } from 'qrcode.react'
 import type { InstallAppBlock } from '@/payload-types'
 
@@ -107,35 +108,6 @@ const InstructionDialog: React.FC<InstructionDialogProps> = ({
   </Dialog>
 )
 
-// --- Platform Button ---
-
-interface PlatformButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  icon: React.ReactNode
-  label: string
-  variant: 'primary' | 'secondary'
-}
-
-const PlatformButton = React.forwardRef<HTMLButtonElement, PlatformButtonProps>(
-  ({ icon, label, variant, className, ...props }, ref) => (
-    <button
-      ref={ref}
-      type="button"
-      className={cn(
-        'flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-colors cursor-pointer',
-        variant === 'primary'
-          ? 'bg-foreground text-background hover:bg-foreground/90'
-          : 'bg-foreground/10 text-foreground border border-border/40 hover:bg-foreground/15',
-        className,
-      )}
-      {...props}
-    >
-      {icon}
-      {label}
-    </button>
-  ),
-)
-PlatformButton.displayName = 'PlatformButton'
-
 // --- Apple & Android Icons ---
 
 const AppleIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -224,11 +196,10 @@ const MobileView: React.FC<MobileViewProps> = ({
                 steps={iosSteps}
                 doneMessage={doneMessage}
                 trigger={
-                  <PlatformButton
-                    icon={<AppleIcon />}
-                    label={iosButtonLabel}
-                    variant={iosIsPrimary ? 'primary' : 'secondary'}
-                  />
+                  <Button variant={iosIsPrimary ? 'default' : 'outline'} size="lg">
+                    <AppleIcon />
+                    {iosButtonLabel}
+                  </Button>
                 }
               />
               <InstructionDialog
@@ -236,11 +207,10 @@ const MobileView: React.FC<MobileViewProps> = ({
                 steps={androidSteps}
                 doneMessage={doneMessage}
                 trigger={
-                  <PlatformButton
-                    icon={<AndroidIcon />}
-                    label={androidButtonLabel}
-                    variant={iosIsPrimary ? 'secondary' : 'primary'}
-                  />
+                  <Button variant={iosIsPrimary ? 'outline' : 'default'} size="lg">
+                    <AndroidIcon />
+                    {androidButtonLabel}
+                  </Button>
                 }
               />
             </motion.div>
