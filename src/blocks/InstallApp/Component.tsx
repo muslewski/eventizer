@@ -15,7 +15,9 @@ export const InstallAppBlock: React.FC<
       <BlockHeader
         heading={sectionHeading}
         description={sectionDescription}
-        icon={Smartphone}
+        badge={{label: 'Aplikacja'}}
+        grid
+        gap
       />
       <InstallAppClient {...props} />
     </div>
