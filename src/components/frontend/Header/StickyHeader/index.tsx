@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { motion, useScroll, useMotionValueEvent } from 'motion/react'
+import { ArrowLeft } from 'lucide-react'
 
 import HeaderLogo from '@/components/frontend/Header/Logo'
 import { Button } from '@/components/ui/button'
@@ -20,13 +21,16 @@ import type { NavCategory } from '@/components/frontend/Header/NavigationLinks'
 
 interface StickyHeaderProps {
   categories: NavCategory[]
+  isStandalone: boolean
 }
 
-export default function StickyHeader({ categories }: StickyHeaderProps) {
+export default function StickyHeader({ categories, isStandalone }: StickyHeaderProps) {
   const pastThreshold = useScrollPast(0.2)
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
+  const router = useRouter()
   const { isOpen: isMobileMenuOpen, toggle: toggleMobileMenu } = useMobileMenu()
+  const showBack = isStandalone && normalizedPathname !== '/'
 
   // Hide on scroll down, show on scroll up (like BioFloor nav)
   const { scrollY } = useScroll()
@@ -60,8 +64,21 @@ export default function StickyHeader({ categories }: StickyHeaderProps) {
       animate={pastThreshold && !hidden && !isOgloszenia ? 'visible' : 'hidden'}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
     >
-      {/* Logo – compact */}
-      <HeaderLogo variant="sticky" />
+      {/* Logo – compact (with standalone back button) */}
+      <div className="flex items-center gap-1">
+        {showBack && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.back()}
+            className="h-8 w-8 text-base-600 hover:text-base-900 dark:text-white/80 dark:hover:text-white"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        )}
+        <HeaderLogo variant="sticky" />
+      </div>
 
       {/* Nav links – desktop only */}
       <nav className="hidden md:flex items-center gap-6">
