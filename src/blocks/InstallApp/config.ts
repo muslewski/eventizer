@@ -15,6 +15,41 @@ export const InstallApp: Block = {
   },
   fields: [
     {
+      name: 'sectionHeading',
+      type: 'text',
+      localized: true,
+      defaultValue: 'Zainstaluj Eventizer',
+      required: true,
+      label: {
+        en: 'Section Heading',
+        pl: 'Nagłówek sekcji',
+      },
+      admin: {
+        description: {
+          en: 'Main heading displayed above the install app block',
+          pl: 'Główny nagłówek wyświetlany nad blokiem instalacji aplikacji',
+        },
+      },
+    },
+    {
+      name: 'sectionDescription',
+      type: 'textarea',
+      localized: true,
+      defaultValue:
+        'Dodaj aplikację do ekranu głównego i korzystaj z niej jak z natywnej aplikacji — bez pobierania ze sklepu.',
+      required: true,
+      label: {
+        en: 'Section Description',
+        pl: 'Opis sekcji',
+      },
+      admin: {
+        description: {
+          en: 'Supporting text displayed below the section heading',
+          pl: 'Tekst pomocniczy wyświetlany pod nagłówkiem sekcji',
+        },
+      },
+    },
+    {
       name: 'label',
       type: 'text',
       localized: true,

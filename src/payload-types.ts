@@ -1017,19 +1017,48 @@ export interface MissionBlock {
  */
 export interface InstallAppBlock {
   /**
+   * Main heading displayed above the install app block
+   */
+  sectionHeading: string;
+  /**
+   * Supporting text displayed below the section heading
+   */
+  sectionDescription: string;
+  /**
    * Small uppercase label displayed above the heading (mobile view)
    */
   label: string;
+  /**
+   * Main heading text displayed in the install app card
+   */
   heading: string;
+  /**
+   * Supporting text displayed below the heading (mobile view)
+   */
   description: string;
+  /**
+   * Text on the iPhone install button
+   */
   iosButtonLabel: string;
+  /**
+   * Text on the Android install button
+   */
   androidButtonLabel: string;
   /**
    * Small uppercase label displayed above the heading (desktop view)
    */
   qrLabel: string;
+  /**
+   * Heading text displayed next to the QR code (desktop view)
+   */
   qrHeading: string;
+  /**
+   * Supporting text displayed below the QR heading (desktop view)
+   */
   qrDescription: string;
+  /**
+   * Title of the iOS installation instructions dialog
+   */
   iosDialogTitle: string;
   /**
    * Step-by-step instructions for adding to home screen on iOS Safari
@@ -1038,6 +1067,9 @@ export interface InstallAppBlock {
     text: string;
     id?: string | null;
   }[];
+  /**
+   * Title of the Android installation instructions dialog
+   */
   androidDialogTitle: string;
   /**
    * Step-by-step instructions for adding to home screen on Android
@@ -1756,6 +1788,8 @@ export interface MissionBlockSelect<T extends boolean = true> {
  * via the `definition` "InstallAppBlock_select".
  */
 export interface InstallAppBlockSelect<T extends boolean = true> {
+  sectionHeading?: T;
+  sectionDescription?: T;
   label?: T;
   heading?: T;
   description?: T;

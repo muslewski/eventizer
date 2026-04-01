@@ -304,7 +304,7 @@ const DesktopView: React.FC<DesktopViewProps> = ({
 
 // --- Main Component ---
 
-interface InstallAppClientProps extends InstallAppBlock {
+interface InstallAppClientProps extends Omit<InstallAppBlock, 'sectionHeading' | 'sectionDescription'> {
   className?: string
 }
 
