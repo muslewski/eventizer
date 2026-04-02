@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, type Variants, type Transition } from 'motion/react'
 import { cn } from '@/lib/utils'
+import { useStandalone } from '@/hooks/useStandalone'
 import {
   Dialog,
   DialogContent,
@@ -304,8 +305,9 @@ const DesktopView: React.FC<DesktopViewProps> = ({
 
 // --- Main Component ---
 
-interface InstallAppClientProps extends Omit<InstallAppBlock, 'sectionHeading' | 'sectionDescription'> {
+interface InstallAppClientProps extends InstallAppBlock {
   className?: string
+  blockHeader: React.ReactNode
 }
 
 export const InstallAppClient: React.FC<InstallAppClientProps> = ({
@@ -322,20 +324,14 @@ export const InstallAppClient: React.FC<InstallAppClientProps> = ({
   androidDialogTitle,
   androidSteps,
   doneMessage,
+  blockHeader,
   className,
 }) => {
   const [platform, setPlatform] = useState<Platform>('desktop')
-  const [isStandalone, setIsStandalone] = useState(false)
+  const isStandalone = useStandalone()
   const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    const standalone = window.matchMedia('(display-mode: standalone)').matches
-    if (standalone) {
-      setIsStandalone(true)
-      setIsReady(true)
-      return
-    }
-
     const ua = navigator.userAgent
     const isIOS =
       /iPad|iPhone|iPod/.test(ua) ||
@@ -364,29 +360,35 @@ export const InstallAppClient: React.FC<InstallAppClientProps> = ({
 
   if (platform === 'desktop') {
     return (
-      <DesktopView
-        qrLabel={qrLabel}
-        qrHeading={qrHeading}
-        qrDescription={qrDescription}
-        className={className}
-      />
+      <div className="flex flex-col items-center gap-8 w-full">
+        {blockHeader}
+        <DesktopView
+          qrLabel={qrLabel}
+          qrHeading={qrHeading}
+          qrDescription={qrDescription}
+          className={className}
+        />
+      </div>
     )
   }
 
   return (
-    <MobileView
-      label={label}
-      heading={heading}
-      description={description}
-      iosButtonLabel={iosButtonLabel}
-      androidButtonLabel={androidButtonLabel}
-      iosDialogTitle={iosDialogTitle}
-      iosSteps={iosSteps ?? []}
-      androidDialogTitle={androidDialogTitle}
-      androidSteps={androidSteps ?? []}
-      doneMessage={doneMessage}
-      platform={platform}
-      className={className}
-    />
+    <div className="flex flex-col items-center gap-8 w-full">
+      {blockHeader}
+      <MobileView
+        label={label}
+        heading={heading}
+        description={description}
+        iosButtonLabel={iosButtonLabel}
+        androidButtonLabel={androidButtonLabel}
+        iosDialogTitle={iosDialogTitle}
+        iosSteps={iosSteps ?? []}
+        androidDialogTitle={androidDialogTitle}
+        androidSteps={androidSteps ?? []}
+        doneMessage={doneMessage}
+        platform={platform}
+        className={className}
+      />
+    </div>
   )
 }
