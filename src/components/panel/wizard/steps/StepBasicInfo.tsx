@@ -1,0 +1,92 @@
+'use client'
+
+import { Controller, type Control, type FieldErrors, type UseFormWatch } from 'react-hook-form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Field, FieldGroup, FieldLabel, FieldError, FieldDescription } from '@/components/ui/field'
+import { CategoryPicker } from '@/components/panel/wizard/CategoryPicker'
+import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
+
+interface StepBasicInfoProps {
+  control: Control<OfferFormData>
+  errors: FieldErrors<OfferFormData>
+  watch: UseFormWatch<OfferFormData>
+  categories: any[]
+}
+
+export function StepBasicInfo({ control, errors, categories }: StepBasicInfoProps) {
+  return (
+    <FieldGroup>
+      <Field data-invalid={!!errors.title}>
+        <FieldLabel htmlFor="title">Tytuł oferty</FieldLabel>
+        <Controller
+          name="title"
+          control={control}
+          render={({ field }) => (
+            <div className="flex flex-col gap-1">
+              <Input
+                id="title"
+                placeholder="np. DJ na wesele - profesjonalna oprawa muzyczna"
+                {...field}
+                aria-invalid={!!errors.title}
+              />
+              <div className="flex items-center justify-between">
+                <FieldError>{errors.title?.message}</FieldError>
+                <span className="text-xs text-muted-foreground">
+                  {field.value?.length || 0}/150
+                </span>
+              </div>
+            </div>
+          )}
+        />
+      </Field>
+
+      <Field data-invalid={!!errors.category}>
+        <FieldLabel>Kategoria</FieldLabel>
+        <FieldDescription>
+          Wybierz kategorię, która najlepiej opisuje Twoją ofertę
+        </FieldDescription>
+        <Controller
+          name="category"
+          control={control}
+          render={({ field }) => (
+            <CategoryPicker
+              categories={categories}
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
+        <FieldError>{errors.category?.message}</FieldError>
+      </Field>
+
+      <Field data-invalid={!!errors.shortDescription}>
+        <FieldLabel htmlFor="shortDescription">Krótki opis</FieldLabel>
+        <FieldDescription>
+          Krótkie podsumowanie oferty widoczne na listach wyników
+        </FieldDescription>
+        <Controller
+          name="shortDescription"
+          control={control}
+          render={({ field }) => (
+            <div className="flex flex-col gap-1">
+              <Textarea
+                id="shortDescription"
+                placeholder="Opisz krótko swoją ofertę..."
+                rows={3}
+                {...field}
+                aria-invalid={!!errors.shortDescription}
+              />
+              <div className="flex items-center justify-between">
+                <FieldError>{errors.shortDescription?.message}</FieldError>
+                <span className="text-xs text-muted-foreground">
+                  {field.value?.length || 0}/500
+                </span>
+              </div>
+            </div>
+          )}
+        />
+      </Field>
+    </FieldGroup>
+  )
+}
