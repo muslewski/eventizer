@@ -17,7 +17,6 @@ export const offerSchema = z
     phone: z.string().optional().default(''),
     email: z
       .string()
-      .email('Nieprawidłowy email')
       .optional()
       .or(z.literal('')),
     facebook: z.string().optional().default(''),

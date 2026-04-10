@@ -27,9 +27,6 @@ interface StepMediaProps {
 
 export function StepMedia({
   control,
-  errors,
-  watch,
-  setValue,
 }: StepMediaProps) {
   return (
     <FieldGroup>

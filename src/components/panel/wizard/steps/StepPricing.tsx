@@ -31,7 +31,7 @@ interface StepPricingProps {
   setValue: UseFormSetValue<OfferFormData>
 }
 
-export function StepPricing({ control, errors, watch, setValue }: StepPricingProps) {
+export function StepPricing({ control, errors, watch }: StepPricingProps) {
   const hasPriceRange = watch('hasPriceRange')
   const serviceRadius = watch('serviceRadius')
 

@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { Progress } from '@/components/ui/progress'
 import { createOffer, updateOffer } from '@/actions/panel/offers'
-import { offerSchema, stepSchemas, type OfferFormData } from './offerSchema'
+import { offerSchema, type OfferFormData } from './offerSchema'
 import { StepBasicInfo } from './steps/StepBasicInfo'
 import { StepPricing } from './steps/StepPricing'
 import { StepMedia } from './steps/StepMedia'
@@ -58,7 +58,6 @@ export function OfferWizardForm({
 
   const {
     control,
-    handleSubmit,
     watch,
     setValue,
     getValues,
@@ -91,7 +90,6 @@ export function OfferWizardForm({
 
   const validateCurrentStep = async (): Promise<boolean> => {
     const values = getValues()
-    const schema = stepSchemas[currentStep]
 
     if (currentStep === 0) {
       const result = await trigger(['title', 'category', 'shortDescription'])
