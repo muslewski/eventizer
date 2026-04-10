@@ -39,9 +39,9 @@ export default async function PomocPage({
       <PanelBreadcrumb segments={[{ label: 'Pomoc' }]} lang={lang} />
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-bebas text-3xl tracking-wide">Pomoc</h1>
-        <NewTicketDialog userEmail={user.email} lang={lang} />
+        <NewTicketDialog userEmail={user.email} />
       </div>
-      <PomocTable tickets={tickets} lang={lang} />
+      <PomocTable tickets={tickets} />
     </div>
   )
 }

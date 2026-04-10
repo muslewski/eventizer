@@ -41,7 +41,7 @@ export default async function FormularzePage({
     <div className="flex flex-col gap-6">
       <PanelBreadcrumb segments={[{ label: 'Formularze' }]} lang={lang} />
       <h1 className="font-bebas text-3xl tracking-wide">Formularze</h1>
-      <FormularzeTable forms={forms} lang={lang} />
+      <FormularzeTable forms={forms} />
     </div>
   )
 }
