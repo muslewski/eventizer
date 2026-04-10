@@ -5,7 +5,7 @@ import {
   publicAccessField,
 } from '@/access'
 import { userRoles } from '@/access/hierarchy'
-import { isClientRoleEqualOrHigher } from '@/access/utilities'
+import { fieldRoleOrHigherOrSelf, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { auth } from '@/auth/auth'
 import { adminGroups } from '@/lib/adminGroups'
 import type { CollectionConfig } from 'payload'
@@ -253,6 +253,21 @@ export const Users: CollectionConfig = {
               access: {
                 // read: fieldAdminOrHigher,
                 update: fieldAdminOrHigher,
+              },
+            },
+            {
+              name: 'favorites',
+              type: 'relationship',
+              relationTo: 'offers',
+              hasMany: true,
+              defaultValue: [],
+              label: { pl: 'Ulubione oferty', en: 'Favorite offers' },
+              access: {
+                update: fieldRoleOrHigherOrSelf('client'),
+              },
+              admin: {
+                position: 'sidebar',
+                condition: (data) => data?.role === 'client' || data?.role === 'service-provider',
               },
             },
             {
