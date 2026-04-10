@@ -27,7 +27,7 @@ export function PanelBreadcrumb({ segments, lang }: PanelBreadcrumbProps) {
             <Link href={`/${lang}/panel/dashboard`}>Panel</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
-        {segments.map((segment, index) => (
+        {segments.map((segment) => (
           <span key={segment.label} className="contents">
             <BreadcrumbSeparator />
             <BreadcrumbItem>
