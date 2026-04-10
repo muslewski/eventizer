@@ -54,12 +54,12 @@ export async function createHelpTicket(data: {
             version: 1,
           },
         ],
-        direction: null as null,
-        format: '' as '',
+        direction: null,
+        format: '' as const,
         indent: 0,
         version: 1,
       },
-    }
+    } satisfies Record<string, unknown>
 
     const result = await payload.create({
       collection: 'help-tickets',

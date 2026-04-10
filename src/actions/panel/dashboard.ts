@@ -84,8 +84,7 @@ export async function getDashboardStats(userId: number, role: string) {
       }),
     ])
 
-    const userRecordAny = userRecord as any
-    const favorites = userRecordAny?.favorites ?? []
+    const favorites = userRecord?.favorites ?? []
     const favoritesCount = Array.isArray(favorites) ? favorites.length : 0
 
     return {

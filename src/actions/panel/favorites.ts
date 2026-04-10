@@ -21,9 +21,8 @@ export async function toggleFavorite(offerId: number) {
 
     if (!user) return { success: false as const, error: 'Użytkownik nie został znaleziony' }
 
-    const userAny = user as any
-    const currentFavorites: number[] = Array.isArray(userAny.favorites)
-      ? (userAny.favorites as number[])
+    const currentFavorites: number[] = Array.isArray(user.favorites)
+      ? (user.favorites as number[])
       : []
 
     const isFavorited = currentFavorites.includes(offerId)
@@ -34,9 +33,7 @@ export async function toggleFavorite(offerId: number) {
     await payload.update({
       collection: 'users',
       id: Number(session.user.id),
-      data: {
-        favorites: newFavorites,
-      } as any,
+      data: { favorites: newFavorites },
       overrideAccess: true,
     })
 
@@ -58,9 +55,8 @@ export async function getFavorites(userId: number) {
       overrideAccess: true,
     })
 
-    const userAny = user as any
-    const favoriteIds: number[] = Array.isArray(userAny?.favorites)
-      ? (userAny.favorites as number[])
+    const favoriteIds: number[] = Array.isArray(user.favorites)
+      ? (user.favorites as number[])
       : []
 
     if (favoriteIds.length === 0) {
