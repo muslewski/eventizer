@@ -30,7 +30,7 @@ import { createHelpTicket } from '@/actions/panel/help'
 
 const ticketSchema = z.object({
   title: z.string().min(1, 'Tytuł jest wymagany'),
-  email: z.string().email('Podaj poprawny adres email'),
+  email: z.string(),
   description: z.string().min(1, 'Opis jest wymagany'),
 })
 
@@ -38,10 +38,9 @@ type TicketFormData = z.infer<typeof ticketSchema>
 
 interface NewTicketDialogProps {
   userEmail: string
-  lang: string
 }
 
-export function NewTicketDialog({ userEmail, lang }: NewTicketDialogProps) {
+export function NewTicketDialog({ userEmail }: NewTicketDialogProps) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()

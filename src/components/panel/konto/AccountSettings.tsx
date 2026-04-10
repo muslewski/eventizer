@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -76,7 +76,7 @@ export function AccountSettings({ user, subscription, lang }: AccountSettingsPro
     user.role === 'admin' ||
     user.role === 'moderator'
 
-  function handlePasswordSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handlePasswordSubmit(e: React.FormEvent) {
     e.preventDefault()
     startPasswordTransition(async () => {
       toast.info('Zmiana hasła zostanie wkrótce dostępna')

@@ -40,7 +40,6 @@ import type { SubmittedForm } from '@/payload-types'
 
 interface FormularzeTableProps {
   forms: SubmittedForm[]
-  lang: string
 }
 
 type FormStatus = 'new' | 'read' | 'replied'
@@ -74,7 +73,7 @@ function statusBadge(status: FormStatus) {
   return <Badge variant={variants[status]}>{labels[status]}</Badge>
 }
 
-export function FormularzeTable({ forms, lang }: FormularzeTableProps) {
+export function FormularzeTable({ forms }: FormularzeTableProps) {
   const router = useRouter()
   const [selectedForm, setSelectedForm] = useState<SubmittedForm | null>(null)
   const [newStatus, setNewStatus] = useState<FormStatus>('new')

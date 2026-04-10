@@ -21,10 +21,9 @@ import type { HelpTicket } from '@/payload-types'
 
 interface PomocTableProps {
   tickets: HelpTicket[]
-  lang: string
 }
 
-export function PomocTable({ tickets, lang }: PomocTableProps) {
+export function PomocTable({ tickets }: PomocTableProps) {
   if (tickets.length === 0) {
     return (
       <Empty>
