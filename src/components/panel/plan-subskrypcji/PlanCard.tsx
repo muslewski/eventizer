@@ -15,7 +15,6 @@ interface PlanCardProps {
 
 export function PlanCard({ plan, isSelected, onSelect, isCurrentPlan }: PlanCardProps) {
   const monthlyPrice = (plan as any).monthlyPrice
-  const yearlyPrice = (plan as any).yearlyPrice
 
   return (
     <Card
