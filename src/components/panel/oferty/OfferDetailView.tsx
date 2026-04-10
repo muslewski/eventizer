@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { PencilIcon, ExternalLinkIcon, PhoneIcon, MailIcon, FacebookIcon, InstagramIcon, LinkedinIcon } from 'lucide-react'
+import { PencilIcon, ExternalLinkIcon, PhoneIcon, MailIcon, GlobeIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { OfferStatusToggle } from '@/components/panel/oferty/OfferStatusToggle'
-import type { Offer, OfferUpload, OfferVideoUpload } from '@/payload-types'
+import type { Offer } from '@/payload-types'
 
 interface OfferDetailViewProps {
   offer: Offer
@@ -215,7 +215,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm hover:underline"
             >
-              <FacebookIcon className="size-4 shrink-0" />
+              <GlobeIcon className="size-4 shrink-0" />
               Facebook
             </a>
           )}
@@ -226,7 +226,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm hover:underline"
             >
-              <InstagramIcon className="size-4 shrink-0" />
+              <GlobeIcon className="size-4 shrink-0" />
               Instagram
             </a>
           )}
@@ -255,7 +255,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm hover:underline"
             >
-              <LinkedinIcon className="size-4 shrink-0" />
+              <GlobeIcon className="size-4 shrink-0" />
               LinkedIn
             </a>
           )}
