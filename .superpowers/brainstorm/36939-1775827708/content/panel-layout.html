@@ -1,0 +1,219 @@
+<h2>Panel Layout & Sidebar</h2>
+<p class="subtitle">How the panel shell wraps your content with role-aware navigation</p>
+
+<div class="section">
+  <h3>Desktop Layout (lg+)</h3>
+  <div class="mockup">
+    <div class="mockup-header">Panel — Service Provider View (desktop)</div>
+    <div class="mockup-body" style="padding:0; background:#0a0a0a; color:#e5e5e5; font-family:system-ui,sans-serif; min-height:500px;">
+      <!-- Header (inherited from frontend) -->
+      <div style="background:#111; border-bottom:1px solid #292524; padding:12px 24px; display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-family:serif; font-size:20px; font-weight:700; letter-spacing:2px; color:#d28c08;">EVENTIZER</span>
+          <span style="color:#78716c; font-size:13px;">|</span>
+          <span style="color:#a8a29e; font-size:13px;">Ogłoszenia</span>
+          <span style="color:#a8a29e; font-size:13px;">Kategorie</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:32px; height:32px; border-radius:50%; background:#292524; display:flex; align-items:center; justify-content:center; font-size:12px; color:#d28c08;">JK</div>
+        </div>
+      </div>
+
+      <div style="display:flex; min-height:460px;">
+        <!-- Sidebar -->
+        <div style="width:240px; background:#111; border-right:1px solid #292524; padding:16px 0; flex-shrink:0; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <!-- Role badge -->
+            <div style="padding:0 16px 16px; border-bottom:1px solid #1c1917;">
+              <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:#78716c; margin-bottom:6px;">Panel</div>
+              <div style="display:inline-flex; align-items:center; gap:6px; background:#292524; border:1px solid #d28c08/30; border-radius:6px; padding:4px 10px; font-size:12px; color:#d28c08;">
+                ★ Usługodawca
+              </div>
+            </div>
+
+            <!-- Nav items -->
+            <div style="padding:12px 8px;">
+              <div style="padding:8px 12px; border-radius:8px; background:#1c1917; color:#fafaf9; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.7;">📊</span> Dashboard
+              </div>
+              <div style="padding:8px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.5;">📋</span> Oferty
+              </div>
+              <div style="padding:8px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.5;">💳</span> Plan subskrypcji
+              </div>
+              <div style="padding:8px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.5;">📨</span> Formularze
+              </div>
+              <div style="padding:8px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.5;">❓</span> Pomoc
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom section -->
+          <div style="padding:8px; border-top:1px solid #1c1917;">
+            <div style="padding:8px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px;">
+              <span style="opacity:0.5;">⚙️</span> Konto
+            </div>
+          </div>
+        </div>
+
+        <!-- Main content area -->
+        <div style="flex:1; padding:32px; background:#0a0a0a;">
+          <div style="font-family:serif; font-size:28px; letter-spacing:1px; margin-bottom:8px; color:#fafaf9;">DASHBOARD</div>
+          <p style="color:#78716c; font-size:14px; margin-bottom:24px;">Witaj z powrotem, Jan</p>
+
+          <!-- Widget grid placeholder -->
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+            <div style="background:#1c1917; border:1px solid #292524; border-radius:12px; padding:20px;">
+              <div style="font-size:12px; color:#78716c; text-transform:uppercase; letter-spacing:1px;">Aktywne oferty</div>
+              <div style="font-size:32px; font-family:serif; color:#fafaf9; margin-top:4px;">3</div>
+              <div style="font-size:12px; color:#d28c08; margin-top:4px;">z 5 dostępnych</div>
+            </div>
+            <div style="background:#1c1917; border:1px solid #292524; border-radius:12px; padding:20px;">
+              <div style="font-size:12px; color:#78716c; text-transform:uppercase; letter-spacing:1px;">Wyświetlenia</div>
+              <div style="font-size:32px; font-family:serif; color:#fafaf9; margin-top:4px;">1,247</div>
+              <div style="font-size:12px; color:#22c55e; margin-top:4px;">+12% ten tydzień</div>
+            </div>
+            <div style="background:#1c1917; border:1px solid #292524; border-radius:12px; padding:20px;">
+              <div style="font-size:12px; color:#78716c; text-transform:uppercase; letter-spacing:1px;">Formularze</div>
+              <div style="font-size:32px; font-family:serif; color:#fafaf9; margin-top:4px;">8</div>
+              <div style="font-size:12px; color:#d28c08; margin-top:4px;">2 nowe</div>
+            </div>
+          </div>
+
+          <div style="background:#1c1917; border:1px solid #292524; border-radius:12px; padding:20px; height:120px; display:flex; align-items:center; justify-content:center;">
+            <span style="color:#78716c; font-size:14px;">Quick actions / recent activity area</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer hint -->
+      <div style="background:#111; border-top:1px solid #292524; padding:8px 24px; text-align:center;">
+        <span style="color:#57534e; font-size:11px;">Footer (inherited from frontend layout)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:32px;">
+  <h3>Mobile Layout (below lg)</h3>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">Mobile — Sidebar closed</div>
+      <div class="mockup-body" style="padding:0; background:#0a0a0a; color:#e5e5e5; font-family:system-ui,sans-serif; max-width:375px; margin:0 auto; min-height:500px;">
+        <!-- Mobile header -->
+        <div style="background:#111; border-bottom:1px solid #292524; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
+          <span style="font-family:serif; font-size:18px; font-weight:700; letter-spacing:2px; color:#d28c08;">EVENTIZER</span>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:28px; height:28px; border-radius:50%; background:#292524; display:flex; align-items:center; justify-content:center; font-size:10px; color:#d28c08;">JK</div>
+          </div>
+        </div>
+
+        <!-- Panel top bar with hamburger -->
+        <div style="background:#111; border-bottom:1px solid #1c1917; padding:10px 16px; display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:24px; height:24px; display:flex; flex-direction:column; justify-content:center; gap:3px; cursor:pointer;">
+              <div style="width:18px; height:2px; background:#a8a29e; border-radius:1px;"></div>
+              <div style="width:14px; height:2px; background:#a8a29e; border-radius:1px;"></div>
+              <div style="width:18px; height:2px; background:#a8a29e; border-radius:1px;"></div>
+            </div>
+            <span style="font-size:14px; color:#fafaf9; font-weight:500;">Dashboard</span>
+          </div>
+          <div style="display:inline-flex; align-items:center; gap:4px; background:#292524; border-radius:4px; padding:2px 8px; font-size:11px; color:#d28c08;">
+            ★ Usługodawca
+          </div>
+        </div>
+
+        <!-- Mobile content -->
+        <div style="padding:20px 16px;">
+          <div style="font-family:serif; font-size:24px; letter-spacing:1px; margin-bottom:16px; color:#fafaf9;">DASHBOARD</div>
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div style="background:#1c1917; border:1px solid #292524; border-radius:12px; padding:16px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-size:11px; color:#78716c; text-transform:uppercase; letter-spacing:1px;">Aktywne oferty</div>
+                <div style="font-size:12px; color:#d28c08; margin-top:2px;">3 z 5</div>
+              </div>
+              <div style="font-size:28px; font-family:serif; color:#fafaf9;">3</div>
+            </div>
+            <div style="background:#1c1917; border:1px solid #292524; border-radius:12px; padding:16px; display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-size:11px; color:#78716c; text-transform:uppercase; letter-spacing:1px;">Wyświetlenia</div>
+                <div style="font-size:12px; color:#22c55e; margin-top:2px;">+12%</div>
+              </div>
+              <div style="font-size:28px; font-family:serif; color:#fafaf9;">1,247</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mockup">
+      <div class="mockup-header">Mobile — Sidebar open (sheet/drawer)</div>
+      <div class="mockup-body" style="padding:0; background:#0a0a0a; color:#e5e5e5; font-family:system-ui,sans-serif; max-width:375px; margin:0 auto; min-height:500px; position:relative; overflow:hidden;">
+        <!-- Dimmed background -->
+        <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); z-index:1;"></div>
+
+        <!-- Drawer from left -->
+        <div style="position:absolute; top:0; left:0; bottom:0; width:280px; background:#111; z-index:2; border-right:1px solid #292524; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="padding:16px; border-bottom:1px solid #1c1917; display:flex; align-items:center; justify-content:space-between;">
+              <div>
+                <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:#78716c; margin-bottom:4px;">Panel</div>
+                <div style="display:inline-flex; align-items:center; gap:6px; background:#292524; border-radius:6px; padding:4px 10px; font-size:12px; color:#d28c08;">
+                  ★ Usługodawca
+                </div>
+              </div>
+              <div style="color:#78716c; cursor:pointer; font-size:18px;">✕</div>
+            </div>
+
+            <div style="padding:12px 8px;">
+              <div style="padding:10px 12px; border-radius:8px; background:#1c1917; color:#fafaf9; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.7;">📊</span> Dashboard
+              </div>
+              <div style="padding:10px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.5;">📋</span> Oferty
+              </div>
+              <div style="padding:10px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.5;">💳</span> Plan subskrypcji
+              </div>
+              <div style="padding:10px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.5;">📨</span> Formularze
+              </div>
+              <div style="padding:10px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px; margin-bottom:2px;">
+                <span style="opacity:0.5;">❓</span> Pomoc
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:8px; border-top:1px solid #1c1917;">
+            <div style="padding:10px 12px; border-radius:8px; color:#a8a29e; font-size:14px; display:flex; align-items:center; gap:10px;">
+              <span style="opacity:0.5;">⚙️</span> Konto
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:32px;">
+  <h3>Key Design Decisions</h3>
+  <div class="options">
+    <div class="option" data-choice="sidebar-collapsible" onclick="toggleSelect(this)">
+      <div class="letter">A</div>
+      <div class="content">
+        <h3>Collapsible sidebar on desktop</h3>
+        <p>User can collapse the sidebar to icon-only mode (like VS Code). Good for users who want more content space.</p>
+      </div>
+    </div>
+    <div class="option" data-choice="sidebar-fixed" onclick="toggleSelect(this)">
+      <div class="letter">B</div>
+      <div class="content">
+        <h3>Fixed sidebar on desktop</h3>
+        <p>Always visible at 240px. Simpler implementation. Sidebar is not that wide, so content area is still spacious.</p>
+      </div>
+    </div>
+  </div>
+</div>
