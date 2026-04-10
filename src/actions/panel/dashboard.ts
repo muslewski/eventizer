@@ -46,8 +46,21 @@ export async function getDashboardStats(userId: number, role: string) {
         select: { _status: true } as any,
       })
 
-      const publishedCount = allOffers.docs.filter((o) => o._status === 'published').length
+      const publishedOffers = allOffers.docs.filter((o) => o._status === 'published')
+      const publishedCount = publishedOffers.length
       const draftCount = allOffers.docs.filter((o) => o._status === 'draft').length
+
+      // If exactly one published offer, fetch its link for quick-edit button
+      let firstPublishedOfferLink: string | undefined
+      if (publishedCount === 1 && publishedOffers[0]) {
+        const offerWithLink = await payload.findByID({
+          collection: 'offers',
+          id: publishedOffers[0].id,
+          depth: 0,
+          select: { link: true } as any,
+        })
+        firstPublishedOfferLink = offerWithLink?.link ?? undefined
+      }
 
       return {
         success: true as const,
@@ -60,6 +73,7 @@ export async function getDashboardStats(userId: number, role: string) {
           },
           newFormsCount: formsResult.totalDocs,
           subscription,
+          firstPublishedOfferLink,
         },
       }
     }
