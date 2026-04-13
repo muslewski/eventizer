@@ -1,7 +1,7 @@
 import { Offer } from '@/payload-types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ExternalLink, Facebook, Instagram, Linkedin, LockKeyhole } from 'lucide-react'
+import { ExternalLink, GlobeIcon, LockKeyhole } from 'lucide-react'
 import Link from 'next/link'
 import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
 
@@ -21,13 +21,13 @@ const socialMediaConfig = [
   {
     key: 'facebook' as const,
     label: 'Facebook',
-    icon: Facebook,
+    icon: GlobeIcon,
     hoverClass: 'hover:bg-[#1877F2]/10 hover:border-[#1877F2]/40 hover:text-[#1877F2]',
   },
   {
     key: 'instagram' as const,
     label: 'Instagram',
-    icon: Instagram,
+    icon: GlobeIcon,
     hoverClass: 'hover:bg-[#E4405F]/10 hover:border-[#E4405F]/40 hover:text-[#E4405F]',
   },
   {
@@ -39,7 +39,7 @@ const socialMediaConfig = [
   {
     key: 'linkedin' as const,
     label: 'LinkedIn',
-    icon: Linkedin,
+    icon: GlobeIcon,
     hoverClass: 'hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/40 hover:text-[#0A66C2]',
   },
 ]
