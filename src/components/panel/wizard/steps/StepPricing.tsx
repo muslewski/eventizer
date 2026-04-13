@@ -7,7 +7,7 @@ import {
   type UseFormWatch,
   type UseFormSetValue,
 } from 'react-hook-form'
-import { Input } from '@/components/ui/input'
+import { LocationPicker } from '@/components/panel/wizard/LocationPicker'
 import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
 import {
@@ -31,7 +31,7 @@ interface StepPricingProps {
   setValue: UseFormSetValue<OfferFormData>
 }
 
-export function StepPricing({ control, errors, watch }: StepPricingProps) {
+export function StepPricing({ control, errors, watch, setValue }: StepPricingProps) {
   const hasPriceRange = watch('hasPriceRange')
   const serviceRadius = watch('serviceRadius')
 
@@ -133,9 +133,9 @@ export function StepPricing({ control, errors, watch }: StepPricingProps) {
         </div>
       )}
 
-      {/* Address */}
+      {/* Address with Google Places autocomplete */}
       <Field data-invalid={!!errors.address}>
-        <FieldLabel htmlFor="address">Adres</FieldLabel>
+        <FieldLabel htmlFor="address">Lokalizacja</FieldLabel>
         <FieldDescription>
           Wpisz adres lub miasto, z którego świadczysz usługi
         </FieldDescription>
@@ -143,10 +143,18 @@ export function StepPricing({ control, errors, watch }: StepPricingProps) {
           name="address"
           control={control}
           render={({ field }) => (
-            <Input
-              id="address"
+            <LocationPicker
+              value={field.value}
+              onChange={field.onChange}
+              onPlaceSelect={(result) => {
+                setValue('city', result.city)
+                setValue('lat', result.lat)
+                setValue('lng', result.lng)
+              }}
+              city={watch('city')}
+              lat={watch('lat')}
+              lng={watch('lng')}
               placeholder="np. Warszawa, ul. Marszałkowska 1"
-              {...field}
               aria-invalid={!!errors.address}
             />
           )}
