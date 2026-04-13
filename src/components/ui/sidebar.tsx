@@ -211,10 +211,10 @@ function Sidebar({
       className={cn(
         "group peer hidden text-sidebar-foreground md:block",
         "w-(--sidebar-width) shrink-0 pt-20 md:pt-24 transition-[width] duration-200 ease-linear",
-        "group-data-[collapsible=offcanvas]:w-0",
+        "data-[collapsible=offcanvas]:w-0",
         variant === "floating" || variant === "inset"
-          ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
-          : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
+          ? "data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
+          : "data-[collapsible=icon]:w-(--sidebar-width-icon)",
       )}
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
