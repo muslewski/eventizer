@@ -4,7 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
-import { PanelBreadcrumb } from '@/components/panel/PanelBreadcrumb'
+import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { AccountSettings } from '@/components/panel/konto/AccountSettings'
 
 export default async function KontoPage({
@@ -41,8 +41,12 @@ export default async function KontoPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <PanelBreadcrumb segments={[{ label: 'Konto' }]} lang={lang} />
-      <h1 className="font-bebas text-3xl tracking-wide">Konto</h1>
+      <PanelPageHeader
+        title="Konto"
+        description="Ustawienia profilu i konta"
+        breadcrumbs={[{ label: 'Konto' }]}
+        lang={lang}
+      />
       <AccountSettings user={user} subscription={subscription} lang={lang} />
     </div>
   )

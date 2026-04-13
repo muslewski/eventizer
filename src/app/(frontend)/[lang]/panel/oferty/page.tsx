@@ -4,7 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getOffers } from '@/actions/panel/offers'
-import { PanelBreadcrumb } from '@/components/panel/PanelBreadcrumb'
+import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { OffersListView } from '@/components/panel/oferty/OffersListView'
 
 export default async function OffertyPage({
@@ -39,8 +39,12 @@ export default async function OffertyPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <PanelBreadcrumb segments={[{ label: 'Oferty' }]} lang={lang} />
-      <h1 className="font-bebas text-3xl tracking-wide">Twoje oferty</h1>
+      <PanelPageHeader
+        title="Twoje oferty"
+        description="Zarządzaj swoimi ogłoszeniami"
+        breadcrumbs={[{ label: 'Oferty' }]}
+        lang={lang}
+      />
       <OffersListView
         offers={offers}
         maxOffers={user.maxOffers ?? 1}

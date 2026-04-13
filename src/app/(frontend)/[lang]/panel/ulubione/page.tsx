@@ -4,7 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getFavorites } from '@/actions/panel/favorites'
-import { PanelBreadcrumb } from '@/components/panel/PanelBreadcrumb'
+import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { FavoritesGrid } from '@/components/panel/ulubione/FavoritesGrid'
 
 export default async function UlubiionePage({
@@ -35,8 +35,12 @@ export default async function UlubiionePage({
 
   return (
     <div className="flex flex-col gap-6">
-      <PanelBreadcrumb segments={[{ label: 'Ulubione' }]} lang={lang} />
-      <h1 className="font-bebas text-3xl tracking-wide">Ulubione</h1>
+      <PanelPageHeader
+        title="Ulubione"
+        description="Twoje zapisane oferty"
+        breadcrumbs={[{ label: 'Ulubione' }]}
+        lang={lang}
+      />
       <FavoritesGrid offers={offers} lang={lang} />
     </div>
   )

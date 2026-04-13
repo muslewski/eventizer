@@ -4,7 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getSubmittedForms } from '@/actions/panel/forms'
-import { PanelBreadcrumb } from '@/components/panel/PanelBreadcrumb'
+import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { FormularzeTable } from '@/components/panel/formularze/FormularzeTable'
 
 export default async function FormularzePage({
@@ -39,8 +39,12 @@ export default async function FormularzePage({
 
   return (
     <div className="flex flex-col gap-6">
-      <PanelBreadcrumb segments={[{ label: 'Formularze' }]} lang={lang} />
-      <h1 className="font-bebas text-3xl tracking-wide">Formularze</h1>
+      <PanelPageHeader
+        title="Formularze"
+        description="Wiadomości od klientów zainteresowanych Twoimi ofertami"
+        breadcrumbs={[{ label: 'Formularze' }]}
+        lang={lang}
+      />
       <FormularzeTable forms={forms} />
     </div>
   )
