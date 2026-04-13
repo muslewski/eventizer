@@ -158,7 +158,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <Separator />
+      <Separator className="bg-accent/20" />
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
