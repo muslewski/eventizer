@@ -128,7 +128,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       side="left"
       variant="floating"
       collapsible="icon"
-      className="[&>[data-slot=sidebar-inner]]:bg-[rgb(8,8,8)] [&>[data-slot=sidebar-inner]]:border-accent/20"
+      className="[&>[data-slot=sidebar-inner]]:bg-[rgb(245,242,235)] dark:[&>[data-slot=sidebar-inner]]:bg-[rgb(8,8,8)] [&>[data-slot=sidebar-inner]]:border-accent/20"
       style={{ height: sidebarHeight as unknown as string }}
     >
       <SidebarHeader>
