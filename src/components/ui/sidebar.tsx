@@ -196,9 +196,9 @@ function Sidebar({
           }
           side={side}
         >
-          <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+          <SheetHeader className="px-4 pt-4 pb-2">
+            <SheetTitle className="font-bebas text-lg tracking-wide">Menu panelu</SheetTitle>
+            <SheetDescription className="sr-only">Nawigacja panelu</SheetDescription>
           </SheetHeader>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
