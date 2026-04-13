@@ -55,9 +55,15 @@ function HeaderBar({
   const { isOpen, toggle } = useMobileMenu()
   const router = useRouter()
   const showBack = isStandalone && normalizedPathname !== '/'
+  const isPanel = normalizedPathname.startsWith('/panel')
 
   return (
-    <header className="rounded-t-2xl h-16 top-4 md:top-8 absolute z-20 inset-0 w-full border-b border-white/20 bg-base-900/20 backdrop-blur-md flex justify-between items-center px-8 gap-8">
+    <header className={cn(
+      "rounded-t-2xl h-16 top-4 md:top-8 absolute z-20 inset-0 w-full border-b backdrop-blur-md flex justify-between items-center px-8 gap-8",
+      isPanel
+        ? "bg-white/80 dark:bg-base-900/20 border-border/20 dark:border-white/20"
+        : "bg-base-900/20 border-white/20"
+    )}>
       {/* Logo (with standalone back button) */}
       <div className="flex items-center gap-1">
         {showBack && (
@@ -65,7 +71,10 @@ function HeaderBar({
             variant="blend"
             size="icon"
             onClick={() => router.back()}
-            className="text-white/80 hover:text-white -ml-2"
+            className={cn(
+              "-ml-2",
+              isPanel ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white"
+            )}
             aria-label="Go back"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -81,7 +90,10 @@ function HeaderBar({
           variant="header"
           categories={categories}
         />
-        <div className="h-16 w-px bg-linear-to-t from-white/50 to-transparent" />
+        <div className={cn(
+          "h-16 w-px bg-linear-to-t to-transparent",
+          isPanel ? "from-foreground/20" : "from-white/50"
+        )} />
 
         {/* Settings – visible on large screens */}
         <div className="hidden xl:flex gap-6">
@@ -103,7 +115,10 @@ function HeaderBar({
           variant="blend"
           size="icon"
           onClick={toggle}
-          className="xl:hidden text-white/80 hover:text-white"
+          className={cn(
+            "xl:hidden",
+            isPanel ? "text-foreground/80 hover:text-foreground" : "text-white/80 hover:text-white"
+          )}
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
         >
           <AnimatedMenuIcon isOpen={isOpen} />
