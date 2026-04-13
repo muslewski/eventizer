@@ -128,10 +128,8 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       side="left"
       variant="floating"
       collapsible="icon"
-      style={{
-        height: sidebarHeight as unknown as string,
-        '--sidebar-background': 'rgb(8, 8, 8)',
-      } as React.CSSProperties}
+      className="[&>[data-slot=sidebar-inner]]:bg-[rgb(8,8,8)]"
+      style={{ height: sidebarHeight as unknown as string }}
     >
       <SidebarHeader>
         <Badge variant="outline" className="text-accent border-accent/30">
