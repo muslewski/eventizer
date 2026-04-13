@@ -33,6 +33,7 @@ interface OfferWizardFormProps {
   lang: string
   backgroundImageUrl?: string | null
   breadcrumbs?: { label: string; href?: string }[]
+  userServiceCategory?: string | null
 }
 
 export function OfferWizardForm({
@@ -43,6 +44,7 @@ export function OfferWizardForm({
   lang,
   backgroundImageUrl,
   breadcrumbs,
+  userServiceCategory,
 }: OfferWizardFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -71,7 +73,7 @@ export function OfferWizardForm({
     resolver: zodResolver(offerSchema),
     defaultValues: {
       title: initialData?.title ?? '',
-      category: initialData?.category ?? '',
+      category: initialData?.category ?? userServiceCategory ?? '',
       shortDescription: initialData?.shortDescription ?? '',
       hasPriceRange: initialData?.hasPriceRange ?? false,
       price: initialData?.price ?? undefined,

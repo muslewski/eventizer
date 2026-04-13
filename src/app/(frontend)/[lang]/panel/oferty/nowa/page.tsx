@@ -53,6 +53,7 @@ export default async function NowaOfertaPage({
         { label: 'Oferty', href: '/panel/oferty' },
         { label: 'Nowa oferta' },
       ]}
+      userServiceCategory={user.serviceCategory}
     />
   )
 }
