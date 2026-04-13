@@ -25,7 +25,7 @@ export function StepSummary({
   return (
     <div className="flex flex-col gap-4">
       {/* Basic info */}
-      <Card>
+      <Card className="bg-background border-border/20">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Podstawowe informacje</CardTitle>
         </CardHeader>
@@ -48,7 +48,7 @@ export function StepSummary({
       </Card>
 
       {/* Pricing & Location */}
-      <Card>
+      <Card className="bg-background border-border/20">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Cena i lokalizacja</CardTitle>
         </CardHeader>
@@ -73,7 +73,7 @@ export function StepSummary({
       </Card>
 
       {/* Media */}
-      <Card>
+      <Card className="bg-background border-border/20">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Media</CardTitle>
         </CardHeader>
@@ -106,7 +106,7 @@ export function StepSummary({
       </Card>
 
       {/* Description & Content */}
-      <Card>
+      <Card className="bg-background border-border/20">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Opis</CardTitle>
         </CardHeader>
@@ -121,7 +121,7 @@ export function StepSummary({
       </Card>
 
       {/* Contact */}
-      <Card>
+      <Card className="bg-background border-border/20">
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Kontakt</CardTitle>
         </CardHeader>

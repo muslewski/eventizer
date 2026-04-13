@@ -26,7 +26,7 @@ export function OfferCard({ offer, lang }: OfferCardProps) {
       : null
 
   return (
-    <Card>
+    <Card className="bg-background border-border/20">
       <CardHeader className="p-0">
         <div className="relative aspect-video overflow-hidden rounded-t-xl">
           {mainImageUrl ? (

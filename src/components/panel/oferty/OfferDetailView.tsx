@@ -72,7 +72,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
       {/* Info grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Kategoria */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Kategoria</CardDescription>
           </CardHeader>
@@ -86,7 +86,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
         </Card>
 
         {/* Cena */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Cena</CardDescription>
           </CardHeader>
@@ -100,7 +100,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
         </Card>
 
         {/* Lokalizacja */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Lokalizacja</CardDescription>
           </CardHeader>
@@ -115,7 +115,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
         </Card>
 
         {/* Zasięg */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Zasięg</CardDescription>
           </CardHeader>
@@ -126,7 +126,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
       </div>
 
       {/* Description Card */}
-      <Card>
+      <Card className="bg-background border-border/20">
         <CardHeader>
           <CardTitle>Opis</CardTitle>
         </CardHeader>
@@ -142,7 +142,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
 
       {/* Media Card */}
       {hasMedia && (
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardTitle>Media</CardTitle>
           </CardHeader>
@@ -185,7 +185,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
       )}
 
       {/* Contact Card */}
-      <Card>
+      <Card className="bg-background border-border/20">
         <CardHeader>
           <CardTitle>Kontakt</CardTitle>
         </CardHeader>

@@ -370,7 +370,7 @@ export function SubscriptionManager({
 
       {/* ACTIVE */}
       {isActive && (
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <CardTitle className="font-bebas text-2xl tracking-wide">
