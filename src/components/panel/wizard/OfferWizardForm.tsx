@@ -172,7 +172,24 @@ export function OfferWizardForm({
         video: video?.id || undefined,
         backgroundImage: backgroundImage?.id || undefined,
         videoAspectRatio: formData.videoAspectRatio,
-        content: content || undefined,
+        content: content
+          ? typeof content === 'string'
+            ? {
+                root: {
+                  type: 'root',
+                  children: content.split('\n').filter(Boolean).map((paragraph: string) => ({
+                    type: 'paragraph',
+                    children: [{ type: 'text', text: paragraph, version: 1 }],
+                    version: 1,
+                  })),
+                  direction: null,
+                  format: '' as const,
+                  indent: 0,
+                  version: 1,
+                },
+              }
+            : content
+          : undefined,
         phone: formData.phone,
         email: formData.email,
         socialMedia: {
