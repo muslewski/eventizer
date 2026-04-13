@@ -101,10 +101,16 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       }
 
       if (!isExpanded.current) {
-        // Map scroll position to offset (gradual collapse)
+        // Map scroll position to offset with gentle spring follow
         const progress = Math.min(Math.max(0, latest / SCROLL_DISTANCE), 1)
         const target = HEADER_CLEARANCE - progress * (HEADER_CLEARANCE - STICKY_OFFSET)
-        offset.set(target)
+        springControl.current?.stop()
+        springControl.current = animate(offset, target, {
+          type: 'spring',
+          stiffness: 600,
+          damping: 40,
+          mass: 0.3,
+        })
       }
     }
   })
