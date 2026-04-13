@@ -1,7 +1,7 @@
 'use client'
 
 import { Controller, type Control, type FieldErrors, type UseFormWatch } from 'react-hook-form'
-import { Field, FieldGroup, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field'
+import { Field, FieldGroup, FieldLabel, FieldDescription } from '@/components/ui/field'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { SingleImageUpload, GalleryUpload, VideoUpload } from '@/components/panel/wizard/FileUpload'
 import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
@@ -41,8 +41,8 @@ export function StepMedia({
   return (
     <FieldGroup>
       {/* Main image */}
-      <Field data-invalid={!mainImage}>
-        <FieldLabel>Zdjęcie główne *</FieldLabel>
+      <Field>
+        <FieldLabel>Zdjęcie główne <span className="text-destructive">*</span></FieldLabel>
         <FieldDescription>Główne zdjęcie reprezentujące Twoją ofertę</FieldDescription>
         <SingleImageUpload
           value={mainImage}
@@ -50,7 +50,6 @@ export function StepMedia({
           label="Kliknij lub przeciągnij zdjęcie główne"
           required
         />
-        {!mainImage && <FieldError>Zdjęcie główne jest wymagane</FieldError>}
       </Field>
 
       {/* Gallery */}
