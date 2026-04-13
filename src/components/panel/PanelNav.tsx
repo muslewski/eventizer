@@ -73,6 +73,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
   const offset = useMotionValue(HEADER_CLEARANCE)
   const prevScrollY = useRef(0)
   const isExpanded = useRef(false)
+  const springControl = useRef<ReturnType<typeof animate> | null>(null)
 
   useMotionValueEvent(scrollY, 'change', (latest) => {
     const prev = prevScrollY.current
@@ -83,24 +84,27 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       // Scrolling DOWN: binary snap at threshold
       if (latest >= SCROLL_DISTANCE && !isExpanded.current) {
         isExpanded.current = true
-        animate(offset, STICKY_OFFSET, {
+        // Cancel any running animation before starting snap
+        springControl.current?.stop()
+        springControl.current = animate(offset, STICKY_OFFSET, {
           type: 'spring',
           stiffness: 200,
           damping: 15,
           mass: 1.2,
         })
       }
-      // Before threshold: stay at HEADER_CLEARANCE (don't interpolate)
     } else {
-      // Scrolling UP: gradual interpolation
-      if (latest < SCROLL_DISTANCE) {
+      // Scrolling UP: cancel any spring and follow scroll directly
+      if (isExpanded.current && latest < SCROLL_DISTANCE) {
         isExpanded.current = false
-        const progress = Math.max(0, latest / SCROLL_DISTANCE)
+        springControl.current?.stop()
+      }
+
+      if (!isExpanded.current) {
+        // Map scroll position to offset (gradual collapse)
+        const progress = Math.min(Math.max(0, latest / SCROLL_DISTANCE), 1)
         const target = HEADER_CLEARANCE - progress * (HEADER_CLEARANCE - STICKY_OFFSET)
         offset.set(target)
-      } else if (latest < SCROLL_DISTANCE && isExpanded.current) {
-        // Just crossed back above threshold
-        isExpanded.current = false
       }
     }
   })
