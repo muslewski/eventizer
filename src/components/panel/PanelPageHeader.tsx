@@ -110,7 +110,7 @@ export function PanelPageHeader({
         {/* Bottom row: title + description + action */}
         <div className="flex items-end justify-between gap-4">
           <div className="flex flex-col gap-0.5">
-            <h1 className="font-bebas text-2xl sm:text-3xl tracking-wide text-white">
+            <h1 className="font-bebas text-3xl sm:text-4xl tracking-wide text-white">
               {title}
             </h1>
             {description && (
