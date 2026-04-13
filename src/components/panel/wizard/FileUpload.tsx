@@ -247,7 +247,7 @@ export function GalleryUpload({ value, onChange }: GalleryUploadProps) {
         }}
         onDragOver={(e) => e.preventDefault()}
         className={cn(
-          'flex h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed transition-colors',
+          'flex h-36 max-w-md cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors',
           isUploading ? 'border-accent/40 bg-accent/5' : 'border-border/30 hover:border-accent/30 hover:bg-accent/5',
         )}
       >
