@@ -18,7 +18,7 @@
 @layer base {
   * {
     @apply border-border/30 outline-ring/50;
-    --sidebar-background: var(--background);
+    --sidebar-background: var(--color-base-850);
     --sidebar-foreground: var(--foreground);
     --sidebar-primary: var(--accent);
     --sidebar-primary-foreground: var(--accent-foreground);
