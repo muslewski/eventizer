@@ -3,9 +3,8 @@
 import * as React from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ChevronRight, Check, Search, RotateCcw, Briefcase } from 'lucide-react'
+import { ChevronRight, Check, Search, RotateCcw, Briefcase, FolderIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface CategoryItem {
@@ -201,11 +200,11 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
       </div>
 
       {/* Category list */}
-      <div className="grid max-h-[300px] gap-2 overflow-y-auto pr-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 max-h-[320px] gap-1.5 overflow-y-auto pr-1">
         {filteredCategories.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground">
-            <Briefcase className="mx-auto mb-2 size-8 opacity-50" />
-            <p className="font-medium">Nie znaleziono kategorii</p>
+          <div className="col-span-full py-8 text-center text-muted-foreground">
+            <Briefcase className="mx-auto mb-2 size-6 opacity-50" />
+            <p className="text-sm font-medium">Nie znaleziono kategorii</p>
           </div>
         ) : (
           filteredCategories.map((category) => {
@@ -218,31 +217,23 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
                   : false
 
             return (
-              <Card
+              <button
+                type="button"
                 key={category.id}
                 className={cn(
-                  'cursor-pointer transition-colors hover:border-primary/40 hover:bg-primary/5',
+                  'flex items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm transition-colors',
+                  'border border-transparent hover:border-accent/30 hover:bg-accent/5',
                 )}
                 onClick={() => handleCategorySelect(category)}
               >
-                <CardContent className="flex items-center justify-between p-3">
-                  <div className="min-w-0 flex-1">
-                    <span className="font-medium">{category.name}</span>
-                    {category.description && (
-                      <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">
-                        {category.description}
-                      </p>
-                    )}
-                  </div>
-                  <div className="ml-3 flex shrink-0 items-center gap-1 text-muted-foreground">
-                    {hasSubcategories ? (
-                      <ChevronRight className="size-5" />
-                    ) : (
-                      <Check className="size-5" />
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+                <FolderIcon className="size-4 shrink-0 text-accent/60" />
+                <span className="min-w-0 flex-1 truncate font-medium">{category.name}</span>
+                {hasSubcategories ? (
+                  <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
+                ) : (
+                  <Check className="size-3.5 shrink-0 text-accent" />
+                )}
+              </button>
             )
           })
         )}
