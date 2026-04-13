@@ -15,13 +15,16 @@ import { StepBasicInfo } from './steps/StepBasicInfo'
 import { StepPricing } from './steps/StepPricing'
 import { StepMedia } from './steps/StepMedia'
 import { StepDescription } from './steps/StepDescription'
+import { StepContent } from './steps/StepContent'
 import { StepSummary } from './steps/StepSummary'
 
+const STEP_COUNT = 6
 const STEP_LABELS = [
   'Podstawowe',
   'Cena i lokalizacja',
   'Media',
-  'Opis i kontakt',
+  'Kontakt',
+  'Treść oferty',
   'Podsumowanie',
 ]
 
@@ -135,7 +138,7 @@ export function OfferWizardForm({
 
   const handleNext = async () => {
     const isValid = await validateCurrentStep()
-    if (isValid && currentStep < 4) {
+    if (isValid && currentStep < STEP_COUNT - 1) {
       setCurrentStep((prev) => prev + 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
@@ -173,22 +176,7 @@ export function OfferWizardForm({
         backgroundImage: backgroundImage?.id || undefined,
         videoAspectRatio: formData.videoAspectRatio,
         content: content
-          ? typeof content === 'string'
-            ? {
-                root: {
-                  type: 'root',
-                  children: content.split('\n').filter(Boolean).map((paragraph: string) => ({
-                    type: 'paragraph',
-                    children: [{ type: 'text', text: paragraph, version: 1 }],
-                    version: 1,
-                  })),
-                  direction: null,
-                  format: '' as const,
-                  indent: 0,
-                  version: 1,
-                },
-              }
-            : content
+          ? content
           : undefined,
         phone: formData.phone,
         email: formData.email,
@@ -237,7 +225,7 @@ export function OfferWizardForm({
         lang={lang}
         backgroundImageUrl={backgroundImageUrl}
         progress={{
-          value: ((currentStep + 1) / 5) * 100,
+          value: ((currentStep + 1) / STEP_COUNT) * 100,
           label: STEP_LABELS.map((label, i) => i === currentStep ? `● ${label}` : label).join('  ·  '),
         }}
       />
@@ -286,11 +274,15 @@ export function OfferWizardForm({
             errors={errors}
             watch={watch}
             setValue={setValue}
+          />
+        )}
+        {currentStep === 4 && (
+          <StepContent
             content={content}
             onContentChange={setContent}
           />
         )}
-        {currentStep === 4 && (
+        {currentStep === 5 && (
           <StepSummary
             getValues={getValues}
             content={content}
@@ -313,7 +305,7 @@ export function OfferWizardForm({
         </div>
 
         <div className="flex items-center gap-3">
-          {currentStep < 4 ? (
+          {currentStep < STEP_COUNT - 1 ? (
             <Button type="button" onClick={handleNext}>
               Dalej
               <ChevronRight className="size-4" data-icon="inline-end" />

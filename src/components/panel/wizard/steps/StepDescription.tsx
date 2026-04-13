@@ -8,13 +8,11 @@ import {
   type UseFormSetValue,
 } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Field,
   FieldGroup,
   FieldLabel,
   FieldError,
-  FieldDescription,
   FieldSet,
   FieldLegend,
 } from '@/components/ui/field'
@@ -31,33 +29,14 @@ interface StepDescriptionProps {
   errors: FieldErrors<OfferFormData>
   watch: UseFormWatch<OfferFormData>
   setValue: UseFormSetValue<OfferFormData>
-  content: any
-  onContentChange: (content: any) => void
 }
 
 export function StepDescription({
   control,
   errors,
-  content,
-  onContentChange,
 }: StepDescriptionProps) {
   return (
     <FieldGroup>
-      {/* Rich text content placeholder */}
-      <Field>
-        <FieldLabel htmlFor="content">Opis oferty</FieldLabel>
-        <FieldDescription>
-          Szczegółowy opis Twojej oferty widoczny na stronie
-        </FieldDescription>
-        <Textarea
-          id="content"
-          placeholder="Opisz szczegółowo swoją ofertę, doświadczenie, zakres usług..."
-          rows={8}
-          value={typeof content === 'string' ? content : ''}
-          onChange={(e) => onContentChange(e.target.value)}
-        />
-      </Field>
-
       {/* Contact info */}
       <Field data-invalid={!!errors.phone}>
         <FieldLabel htmlFor="phone">Telefon</FieldLabel>
