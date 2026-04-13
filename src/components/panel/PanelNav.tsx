@@ -1,8 +1,15 @@
 'use client'
 
+import { useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useScroll, useTransform, useSpring } from 'motion/react'
+import {
+  useScroll,
+  useTransform,
+  useMotionValue,
+  useMotionValueEvent,
+  animate,
+} from 'motion/react'
 import {
   LayoutDashboardIcon,
   FileTextIcon,
@@ -60,22 +67,46 @@ export function PanelNav({ user, lang }: PanelNavProps) {
   const pathname = usePathname()
   const { scrollY } = useScroll()
 
-  // MotionValue: smoothly interpolates height based on scroll position
-  // At scroll 0: viewport minus header clearance (sidebar fits below header)
-  // At scroll 72px+: viewport minus small sticky offset (sidebar fills screen)
-  // motion.div in sidebar.tsx reads this directly — zero React re-renders
-  // Map scroll → numeric offset for the spring to work with
-  const rawOffset = useTransform(
-    scrollY,
-    [0, SCROLL_DISTANCE],
-    [HEADER_CLEARANCE, STICKY_OFFSET],
-  )
+  // Asymmetric sidebar height animation:
+  // - Scrolling DOWN: stays at short height, then SNAPS with spring at threshold
+  // - Scrolling UP: smoothly interpolates back (gradual collapse)
+  const offset = useMotionValue(HEADER_CLEARANCE)
+  const prevScrollY = useRef(0)
+  const isExpanded = useRef(false)
 
-  // Spring-smoothed offset — gives that organic, weighty feel
-  const smoothOffset = useSpring(rawOffset, { stiffness: 300, damping: 30, mass: 0.8 })
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    const prev = prevScrollY.current
+    const scrollingDown = latest > prev
+    prevScrollY.current = latest
+
+    if (scrollingDown) {
+      // Scrolling DOWN: binary snap at threshold
+      if (latest >= SCROLL_DISTANCE && !isExpanded.current) {
+        isExpanded.current = true
+        animate(offset, STICKY_OFFSET, {
+          type: 'spring',
+          stiffness: 400,
+          damping: 25,
+          mass: 0.6,
+        })
+      }
+      // Before threshold: stay at HEADER_CLEARANCE (don't interpolate)
+    } else {
+      // Scrolling UP: gradual interpolation
+      if (latest < SCROLL_DISTANCE) {
+        isExpanded.current = false
+        const progress = Math.max(0, latest / SCROLL_DISTANCE)
+        const target = HEADER_CLEARANCE - progress * (HEADER_CLEARANCE - STICKY_OFFSET)
+        offset.set(target)
+      } else if (latest < SCROLL_DISTANCE && isExpanded.current) {
+        // Just crossed back above threshold
+        isExpanded.current = false
+      }
+    }
+  })
 
   // Convert numeric offset → CSS calc height string
-  const sidebarHeight = useTransform(smoothOffset, (v) => `calc(100svh - ${v}px)`)
+  const sidebarHeight = useTransform(offset, (v) => `calc(100svh - ${v}px)`)
 
   const isServiceProvider =
     user.role === 'service-provider' || user.role === 'admin' || user.role === 'moderator'
