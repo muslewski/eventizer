@@ -1,8 +1,8 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useScroll, useTransform } from 'motion/react'
 import {
   LayoutDashboardIcon,
   FileTextIcon,
@@ -49,25 +49,34 @@ const clientNav = [
   { label: 'Zostań usługodawcą', icon: StarIcon, route: '/panel/plan-subskrypcji' },
 ]
 
-// Header clearance: top-4 (16px) + h-16 (64px) = 80px on mobile
-// Sticky offset when scrolled: top-2 (8px)
-// The scroll distance to transition between them: 80 - 8 = 72px
+// Header: top-4 (16px) + h-16 (64px) = 80px clearance
+// Sticky offset: top-2 (8px)
 const HEADER_CLEARANCE = 80
 const STICKY_OFFSET = 8
-const SCROLL_DISTANCE = HEADER_CLEARANCE - STICKY_OFFSET
+
+function useSidebarHeight() {
+  const [height, setHeight] = useState(`calc(100svh - ${HEADER_CLEARANCE}px)`)
+
+  useEffect(() => {
+    function update() {
+      const scrollY = window.scrollY
+      // Interpolate: at scroll 0 → 80px offset, at scroll 72+ → 8px offset
+      const progress = Math.min(scrollY / (HEADER_CLEARANCE - STICKY_OFFSET), 1)
+      const offset = HEADER_CLEARANCE - progress * (HEADER_CLEARANCE - STICKY_OFFSET)
+      setHeight(`calc(100svh - ${offset}px)`)
+    }
+
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    return () => window.removeEventListener('scroll', update)
+  }, [])
+
+  return height
+}
 
 export function PanelNav({ user, lang }: PanelNavProps) {
   const pathname = usePathname()
-  const { scrollY } = useScroll()
-
-  // Dynamic height: shrinks at page top (header visible), grows as you scroll (header gone)
-  // At scroll 0: height = 100svh - 80px (viewport minus header clearance)
-  // At scroll 72px+: height = 100svh - 8px (viewport minus small sticky offset)
-  const sidebarHeight = useTransform(
-    scrollY,
-    [0, SCROLL_DISTANCE],
-    [`calc(100svh - ${HEADER_CLEARANCE}px)`, `calc(100svh - ${STICKY_OFFSET}px)`],
-  )
+  const sidebarHeight = useSidebarHeight()
 
   const isServiceProvider =
     user.role === 'service-provider' || user.role === 'admin' || user.role === 'moderator'
@@ -79,7 +88,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       side="left"
       variant="floating"
       collapsible="icon"
-      style={{ height: sidebarHeight as unknown as string }}
+      style={{ height: sidebarHeight }}
     >
       <SidebarHeader>
         <Badge variant="outline" className="text-accent border-accent/30">
