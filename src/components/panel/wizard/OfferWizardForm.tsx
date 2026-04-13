@@ -50,15 +50,31 @@ export function OfferWizardForm({
   const [isPending, startTransition] = useTransition()
   const [currentStep, setCurrentStep] = useState(0)
 
-  // Media state (managed separately from form)
-  const [mainImageId, setMainImageId] = useState<number | null>(
-    initialData?.mainImage?.id ?? initialData?.mainImage ?? null,
+  // Media state (managed separately from form as UploadedFile objects)
+  interface UploadedFile { id: number; url: string; filename: string }
+
+  const [mainImage, setMainImage] = useState<UploadedFile | null>(
+    initialData?.mainImage && typeof initialData.mainImage === 'object'
+      ? { id: initialData.mainImage.id, url: initialData.mainImage.url ?? '', filename: initialData.mainImage.filename ?? '' }
+      : null,
   )
-  const [galleryIds, setGalleryIds] = useState<number[]>(
-    initialData?.gallery?.map((g: any) => g.image?.id ?? g.image) ?? [],
+  const [galleryImages, setGalleryImages] = useState<UploadedFile[]>(
+    initialData?.gallery?.map((g: any) => {
+      const img = g.image
+      return img && typeof img === 'object'
+        ? { id: img.id, url: img.url ?? '', filename: img.filename ?? '' }
+        : null
+    }).filter(Boolean) ?? [],
   )
-  const [videoId, setVideoId] = useState<number | null>(
-    initialData?.video?.id ?? initialData?.video ?? null,
+  const [video, setVideo] = useState<UploadedFile | null>(
+    initialData?.video && typeof initialData.video === 'object'
+      ? { id: initialData.video.id, url: initialData.video.url ?? '', filename: initialData.video.filename ?? '' }
+      : null,
+  )
+  const [backgroundImage, setBackgroundImage] = useState<UploadedFile | null>(
+    initialData?.backgroundImage && typeof initialData.backgroundImage === 'object'
+      ? { id: initialData.backgroundImage.id, url: initialData.backgroundImage.url ?? '', filename: initialData.backgroundImage.filename ?? '' }
+      : null,
   )
   const [content, setContent] = useState<any>(initialData?.content ?? '')
 
@@ -149,9 +165,10 @@ export function OfferWizardForm({
           lng: formData.lng,
           serviceRadius: formData.serviceRadius,
         },
-        mainImage: mainImageId || undefined,
-        gallery: galleryIds.map((id) => ({ image: id })),
-        video: videoId || undefined,
+        mainImage: mainImage?.id || undefined,
+        gallery: galleryImages.map((img) => ({ image: img.id })),
+        video: video?.id || undefined,
+        backgroundImage: backgroundImage?.id || undefined,
         videoAspectRatio: formData.videoAspectRatio,
         content: content || undefined,
         phone: formData.phone,
@@ -234,13 +251,14 @@ export function OfferWizardForm({
             control={control}
             errors={errors}
             watch={watch}
-            setValue={setValue}
-            mainImageId={mainImageId}
-            galleryIds={galleryIds}
-            videoId={videoId}
-            onMainImageChange={setMainImageId}
-            onGalleryChange={setGalleryIds}
-            onVideoChange={setVideoId}
+            mainImage={mainImage}
+            galleryImages={galleryImages}
+            video={video}
+            backgroundImage={backgroundImage}
+            onMainImageChange={setMainImage}
+            onGalleryChange={setGalleryImages}
+            onVideoChange={setVideo}
+            onBackgroundImageChange={setBackgroundImage}
           />
         )}
         {currentStep === 3 && (
@@ -257,9 +275,9 @@ export function OfferWizardForm({
           <StepSummary
             getValues={getValues}
             content={content}
-            mainImageId={mainImageId}
-            galleryIds={galleryIds}
-            videoId={videoId}
+            mainImageId={mainImage?.id ?? null}
+            galleryIds={galleryImages.map((g) => g.id)}
+            videoId={video?.id ?? null}
           />
         )}
       </div>

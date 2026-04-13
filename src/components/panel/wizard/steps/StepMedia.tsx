@@ -1,103 +1,104 @@
 'use client'
 
-import {
-  Controller,
-  type Control,
-  type FieldErrors,
-  type UseFormWatch,
-  type UseFormSetValue,
-} from 'react-hook-form'
-import { Field, FieldGroup, FieldLabel, FieldDescription } from '@/components/ui/field'
+import { Controller, type Control, type FieldErrors, type UseFormWatch } from 'react-hook-form'
+import { Field, FieldGroup, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { ImagePlus, Film, Images } from 'lucide-react'
+import { SingleImageUpload, GalleryUpload, VideoUpload } from '@/components/panel/wizard/FileUpload'
 import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
+
+interface UploadedFile {
+  id: number
+  url: string
+  filename: string
+}
 
 interface StepMediaProps {
   control: Control<OfferFormData>
   errors: FieldErrors<OfferFormData>
   watch: UseFormWatch<OfferFormData>
-  setValue: UseFormSetValue<OfferFormData>
-  mainImageId: number | null
-  galleryIds: number[]
-  videoId: number | null
-  onMainImageChange: (id: number | null) => void
-  onGalleryChange: (ids: number[]) => void
-  onVideoChange: (id: number | null) => void
+  mainImage: UploadedFile | null
+  galleryImages: UploadedFile[]
+  video: UploadedFile | null
+  backgroundImage: UploadedFile | null
+  onMainImageChange: (file: UploadedFile | null) => void
+  onGalleryChange: (files: UploadedFile[]) => void
+  onVideoChange: (file: UploadedFile | null) => void
+  onBackgroundImageChange: (file: UploadedFile | null) => void
 }
 
 export function StepMedia({
   control,
+  errors,
+  mainImage,
+  galleryImages,
+  video,
+  backgroundImage,
+  onMainImageChange,
+  onGalleryChange,
+  onVideoChange,
+  onBackgroundImageChange,
 }: StepMediaProps) {
   return (
     <FieldGroup>
       {/* Main image */}
-      <Field>
-        <FieldLabel>Zdjęcie główne</FieldLabel>
-        <FieldDescription>
-          Główne zdjęcie reprezentujące Twoją ofertę
-        </FieldDescription>
-        <div className="flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 p-6 transition-colors hover:border-primary/50 hover:bg-muted">
-          <ImagePlus className="size-10 text-muted-foreground" />
-          <div className="text-center">
-            <p className="text-sm font-medium text-muted-foreground">
-              Kliknij, aby dodać zdjęcie
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground/70">
-              Przesyłanie plików zostanie zintegrowane w następnej iteracji
-            </p>
-          </div>
-        </div>
+      <Field data-invalid={!mainImage}>
+        <FieldLabel>Zdjęcie główne *</FieldLabel>
+        <FieldDescription>Główne zdjęcie reprezentujące Twoją ofertę</FieldDescription>
+        <SingleImageUpload
+          value={mainImage}
+          onChange={onMainImageChange}
+          label="Kliknij lub przeciągnij zdjęcie główne"
+          required
+        />
+        {!mainImage && <FieldError>Zdjęcie główne jest wymagane</FieldError>}
       </Field>
 
       {/* Gallery */}
       <Field>
-        <FieldLabel>Galeria</FieldLabel>
+        <FieldLabel>Galeria zdjęć</FieldLabel>
         <FieldDescription>
-          Dodatkowe zdjęcia do slidera/galerii oferty
+          Dodatkowe zdjęcia — przeciągnij aby zmienić kolejność
         </FieldDescription>
-        <div className="flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 p-6 transition-colors hover:border-primary/50 hover:bg-muted">
-          <Images className="size-8 text-muted-foreground" />
-          <p className="text-sm font-medium text-muted-foreground">
-            Dodaj zdjęcia do galerii
-          </p>
-        </div>
+        <GalleryUpload value={galleryImages} onChange={onGalleryChange} />
       </Field>
 
       {/* Video */}
       <Field>
         <FieldLabel>Film promocyjny</FieldLabel>
-        <FieldDescription>
-          Krótki film promocyjny (maks. 50 MB, mp4 lub webm)
-        </FieldDescription>
-        <div className="flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 p-6 transition-colors hover:border-primary/50 hover:bg-muted">
-          <Film className="size-8 text-muted-foreground" />
-          <p className="text-sm font-medium text-muted-foreground">
-            Dodaj film promocyjny
-          </p>
-        </div>
+        <FieldDescription>Krótki film promocyjny (max 50MB)</FieldDescription>
+        <VideoUpload value={video} onChange={onVideoChange} />
       </Field>
 
-      {/* Video aspect ratio */}
+      {/* Video aspect ratio — only when video is uploaded */}
+      {video && (
+        <Field>
+          <FieldLabel>Proporcje wideo</FieldLabel>
+          <Controller
+            name="videoAspectRatio"
+            control={control}
+            render={({ field }) => (
+              <ToggleGroup
+                type="single"
+                variant="outline"
+                value={field.value ?? '16:9'}
+                onValueChange={(val) => {
+                  if (val) field.onChange(val)
+                }}
+              >
+                <ToggleGroupItem value="16:9">Poziome (16:9)</ToggleGroupItem>
+                <ToggleGroupItem value="9:16">Pionowe (9:16)</ToggleGroupItem>
+                <ToggleGroupItem value="1:1">Kwadratowe (1:1)</ToggleGroupItem>
+              </ToggleGroup>
+            )}
+          />
+        </Field>
+      )}
+
+      {/* Background image */}
       <Field>
-        <FieldLabel>Proporcje wideo</FieldLabel>
-        <Controller
-          name="videoAspectRatio"
-          control={control}
-          render={({ field }) => (
-            <ToggleGroup
-              type="single"
-              variant="outline"
-              value={field.value ?? '16:9'}
-              onValueChange={(val) => {
-                if (val) field.onChange(val)
-              }}
-            >
-              <ToggleGroupItem value="16:9">Poziome (16:9)</ToggleGroupItem>
-              <ToggleGroupItem value="9:16">Pionowe (9:16)</ToggleGroupItem>
-              <ToggleGroupItem value="1:1">Kwadratowe (1:1)</ToggleGroupItem>
-            </ToggleGroup>
-          )}
-        />
+        <FieldLabel>Zdjęcie tła (opcjonalne)</FieldLabel>
+        <FieldDescription>Alternatywne tło dla strony oferty</FieldDescription>
+        <SingleImageUpload value={backgroundImage} onChange={onBackgroundImageChange} />
       </Field>
     </FieldGroup>
   )
