@@ -25,7 +25,7 @@ export function ClientDashboard({ stats, lang }: ClientDashboardProps) {
       {/* Stats row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Favorites */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Ulubione oferty</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -48,7 +48,7 @@ export function ClientDashboard({ stats, lang }: ClientDashboardProps) {
         </Card>
 
         {/* Help tickets */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Zgłoszenia pomocy</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -74,7 +74,7 @@ export function ClientDashboard({ stats, lang }: ClientDashboardProps) {
       </div>
 
       {/* CTA Card */}
-      <Card className="border-accent/30">
+      <Card className="bg-background border-accent/30">
         <CardHeader>
           <CardTitle className="font-bebas text-2xl tracking-wide">Zostań usługodawcą</CardTitle>
           <CardDescription>Dodaj swoją ofertę i dotrzyj do tysięcy klientów szukających usług eventowych.</CardDescription>

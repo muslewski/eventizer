@@ -111,7 +111,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
       {/* Stats grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Active offers */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Aktywne oferty</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -129,7 +129,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
         </Card>
 
         {/* Draft offers */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Oferty robocze</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -147,7 +147,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
         </Card>
 
         {/* New forms */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Nowe formularze</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -169,7 +169,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
         </Card>
 
         {/* Subscription */}
-        <Card>
+        <Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Subskrypcja</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
