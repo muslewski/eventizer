@@ -50,9 +50,9 @@ const clientNav = [
 ]
 
 // Header: top-4 (16px) + h-16 (64px) = 80px clearance
-// Sticky offset: top-2 (8px)
+// Sticky offset: top-2 (8px) + p-2 bottom padding (8px) for symmetry = 16px
 const HEADER_CLEARANCE = 80
-const STICKY_OFFSET = 8
+const STICKY_OFFSET = 16
 const SCROLL_DISTANCE = HEADER_CLEARANCE - STICKY_OFFSET
 
 export function PanelNav({ user, lang }: PanelNavProps) {
