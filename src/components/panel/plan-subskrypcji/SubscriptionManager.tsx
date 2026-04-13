@@ -22,6 +22,7 @@ import { Spinner } from '@/components/ui/spinner'
 import { CategoryPicker } from '@/components/panel/wizard/CategoryPicker'
 import { createCheckoutSession } from '@/actions/stripe/createCheckoutSession'
 import { activateBetaAccess } from '@/actions/stripe/activateBetaAccess'
+import { createBillingPortalSession } from '@/actions/stripe/manageSubscription'
 import { getStripePrices, type StripePriceDetails } from '@/actions/stripe/products/getStripePrices'
 import { cn } from '@/lib/utils'
 import type { User, SubscriptionPlan, ServiceCategory } from '@/payload-types'
@@ -426,11 +427,23 @@ export function SubscriptionManager({
               </Button>
 
               {!subscription.isBetaUser && (
-                <Button variant="outline" asChild>
-                  <a href="/app/account" target="_blank" rel="noopener noreferrer">
-                    <SettingsIcon data-icon="inline-start" />
-                    Zarządzaj płatnościami
-                  </a>
+                <Button
+                  variant="outline"
+                  disabled={isPending}
+                  onClick={() => {
+                    startTransition(async () => {
+                      const result = await createBillingPortalSession(user.id, window.location.href)
+                      if (result.success && result.url) {
+                        window.open(result.url, '_blank')
+                      } else {
+                        toast.error(result.message || 'Nie można otworzyć portalu rozliczeniowego.')
+                      }
+                    })
+                  }}
+                >
+                  {isPending && <Spinner data-icon="inline-start" />}
+                  <SettingsIcon data-icon="inline-start" />
+                  Zarządzaj płatnościami
                 </Button>
               )}
             </div>
