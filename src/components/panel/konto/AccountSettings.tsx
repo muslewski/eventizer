@@ -91,7 +91,7 @@ export function AccountSettings({ user, subscription, lang }: AccountSettingsPro
   return (
     <div className="flex flex-col gap-8">
       {/* Profile */}
-      <Card>
+      <Card className="bg-background border-border/20">
         <CardHeader>
           <CardTitle className="font-bebas text-2xl tracking-wide">Profil</CardTitle>
           <CardDescription>Informacje o Twoim koncie</CardDescription>
@@ -126,7 +126,7 @@ export function AccountSettings({ user, subscription, lang }: AccountSettingsPro
       <Separator />
 
       {/* Password */}
-      <Card>
+      <Card className="bg-background border-border/20">
         <CardHeader>
           <CardTitle className="font-bebas text-2xl tracking-wide">Zmiana hasła</CardTitle>
           <CardDescription>Zaktualizuj swoje hasło logowania</CardDescription>
@@ -176,7 +176,7 @@ export function AccountSettings({ user, subscription, lang }: AccountSettingsPro
       {isProvider && subscription && (
         <>
           <Separator />
-          <Card>
+          <Card className="bg-background border-border/20">
             <CardHeader>
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <CardTitle className="font-bebas text-2xl tracking-wide">Subskrypcja</CardTitle>
