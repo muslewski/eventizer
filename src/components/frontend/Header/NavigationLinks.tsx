@@ -30,22 +30,28 @@ interface NavigationLinksProps {
   normalizedPathname: string
   variant?: 'header' | 'sticky'
   categories: NavCategory[]
+  isPanel?: boolean
 }
 
 export default function NavigationLinks({
   normalizedPathname,
   variant = 'header',
   categories,
+  isPanel = false,
 }: NavigationLinksProps) {
   const isHeader = variant === 'header'
   const isSticky = variant === 'sticky'
 
-  // Sticky variant: dark text on light, white on dark; header variant: always white
-  const linkColor = isSticky
+  // Sticky variant: dark text on light, white on dark
+  // Header variant: always white UNLESS on panel pages (light theme edge case)
+  // Panel header: use foreground colors like sticky does
+  const useAdaptiveColors = isSticky || (isHeader && isPanel)
+
+  const linkColor = useAdaptiveColors
     ? 'text-base-700 dark:text-white/70 after:from-base-700 after:to-base-500 dark:after:from-white dark:after:to-white/50'
     : 'text-white/70 after:from-white after:to-white/50'
 
-  const triggerHoverColor = isSticky
+  const triggerHoverColor = useAdaptiveColors
     ? 'hover:text-base-700 focus:text-base-700 data-[state=open]:text-base-700 dark:hover:text-white/70 dark:focus:text-white/70 dark:data-[state=open]:text-white/70'
     : 'hover:text-white/70 focus:text-white/70 data-[state=open]:text-white/70'
 

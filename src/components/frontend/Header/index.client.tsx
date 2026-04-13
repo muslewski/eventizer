@@ -89,6 +89,7 @@ function HeaderBar({
           normalizedPathname={normalizedPathname}
           variant="header"
           categories={categories}
+          isPanel={isPanel}
         />
         <div className={cn(
           "h-16 w-px bg-linear-to-t to-transparent",
