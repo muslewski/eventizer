@@ -280,16 +280,18 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
             Edytuj
           </Link>
         </Button>
-        <Button variant="outline" asChild>
-          <Link
-            href={`/${lang}/ogloszenia/${offer.link}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <ExternalLinkIcon data-icon="inline-start" />
-            Podgląd na stronie
-          </Link>
-        </Button>
+        {offer._status === 'published' && (
+          <Button variant="outline" asChild>
+            <Link
+              href={`/${lang}/ogloszenia/${offer.link}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ExternalLinkIcon data-icon="inline-start" />
+              Podgląd na stronie
+            </Link>
+          </Button>
+        )}
         <OfferStatusToggle
           offerId={offer.id}
           currentStatus={offer._status ?? 'draft'}
