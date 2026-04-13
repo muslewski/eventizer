@@ -84,7 +84,7 @@ export function SingleImageUpload({ value, onChange, label, required }: SingleIm
   return (
     <div className="flex flex-col gap-2">
       {value?.url ? (
-        <div className="group relative aspect-video w-full overflow-hidden rounded-lg border border-border/20">
+        <div className="group relative aspect-video max-w-md overflow-hidden rounded-lg border border-border/20">
           <Image src={value.url} alt="" fill className="object-cover" />
           <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
             <Button
@@ -114,7 +114,7 @@ export function SingleImageUpload({ value, onChange, label, required }: SingleIm
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
           className={cn(
-            'flex aspect-video w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors',
+            'flex h-36 max-w-md cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors',
             isUploading ? 'border-accent/40 bg-accent/5' : 'border-border/30 hover:border-accent/30 hover:bg-accent/5',
           )}
         >
@@ -247,7 +247,7 @@ export function GalleryUpload({ value, onChange }: GalleryUploadProps) {
         }}
         onDragOver={(e) => e.preventDefault()}
         className={cn(
-          'flex h-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed transition-colors',
+          'flex h-20 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border-2 border-dashed transition-colors',
           isUploading ? 'border-accent/40 bg-accent/5' : 'border-border/30 hover:border-accent/30 hover:bg-accent/5',
         )}
       >
@@ -308,7 +308,7 @@ export function VideoUpload({ value, onChange }: VideoUploadProps) {
     <div className="flex flex-col gap-2">
       {value?.url ? (
         <div className="flex flex-col gap-2">
-          <div className="relative w-full overflow-hidden rounded-lg border border-border/20">
+          <div className="relative max-w-md overflow-hidden rounded-lg border border-border/20">
             <video
               src={value.url}
               controls
@@ -336,7 +336,7 @@ export function VideoUpload({ value, onChange }: VideoUploadProps) {
           }}
           onDragOver={(e) => e.preventDefault()}
           className={cn(
-            'flex h-32 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors',
+            'flex h-28 max-w-md cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors',
             isUploading ? 'border-accent/40 bg-accent/5' : 'border-border/30 hover:border-accent/30 hover:bg-accent/5',
           )}
         >
