@@ -57,8 +57,8 @@ export function PanelNav({ user, lang }: PanelNavProps) {
   const roleLabel = isServiceProvider ? 'Usługodawca' : 'Klient'
 
   return (
-    <Sidebar side="left" variant="sidebar" collapsible="icon" className="sticky top-20 md:top-24 bottom-auto h-[calc(100svh-5rem)] md:h-[calc(100svh-6rem)]">
-      <SidebarHeader>
+    <Sidebar side="left" variant="sidebar" collapsible="icon" className="sticky top-0 bottom-auto">
+      <SidebarHeader className="pt-24 md:pt-28">
         <Badge variant="outline" className="text-accent border-accent/30">
           {roleLabel}
         </Badge>

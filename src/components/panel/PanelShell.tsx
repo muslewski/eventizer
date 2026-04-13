@@ -13,7 +13,7 @@ interface PanelShellProps {
 
 export function PanelShell({ user, lang, children }: PanelShellProps) {
   return (
-    <SidebarProvider className="min-h-0 mt-20 md:mt-24">
+    <SidebarProvider className="min-h-0">
       <PanelNav user={user} lang={lang} />
       <SidebarInset>
         <PanelMobileHeader user={user} />
