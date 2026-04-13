@@ -224,7 +224,7 @@ function Sidebar({
       <div
         data-slot="sidebar-container"
         className={cn(
-          "sticky top-20 md:top-24 z-10 hidden h-[calc(100svh-5rem)] md:h-[calc(100svh-6rem)] w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          "sticky top-2 z-10 hidden h-[calc(100svh-1rem)] w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
           "group-data-[collapsible=offcanvas]:w-0 group-data-[collapsible=offcanvas]:overflow-hidden",
           // Adjust the padding for floating and inset variants.
           variant === "floating" || variant === "inset"
