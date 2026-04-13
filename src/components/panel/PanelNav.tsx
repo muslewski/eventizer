@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useScroll, useTransform } from 'motion/react'
+import { useScroll, useTransform, useSpring } from 'motion/react'
 import {
   LayoutDashboardIcon,
   FileTextIcon,
@@ -63,11 +63,18 @@ export function PanelNav({ user, lang }: PanelNavProps) {
   // At scroll 0: viewport minus header clearance (sidebar fits below header)
   // At scroll 72px+: viewport minus small sticky offset (sidebar fills screen)
   // motion.div in sidebar.tsx reads this directly — zero React re-renders
-  const sidebarHeight = useTransform(
+  // Map scroll → numeric offset for the spring to work with
+  const rawOffset = useTransform(
     scrollY,
     [0, SCROLL_DISTANCE],
-    [`calc(100svh - ${HEADER_CLEARANCE}px)`, `calc(100svh - ${STICKY_OFFSET}px)`],
+    [HEADER_CLEARANCE, STICKY_OFFSET],
   )
+
+  // Spring-smoothed offset — gives that organic, weighty feel
+  const smoothOffset = useSpring(rawOffset, { stiffness: 300, damping: 30, mass: 0.8 })
+
+  // Convert numeric offset → CSS calc height string
+  const sidebarHeight = useTransform(smoothOffset, (v) => `calc(100svh - ${v}px)`)
 
   const isServiceProvider =
     user.role === 'service-provider' || user.role === 'admin' || user.role === 'moderator'
