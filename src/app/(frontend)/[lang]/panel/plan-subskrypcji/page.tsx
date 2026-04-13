@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
+import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { SubscriptionManager } from '@/components/panel/plan-subskrypcji/SubscriptionManager'
 
@@ -30,7 +31,7 @@ export default async function PlanSubskrypcjiPage({
     redirect(`/${lang}/auth/sign-in`)
   }
 
-  const [subscription, categoriesResult] = await Promise.all([
+  const [subscription, categoriesResult, bgUrl] = await Promise.all([
     getCurrentSubscriptionDetails(user.id),
     payload.find({
       collection: 'service-categories',
@@ -38,6 +39,7 @@ export default async function PlanSubskrypcjiPage({
       sort: 'name',
       limit: 100,
     }),
+    getHeaderBackgroundUrl(),
   ])
 
   const betaMode = process.env.BETA_MODE === 'true'
@@ -49,6 +51,7 @@ export default async function PlanSubskrypcjiPage({
         description="Zarządzaj swoim planem i kategorią usług"
         breadcrumbs={[{ label: 'Plan subskrypcji' }]}
         lang={lang}
+        backgroundImageUrl={bgUrl}
       />
       <SubscriptionManager
         user={user}

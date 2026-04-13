@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getOffers } from '@/actions/panel/offers'
+import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { OffersListView } from '@/components/panel/oferty/OffersListView'
 
@@ -34,7 +35,10 @@ export default async function OffertyPage({
     redirect(`/${lang}/panel/dashboard`)
   }
 
-  const offersResult = await getOffers(user.id)
+  const [offersResult, bgUrl] = await Promise.all([
+    getOffers(user.id),
+    getHeaderBackgroundUrl(),
+  ])
   const offers = offersResult.success ? offersResult.data : []
 
   return (
@@ -44,6 +48,7 @@ export default async function OffertyPage({
         description="Zarządzaj swoimi ogłoszeniami"
         breadcrumbs={[{ label: 'Oferty' }]}
         lang={lang}
+        backgroundImageUrl={bgUrl}
       />
       <OffersListView
         offers={offers}

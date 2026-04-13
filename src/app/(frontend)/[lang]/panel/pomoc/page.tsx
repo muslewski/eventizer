@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getHelpTickets } from '@/actions/panel/help'
+import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { PomocTable } from '@/components/panel/pomoc/PomocTable'
 import { NewTicketDialog } from '@/components/panel/pomoc/NewTicketDialog'
@@ -31,7 +32,10 @@ export default async function PomocPage({
     redirect(`/${lang}/auth/sign-in`)
   }
 
-  const ticketsResult = await getHelpTickets(user.id)
+  const [ticketsResult, bgUrl] = await Promise.all([
+    getHelpTickets(user.id),
+    getHeaderBackgroundUrl(),
+  ])
   const tickets = ticketsResult.success ? ticketsResult.data : []
 
   return (
@@ -42,6 +46,7 @@ export default async function PomocPage({
         breadcrumbs={[{ label: 'Pomoc' }]}
         lang={lang}
         action={<NewTicketDialog userEmail={user.email} />}
+        backgroundImageUrl={bgUrl}
       />
       <PomocTable tickets={tickets} />
     </div>

@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getFavorites } from '@/actions/panel/favorites'
+import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { FavoritesGrid } from '@/components/panel/ulubione/FavoritesGrid'
 
@@ -30,7 +31,10 @@ export default async function UlubiionePage({
     redirect(`/${lang}/auth/sign-in`)
   }
 
-  const favoritesResult = await getFavorites(user.id)
+  const [favoritesResult, bgUrl] = await Promise.all([
+    getFavorites(user.id),
+    getHeaderBackgroundUrl(),
+  ])
   const offers = favoritesResult.success ? favoritesResult.data : []
 
   return (
@@ -40,6 +44,7 @@ export default async function UlubiionePage({
         description="Twoje zapisane oferty"
         breadcrumbs={[{ label: 'Ulubione' }]}
         lang={lang}
+        backgroundImageUrl={bgUrl}
       />
       <FavoritesGrid offers={offers} lang={lang} />
     </div>

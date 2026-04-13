@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getSubmittedForms } from '@/actions/panel/forms'
+import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { FormularzeTable } from '@/components/panel/formularze/FormularzeTable'
 
@@ -34,7 +35,10 @@ export default async function FormularzePage({
     redirect(`/${lang}/panel/dashboard`)
   }
 
-  const formsResult = await getSubmittedForms(user.id)
+  const [formsResult, bgUrl] = await Promise.all([
+    getSubmittedForms(user.id),
+    getHeaderBackgroundUrl(),
+  ])
   const forms = formsResult.success ? formsResult.data : []
 
   return (
@@ -44,6 +48,7 @@ export default async function FormularzePage({
         description="Wiadomości od klientów zainteresowanych Twoimi ofertami"
         breadcrumbs={[{ label: 'Formularze' }]}
         lang={lang}
+        backgroundImageUrl={bgUrl}
       />
       <FormularzeTable forms={forms} />
     </div>

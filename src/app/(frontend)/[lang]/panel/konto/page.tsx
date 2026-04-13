@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
+import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { AccountSettings } from '@/components/panel/konto/AccountSettings'
 
@@ -35,9 +36,10 @@ export default async function KontoPage({
     user.role === 'admin' ||
     user.role === 'moderator'
 
-  const subscription = isProvider
-    ? await getCurrentSubscriptionDetails(user.id)
-    : undefined
+  const [subscription, bgUrl] = await Promise.all([
+    isProvider ? getCurrentSubscriptionDetails(user.id) : Promise.resolve(undefined),
+    getHeaderBackgroundUrl(),
+  ])
 
   return (
     <div className="flex flex-col gap-6">
@@ -46,6 +48,7 @@ export default async function KontoPage({
         description="Ustawienia profilu i konta"
         breadcrumbs={[{ label: 'Konto' }]}
         lang={lang}
+        backgroundImageUrl={bgUrl}
       />
       <AccountSettings user={user} subscription={subscription} lang={lang} />
     </div>

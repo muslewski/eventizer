@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import {
   Breadcrumb,
@@ -21,6 +23,7 @@ interface PanelPageHeaderProps {
   breadcrumbs?: BreadcrumbSegment[]
   lang: string
   action?: React.ReactNode
+  backgroundImageUrl?: string | null
 }
 
 export function PanelPageHeader({
@@ -29,14 +32,44 @@ export function PanelPageHeader({
   breadcrumbs,
   lang,
   action,
+  backgroundImageUrl,
 }: PanelPageHeaderProps) {
+  const [isLoaded, setIsLoaded] = useState(false)
+
   return (
-    <div className="relative h-28 sm:h-32 w-full overflow-hidden rounded-2xl" data-theme="dark">
-      {/* Gradient background */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-accent/10 via-background to-background" />
+    <div className="relative h-48 sm:h-56 w-full overflow-hidden rounded-2xl" data-theme="dark">
+      {/* Background image */}
+      {backgroundImageUrl && (
+        <div
+          className="absolute inset-0 z-0 will-change-transform transform-gpu backface-hidden"
+          style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.6s ease-in-out' }}
+        >
+          <Image
+            src={backgroundImageUrl}
+            alt=""
+            fill
+            quality={70}
+            className="object-cover object-center"
+            sizes="(max-width: 768px) 100vw, 80vw"
+            onLoad={() => setIsLoaded(true)}
+          />
+          <div
+            className="absolute inset-0"
+            style={{ boxShadow: 'inset 0 4px 40px rgba(0, 0, 0, 0.5)' }}
+          />
+        </div>
+      )}
+
+      {/* Fallback gradient when no image */}
+      {!backgroundImageUrl && (
+        <div className="absolute inset-0 z-0 bg-gradient-to-br from-accent/10 via-background to-background" />
+      )}
+
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 z-1 bg-gradient-to-b from-transparent via-black/30 to-black/70" />
 
       {/* Noise texture */}
-      <div className="absolute inset-0 z-1 opacity-[0.12] mix-blend-hard-light pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIvPjwvc3ZnPg==')]" />
+      <div className="absolute inset-0 z-2 opacity-[0.12] mix-blend-hard-light pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIvPjwvc3ZnPg==')]" />
 
       {/* Accent glow */}
       <div className="absolute -bottom-6 -left-6 z-1 size-24 rounded-full bg-accent/10 blur-[50px]" />
