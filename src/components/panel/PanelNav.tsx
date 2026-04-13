@@ -146,7 +146,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       style={{ height: sidebarHeight as unknown as string }}
     >
       <SidebarHeader>
-        <Badge variant="outline" className="text-accent border-accent/30 justify-center">
+        <Badge variant="outline" className="text-accent border-accent/30 justify-center px-3">
           <span className="group-data-[state=collapsed]:hidden">{roleLabel}</span>
           <span className="hidden group-data-[state=collapsed]:inline">{roleLabel[0]}</span>
         </Badge>
