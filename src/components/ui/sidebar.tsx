@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { motion } from "motion/react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { PanelLeftIcon } from "lucide-react"
 import { Slot } from "radix-ui"
@@ -221,7 +222,7 @@ function Sidebar({
       data-side={side}
       data-slot="sidebar"
     >
-      <div
+      <motion.div
         data-slot="sidebar-container"
         className={cn(
           "sticky top-2 z-10 hidden w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
@@ -241,7 +242,7 @@ function Sidebar({
         >
           {children}
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

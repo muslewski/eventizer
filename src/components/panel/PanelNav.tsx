@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useScroll, useTransform } from 'motion/react'
 import {
   LayoutDashboardIcon,
   FileTextIcon,
@@ -53,30 +53,21 @@ const clientNav = [
 // Sticky offset: top-2 (8px)
 const HEADER_CLEARANCE = 80
 const STICKY_OFFSET = 8
-
-function useSidebarHeight() {
-  const [height, setHeight] = useState(`calc(100svh - ${HEADER_CLEARANCE}px)`)
-
-  useEffect(() => {
-    function update() {
-      const scrollY = window.scrollY
-      // Interpolate: at scroll 0 → 80px offset, at scroll 72+ → 8px offset
-      const progress = Math.min(scrollY / (HEADER_CLEARANCE - STICKY_OFFSET), 1)
-      const offset = HEADER_CLEARANCE - progress * (HEADER_CLEARANCE - STICKY_OFFSET)
-      setHeight(`calc(100svh - ${offset}px)`)
-    }
-
-    update()
-    window.addEventListener('scroll', update, { passive: true })
-    return () => window.removeEventListener('scroll', update)
-  }, [])
-
-  return height
-}
+const SCROLL_DISTANCE = HEADER_CLEARANCE - STICKY_OFFSET
 
 export function PanelNav({ user, lang }: PanelNavProps) {
   const pathname = usePathname()
-  const sidebarHeight = useSidebarHeight()
+  const { scrollY } = useScroll()
+
+  // MotionValue: smoothly interpolates height based on scroll position
+  // At scroll 0: viewport minus header clearance (sidebar fits below header)
+  // At scroll 72px+: viewport minus small sticky offset (sidebar fills screen)
+  // motion.div in sidebar.tsx reads this directly — zero React re-renders
+  const sidebarHeight = useTransform(
+    scrollY,
+    [0, SCROLL_DISTANCE],
+    [`calc(100svh - ${HEADER_CLEARANCE}px)`, `calc(100svh - ${STICKY_OFFSET}px)`],
+  )
 
   const isServiceProvider =
     user.role === 'service-provider' || user.role === 'admin' || user.role === 'moderator'
@@ -88,7 +79,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       side="left"
       variant="floating"
       collapsible="icon"
-      style={{ height: sidebarHeight }}
+      style={{ height: sidebarHeight as unknown as string }}
     >
       <SidebarHeader>
         <Badge variant="outline" className="text-accent border-accent/30">
