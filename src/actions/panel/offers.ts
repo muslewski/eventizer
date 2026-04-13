@@ -91,11 +91,13 @@ export async function updateOffer(id: number, data: Partial<Offer>) {
     await getAuthenticatedUser()
     const payload = await getPayload({ config })
 
+    const isDraft = (data as any)._status === 'draft' || !(data as any)._status
     const result = await payload.update({
       collection: 'offers',
       id,
       data: data as Offer,
       overrideAccess: true,
+      draft: isDraft,
     })
 
     return { success: true as const, data: result }
@@ -119,6 +121,7 @@ export async function toggleOfferStatus(id: number, currentStatus: string) {
         _status: newStatus,
       } as Partial<Offer>,
       overrideAccess: true,
+      draft: newStatus === 'draft',
     })
 
     return { success: true as const, data: result }
