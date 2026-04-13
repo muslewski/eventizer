@@ -209,7 +209,7 @@ function Sidebar({
     <div
       className={cn(
         "group peer hidden text-sidebar-foreground md:block",
-        "w-(--sidebar-width) shrink-0 transition-[width] duration-200 ease-linear",
+        "w-(--sidebar-width) shrink-0 pt-20 md:pt-24 transition-[width] duration-200 ease-linear",
         "group-data-[collapsible=offcanvas]:w-0",
         variant === "floating" || variant === "inset"
           ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
