@@ -40,7 +40,7 @@ export function OffersListView({ offers, maxOffers, lang }: OffersListViewProps)
 
   if (offers.length === 0) {
     return (
-      <Empty>
+      <Empty className="min-h-[50svh]">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <FileTextIcon />

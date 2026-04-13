@@ -107,7 +107,7 @@ export function FormularzeTable({ forms }: FormularzeTableProps) {
 
   if (forms.length === 0) {
     return (
-      <Empty>
+      <Empty className="min-h-[50svh]">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <InboxIcon />

@@ -54,7 +54,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
   if (hasNoOffers) {
     return (
       <div className="flex flex-col gap-6">
-        <Empty>
+        <Empty className="min-h-[50svh]">
           <EmptyHeader>
             <EmptyMedia variant="icon"><FileTextIcon /></EmptyMedia>
             <EmptyTitle>Nie masz jeszcze żadnych ofert</EmptyTitle>

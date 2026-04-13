@@ -125,7 +125,7 @@ function OfferFavoriteCard({
 export function FavoritesGrid({ offers, lang }: FavoritesGridProps) {
   if (offers.length === 0) {
     return (
-      <Empty>
+      <Empty className="min-h-[50svh]">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <HeartIcon />

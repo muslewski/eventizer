@@ -26,7 +26,7 @@ interface PomocTableProps {
 export function PomocTable({ tickets }: PomocTableProps) {
   if (tickets.length === 0) {
     return (
-      <Empty>
+      <Empty className="min-h-[50svh]">
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <HelpCircleIcon />
