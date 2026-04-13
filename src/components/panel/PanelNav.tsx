@@ -85,9 +85,9 @@ export function PanelNav({ user, lang }: PanelNavProps) {
         isExpanded.current = true
         animate(offset, STICKY_OFFSET, {
           type: 'spring',
-          stiffness: 400,
-          damping: 25,
-          mass: 0.6,
+          stiffness: 200,
+          damping: 15,
+          mass: 1.2,
         })
       }
       // Before threshold: stay at HEADER_CLEARANCE (don't interpolate)
