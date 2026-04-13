@@ -17,6 +17,7 @@ export default function HeaderLogo({ variant = 'header' }: HeaderLogoProps) {
   const normalizedPathname = removeLocalePrefix(pathname)
   const isSticky = variant === 'sticky'
   const isFooter = variant === 'footer'
+  const isPanel = normalizedPathname.startsWith('/panel')
 
   const handleLogoClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (normalizedPathname !== '/') return
@@ -45,6 +46,8 @@ export default function HeaderLogo({ variant = 'header' }: HeaderLogoProps) {
           isFooter
             ? 'text-accent/60 dark:text-white/10 dark:text-shadow-white/20'
             : isSticky
+              ? 'text-brand-500/75 dark:text-white/10 text-shadow-base-400/20 dark:text-shadow-white/20'
+              : isPanel
               ? 'text-brand-500/75 dark:text-white/10 text-shadow-base-400/20 dark:text-shadow-white/20'
               : 'text-white/10 text-shadow-white/20',
         )}
