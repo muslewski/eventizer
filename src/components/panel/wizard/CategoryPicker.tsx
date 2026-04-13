@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -12,6 +13,7 @@ interface CategoryItem {
   name: string
   slug: string
   description?: string | null
+  icon?: { url?: string } | number | null
   subcategory_level_1?: CategoryItem[]
   subcategory_level_2?: CategoryItem[]
 }
@@ -226,7 +228,11 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
                 )}
                 onClick={() => handleCategorySelect(category)}
               >
-                <FolderIcon className="size-4 shrink-0 text-accent/60" />
+                {typeof category.icon === 'object' && category.icon?.url ? (
+                  <Image src={category.icon.url} alt="" width={18} height={18} className="size-4.5 shrink-0 rounded-sm object-contain" />
+                ) : (
+                  <FolderIcon className="size-4 shrink-0 text-accent/60" />
+                )}
                 <span className="min-w-0 flex-1 truncate font-medium">{category.name}</span>
                 {hasSubcategories ? (
                   <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
