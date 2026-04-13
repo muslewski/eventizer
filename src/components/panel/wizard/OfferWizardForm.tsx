@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { ChevronRight, ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { Progress } from '@/components/ui/progress'
+import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { createOffer, updateOffer } from '@/actions/panel/offers'
 import { offerSchema, type OfferFormData } from './offerSchema'
 import { StepBasicInfo } from './steps/StepBasicInfo'
@@ -31,6 +31,8 @@ interface OfferWizardFormProps {
   offerId?: number
   categories: any[]
   lang: string
+  backgroundImageUrl?: string | null
+  breadcrumbs?: { label: string; href?: string }[]
 }
 
 export function OfferWizardForm({
@@ -39,6 +41,8 @@ export function OfferWizardForm({
   offerId,
   categories,
   lang,
+  backgroundImageUrl,
+  breadcrumbs,
 }: OfferWizardFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -187,29 +191,20 @@ export function OfferWizardForm({
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Progress indicator */}
-      <div className="flex flex-col gap-3">
-        <Progress value={((currentStep + 1) / 5) * 100} />
-        <div className="flex items-center justify-between">
-          {STEP_LABELS.map((label, index) => (
-            <span
-              key={label}
-              className={`text-xs font-medium ${
-                index === currentStep
-                  ? 'text-primary'
-                  : index < currentStep
-                    ? 'text-muted-foreground'
-                    : 'text-muted-foreground/50'
-              }`}
-            >
-              <span className="hidden sm:inline">{label}</span>
-              <span className="sm:hidden">{index + 1}</span>
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* Header with progress */}
+      <PanelPageHeader
+        title={mode === 'create' ? 'Nowa oferta' : 'Edytuj ofertę'}
+        description={`Krok ${currentStep + 1} z 5 — ${STEP_LABELS[currentStep]}`}
+        breadcrumbs={breadcrumbs}
+        lang={lang}
+        backgroundImageUrl={backgroundImageUrl}
+        progress={{
+          value: ((currentStep + 1) / 5) * 100,
+          label: STEP_LABELS.map((label, i) => i === currentStep ? `● ${label}` : label).join('  ·  '),
+        }}
+      />
 
-      {/* Step title */}
+      {/* Step content */}
       <h2 className="font-bebas text-2xl tracking-wide">
         {STEP_LABELS[currentStep]}
       </h2>

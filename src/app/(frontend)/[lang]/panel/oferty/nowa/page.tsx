@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
-import { PanelBreadcrumb } from '@/components/panel/PanelBreadcrumb'
+import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { OfferWizardForm } from '@/components/panel/wizard/OfferWizardForm'
 
 export default async function NowaOfertaPage({
@@ -33,29 +33,26 @@ export default async function NowaOfertaPage({
     redirect(`/${lang}/panel/dashboard`)
   }
 
-  // Fetch service categories for the category picker
-  const categoriesResult = await payload.find({
-    collection: 'service-categories',
-    depth: 2,
-    sort: 'name',
-    limit: 100,
-  })
+  const [categoriesResult, bgUrl] = await Promise.all([
+    payload.find({
+      collection: 'service-categories',
+      depth: 2,
+      sort: 'name',
+      limit: 100,
+    }),
+    getHeaderBackgroundUrl(),
+  ])
 
   return (
-    <div className="flex flex-col gap-6">
-      <PanelBreadcrumb
-        segments={[
-          { label: 'Oferty', href: '/panel/oferty' },
-          { label: 'Nowa oferta' },
-        ]}
-        lang={lang}
-      />
-      <h1 className="font-bebas text-3xl tracking-wide">Nowa oferta</h1>
-      <OfferWizardForm
-        mode="create"
-        categories={categoriesResult.docs}
-        lang={lang}
-      />
-    </div>
+    <OfferWizardForm
+      mode="create"
+      categories={categoriesResult.docs}
+      lang={lang}
+      backgroundImageUrl={bgUrl}
+      breadcrumbs={[
+        { label: 'Oferty', href: '/panel/oferty' },
+        { label: 'Nowa oferta' },
+      ]}
+    />
   )
 }

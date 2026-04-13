@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Progress } from '@/components/ui/progress'
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -24,6 +25,7 @@ interface PanelPageHeaderProps {
   lang: string
   action?: React.ReactNode
   backgroundImageUrl?: string | null
+  progress?: { value: number; label?: string }
 }
 
 export function PanelPageHeader({
@@ -33,6 +35,7 @@ export function PanelPageHeader({
   lang,
   action,
   backgroundImageUrl,
+  progress,
 }: PanelPageHeaderProps) {
   const [isLoaded, setIsLoaded] = useState(false)
 
@@ -107,18 +110,28 @@ export function PanelPageHeader({
           </Breadcrumb>
         )}
 
-        {/* Bottom row: title + description + action */}
-        <div className="flex items-end justify-between gap-4">
-          <div className="flex flex-col gap-0.5">
-            <h1 className="font-bebas text-3xl sm:text-4xl tracking-wide text-white">
-              {title}
-            </h1>
-            {description && (
-              <p className="text-xs sm:text-sm text-white/40">{description}</p>
+        {/* Bottom section: title + progress */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-end justify-between gap-4">
+            <div className="flex flex-col gap-0.5">
+              <h1 className="font-bebas text-3xl sm:text-4xl tracking-wide text-white">
+                {title}
+              </h1>
+              {description && (
+                <p className="text-xs sm:text-sm text-white/40">{description}</p>
+              )}
+            </div>
+            {action && (
+              <div className="shrink-0">{action}</div>
             )}
           </div>
-          {action && (
-            <div className="shrink-0">{action}</div>
+          {progress && (
+            <div className="flex flex-col gap-1.5">
+              <Progress value={progress.value} className="h-1.5 bg-white/10 [&>[data-slot=progress-indicator]]:bg-accent" />
+              {progress.label && (
+                <p className="text-xs text-white/40">{progress.label}</p>
+              )}
+            </div>
           )}
         </div>
       </div>
