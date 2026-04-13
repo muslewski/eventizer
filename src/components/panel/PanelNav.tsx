@@ -19,6 +19,7 @@ import {
   HeartIcon,
   StarIcon,
   SettingsIcon,
+  PanelLeftIcon,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -27,6 +28,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarGroupContent,
+  useSidebar,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
@@ -62,6 +64,18 @@ const clientNav = [
 const HEADER_CLEARANCE = 88
 const STICKY_OFFSET = 16
 const SCROLL_DISTANCE = HEADER_CLEARANCE - STICKY_OFFSET
+
+function CollapseButton() {
+  const { toggleSidebar } = useSidebar()
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton onClick={toggleSidebar}>
+        <PanelLeftIcon />
+        <span>Zwiń panel</span>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  )
+}
 
 export function PanelNav({ user, lang }: PanelNavProps) {
   const pathname = usePathname()
@@ -169,6 +183,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
+          <CollapseButton />
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
