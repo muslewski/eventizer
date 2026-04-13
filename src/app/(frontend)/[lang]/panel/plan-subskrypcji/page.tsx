@@ -30,18 +30,13 @@ export default async function PlanSubskrypcjiPage({
     redirect(`/${lang}/auth/sign-in`)
   }
 
-  const [subscription, categoriesResult, plansResult] = await Promise.all([
+  const [subscription, categoriesResult] = await Promise.all([
     getCurrentSubscriptionDetails(user.id),
     payload.find({
       collection: 'service-categories',
       depth: 2,
       sort: 'name',
       limit: 100,
-    }),
-    payload.find({
-      collection: 'subscription-plans',
-      sort: 'level',
-      limit: 20,
     }),
   ])
 
@@ -55,7 +50,6 @@ export default async function PlanSubskrypcjiPage({
         user={user}
         subscription={subscription}
         categories={categoriesResult.docs as any}
-        plans={plansResult.docs}
         lang={lang}
         showBetaOption={betaMode}
       />
