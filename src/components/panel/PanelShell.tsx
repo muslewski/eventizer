@@ -16,7 +16,7 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
     <SidebarProvider className="min-h-0">
       <PanelNav user={user} lang={lang} />
       <SidebarInset>
-        <PanelMobileHeader user={user} />
+        <PanelMobileHeader />
         <div className="flex flex-1 flex-col gap-4 p-4 pt-24 sm:p-6 sm:pt-28 lg:p-8 lg:pt-28">{children}</div>
       </SidebarInset>
     </SidebarProvider>
