@@ -130,7 +130,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       collapsible="icon"
       style={{
         height: sidebarHeight as unknown as string,
-        '--sidebar-background': 'var(--color-base-950)',
+        '--sidebar-background': 'rgb(8, 8, 8)',
       } as React.CSSProperties}
     >
       <SidebarHeader>
