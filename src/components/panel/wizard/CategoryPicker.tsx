@@ -229,7 +229,7 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
                 onClick={() => handleCategorySelect(category)}
               >
                 {typeof category.icon === 'object' && category.icon?.url ? (
-                  <Image src={category.icon.url} alt="" width={18} height={18} className="size-4.5 shrink-0 rounded-sm object-contain" />
+                  <Image src={category.icon.url} alt="" width={18} height={18} className="size-4.5 shrink-0 rounded-sm object-contain dark:invert" />
                 ) : (
                   <FolderIcon className="size-4 shrink-0 text-accent/60" />
                 )}
