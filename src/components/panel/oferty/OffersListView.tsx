@@ -74,7 +74,12 @@ export function OffersListView({ offers, maxOffers, lang }: OffersListViewProps)
                   </Button>
                 </span>
               </TooltipTrigger>
-              <TooltipContent>Osiągnięto limit ofert</TooltipContent>
+              <TooltipContent>
+                <p>Osiągnięto limit ofert.</p>
+                <Link href={`/${lang}/panel/plan-subskrypcji`} className="text-accent underline">
+                  Zmień plan, aby dodać więcej
+                </Link>
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         ) : (
