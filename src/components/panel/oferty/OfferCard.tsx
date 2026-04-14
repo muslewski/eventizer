@@ -32,7 +32,7 @@ export function OfferCard({ offer, lang }: OfferCardProps) {
       : null
 
   return (
-    <Card className="group flex flex-col sm:flex-row bg-background border-border/20 overflow-hidden">
+    <Card className="group flex flex-col sm:flex-row bg-background border-border/20 overflow-hidden py-0 gap-0">
       {/* Image */}
       <Link
         href={`/${lang}/panel/oferty/${offer.link}`}
