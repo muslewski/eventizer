@@ -66,6 +66,7 @@ export function AvatarDropdown({
   const [isReturning, setIsReturning] = useState<boolean>(false)
   // Tracks actual offer count and first offer id for service providers
   const [firstOfferId, setFirstOfferId] = useState<number | null>(null)
+  const [firstOfferSlug, setFirstOfferSlug] = useState<string | null>(null)
   const [offerCount, setOfferCount] = useState<number>(0)
 
   const isClient = !isServiceProvider && !isModerator && !isAdmin
@@ -88,8 +89,9 @@ export function AvatarDropdown({
     })
 
     if (isServiceProvider) {
-      getUserOffersInfo(user.id).then(({ firstId, count }) => {
+      getUserOffersInfo(user.id).then(({ firstId, firstSlug, count }) => {
         setFirstOfferId(firstId)
+        setFirstOfferSlug(firstSlug)
         setOfferCount(count)
       })
     }
@@ -145,7 +147,7 @@ export function AvatarDropdown({
           )}
           {!isClient && (
             <DropdownMenuItem asChild>
-              <Link href="/app" prefetch className="cursor-pointer">
+              <Link href={isModerator || isAdmin ? "/app" : "/panel/dashboard"} prefetch className="cursor-pointer">
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 Panel główny
               </Link>
@@ -165,7 +167,7 @@ export function AvatarDropdown({
           {/* Client with active subscription (role mismatch - will be self-healed on dashboard visit) */}
           {isClient && hasActiveSubscription === true && (
             <DropdownMenuItem asChild>
-              <Link href="/app" prefetch className="cursor-pointer">
+              <Link href="/panel/dashboard" prefetch className="cursor-pointer">
                 <Briefcase className="mr-2 h-4 w-4" />
                 Zarządzaj ofertami
               </Link>
@@ -175,7 +177,7 @@ export function AvatarDropdown({
           {/* Client who was never a customer */}
           {isClient && hasActiveSubscription !== true && !isReturning && (
             <DropdownMenuItem asChild>
-              <Link href="/app/onboarding/service-provider" prefetch className="cursor-pointer">
+              <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
                 <Briefcase className="mr-2 h-4 w-4" />
                 Zostań usługodawcą
               </Link>
@@ -186,7 +188,7 @@ export function AvatarDropdown({
           {isClient && hasActiveSubscription === false && isReturning && (
             <DropdownMenuItem asChild>
               <Link
-                href="/app/onboarding/service-provider?renew=true"
+                href="/panel/plan-subskrypcji"
                 prefetch
                 className="cursor-pointer text-destructive focus:text-destructive"
               >
@@ -196,19 +198,27 @@ export function AvatarDropdown({
             </DropdownMenuItem>
           )}
 
-          {(isServiceProvider || isModerator || isAdmin) && (
+          {isServiceProvider && (
             <DropdownMenuItem asChild>
               <Link
                 href={
-                  isServiceProvider && !hasMultipleOffers && firstOfferId
-                    ? `/app/collections/offers/${firstOfferId}`
-                    : '/app/collections/offers'
+                  !hasMultipleOffers && firstOfferSlug
+                    ? `/panel/oferty/${firstOfferSlug}`
+                    : '/panel/oferty'
                 }
                 prefetch
                 className="cursor-pointer"
               >
                 <FileText className="mr-2 h-4 w-4" />
-                {isServiceProvider && !hasMultipleOffers ? 'Zarządzaj ofertą' : 'Zarządzaj ofertami'}
+                {!hasMultipleOffers ? 'Zarządzaj ofertą' : 'Zarządzaj ofertami'}
+              </Link>
+            </DropdownMenuItem>
+          )}
+          {(isModerator || isAdmin) && (
+            <DropdownMenuItem asChild>
+              <Link href="/app/collections/offers" prefetch className="cursor-pointer">
+                <FileText className="mr-2 h-4 w-4" />
+                Zarządzaj ofertami
               </Link>
             </DropdownMenuItem>
           )}
@@ -238,7 +248,7 @@ export function AvatarDropdown({
           {/* Service provider with active subscription - can change plan */}
           {isServiceProvider && hasActiveSubscription === true && (
             <DropdownMenuItem asChild>
-              <Link href="/app/onboarding/service-provider?edit=true" prefetch className="cursor-pointer">
+              <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
                 <Briefcase className="mr-2 h-4 w-4" />
                 Zmień plan
               </Link>
@@ -249,7 +259,7 @@ export function AvatarDropdown({
           {isServiceProvider && hasActiveSubscription === false && (
             <DropdownMenuItem asChild>
               <Link
-                href="/app/onboarding/service-provider?renew=true"
+                href="/panel/plan-subskrypcji"
                 prefetch
                 className="cursor-pointer text-destructive focus:text-destructive"
               >
@@ -260,13 +270,13 @@ export function AvatarDropdown({
           )}
 
           <DropdownMenuItem asChild>
-            <Link href="/app/account" prefetch className="cursor-pointer">
+            <Link href="/panel/konto" prefetch className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               Zarządzaj kontem
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/app/collections/help-tickets" prefetch className="cursor-pointer">
+            <Link href="/panel/pomoc" prefetch className="cursor-pointer">
               <HelpCircle className="mr-2 h-4 w-4" />
               Pomoc
             </Link>

@@ -5,6 +5,7 @@ import config from '@payload-config'
 
 export interface UserOffersInfo {
   firstId: number | null
+  firstSlug: string | null
   /** Total number of offers the user has created. */
   count: number
 }
@@ -22,11 +23,12 @@ export async function getUserOffersInfo(userId: number): Promise<UserOffersInfo>
     sort: 'createdAt',
     limit: 2,
     depth: 0,
-    select: {},
+    select: { link: true },
   })
 
   return {
     firstId: result.docs[0]?.id ?? null,
+    firstSlug: result.docs[0]?.link ?? null,
     count: result.totalDocs,
   }
 }
