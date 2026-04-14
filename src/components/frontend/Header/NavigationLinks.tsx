@@ -70,6 +70,7 @@ export default function NavigationLinks({
                     <Button
                       variant="link"
                       asChild
+                      size={isSticky ? 'default' : 'base'}
                       className={cn(
                         linkColor,
                         'h-9 px-0 py-0',
