@@ -92,7 +92,8 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
             <AlertTriangleIcon />
             <AlertTitle>Osiągnięto limit ofert</AlertTitle>
             <AlertDescription>
-              Wykorzystałeś wszystkie dostępne miejsca na oferty ({stats.offers.total} z {maxOffers}). Zmień plan, aby dodać więcej.
+              Wykorzystałeś wszystkie dostępne miejsca na oferty ({stats.offers.total} z {maxOffers}).{' '}
+              <Link href={`/${lang}/panel/plan-subskrypcji`} className="text-accent underline">Zmień plan, aby dodać więcej</Link>.
             </AlertDescription>
           </Alert>
         )}
@@ -207,7 +208,10 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                Osiągnięto limit ofert ({maxOffers}). Zmień plan, aby dodać więcej.
+                <p>Osiągnięto limit ofert ({maxOffers}).</p>
+                <Link href={`/${lang}/panel/plan-subskrypcji`} className="text-accent underline">
+                  Zmień plan, aby dodać więcej
+                </Link>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
