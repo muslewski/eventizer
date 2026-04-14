@@ -87,16 +87,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
           </Alert>
         )}
 
-        {atLimit && (
-          <Alert>
-            <AlertTriangleIcon />
-            <AlertTitle>Osiągnięto limit ofert</AlertTitle>
-            <AlertDescription>
-              Wykorzystałeś wszystkie dostępne miejsca na oferty ({stats.offers.total} z {maxOffers}).{' '}
-              <Link href={`/${lang}/panel/plan-subskrypcji`} className="text-accent underline">Zmień plan, aby dodać więcej</Link>.
-            </AlertDescription>
-          </Alert>
-        )}
+        {/* Offer limit alert hidden for now — tooltip on button is sufficient */}
 
         {stats.offers.draft > 0 && (
           <Alert>
