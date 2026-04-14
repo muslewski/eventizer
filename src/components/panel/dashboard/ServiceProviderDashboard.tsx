@@ -8,6 +8,7 @@ import {
   PenLineIcon,
 } from 'lucide-react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+import { AnimatedCardGrid, AnimatedCard } from '@/components/panel/AnimatedCards'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -101,9 +102,9 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <AnimatedCardGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Active offers */}
-        <Card className="bg-background border-border/20">
+        <AnimatedCard><Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Aktywne oferty</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -118,10 +119,10 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
               <Link href={`/${lang}/panel/oferty`}>Przejdź do ofert</Link>
             </Button>
           </CardFooter>
-        </Card>
+        </Card></AnimatedCard>
 
         {/* Draft offers */}
-        <Card className="bg-background border-border/20">
+        <AnimatedCard><Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Oferty robocze</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -136,10 +137,10 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
               <Link href={`/${lang}/panel/oferty`}>Przejdź do ofert</Link>
             </Button>
           </CardFooter>
-        </Card>
+        </Card></AnimatedCard>
 
         {/* New forms */}
-        <Card className="bg-background border-border/20">
+        <AnimatedCard><Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Nowe formularze</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -158,10 +159,10 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
               <Link href={`/${lang}/panel/formularze`}>Przejdź do formularzy</Link>
             </Button>
           </CardFooter>
-        </Card>
+        </Card></AnimatedCard>
 
         {/* Subscription */}
-        <Card className="bg-background border-border/20">
+        <AnimatedCard><Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Subskrypcja</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -182,8 +183,8 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
               <Link href={`/${lang}/panel/plan-subskrypcji`}>Zarządzaj planem</Link>
             </Button>
           </CardFooter>
-        </Card>
-      </div>
+        </Card></AnimatedCard>
+      </AnimatedCardGrid>
 
       {/* Quick actions */}
       <div className="flex flex-wrap gap-3">

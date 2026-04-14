@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { LogOutIcon, CreditCardIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { AnimatedCardGrid, AnimatedCard } from '@/components/panel/AnimatedCards'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -89,9 +90,9 @@ export function AccountSettings({ user, subscription, lang }: AccountSettingsPro
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <AnimatedCardGrid className="flex flex-col gap-8">
       {/* Profile */}
-      <Card className="bg-background border-border/20">
+      <AnimatedCard><Card className="bg-background border-border/20">
         <CardHeader>
           <CardTitle className="font-bebas text-2xl tracking-wide">Profil</CardTitle>
           <CardDescription>Informacje o Twoim koncie</CardDescription>
@@ -121,12 +122,12 @@ export function AccountSettings({ user, subscription, lang }: AccountSettingsPro
             </Field>
           </FieldGroup>
         </CardContent>
-      </Card>
+      </Card></AnimatedCard>
 
       <Separator />
 
       {/* Password */}
-      <Card className="bg-background border-border/20">
+      <AnimatedCard><Card className="bg-background border-border/20">
         <CardHeader>
           <CardTitle className="font-bebas text-2xl tracking-wide">Zmiana hasła</CardTitle>
           <CardDescription>Zaktualizuj swoje hasło logowania</CardDescription>
@@ -170,13 +171,13 @@ export function AccountSettings({ user, subscription, lang }: AccountSettingsPro
             </div>
           </form>
         </CardContent>
-      </Card>
+      </Card></AnimatedCard>
 
       {/* Subscription (provider only) */}
       {isProvider && subscription && (
         <>
           <Separator />
-          <Card className="bg-background border-border/20">
+          <AnimatedCard><Card className="bg-background border-border/20">
             <CardHeader>
               <div className="flex items-center justify-between gap-3 flex-wrap">
                 <CardTitle className="font-bebas text-2xl tracking-wide">Subskrypcja</CardTitle>
@@ -207,7 +208,7 @@ export function AccountSettings({ user, subscription, lang }: AccountSettingsPro
                 </Link>
               </Button>
             </CardFooter>
-          </Card>
+          </Card></AnimatedCard>
         </>
       )}
 
@@ -242,6 +243,6 @@ export function AccountSettings({ user, subscription, lang }: AccountSettingsPro
           </AlertDialogContent>
         </AlertDialog>
       </div>
-    </div>
+    </AnimatedCardGrid>
   )
 }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { PlusIcon, FileTextIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { AnimatedCardGrid, AnimatedCard } from '@/components/panel/AnimatedCards'
 import {
   Tooltip,
   TooltipContent,
@@ -97,11 +98,13 @@ export function OffersListView({ offers, maxOffers, lang }: OffersListViewProps)
       {filteredOffers.length === 0 ? (
         <p className="text-muted-foreground">Brak ofert o wybranym statusie.</p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <AnimatedCardGrid className="flex flex-col gap-4">
           {filteredOffers.map((offer) => (
-            <OfferCard key={offer.id} offer={offer} lang={lang} />
+            <AnimatedCard key={offer.id}>
+              <OfferCard offer={offer} lang={lang} />
+            </AnimatedCard>
           ))}
-        </div>
+        </AnimatedCardGrid>
       )}
     </div>
   )
