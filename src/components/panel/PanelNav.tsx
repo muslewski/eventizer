@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   useScroll,
   useTransform,
@@ -20,6 +20,7 @@ import {
   StarIcon,
   SettingsIcon,
   PanelLeftIcon,
+  LogOutIcon,
 } from 'lucide-react'
 import {
   Sidebar,
@@ -36,6 +37,7 @@ import {
 } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
+import { useRootAuth } from '@/providers/RootAuthProvider'
 import type { User } from '@/payload-types'
 
 interface PanelNavProps {
@@ -64,6 +66,25 @@ const clientNav = [
 const HEADER_CLEARANCE = 112
 const STICKY_OFFSET = 16
 const SCROLL_DISTANCE = HEADER_CLEARANCE - STICKY_OFFSET
+
+function LogoutButton({ lang }: { lang: string }) {
+  const { logout } = useRootAuth()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await logout()
+    router.push(`/${lang}/auth/sign-in`)
+  }
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton onClick={handleLogout} className="text-destructive hover:text-destructive">
+        <LogOutIcon />
+        <span>Wyloguj się</span>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  )
+}
 
 function CollapseButton() {
   const { toggleSidebar } = useSidebar()
@@ -176,6 +197,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       <Separator className="bg-accent/20" />
       <SidebarFooter>
         <SidebarMenu>
+          <LogoutButton lang={lang} />
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={pathname.startsWith(`/${lang}/panel/konto`)}>
               <Link href={`/${lang}/panel/konto`}>
