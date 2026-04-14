@@ -6,6 +6,8 @@ import { auth } from '@/auth/auth'
 import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { OfferWizardForm } from '@/components/panel/wizard/OfferWizardForm'
 
+export const metadata = { title: 'Nowa oferta' }
+
 export default async function NowaOfertaPage({
   params,
 }: {

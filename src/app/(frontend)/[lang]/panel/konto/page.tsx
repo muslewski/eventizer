@@ -8,6 +8,8 @@ import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { AccountSettings } from '@/components/panel/konto/AccountSettings'
 
+export const metadata = { title: 'Konto' }
+
 export default async function KontoPage({
   params,
 }: {

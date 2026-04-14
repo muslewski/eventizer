@@ -8,6 +8,8 @@ import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { FormularzeTable } from '@/components/panel/formularze/FormularzeTable'
 
+export const metadata = { title: 'Formularze' }
+
 export default async function FormularzePage({
   params,
 }: {

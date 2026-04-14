@@ -8,6 +8,8 @@ import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { FavoritesGrid } from '@/components/panel/ulubione/FavoritesGrid'
 
+export const metadata = { title: 'Ulubione' }
+
 export default async function UlubiionePage({
   params,
 }: {

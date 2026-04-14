@@ -7,6 +7,8 @@ import { getOffer } from '@/actions/panel/offers'
 import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { OfferWizardForm } from '@/components/panel/wizard/OfferWizardForm'
 
+export const metadata = { title: 'Edytuj ofertę' }
+
 export default async function EdytujOfertePage({
   params,
 }: {

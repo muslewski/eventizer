@@ -9,6 +9,8 @@ import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { PomocTable } from '@/components/panel/pomoc/PomocTable'
 import { NewTicketDialog } from '@/components/panel/pomoc/NewTicketDialog'
 
+export const metadata = { title: 'Pomoc' }
+
 export default async function PomocPage({
   params,
 }: {

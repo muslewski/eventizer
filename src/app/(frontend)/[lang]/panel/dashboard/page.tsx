@@ -7,6 +7,8 @@ import { ServiceProviderDashboard } from '@/components/panel/dashboard/ServicePr
 import { ClientDashboard } from '@/components/panel/dashboard/ClientDashboard'
 import { DashboardHero } from '@/components/panel/dashboard/DashboardHero'
 
+export const metadata = { title: 'Dashboard' }
+
 export default async function DashboardPage({
   params,
 }: {

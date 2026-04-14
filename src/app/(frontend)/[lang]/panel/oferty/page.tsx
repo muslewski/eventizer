@@ -8,6 +8,8 @@ import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { OffersListView } from '@/components/panel/oferty/OffersListView'
 
+export const metadata = { title: 'Zarządzaj ofertami' }
+
 export default async function OffertyPage({
   params,
 }: {

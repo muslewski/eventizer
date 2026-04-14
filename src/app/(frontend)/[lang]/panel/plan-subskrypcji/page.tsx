@@ -8,6 +8,8 @@ import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { SubscriptionManager } from '@/components/panel/plan-subskrypcji/SubscriptionManager'
 
+export const metadata = { title: 'Plan subskrypcji' }
+
 export default async function PlanSubskrypcjiPage({
   params,
 }: {

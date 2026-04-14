@@ -1,4 +1,12 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Eventizer Panel',
+    default: 'Eventizer Panel',
+  },
+}
 import { headers } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
