@@ -37,6 +37,7 @@ export function AnimatedCard({
       className={className}
       initial={{ opacity: 0, y: 20, scale: 0.97 }}
       animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.97 }}
+      whileHover={{ y: -3, scale: 1.01, transition: { type: 'spring', stiffness: 400, damping: 20 } }}
       transition={{
         type: 'spring' as const,
         stiffness: 300,
