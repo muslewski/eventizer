@@ -61,7 +61,7 @@ const clientNav = [
 // Sidebar wrapper pt-28 (112px) matches content area md:pt-28
 // Sticky offset: top-2 (8px) + 8px bottom breathing room = 16px
 // Both states: sidebar ends at 100svh - 8px (consistent bottom gap)
-const HEADER_CLEARANCE = 120
+const HEADER_CLEARANCE = 112
 const STICKY_OFFSET = 16
 const SCROLL_DISTANCE = HEADER_CLEARANCE - STICKY_OFFSET
 
