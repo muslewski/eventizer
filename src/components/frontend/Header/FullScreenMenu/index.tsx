@@ -140,7 +140,7 @@ export default function FullScreenMenu({ normalizedPathname }: { normalizedPathn
               {user ? (
                 <HeaderAvatar
                   variant="mobile"
-                  href="/app"
+                  href="/panel/dashboard"
                   onClick={close}
                   label={
                     <span className="text-3xl sm:text-4xl font-bebas tracking-wide text-foreground/40">

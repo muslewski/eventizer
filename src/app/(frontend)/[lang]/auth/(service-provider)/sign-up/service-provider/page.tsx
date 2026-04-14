@@ -13,7 +13,7 @@ export default async function AuthPage({ params }: { params: Promise<{ lang: Loc
     <AuthView
       path="sign-up/service-provider"
       view="SIGN_UP"
-      redirectTo="/app/onboarding/service-provider"
+      redirectTo="/panel/plan-subskrypcji"
       socialLayout="horizontal"
       localization={{
         SIGN_UP: dict.auth.signUp,
