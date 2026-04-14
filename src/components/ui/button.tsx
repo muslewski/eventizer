@@ -5,7 +5,7 @@ import { Slot } from "radix-ui"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 w-fit h-fit font-montserrat",
   {
     variants: {
       variant: {
@@ -13,15 +13,22 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+          "border bg-background/50 shadow-xs text-stone-900 dark:text-stone-100 hover:bg-accent hover:text-accent-foreground dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-primary relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:origin-left after:scale-x-0 after:bg-linear-to-r after:from-primary after:to-primary/50 after:transition-transform after:duration-300 hover:after:scale-x-100",
+        // Custom Eventizer variants
+        cta: "border border-dashed border-white/15 p-1.5 bg-white/5 rounded-full! hover:bg-white/10 group transition-all duration-300 ease-out sm:text-md text-sm shadow-lg shadow-white/5 hover:shadow-white/10 backdrop-blur-sm transform-gpu",
+        golden: "bg-background/75 hover:bg-white dark:hover:bg-black/90 border border-accent/50",
+        accent:
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 bg-gradient-to-r from-accent/20 to-accent/5 text-foreground border border-accent/30 shadow-sm",
+        blend: "bg-white/10 inset-shadow-xs inset-shadow-black/50 text-white hover:bg-white/20",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        base: "h-9 text-sm xl:text-[15px] px-4 py-2 has-[>svg]:px-3",
         xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
         lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
@@ -38,16 +45,18 @@ const buttonVariants = cva(
   }
 )
 
+export type ButtonProps = React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+  }
+
 function Button({
   className,
   variant = "default",
   size = "default",
   asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
+}: ButtonProps) {
   const Comp = asChild ? Slot.Root : "button"
 
   return (
