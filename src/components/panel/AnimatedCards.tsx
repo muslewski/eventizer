@@ -1,39 +1,10 @@
 'use client'
 
-import { motion } from 'motion/react'
-import type { ReactNode } from 'react'
-
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-    },
-  },
-}
-
-const cardVariants = {
-  hidden: {
-    opacity: 0,
-    y: 16,
-    scale: 0.97,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      type: 'spring' as const,
-      stiffness: 300,
-      damping: 24,
-      mass: 0.8,
-    },
-  },
-}
+import { motion, useInView } from 'motion/react'
+import { useRef, type ReactNode } from 'react'
 
 /**
- * Wraps a list of children in staggered spring-in animations.
- * Use as a direct parent of Card components.
+ * Wraps a list of children — just provides the className container.
  */
 export function AnimatedCardGrid({
   children,
@@ -42,32 +13,38 @@ export function AnimatedCardGrid({
   children: ReactNode
   className?: string
 }) {
-  return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-50px" }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  )
+  return <div className={className}>{children}</div>
 }
 
 /**
- * Wraps a single card in the spring-in animation.
- * Must be a child of AnimatedCardGrid.
+ * Wraps a single card in a spring-in animation triggered when in view.
  */
 export function AnimatedCard({
   children,
   className,
+  delay = 0,
 }: {
   children: ReactNode
   className?: string
+  delay?: number
 }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '0px 0px -60px 0px' })
+
   return (
-    <motion.div variants={cardVariants} className={className}>
+    <motion.div
+      ref={ref}
+      className={className}
+      initial={{ opacity: 0, y: 20, scale: 0.97 }}
+      animate={isInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.97 }}
+      transition={{
+        type: 'spring' as const,
+        stiffness: 300,
+        damping: 24,
+        mass: 0.8,
+        delay,
+      }}
+    >
       {children}
     </motion.div>
   )

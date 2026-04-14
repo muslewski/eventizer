@@ -104,7 +104,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
       {/* Stats grid */}
       <AnimatedCardGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Active offers */}
-        <AnimatedCard><Card className="bg-background border-border/20">
+        <AnimatedCard delay={0}><Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Aktywne oferty</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -122,7 +122,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
         </Card></AnimatedCard>
 
         {/* Draft offers */}
-        <AnimatedCard><Card className="bg-background border-border/20">
+        <AnimatedCard delay={0.08}><Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Oferty robocze</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -140,7 +140,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
         </Card></AnimatedCard>
 
         {/* New forms */}
-        <AnimatedCard><Card className="bg-background border-border/20">
+        <AnimatedCard delay={0.16}><Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Nowe formularze</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">
@@ -162,7 +162,7 @@ export function ServiceProviderDashboard({ stats, user, lang }: ServiceProviderD
         </Card></AnimatedCard>
 
         {/* Subscription */}
-        <AnimatedCard><Card className="bg-background border-border/20">
+        <AnimatedCard delay={0.24}><Card className="bg-background border-border/20">
           <CardHeader>
             <CardDescription>Subskrypcja</CardDescription>
             <CardTitle className="font-bebas text-3xl tracking-wide">

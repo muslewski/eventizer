@@ -99,8 +99,8 @@ export function OffersListView({ offers, maxOffers, lang }: OffersListViewProps)
         <p className="text-muted-foreground">Brak ofert o wybranym statusie.</p>
       ) : (
         <AnimatedCardGrid className="flex flex-col gap-4">
-          {filteredOffers.map((offer) => (
-            <AnimatedCard key={offer.id}>
+          {filteredOffers.map((offer, i) => (
+            <AnimatedCard key={offer.id} delay={i * 0.08}>
               <OfferCard offer={offer} lang={lang} />
             </AnimatedCard>
           ))}
