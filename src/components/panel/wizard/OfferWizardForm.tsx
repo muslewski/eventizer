@@ -89,7 +89,7 @@ export function OfferWizardForm({
     trigger,
     formState: { errors },
   } = useForm<OfferFormData>({
-    resolver: zodResolver(offerSchema),
+    resolver: zodResolver(offerSchema) as any,
     defaultValues: {
       title: initialData?.title ?? '',
       category: initialData?.category ?? userServiceCategory ?? '',
