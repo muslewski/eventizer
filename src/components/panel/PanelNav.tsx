@@ -182,7 +182,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
                 return (
                   <SidebarMenuItem key={item.route}>
                     <SidebarMenuButton asChild isActive={pathname.startsWith(fullHref)}>
-                      <Link href={fullHref}>
+                      <Link href={fullHref} prefetch>
                         <item.icon />
                         <span>{item.label}</span>
                       </Link>
@@ -200,7 +200,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
           <LogoutButton lang={lang} />
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive={pathname.startsWith(`/${lang}/panel/konto`)}>
-              <Link href={`/${lang}/panel/konto`}>
+              <Link href={`/${lang}/panel/konto`} prefetch>
                 <SettingsIcon />
                 <span>Konto</span>
               </Link>
