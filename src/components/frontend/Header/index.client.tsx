@@ -98,9 +98,9 @@ function HeaderBar({
 
         {/* Settings – visible on large screens */}
         <div className="hidden xl:flex gap-6">
-          <ModeToggle />
-          <LanguageSwitcher />
-          <ReduceMotionToggle />
+          <ModeToggle variant={isPanel ? 'ghost' : 'blend'} />
+          <LanguageSwitcher variant={isPanel ? 'ghost' : 'blend'} />
+          <ReduceMotionToggle variant={isPanel ? 'ghost' : 'blend'} />
         </div>
       </nav>
 
