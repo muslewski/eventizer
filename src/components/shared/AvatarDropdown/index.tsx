@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -142,15 +143,23 @@ export function AvatarDropdown({
         {/* ── Admin/Moderator: Toggle between panels ── */}
         {(isAdmin || isModerator) && (
           <>
-            <div className="flex items-center gap-1 px-2 py-1.5">
+            {/* Toggle with sliding indicator */}
+            <div className="relative flex items-center gap-1 rounded-lg bg-muted/50 p-1 mx-2 my-1.5">
+              <motion.div
+                className="absolute inset-y-1 rounded-md bg-accent/15"
+                layout
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                style={{
+                  left: adminView === 'admin' ? '4px' : '50%',
+                  right: adminView === 'admin' ? '50%' : '4px',
+                }}
+              />
               <button
                 type="button"
                 onClick={(e) => { e.preventDefault(); setAdminView('admin') }}
                 className={cn(
-                  'flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
-                  adminView === 'admin'
-                    ? 'bg-accent/15 text-accent-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                  'relative z-10 flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
+                  adminView === 'admin' ? 'text-accent-foreground' : 'text-muted-foreground hover:text-foreground',
                 )}
               >
                 <ShieldIcon className="h-3 w-3" />
@@ -160,10 +169,8 @@ export function AvatarDropdown({
                 type="button"
                 onClick={(e) => { e.preventDefault(); setAdminView('provider') }}
                 className={cn(
-                  'flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
-                  adminView === 'provider'
-                    ? 'bg-accent/15 text-accent-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                  'relative z-10 flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
+                  adminView === 'provider' ? 'text-accent-foreground' : 'text-muted-foreground hover:text-foreground',
                 )}
               >
                 <PanelLeftIcon className="h-3 w-3" />
@@ -173,57 +180,76 @@ export function AvatarDropdown({
 
             <DropdownMenuSeparator />
 
-            {adminView === 'admin' ? (
-              <DropdownMenuGroup>
-                <DropdownMenuItem asChild>
-                  <Link href="/app" prefetch className="cursor-pointer">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/app/collections/offers" prefetch className="cursor-pointer">
-                    <FileText className="mr-2 h-4 w-4" />
-                    Oferty
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/app/collections/users" prefetch className="cursor-pointer">
-                    <Users className="mr-2 h-4 w-4" />
-                    Użytkownicy
-                  </Link>
-                </DropdownMenuItem>
-                {isAdmin && (
-                  <DropdownMenuItem asChild>
-                    <Link href="/app/collections/pages" prefetch className="cursor-pointer">
-                      <FileEdit className="mr-2 h-4 w-4" />
-                      Strony
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuGroup>
-            ) : (
-              <DropdownMenuGroup>
-                <DropdownMenuItem asChild>
-                  <Link href="/panel/dashboard" prefetch className="cursor-pointer">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/panel/oferty" prefetch className="cursor-pointer">
-                    <FileText className="mr-2 h-4 w-4" />
-                    Oferty
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
-                    <Briefcase className="mr-2 h-4 w-4" />
-                    Plan subskrypcji
-                  </Link>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            )}
+            {/* Animated content switch */}
+            <AnimatePresence mode="wait">
+              {adminView === 'admin' ? (
+                <motion.div
+                  key="admin"
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 8 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem asChild>
+                      <Link href="/app" prefetch className="cursor-pointer">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/app/collections/offers" prefetch className="cursor-pointer">
+                        <FileText className="mr-2 h-4 w-4" />
+                        Oferty
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/app/collections/users" prefetch className="cursor-pointer">
+                        <Users className="mr-2 h-4 w-4" />
+                        Użytkownicy
+                      </Link>
+                    </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link href="/app/collections/pages" prefetch className="cursor-pointer">
+                          <FileEdit className="mr-2 h-4 w-4" />
+                          Strony
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                  </DropdownMenuGroup>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="provider"
+                  initial={{ opacity: 0, x: 8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -8 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem asChild>
+                      <Link href="/panel/dashboard" prefetch className="cursor-pointer">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/panel/oferty" prefetch className="cursor-pointer">
+                        <FileText className="mr-2 h-4 w-4" />
+                        Oferty
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
+                        <Briefcase className="mr-2 h-4 w-4" />
+                        Plan subskrypcji
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </>
         )}
 
