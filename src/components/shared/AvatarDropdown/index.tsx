@@ -70,6 +70,7 @@ export function AvatarDropdown({
   const [firstOfferId, setFirstOfferId] = useState<number | null>(null)
   const [firstOfferSlug, setFirstOfferSlug] = useState<string | null>(null)
   const [offerCount, setOfferCount] = useState<number>(0)
+  const [adminView, setAdminView] = useState<'admin' | 'provider'>('admin')
 
   const isClient = !isServiceProvider && !isModerator && !isAdmin
   // Base plural label on how many offers the user actually has
@@ -138,68 +139,91 @@ export function AvatarDropdown({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        {/* ── Admin/Moderator: Two panel sections ── */}
+        {/* ── Admin/Moderator: Toggle between panels ── */}
         {(isAdmin || isModerator) && (
           <>
-            <DropdownMenuGroup>
-              <DropdownMenuLabel className="flex items-center gap-1.5 text-xs text-muted-foreground font-normal">
+            <div className="flex items-center gap-1 px-2 py-1.5">
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); setAdminView('admin') }}
+                className={cn(
+                  'flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
+                  adminView === 'admin'
+                    ? 'bg-accent/15 text-accent-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                )}
+              >
                 <ShieldIcon className="h-3 w-3" />
-                Panel administracyjny
-              </DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link href="/app" prefetch className="cursor-pointer">
-                  <LayoutDashboard className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/app/collections/offers" prefetch className="cursor-pointer">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Oferty
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/app/collections/users" prefetch className="cursor-pointer">
-                  <Users className="mr-2 h-4 w-4" />
-                  Użytkownicy
-                </Link>
-              </DropdownMenuItem>
-              {isAdmin && (
-                <DropdownMenuItem asChild>
-                  <Link href="/app/collections/pages" prefetch className="cursor-pointer">
-                    <FileEdit className="mr-2 h-4 w-4" />
-                    Strony
-                  </Link>
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuGroup>
+                Admin
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); setAdminView('provider') }}
+                className={cn(
+                  'flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
+                  adminView === 'provider'
+                    ? 'bg-accent/15 text-accent-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                )}
+              >
+                <PanelLeftIcon className="h-3 w-3" />
+                Usługodawca
+              </button>
+            </div>
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuGroup>
-              <DropdownMenuLabel className="flex items-center gap-1.5 text-xs text-muted-foreground font-normal">
-                <PanelLeftIcon className="h-3 w-3" />
-                Panel usługodawcy
-              </DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link href="/panel/dashboard" prefetch className="cursor-pointer">
-                  <LayoutDashboard className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/panel/oferty" prefetch className="cursor-pointer">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Oferty
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
-                  <Briefcase className="mr-2 h-4 w-4" />
-                  Plan subskrypcji
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+            {adminView === 'admin' ? (
+              <DropdownMenuGroup>
+                <DropdownMenuItem asChild>
+                  <Link href="/app" prefetch className="cursor-pointer">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/app/collections/offers" prefetch className="cursor-pointer">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Oferty
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/app/collections/users" prefetch className="cursor-pointer">
+                    <Users className="mr-2 h-4 w-4" />
+                    Użytkownicy
+                  </Link>
+                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/app/collections/pages" prefetch className="cursor-pointer">
+                      <FileEdit className="mr-2 h-4 w-4" />
+                      Strony
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuGroup>
+            ) : (
+              <DropdownMenuGroup>
+                <DropdownMenuItem asChild>
+                  <Link href="/panel/dashboard" prefetch className="cursor-pointer">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/panel/oferty" prefetch className="cursor-pointer">
+                    <FileText className="mr-2 h-4 w-4" />
+                    Oferty
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
+                    <Briefcase className="mr-2 h-4 w-4" />
+                    Plan subskrypcji
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            )}
           </>
         )}
 
