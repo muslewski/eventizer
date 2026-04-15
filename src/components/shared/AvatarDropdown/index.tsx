@@ -26,6 +26,8 @@ import {
   Home,
   Megaphone,
   RefreshCw,
+  ShieldIcon,
+  PanelLeftIcon,
 } from 'lucide-react'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import { getInitials, hasRole } from './utils'
@@ -136,85 +138,80 @@ export function AvatarDropdown({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
 
-        <DropdownMenuGroup>
-          {showHomeLink && (
-            <DropdownMenuItem asChild>
-              <Link href="/" prefetch className="cursor-pointer">
-                <Home className="mr-2 h-4 w-4" />
-                Strona główna
-              </Link>
-            </DropdownMenuItem>
-          )}
-          {(isAdmin || isModerator) && (
-            <>
+        {/* ── Admin/Moderator: Two panel sections ── */}
+        {(isAdmin || isModerator) && (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="flex items-center gap-1.5 text-xs text-muted-foreground font-normal">
+                <ShieldIcon className="h-3 w-3" />
+                Panel administracyjny
+              </DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link href="/app" prefetch className="cursor-pointer">
                   <LayoutDashboard className="mr-2 h-4 w-4" />
-                  Panel administracyjny
+                  Dashboard
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/panel/dashboard" prefetch className="cursor-pointer">
-                  <Briefcase className="mr-2 h-4 w-4" />
-                  Panel usługodawcy
+                <Link href="/app/collections/offers" prefetch className="cursor-pointer">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Oferty
                 </Link>
               </DropdownMenuItem>
-            </>
-          )}
-          {isServiceProvider && (
+              <DropdownMenuItem asChild>
+                <Link href="/app/collections/users" prefetch className="cursor-pointer">
+                  <Users className="mr-2 h-4 w-4" />
+                  Użytkownicy
+                </Link>
+              </DropdownMenuItem>
+              {isAdmin && (
+                <DropdownMenuItem asChild>
+                  <Link href="/app/collections/pages" prefetch className="cursor-pointer">
+                    <FileEdit className="mr-2 h-4 w-4" />
+                    Strony
+                  </Link>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuGroup>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="flex items-center gap-1.5 text-xs text-muted-foreground font-normal">
+                <PanelLeftIcon className="h-3 w-3" />
+                Panel usługodawcy
+              </DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link href="/panel/dashboard" prefetch className="cursor-pointer">
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/panel/oferty" prefetch className="cursor-pointer">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Oferty
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
+                  <Briefcase className="mr-2 h-4 w-4" />
+                  Plan subskrypcji
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </>
+        )}
+
+        {/* ── Service Provider ── */}
+        {isServiceProvider && !isAdmin && !isModerator && (
+          <DropdownMenuGroup>
             <DropdownMenuItem asChild>
               <Link href="/panel/dashboard" prefetch className="cursor-pointer">
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 Panel główny
               </Link>
             </DropdownMenuItem>
-          )}
-          <DropdownMenuItem asChild>
-            <Link href="/ogloszenia#oferty" prefetch className="cursor-pointer">
-              <Megaphone className="mr-2 h-4 w-4" />
-              Lista ogłoszeń
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuGroup>
-          {/* Client with active subscription (role mismatch - will be self-healed on dashboard visit) */}
-          {isClient && hasActiveSubscription === true && (
-            <DropdownMenuItem asChild>
-              <Link href="/panel/dashboard" prefetch className="cursor-pointer">
-                <Briefcase className="mr-2 h-4 w-4" />
-                Zarządzaj ofertami
-              </Link>
-            </DropdownMenuItem>
-          )}
-
-          {/* Client who was never a customer */}
-          {isClient && hasActiveSubscription !== true && !isReturning && (
-            <DropdownMenuItem asChild>
-              <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
-                <Briefcase className="mr-2 h-4 w-4" />
-                Zostań usługodawcą
-              </Link>
-            </DropdownMenuItem>
-          )}
-
-          {/* Client who previously had a subscription (returning customer, no active sub) */}
-          {isClient && hasActiveSubscription === false && isReturning && (
-            <DropdownMenuItem asChild>
-              <Link
-                href="/panel/plan-subskrypcji"
-                prefetch
-                className="cursor-pointer text-destructive focus:text-destructive"
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Wznów subskrypcję
-              </Link>
-            </DropdownMenuItem>
-          )}
-
-          {isServiceProvider && (
             <DropdownMenuItem asChild>
               <Link
                 href={
@@ -229,66 +226,77 @@ export function AvatarDropdown({
                 {!hasMultipleOffers ? 'Zarządzaj ofertą' : 'Zarządzaj ofertami'}
               </Link>
             </DropdownMenuItem>
-          )}
-          {(isModerator || isAdmin) && (
-            <DropdownMenuItem asChild>
-              <Link href="/app/collections/offers" prefetch className="cursor-pointer">
-                <FileText className="mr-2 h-4 w-4" />
-                Zarządzaj ofertami
-              </Link>
-            </DropdownMenuItem>
-          )}
+            {hasActiveSubscription === true && (
+              <DropdownMenuItem asChild>
+                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
+                  <Briefcase className="mr-2 h-4 w-4" />
+                  Zmień plan
+                </Link>
+              </DropdownMenuItem>
+            )}
+            {hasActiveSubscription === false && (
+              <DropdownMenuItem asChild>
+                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer text-destructive focus:text-destructive">
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Wznów subskrypcję
+                </Link>
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuGroup>
+        )}
 
-          {(isModerator || isAdmin) && (
-            <DropdownMenuItem asChild>
-              <Link href="/app/collections/users" prefetch className="cursor-pointer">
-                <Users className="mr-2 h-4 w-4" />
-                Zarządzaj użytkownikami
-              </Link>
-            </DropdownMenuItem>
-          )}
-
-          {isAdmin && (
-            <DropdownMenuItem asChild>
-              <Link href="/app/collections/pages" prefetch className="cursor-pointer">
-                <FileEdit className="mr-2 h-4 w-4" />
-                Zarządzaj stronami
-              </Link>
-            </DropdownMenuItem>
-          )}
-        </DropdownMenuGroup>
+        {/* ── Client ── */}
+        {isClient && (
+          <DropdownMenuGroup>
+            {hasActiveSubscription === true && (
+              <DropdownMenuItem asChild>
+                <Link href="/panel/dashboard" prefetch className="cursor-pointer">
+                  <Briefcase className="mr-2 h-4 w-4" />
+                  Zarządzaj ofertami
+                </Link>
+              </DropdownMenuItem>
+            )}
+            {hasActiveSubscription !== true && !isReturning && (
+              <DropdownMenuItem asChild>
+                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
+                  <Briefcase className="mr-2 h-4 w-4" />
+                  Zostań usługodawcą
+                </Link>
+              </DropdownMenuItem>
+            )}
+            {hasActiveSubscription === false && isReturning && (
+              <DropdownMenuItem asChild>
+                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer text-destructive focus:text-destructive">
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Wznów subskrypcję
+                </Link>
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuGroup>
+        )}
 
         <DropdownMenuSeparator />
 
+        {/* ── Common links ── */}
         <DropdownMenuGroup>
-          {/* Service provider with active subscription - can change plan */}
-          {isServiceProvider && hasActiveSubscription === true && (
+          {showHomeLink && (
             <DropdownMenuItem asChild>
-              <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
-                <Briefcase className="mr-2 h-4 w-4" />
-                Zmień plan
+              <Link href="/" prefetch className="cursor-pointer">
+                <Home className="mr-2 h-4 w-4" />
+                Strona główna
               </Link>
             </DropdownMenuItem>
           )}
-
-          {/* Service provider whose subscription expired */}
-          {isServiceProvider && hasActiveSubscription === false && (
-            <DropdownMenuItem asChild>
-              <Link
-                href="/panel/plan-subskrypcji"
-                prefetch
-                className="cursor-pointer text-destructive focus:text-destructive"
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Wznów subskrypcję
-              </Link>
-            </DropdownMenuItem>
-          )}
-
+          <DropdownMenuItem asChild>
+            <Link href="/ogloszenia#oferty" prefetch className="cursor-pointer">
+              <Megaphone className="mr-2 h-4 w-4" />
+              Lista ogłoszeń
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/panel/konto" prefetch className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
-              Zarządzaj kontem
+              Konto
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
