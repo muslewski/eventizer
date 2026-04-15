@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import BlurText from '@/components/react-bits/BlurText'
 import { Progress } from '@/components/ui/progress'
 import {
   Breadcrumb,
@@ -114,9 +115,12 @@ export function PanelPageHeader({
         <div className="flex flex-col gap-3">
           <div className="flex items-end justify-between gap-4">
             <div className="flex flex-col gap-0.5">
-              <h1 className="font-bebas text-3xl sm:text-4xl tracking-wide text-white">
-                {title}
-              </h1>
+              <BlurText
+                text={title}
+                className="font-bebas text-3xl sm:text-4xl tracking-wide text-white"
+                delay={80}
+                animateBy="words"
+              />
               {description && (
                 <p className="text-xs sm:text-sm text-white/40">{description}</p>
               )}
