@@ -145,9 +145,25 @@ export function AvatarDropdown({
               </Link>
             </DropdownMenuItem>
           )}
-          {!isClient && (
+          {(isAdmin || isModerator) && (
+            <>
+              <DropdownMenuItem asChild>
+                <Link href="/app" prefetch className="cursor-pointer">
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Panel administracyjny
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/panel/dashboard" prefetch className="cursor-pointer">
+                  <Briefcase className="mr-2 h-4 w-4" />
+                  Panel usługodawcy
+                </Link>
+              </DropdownMenuItem>
+            </>
+          )}
+          {isServiceProvider && (
             <DropdownMenuItem asChild>
-              <Link href={isModerator || isAdmin ? "/app" : "/panel/dashboard"} prefetch className="cursor-pointer">
+              <Link href="/panel/dashboard" prefetch className="cursor-pointer">
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 Panel główny
               </Link>
