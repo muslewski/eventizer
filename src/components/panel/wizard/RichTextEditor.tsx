@@ -13,6 +13,8 @@ import { HeadingNode, QuoteNode } from '@lexical/rich-text'
 import { ListNode, ListItemNode } from '@lexical/list'
 import { LinkNode } from '@lexical/link'
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode'
+import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode'
+import { HorizontalRulePlugin } from '@lexical/react/LexicalHorizontalRulePlugin'
 import {
   $getSelection,
   $isRangeSelection,
@@ -40,6 +42,7 @@ import {
   ListOrderedIcon,
   QuoteIcon,
   PilcrowIcon,
+  MinusIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -186,6 +189,15 @@ function Toolbar() {
       >
         <ListOrderedIcon className="size-4" />
       </ToolbarButton>
+
+      <div className="mx-1 h-5 w-px bg-border/30" />
+
+      <ToolbarButton
+        onClick={() => editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined)}
+        title="Linia pozioma"
+      >
+        <MinusIcon className="size-4" />
+      </ToolbarButton>
     </div>
   )
 }
@@ -273,6 +285,7 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
       </div>
       <HistoryPlugin />
       <ListPlugin />
+      <HorizontalRulePlugin />
       <OnChangePlugin onChange={handleChange} />
       <InitialStatePlugin initialState={initialState} />
     </LexicalComposer>
