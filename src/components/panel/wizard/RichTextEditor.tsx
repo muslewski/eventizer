@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { LexicalComposer } from '@lexical/react/LexicalComposer'
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { ContentEditable } from '@lexical/react/LexicalContentEditable'
@@ -29,8 +29,10 @@ import {
 } from '@lexical/list'
 import { $setBlocksType } from '@lexical/selection'
 import { $createHeadingNode, $createQuoteNode } from '@lexical/rich-text'
-import { $createParagraphNode } from 'lexical'
-import { useState } from 'react'
+import { $createParagraphNode, $createTextNode, $getRoot } from 'lexical'
+import { $createListNode, $createListItemNode } from '@lexical/list'
+import { $createHorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode'
+import { AIContentDialog } from './AIContentDialog'
 import {
   BoldIcon,
   ItalicIcon,
@@ -43,6 +45,7 @@ import {
   QuoteIcon,
   PilcrowIcon,
   MinusIcon,
+  SparklesIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -76,7 +79,7 @@ function ToolbarButton({
   )
 }
 
-function Toolbar() {
+function Toolbar({ onAIClick }: { onAIClick?: () => void }) {
   const [editor] = useLexicalComposerContext()
   const [isBold, setIsBold] = useState(false)
   const [isItalic, setIsItalic] = useState(false)
@@ -198,6 +201,15 @@ function Toolbar() {
       >
         <MinusIcon className="size-4" />
       </ToolbarButton>
+
+      {onAIClick && (
+        <>
+          <div className="mx-1 flex-1" />
+          <ToolbarButton onClick={onAIClick} title="Generuj treść z AI">
+            <SparklesIcon className="size-4" />
+          </ToolbarButton>
+        </>
+      )}
     </div>
   )
 }
@@ -226,6 +238,8 @@ function InitialStatePlugin({ initialState }: { initialState?: SerializedEditorS
 interface RichTextEditorProps {
   value: SerializedEditorState | string | null
   onChange: (state: SerializedEditorState) => void
+  title?: string
+  category?: string
 }
 
 const theme = {
@@ -250,7 +264,108 @@ const theme = {
   link: 'text-accent underline',
 }
 
-export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
+// ── Markdown to Lexical inserter ─────────────────────────────────────────────
+
+function MarkdownInsertPlugin({ markdown, onInserted }: { markdown: string | null; onInserted: () => void }) {
+  const [editor] = useLexicalComposerContext()
+
+  useEffect(() => {
+    if (!markdown) return
+
+    queueMicrotask(() => {
+      editor.update(() => {
+        const root = $getRoot()
+        root.clear()
+
+        const lines = markdown.split('\n')
+
+        for (const line of lines) {
+          const trimmed = line.trim()
+
+          // Horizontal rule
+          if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+            root.append($createHorizontalRuleNode())
+            continue
+          }
+
+          // Heading ##
+          if (trimmed.startsWith('## ')) {
+            const heading = $createHeadingNode('h2')
+            appendFormattedText(heading, trimmed.slice(3))
+            root.append(heading)
+            continue
+          }
+
+          // Heading ###
+          if (trimmed.startsWith('### ')) {
+            const heading = $createHeadingNode('h3')
+            appendFormattedText(heading, trimmed.slice(4))
+            root.append(heading)
+            continue
+          }
+
+          // Quote >
+          if (trimmed.startsWith('> ')) {
+            const quote = $createQuoteNode()
+            appendFormattedText(quote, trimmed.slice(2))
+            root.append(quote)
+            continue
+          }
+
+          // List item - or *
+          if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+            const list = $createListNode('bullet')
+            const item = $createListItemNode()
+            appendFormattedText(item, trimmed.slice(2))
+            list.append(item)
+            root.append(list)
+            continue
+          }
+
+          // Numbered list
+          if (/^\d+\.\s/.test(trimmed)) {
+            const list = $createListNode('number')
+            const item = $createListItemNode()
+            appendFormattedText(item, trimmed.replace(/^\d+\.\s/, ''))
+            list.append(item)
+            root.append(list)
+            continue
+          }
+
+          // Empty line → skip
+          if (!trimmed) continue
+
+          // Paragraph
+          const para = $createParagraphNode()
+          appendFormattedText(para, trimmed)
+          root.append(para)
+        }
+      })
+      onInserted()
+    })
+  }, [editor, markdown, onInserted])
+
+  return null
+}
+
+// Parse **bold** markers in text
+function appendFormattedText(node: any, text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/)
+  for (const part of parts) {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      const bold = $createTextNode(part.slice(2, -2))
+      bold.toggleFormat('bold')
+      node.append(bold)
+    } else if (part) {
+      node.append($createTextNode(part))
+    }
+  }
+}
+
+export function RichTextEditor({ value, onChange, title, category }: RichTextEditorProps) {
+  const [aiDialogOpen, setAiDialogOpen] = useState(false)
+  const [aiMarkdown, setAiMarkdown] = useState<string | null>(null)
+
   const initialConfig = {
     namespace: 'OfferContentEditor',
     theme,
@@ -268,28 +383,39 @@ export function RichTextEditor({ value, onChange }: RichTextEditorProps) {
   }
 
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <div className="overflow-hidden rounded-lg border border-border/20 bg-background focus-within:border-accent/40 transition-colors">
-        <Toolbar />
-        <div className="relative min-h-[200px] px-4 py-3">
-          <RichTextPlugin
-            contentEditable={
-              <ContentEditable className="outline-none min-h-[180px] text-sm leading-relaxed" />
-            }
-            placeholder={
-              <div className="pointer-events-none absolute left-4 top-3 text-sm text-muted-foreground/50">
-                Opisz swoją ofertę szczegółowo...
-              </div>
-            }
-            ErrorBoundary={LexicalErrorBoundary}
-          />
+    <>
+      <LexicalComposer initialConfig={initialConfig}>
+        <div className="overflow-hidden rounded-lg border border-border/20 bg-background focus-within:border-accent/40 transition-colors">
+          <Toolbar onAIClick={() => setAiDialogOpen(true)} />
+          <div className="relative min-h-[200px] px-4 py-3">
+            <RichTextPlugin
+              contentEditable={
+                <ContentEditable className="outline-none min-h-[180px] text-sm leading-relaxed" />
+              }
+              placeholder={
+                <div className="pointer-events-none absolute left-4 top-3 text-sm text-muted-foreground/50">
+                  Opisz swoją ofertę szczegółowo...
+                </div>
+              }
+              ErrorBoundary={LexicalErrorBoundary}
+            />
+          </div>
         </div>
-      </div>
-      <HistoryPlugin />
-      <ListPlugin />
-      <HorizontalRulePlugin />
-      <OnChangePlugin onChange={handleChange} />
-      <InitialStatePlugin initialState={initialState} />
-    </LexicalComposer>
+        <HistoryPlugin />
+        <ListPlugin />
+        <HorizontalRulePlugin />
+        <OnChangePlugin onChange={handleChange} />
+        <InitialStatePlugin initialState={initialState} />
+        <MarkdownInsertPlugin markdown={aiMarkdown} onInserted={() => setAiMarkdown(null)} />
+      </LexicalComposer>
+
+      <AIContentDialog
+        open={aiDialogOpen}
+        onOpenChange={setAiDialogOpen}
+        title={title ?? ''}
+        category={category ?? ''}
+        onGenerated={setAiMarkdown}
+      />
+    </>
   )
 }

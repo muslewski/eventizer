@@ -253,6 +253,8 @@ export function OfferWizardForm({
           <StepContent
             content={content}
             onContentChange={setContent}
+            title={watch('title')}
+            category={watch('category')}
           />
         )}
         {currentStep === 2 && (
