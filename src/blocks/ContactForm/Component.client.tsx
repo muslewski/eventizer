@@ -62,7 +62,7 @@ type FormValues = z.infer<typeof baseSchema>
 interface TypeCard {
   value: WebsiteFormType
   label: string
-  icon: React.ElementType
+  icon: React.ComponentType<{ className?: string }>
 }
 
 const MESSAGE_PLACEHOLDERS: Record<WebsiteFormType, string> = {
