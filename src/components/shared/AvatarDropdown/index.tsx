@@ -131,7 +131,7 @@ export function AvatarDropdown({
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-64" align="end">
+      <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.name ?? 'Użytkownik'}</p>
@@ -143,39 +143,31 @@ export function AvatarDropdown({
         {/* ── Admin/Moderator: Toggle between panels ── */}
         {(isAdmin || isModerator) && (
           <>
-            {/* Toggle with sliding indicator */}
-            <div className="relative flex items-center gap-1 rounded-lg bg-muted/50 p-1 mx-2 my-1.5">
-              <motion.div
-                className="absolute inset-y-1 rounded-md bg-accent/15"
-                layout
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                style={{
-                  left: adminView === 'admin' ? '4px' : '50%',
-                  right: adminView === 'admin' ? '50%' : '4px',
-                }}
-              />
-              <button
-                type="button"
-                onClick={(e) => { e.preventDefault(); setAdminView('admin') }}
-                className={cn(
-                  'relative z-10 flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
-                  adminView === 'admin' ? 'text-accent-foreground' : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                <ShieldIcon className="h-3 w-3" />
-                Admin
-              </button>
-              <button
-                type="button"
-                onClick={(e) => { e.preventDefault(); setAdminView('provider') }}
-                className={cn(
-                  'relative z-10 flex-1 flex items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
-                  adminView === 'provider' ? 'text-accent-foreground' : 'text-muted-foreground hover:text-foreground',
-                )}
-              >
-                <PanelLeftIcon className="h-3 w-3" />
-                Usługodawca
-              </button>
+            {/* Toggle switch */}
+            <div className="flex items-center gap-0.5 rounded-lg bg-muted/50 p-0.5 mx-2 my-1.5">
+              {(['admin', 'provider'] as const).map((view) => (
+                <button
+                  key={view}
+                  type="button"
+                  onClick={(e) => { e.preventDefault(); setAdminView(view) }}
+                  className={cn(
+                    'relative flex-1 flex items-center justify-center gap-1 rounded-md px-2 py-1.5 text-xs font-medium transition-colors',
+                    adminView === view ? 'text-accent-foreground' : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  {adminView === view && (
+                    <motion.div
+                      layoutId="admin-toggle"
+                      className="absolute inset-0 rounded-md bg-accent/15"
+                      transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center gap-1">
+                    {view === 'admin' ? <ShieldIcon className="h-3 w-3" /> : <PanelLeftIcon className="h-3 w-3" />}
+                    {view === 'admin' ? 'Admin' : 'Usługodawca'}
+                  </span>
+                </button>
+              ))}
             </div>
 
             <DropdownMenuSeparator />
