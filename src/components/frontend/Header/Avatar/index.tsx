@@ -35,7 +35,11 @@ export function HeaderAvatar({
   href?: string
   onClick?: () => void
 }) {
-  const { user, logout } = useRootAuth()
+  const { user, logout: rawLogout } = useRootAuth()
+  const handleLogout = async () => {
+    await rawLogout()
+    window.location.href = '/auth/sign-in'
+  }
 
   if (!user) return null
 
@@ -77,5 +81,5 @@ export function HeaderAvatar({
     )
   }
 
-  return <AvatarDropdown user={user} variant="frontend" onLogout={logout} label={resolvedLabel} noBorder={noBorder} />
+  return <AvatarDropdown user={user} variant="frontend" onLogout={handleLogout} label={resolvedLabel} noBorder={noBorder} />
 }
