@@ -2,7 +2,7 @@
 
 import type { User } from '@/payload-types'
 import { useRouter, usePathname } from 'next/navigation'
-import { createContext, useState, useEffect, use } from 'react'
+import { createContext, useState, useEffect, useRef, use } from 'react'
 
 type AuthContext = {
   user: User | null
@@ -20,9 +20,9 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
 
-  async function refreshUser() {
+  async function refreshUser(silent = false) {
     try {
-      setStatus('loading')
+      if (!silent) setStatus('loading')
       const response = await fetch('/api/users/me', {
         method: 'GET',
         credentials: 'include',
@@ -72,9 +72,19 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // Refresh on mount and on pathname change (catches post-login redirects)
+  const initialPathname = useRef(pathname)
+
+  // Initial fetch on mount
   useEffect(() => {
     refreshUser()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Silent refresh on pathname change (catches post-login redirects without re-triggering animations)
+  useEffect(() => {
+    if (pathname === initialPathname.current) return
+    initialPathname.current = pathname
+    refreshUser(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
