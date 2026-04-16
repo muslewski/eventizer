@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState, useEffect, useRef } from 'react'
+import { useCallback, useState } from 'react'
 import { useCompletion } from '@ai-sdk/react'
 import { Controller, type Control, type FieldErrors } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
@@ -41,23 +41,16 @@ export function ShortDescriptionGenerator({
   onGenerated,
 }: ShortDescriptionGeneratorProps) {
   const [wasGenerated, setWasGenerated] = useState(false)
-  const prevCompletionRef = useRef('')
 
   const { complete, isLoading, completion } = useCompletion({
     api: '/api/generate-description',
+    onFinish: (_prompt, completionText) => {
+      onGenerated(completionText)
+      setWasGenerated(true)
+    },
   })
 
-  // Sync completion to form when generation finishes
-  useEffect(() => {
-    if (!isLoading && completion && completion !== prevCompletionRef.current) {
-      prevCompletionRef.current = completion
-      onGenerated(completion)
-      setWasGenerated(true)
-    }
-  }, [isLoading, completion, onGenerated])
-
   const handleGenerate = useCallback(() => {
-    prevCompletionRef.current = ''
     complete('', {
       body: {
         title,
