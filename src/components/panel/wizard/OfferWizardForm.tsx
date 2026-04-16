@@ -21,11 +21,11 @@ import { StepSummary } from './steps/StepSummary'
 const STEP_COUNT = 6
 const STEP_LABELS = [
   'Podstawowe',
+  'Treść oferty',
   'Cena i lokalizacja',
   'Media',
   'Kontakt',
-  'Treść oferty',
-  'Podsumowanie',
+  'Finalizacja',
 ]
 
 interface OfferWizardFormProps {
@@ -246,6 +246,12 @@ export function OfferWizardForm({
           />
         )}
         {currentStep === 1 && (
+          <StepContent
+            content={content}
+            onContentChange={setContent}
+          />
+        )}
+        {currentStep === 2 && (
           <StepPricing
             control={control}
             errors={errors}
@@ -253,7 +259,7 @@ export function OfferWizardForm({
             setValue={setValue}
           />
         )}
-        {currentStep === 2 && (
+        {currentStep === 3 && (
           <StepMedia
             control={control}
             errors={errors}
@@ -268,7 +274,7 @@ export function OfferWizardForm({
             onBackgroundImageChange={setBackgroundImage}
           />
         )}
-        {currentStep === 3 && (
+        {currentStep === 4 && (
           <StepDescription
             control={control}
             errors={errors}
@@ -276,14 +282,10 @@ export function OfferWizardForm({
             setValue={setValue}
           />
         )}
-        {currentStep === 4 && (
-          <StepContent
-            content={content}
-            onContentChange={setContent}
-          />
-        )}
         {currentStep === 5 && (
           <StepSummary
+            control={control}
+            errors={errors}
             getValues={getValues}
             content={content}
             mainImageId={mainImage?.id ?? null}
