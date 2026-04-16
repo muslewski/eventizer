@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { AvatarDropdown } from '@/components/shared/AvatarDropdown'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useRootAuth } from '@/providers/RootAuthProvider'
@@ -36,9 +37,10 @@ export function HeaderAvatar({
   onClick?: () => void
 }) {
   const { user, logout: rawLogout } = useRootAuth()
+  const router = useRouter()
   const handleLogout = async () => {
     await rawLogout()
-    window.location.href = '/auth/sign-in'
+    router.push('/auth/sign-in')
   }
 
   if (!user) return null
