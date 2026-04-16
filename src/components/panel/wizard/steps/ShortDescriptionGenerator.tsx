@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState, useEffect, useRef } from 'react'
+import { useCallback, useState } from 'react'
 import { useCompletion } from '@ai-sdk/react'
 import { Controller, type Control, type FieldErrors } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
@@ -44,35 +44,10 @@ export function ShortDescriptionGenerator({
 
   const { complete, isLoading, completion } = useCompletion({
     api: '/api/generate-description',
-    onFinish: (...args: any[]) => {
-      console.log('[AI] onFinish args:', args)
-      // Try to extract the completion text from whatever shape the args are
-      const text = typeof args[1] === 'string' ? args[1] : typeof args[0] === 'string' ? args[0] : null
-      console.log('[AI] extracted text:', text)
-      if (text) {
-        onGenerated(text)
-        setWasGenerated(true)
-      }
-    },
-    onError: (error: any) => {
-      console.error('[AI] onError:', error)
-    },
   })
 
-  // Fallback: when loading finishes and we have completion but wasGenerated is false
-  // This catches cases where onFinish args don't match expected shape
-  const prevLoadingRef = useRef(isLoading)
-  useEffect(() => {
-    if (prevLoadingRef.current && !isLoading && completion) {
-      console.log('[AI] fallback sync - completion:', completion.slice(0, 50))
-      onGenerated(completion)
-      setWasGenerated(true)
-    }
-    prevLoadingRef.current = isLoading
-  }, [isLoading, completion, onGenerated])
-
-  const handleGenerate = useCallback(() => {
-    complete('', {
+  const handleGenerate = useCallback(async () => {
+    const result = await complete('', {
       body: {
         title,
         category,
@@ -81,7 +56,12 @@ export function ShortDescriptionGenerator({
         content,
       },
     })
-  }, [complete, title, category, price, address, content])
+
+    if (result) {
+      onGenerated(result)
+      setWasGenerated(true)
+    }
+  }, [complete, title, category, price, address, content, onGenerated])
 
   return (
     <FieldGroup>
