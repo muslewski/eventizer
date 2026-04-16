@@ -117,22 +117,26 @@ export function OfferWizardForm({
     const values = getValues()
 
     if (currentStep === 0) {
-      const result = await trigger(['title', 'category', 'shortDescription'])
-      return result
+      return await trigger(['title', 'category'])
     }
 
     if (currentStep === 1) {
+      // Treść oferty — no form fields to validate (content is separate state)
+      return true
+    }
+
+    if (currentStep === 2) {
+      // Cena i lokalizacja
       const fieldsToValidate: (keyof OfferFormData)[] = ['address', 'serviceRadius']
       if (values.hasPriceRange) {
         fieldsToValidate.push('priceFrom', 'priceTo')
       } else {
         fieldsToValidate.push('price')
       }
-      const result = await trigger(fieldsToValidate)
-      return result
+      return await trigger(fieldsToValidate)
     }
 
-    // Steps 3, 4, 5 don't need additional form validation
+    // Steps 3 (Media), 4 (Kontakt) — no blocking validation
     return true
   }
 
