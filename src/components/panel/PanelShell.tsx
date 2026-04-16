@@ -20,7 +20,7 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
   return (
     <>
       {/* Fixed background — dark theme only */}
-      <div className="fixed inset-0 z-0 pointer-events-none hidden dark:block">
+      <div className="fixed inset-0 z-0 pointer-events-none hidden dark:md:block">
         <LiquidLines
           width="100%"
           height="100%"
@@ -29,12 +29,12 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
           // waveFrequency={40}
           // lineThickness={0.006}
           // waveAmplitude={0.5}
-          // brightness={1.5}
+          brightness={0.5}
           contrast={2.0}
           // scale={0.25}
           opacity={0.4}
-          darkBackground="#0b0b0b"
-          // lineColor="#d28c08"
+          darkBackground="#080808"
+          lineColor="#d28c08"
         />
       </div>
 
