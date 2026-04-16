@@ -247,7 +247,12 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
                 ) : (
                   <FolderIcon className="size-8 shrink-0 text-accent/60" />
                 )}
-                <span className="min-w-0 flex-1 truncate font-medium">{category.name}</span>
+                <div className="min-w-0 flex-1">
+                  <span className="truncate font-medium block">{category.name}</span>
+                  {category.description && (
+                    <span className="text-xs text-muted-foreground line-clamp-2 mt-0.5 block">{category.description}</span>
+                  )}
+                </div>
                 {hasSubcategories ? (
                   <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
                 ) : (
