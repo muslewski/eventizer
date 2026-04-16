@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect, useRef } from 'react'
 import { useCompletion } from '@ai-sdk/react'
 import { Controller, type Control, type FieldErrors } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
@@ -44,18 +44,32 @@ export function ShortDescriptionGenerator({
 
   const { complete, isLoading, completion } = useCompletion({
     api: '/api/generate-description',
-    onFinish: (...args) => {
+    onFinish: (...args: any[]) => {
       console.log('[AI] onFinish args:', args)
-      console.log('[AI] onFinish typeof args[0]:', typeof args[0])
-      console.log('[AI] onFinish typeof args[1]:', typeof args[1])
-      console.log('[AI] completion state at onFinish:', completion)
+      // Try to extract the completion text from whatever shape the args are
+      const text = typeof args[1] === 'string' ? args[1] : typeof args[0] === 'string' ? args[0] : null
+      console.log('[AI] extracted text:', text)
+      if (text) {
+        onGenerated(text)
+        setWasGenerated(true)
+      }
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('[AI] onError:', error)
     },
   })
 
-  console.log('[AI] render - isLoading:', isLoading, 'completion:', completion?.slice(0, 50))
+  // Fallback: when loading finishes and we have completion but wasGenerated is false
+  // This catches cases where onFinish args don't match expected shape
+  const prevLoadingRef = useRef(isLoading)
+  useEffect(() => {
+    if (prevLoadingRef.current && !isLoading && completion) {
+      console.log('[AI] fallback sync - completion:', completion.slice(0, 50))
+      onGenerated(completion)
+      setWasGenerated(true)
+    }
+    prevLoadingRef.current = isLoading
+  }, [isLoading, completion, onGenerated])
 
   const handleGenerate = useCallback(() => {
     complete('', {
