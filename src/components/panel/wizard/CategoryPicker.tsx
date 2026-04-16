@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ChevronRight, Check, Search, RotateCcw, Briefcase, FolderIcon } from 'lucide-react'
+import { ChevronRight, ChevronLeft, Check, Search, RotateCcw, Briefcase, FolderIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface CategoryItem {
@@ -190,15 +190,29 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
         </div>
       )}
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          placeholder="Szukaj kategorii..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
+      {/* Back button + Search */}
+      <div className="flex items-center gap-2">
+        {selectedPath.length > 0 && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handleBreadcrumbClick(selectedPath.length - 1)}
+            className="shrink-0"
+          >
+            <ChevronLeft data-icon="inline-start" />
+            Wstecz
+          </Button>
+        )}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            placeholder="Szukaj kategorii..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
       </div>
 
       {/* Category list */}
@@ -223,15 +237,15 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
                 type="button"
                 key={category.id}
                 className={cn(
-                  'flex items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm transition-colors',
+                  'flex items-center gap-3 rounded-md px-3 py-3 text-left text-sm transition-colors',
                   'border border-transparent hover:border-accent/30 hover:bg-accent/5',
                 )}
                 onClick={() => handleCategorySelect(category)}
               >
                 {typeof category.icon === 'object' && category.icon?.url ? (
-                  <Image src={category.icon.url} alt="" width={18} height={18} className="size-4.5 shrink-0 rounded-sm object-contain dark:invert" />
+                  <Image src={category.icon.url} alt="" width={32} height={32} className="size-8 shrink-0 rounded-sm object-contain dark:invert" />
                 ) : (
-                  <FolderIcon className="size-4 shrink-0 text-accent/60" />
+                  <FolderIcon className="size-8 shrink-0 text-accent/60" />
                 )}
                 <span className="min-w-0 flex-1 truncate font-medium">{category.name}</span>
                 {hasSubcategories ? (
