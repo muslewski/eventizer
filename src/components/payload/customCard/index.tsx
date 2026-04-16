@@ -13,7 +13,7 @@ export type Props = {
   id?: string
   onClick?: () => void
   title: string
-  titleAs?: React.ElementType
+  titleAs?: React.ComponentType<{ className?: string; children?: React.ReactNode }> | keyof React.JSX.IntrinsicElements
   slug?: string
 }
 
