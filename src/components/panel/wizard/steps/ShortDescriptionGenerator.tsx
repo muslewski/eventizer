@@ -44,6 +44,7 @@ export function ShortDescriptionGenerator({
 
   const { complete, isLoading, completion } = useCompletion({
     api: '/api/generate-description',
+    streamProtocol: 'text',
   })
 
   const handleGenerate = useCallback(async () => {
