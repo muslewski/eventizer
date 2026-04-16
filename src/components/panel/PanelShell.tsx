@@ -41,7 +41,7 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
 
       <SidebarProvider className="min-h-0 relative z-10">
         <PanelNav user={user} lang={lang} />
-        <SidebarInset>
+        <SidebarInset className="bg-transparent">
           <PanelMobileHeader />
           <div className="flex flex-1 flex-col gap-4 p-4 pt-2 md:p-6 md:pt-28 lg:p-8 lg:pt-28">{children}</div>
         </SidebarInset>
