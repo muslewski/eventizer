@@ -117,14 +117,14 @@ export default function Footer() {
                 text: 'kontakt@eventizer.pl',
               },
               {
-                href: 'tel:+48123456789',
+                href: 'tel:+48696142827',
                 icon: Phone,
-                text: '+48 123 456 789',
+                text: '+48 696 142 827',
               },
               {
-                href: 'https://goo.gl/maps/example',
+                href: 'https://maps.google.com/?q=ul.+Kowalska+5,+20-400+Lublin',
                 icon: MapPin,
-                text: 'Lublin',
+                text: 'ul. Kowalska 5, 20-400 Lublin',
                 external: true,
               },
             ].map((item, index) => (
