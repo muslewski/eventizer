@@ -1,17 +1,17 @@
 'use client'
 
-import { Controller, type Control, type FieldErrors, type UseFormGetValues } from 'react-hook-form'
-import { Textarea } from '@/components/ui/textarea'
+import { type Control, type FieldErrors, type UseFormGetValues, type UseFormSetValue } from 'react-hook-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Field, FieldGroup, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field'
 import { Separator } from '@/components/ui/separator'
+import { ShortDescriptionGenerator } from './ShortDescriptionGenerator'
 import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
 
 interface StepSummaryProps {
   control: Control<OfferFormData>
   errors: FieldErrors<OfferFormData>
   getValues: UseFormGetValues<OfferFormData>
+  setValue: UseFormSetValue<OfferFormData>
   content: any
   mainImageId: number | null
   galleryIds: number[]
@@ -22,6 +22,7 @@ export function StepSummary({
   control,
   errors,
   getValues,
+  setValue,
   content,
   mainImageId,
   galleryIds,
@@ -29,38 +30,23 @@ export function StepSummary({
 }: StepSummaryProps) {
   const values = getValues()
 
+  const priceDisplay = values.hasPriceRange
+    ? `${values.priceFrom ?? '-'} – ${values.priceTo ?? '-'} PLN`
+    : `${values.price ?? '-'} PLN`
+
   return (
     <div className="flex flex-col gap-6">
-      {/* Short description — editable in finalization step */}
-      <FieldGroup>
-        <Field data-invalid={!!errors.shortDescription}>
-          <FieldLabel htmlFor="shortDescription">Krótki opis oferty</FieldLabel>
-          <FieldDescription>
-            Podsumowanie widoczne na listach wyników i w kartach ofert. Zachęć potencjalnych klientów do kliknięcia.
-          </FieldDescription>
-          <Controller
-            name="shortDescription"
-            control={control}
-            render={({ field }) => (
-              <div className="flex flex-col gap-1">
-                <Textarea
-                  id="shortDescription"
-                  placeholder="Opisz krótko swoją ofertę — co wyróżnia Cię na tle konkurencji?"
-                  rows={3}
-                  {...field}
-                  aria-invalid={!!errors.shortDescription}
-                />
-                <div className="flex items-center justify-between">
-                  <FieldError>{errors.shortDescription?.message}</FieldError>
-                  <span className="text-xs text-muted-foreground">
-                    {field.value?.length || 0}/500
-                  </span>
-                </div>
-              </div>
-            )}
-          />
-        </Field>
-      </FieldGroup>
+      {/* AI-powered short description */}
+      <ShortDescriptionGenerator
+        control={control}
+        errors={errors}
+        title={values.title}
+        category={values.category}
+        price={priceDisplay}
+        address={values.address}
+        content={content}
+        onGenerated={(text) => setValue('shortDescription', text)}
+      />
 
       <Separator />
 
@@ -69,7 +55,6 @@ export function StepSummary({
         <h3 className="font-bebas text-lg tracking-wide text-muted-foreground">Podsumowanie oferty</h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Basic info */}
           <Card className="bg-background border-border/20">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Podstawowe</CardTitle>
@@ -86,7 +71,6 @@ export function StepSummary({
             </CardContent>
           </Card>
 
-          {/* Pricing & Location */}
           <Card className="bg-background border-border/20">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Cena i lokalizacja</CardTitle>
@@ -94,11 +78,7 @@ export function StepSummary({
             <CardContent className="flex flex-col gap-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Cena</span>
-                <span className="font-medium">
-                  {values.hasPriceRange
-                    ? `${values.priceFrom ?? '-'} – ${values.priceTo ?? '-'} PLN`
-                    : `${values.price ?? '-'} PLN`}
-                </span>
+                <span className="font-medium">{priceDisplay}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Adres</span>
@@ -111,7 +91,6 @@ export function StepSummary({
             </CardContent>
           </Card>
 
-          {/* Media */}
           <Card className="bg-background border-border/20">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Media</CardTitle>
@@ -138,7 +117,6 @@ export function StepSummary({
             </CardContent>
           </Card>
 
-          {/* Content & Contact */}
           <Card className="bg-background border-border/20">
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Treść i kontakt</CardTitle>

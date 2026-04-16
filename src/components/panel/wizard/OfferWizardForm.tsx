@@ -291,6 +291,7 @@ export function OfferWizardForm({
             control={control}
             errors={errors}
             getValues={getValues}
+            setValue={setValue}
             content={content}
             mainImageId={mainImage?.id ?? null}
             galleryIds={galleryImages.map((g) => g.id)}
