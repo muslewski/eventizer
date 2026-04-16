@@ -1,10 +1,32 @@
 import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 
+// Extract plain text from Lexical SerializedEditorState JSON
+function extractTextFromLexical(content: any): string {
+  if (!content || typeof content === 'string') return content || ''
+
+  const texts: string[] = []
+
+  function walk(node: any) {
+    if (node.text) texts.push(node.text)
+    if (node.children) {
+      for (const child of node.children) walk(child)
+      // Add newline after block-level nodes
+      if (['paragraph', 'heading', 'quote', 'listitem'].includes(node.type)) {
+        texts.push('\n')
+      }
+    }
+  }
+
+  if (content.root) walk(content.root)
+  return texts.join('').trim().slice(0, 1000)
+}
+
 export async function POST(req: Request) {
   const body = await req.json()
   const { title, category, price, address, content } = body
-  console.log('[API generate-description] received:', { title, category, price, address, hasContent: !!content })
+  const contentText = extractTextFromLexical(content)
+  console.log('[API generate-description] received:', { title, category, price, address, contentText: contentText.slice(0, 100) })
 
   const result = streamText({
     model: openai('gpt-4o-mini'),
@@ -23,7 +45,7 @@ Tytuł: ${title || 'Brak'}
 Kategoria: ${category || 'Brak'}
 Cena: ${price || 'Brak'}
 Lokalizacja: ${address || 'Brak'}
-${content ? `Treść oferty (fragment): ${typeof content === 'string' ? content.slice(0, 500) : JSON.stringify(content).slice(0, 500)}` : ''}
+${contentText ? `Treść oferty: ${contentText}` : ''}
 
 Wygeneruj tylko sam opis, bez cudzysłowów i dodatkowych komentarzy.`,
   })
