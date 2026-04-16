@@ -6,6 +6,7 @@ import { getDashboardStats } from '@/actions/panel/dashboard'
 import { ServiceProviderDashboard } from '@/components/panel/dashboard/ServiceProviderDashboard'
 import { ClientDashboard } from '@/components/panel/dashboard/ClientDashboard'
 import { DashboardHero } from '@/components/panel/dashboard/DashboardHero'
+import { AdminDisclaimer } from '@/components/panel/AdminDisclaimer'
 
 export const metadata = { title: 'Dashboard' }
 
@@ -51,6 +52,8 @@ export default async function DashboardPage({
         userName={user.name ?? ''}
         backgroundImageUrl={backgroundImageUrl}
       />
+
+      <AdminDisclaimer role={role} variant="dashboard" />
 
       {!stats.success ? (
         <p className="text-muted-foreground">Nie udało się załadować danych. Spróbuj ponownie później.</p>

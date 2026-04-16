@@ -7,6 +7,7 @@ import { getOffers } from '@/actions/panel/offers'
 import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { OffersListView } from '@/components/panel/oferty/OffersListView'
+import { AdminDisclaimer } from '@/components/panel/AdminDisclaimer'
 
 export const metadata = { title: 'Zarządzaj ofertami' }
 
@@ -52,6 +53,7 @@ export default async function OffertyPage({
         lang={lang}
         backgroundImageUrl={bgUrl}
       />
+      <AdminDisclaimer role={user.role ?? ''} variant="offers" />
       <OffersListView
         offers={offers}
         maxOffers={user.maxOffers ?? 1}

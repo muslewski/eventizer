@@ -7,6 +7,7 @@ import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscr
 import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { SubscriptionManager } from '@/components/panel/plan-subskrypcji/SubscriptionManager'
+import { AdminDisclaimer } from '@/components/panel/AdminDisclaimer'
 
 export const metadata = { title: 'Plan subskrypcji' }
 
@@ -55,6 +56,7 @@ export default async function PlanSubskrypcjiPage({
         lang={lang}
         backgroundImageUrl={bgUrl}
       />
+      <AdminDisclaimer role={user.role ?? ''} variant="subscription" />
       <SubscriptionManager
         user={user}
         subscription={subscription}
