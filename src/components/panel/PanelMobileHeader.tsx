@@ -16,7 +16,7 @@ export function PanelMobileHeader() {
         className="gap-2 text-muted-foreground"
       >
         <PanelLeftIcon className="size-4" />
-        Nawigacja panelu
+        <span className="font-bebas tracking-wide text-base">Menu panelu</span>
       </Button>
     </div>
   )
