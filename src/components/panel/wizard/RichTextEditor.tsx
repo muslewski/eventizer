@@ -210,9 +210,11 @@ function InitialStatePlugin({ initialState }: { initialState?: SerializedEditorS
 
   useEffect(() => {
     if (initialState && !loaded) {
-      const editorState = editor.parseEditorState(initialState)
-      editor.setEditorState(editorState)
-      setLoaded(true)
+      queueMicrotask(() => {
+        const editorState = editor.parseEditorState(initialState)
+        editor.setEditorState(editorState)
+        setLoaded(true)
+      })
     }
   }, [editor, initialState, loaded])
 
