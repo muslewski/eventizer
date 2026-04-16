@@ -216,7 +216,7 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
       </div>
 
       {/* Category list */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 max-h-[320px] gap-1.5 overflow-y-auto pr-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 max-h-[400px] gap-2.5 overflow-y-auto pr-1">
         {filteredCategories.length === 0 ? (
           <div className="col-span-full py-8 text-center text-muted-foreground">
             <Briefcase className="mx-auto mb-2 size-6 opacity-50" />
@@ -237,8 +237,8 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
                 type="button"
                 key={category.id}
                 className={cn(
-                  'flex items-center gap-3 rounded-md px-3 py-3 text-left text-sm transition-colors',
-                  'border border-transparent hover:border-accent/30 hover:bg-accent/5',
+                  'flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm transition-all',
+                  'bg-background border border-border/20 hover:border-accent/30 hover:bg-accent/5 hover:shadow-sm',
                 )}
                 onClick={() => handleCategorySelect(category)}
               >
