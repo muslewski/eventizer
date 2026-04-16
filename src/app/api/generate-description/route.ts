@@ -2,7 +2,9 @@ import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 
 export async function POST(req: Request) {
-  const { title, category, price, address, content } = await req.json()
+  const body = await req.json()
+  const { title, category, price, address, content } = body
+  console.log('[API generate-description] received:', { title, category, price, address, hasContent: !!content })
 
   const result = streamText({
     model: openai('gpt-4o-mini'),

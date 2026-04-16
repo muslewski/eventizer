@@ -44,11 +44,18 @@ export function ShortDescriptionGenerator({
 
   const { complete, isLoading, completion } = useCompletion({
     api: '/api/generate-description',
-    onFinish: (_prompt, completionText) => {
-      onGenerated(completionText)
-      setWasGenerated(true)
+    onFinish: (...args) => {
+      console.log('[AI] onFinish args:', args)
+      console.log('[AI] onFinish typeof args[0]:', typeof args[0])
+      console.log('[AI] onFinish typeof args[1]:', typeof args[1])
+      console.log('[AI] completion state at onFinish:', completion)
+    },
+    onError: (error) => {
+      console.error('[AI] onError:', error)
     },
   })
+
+  console.log('[AI] render - isLoading:', isLoading, 'completion:', completion?.slice(0, 50))
 
   const handleGenerate = useCallback(() => {
     complete('', {
