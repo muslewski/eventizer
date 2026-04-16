@@ -12,22 +12,42 @@ async function getAuthenticatedUser() {
   return session.user
 }
 
-export async function getOffers(userId: number) {
+export async function getOffers(
+  userId: number,
+  page: number = 1,
+  limit: number = 10,
+  statusFilter?: 'published' | 'draft',
+) {
   try {
     const payload = await getPayload({ config })
 
+    const where: any = { user: { equals: userId } }
+    if (statusFilter) {
+      where._status = { equals: statusFilter }
+    }
+
     const result = await payload.find({
       collection: 'offers',
-      where: {
-        user: { equals: userId },
-      },
+      where,
       sort: '-createdAt',
       depth: 1,
       draft: true,
       overrideAccess: true,
+      page,
+      limit,
     })
 
-    return { success: true as const, data: result.docs }
+    return {
+      success: true as const,
+      data: result.docs,
+      pagination: {
+        currentPage: result.page ?? 1,
+        totalPages: result.totalPages ?? 1,
+        totalDocs: result.totalDocs ?? 0,
+        hasNextPage: result.hasNextPage ?? false,
+        hasPrevPage: result.hasPrevPage ?? false,
+      },
+    }
   } catch (err) {
     console.error('[getOffers]', err)
     return { success: false as const, error: 'Nie udało się pobrać ofert' }

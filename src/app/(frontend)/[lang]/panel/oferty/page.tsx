@@ -13,10 +13,13 @@ export const metadata = { title: 'Zarządzaj ofertami' }
 
 export default async function OffertyPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ lang: string }>
+  searchParams: Promise<{ strona?: string; filtr?: string }>
 }) {
   const { lang } = await params
+  const resolvedSearchParams = await searchParams
   const session = await auth.api.getSession({ headers: await headers() })
 
   if (!session?.user) {
@@ -38,11 +41,16 @@ export default async function OffertyPage({
     redirect(`/${lang}/panel/dashboard`)
   }
 
+  const page = Math.max(1, Number(resolvedSearchParams.strona) || 1)
+  const statusFilter = resolvedSearchParams.filtr as 'published' | 'draft' | undefined
+
   const [offersResult, bgUrl] = await Promise.all([
-    getOffers(user.id),
+    getOffers(user.id, page, 10, statusFilter === 'published' || statusFilter === 'draft' ? statusFilter : undefined),
     getHeaderBackgroundUrl(),
   ])
+
   const offers = offersResult.success ? offersResult.data : []
+  const pagination = offersResult.success && 'pagination' in offersResult ? offersResult.pagination : undefined
 
   return (
     <div className="flex flex-col gap-6">
@@ -58,6 +66,8 @@ export default async function OffertyPage({
         offers={offers}
         maxOffers={user.maxOffers ?? 1}
         lang={lang}
+        pagination={pagination}
+        currentFilter={statusFilter}
       />
     </div>
   )
