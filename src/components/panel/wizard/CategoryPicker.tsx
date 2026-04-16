@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -22,6 +23,25 @@ interface CategoryPickerProps {
   categories: CategoryItem[]
   value: string
   onChange: (value: string) => void
+}
+
+function CategoryIcon({ icon }: { icon?: { url?: string } | number | null }) {
+  const [failed, setFailed] = useState(false)
+
+  if (!failed && typeof icon === 'object' && icon?.url) {
+    return (
+      <Image
+        src={icon.url}
+        alt=""
+        width={32}
+        height={32}
+        className="size-8 shrink-0 rounded-sm object-contain dark:invert"
+        onError={() => setFailed(true)}
+      />
+    )
+  }
+
+  return <FolderIcon className="size-8 shrink-0 text-accent/60" />
 }
 
 export function CategoryPicker({ categories, value, onChange }: CategoryPickerProps) {
@@ -242,11 +262,7 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
                 )}
                 onClick={() => handleCategorySelect(category)}
               >
-                {typeof category.icon === 'object' && category.icon?.url ? (
-                  <Image src={category.icon.url} alt="" width={32} height={32} className="size-8 shrink-0 rounded-sm object-contain dark:invert" />
-                ) : (
-                  <FolderIcon className="size-8 shrink-0 text-accent/60" />
-                )}
+                <CategoryIcon icon={category.icon} />
                 <div className="min-w-0 flex-1">
                   <span className="truncate font-medium block">{category.name}</span>
                   {category.description && (
