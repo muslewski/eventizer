@@ -1,7 +1,7 @@
 'use client'
 
 import type { User } from '@/payload-types'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { createContext, useState, useEffect, use } from 'react'
 
 type AuthContext = {
@@ -18,6 +18,7 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [status, setStatus] = useState<AuthContext['status']>('loading')
   const router = useRouter()
+  const pathname = usePathname()
 
   async function refreshUser() {
     try {
@@ -71,10 +72,11 @@ export function RootAuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // Refresh on mount and on pathname change (catches post-login redirects)
   useEffect(() => {
     refreshUser()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [pathname])
 
   return (
     <Context.Provider value={{ user, setUser, status, refreshUser, logout }}>
