@@ -35,7 +35,7 @@ export function OfferMainImageCellClient({
   const showMain = mainImageUrl && !mainError
   const showBg = bgImageUrl && !bgError
 
-  const Component = (href ? Link : 'div') as React.ElementType
+  const Component = (href ? Link : 'div') as any
 
   return (
     <div className="flex items-center py-1.5">

@@ -22,7 +22,7 @@ export const CustomCard: React.FC<Props> = (props) => {
 
   const isClickable = onClick || href
 
-  const Tag = titleAs ?? 'div'
+  const Tag: React.ElementType = titleAs ?? 'div'
   const Icon = slug ? getNavIcon(slug) : undefined
 
   return (
@@ -38,7 +38,7 @@ export const CustomCard: React.FC<Props> = (props) => {
     >
       {Icon && <Icon className="w-4 h-4 shrink-0 text-(--theme-elevation-500)" />}
 
-      <Tag className="text-sm font-medium text-(--theme-elevation-650)">{title}</Tag>
+      {React.createElement(Tag, { className: 'text-sm font-medium text-(--theme-elevation-650)' }, title)}
 
       {actions && <div className="relative z-10 inline-flex ml-auto">{actions}</div>}
 

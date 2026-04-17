@@ -46,7 +46,7 @@ export const FeatureCard: React.FC<Props> = (props) => {
           </div>
         )}
 
-        <Tag className="text-sm font-semibold text-(--theme-elevation-650)">{title}</Tag>
+        {React.createElement(Tag, { className: 'text-sm font-semibold text-(--theme-elevation-650)' }, title)}
       </div>
 
       {actions && <div className="relative z-10 inline-flex">{actions}</div>}
