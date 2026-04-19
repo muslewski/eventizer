@@ -56,7 +56,7 @@ export function StepMedia({
       <Field>
         <FieldLabel>Galeria zdjęć</FieldLabel>
         <FieldDescription>
-          Dodatkowe zdjęcia — przeciągnij aby zmienić kolejność
+          Dodatkowe zdjęcia — użyj strzałek aby zmienić kolejność
         </FieldDescription>
         <GalleryUpload value={galleryImages} onChange={onGalleryChange} />
       </Field>

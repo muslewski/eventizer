@@ -2,7 +2,16 @@
 
 import { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
-import { UploadCloudIcon, XIcon, GripVerticalIcon, Loader2Icon, ImageIcon, FilmIcon } from 'lucide-react'
+import {
+  UploadCloudIcon,
+  XIcon,
+  Loader2Icon,
+  ImageIcon,
+  FilmIcon,
+  PencilIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -84,27 +93,26 @@ export function SingleImageUpload({ value, onChange, label, required }: SingleIm
   return (
     <div className="flex flex-col gap-2">
       {value?.url ? (
-        <div className="group relative aspect-video max-w-md overflow-hidden rounded-lg border border-border/20">
+        <div className="relative aspect-video max-w-md overflow-hidden rounded-lg border border-border/20">
           <Image src={value.url} alt="" fill className="object-cover" />
-          <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-            <Button
+          <div className="absolute right-2 top-2 flex gap-1.5">
+            <button
               type="button"
-              variant="secondary"
-              size="sm"
+              aria-label="Zmień zdjęcie"
               onClick={() => inputRef.current?.click()}
+              className="inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent"
             >
-              Zmień
-            </Button>
+              <PencilIcon className="size-4" />
+            </button>
             {!required && (
-              <Button
+              <button
                 type="button"
-                variant="destructive"
-                size="sm"
+                aria-label="Usuń zdjęcie"
                 onClick={() => onChange(null)}
+                className="inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-destructive"
               >
-                <XIcon data-icon="inline-start" />
-                Usuń
-              </Button>
+                <XIcon className="size-4" />
+              </button>
             )}
           </div>
         </div>
@@ -184,6 +192,14 @@ export function GalleryUpload({ value, onChange }: GalleryUploadProps) {
     onChange(value.filter((_, i) => i !== index))
   }, [value, onChange])
 
+  const handleMove = useCallback((from: number, to: number) => {
+    if (to < 0 || to >= value.length) return
+    const newItems = [...value]
+    const [moved] = newItems.splice(from, 1)
+    newItems.splice(to, 0, moved)
+    onChange(newItems)
+  }, [value, onChange])
+
   const handleDragStart = (index: number) => {
     dragItem.current = index
   }
@@ -214,25 +230,42 @@ export function GalleryUpload({ value, onChange }: GalleryUploadProps) {
               onDragStart={() => handleDragStart(index)}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragEnd={handleDragEnd}
-              className="group relative aspect-square overflow-hidden rounded-lg border border-border/20"
+              className="relative aspect-square overflow-hidden rounded-lg border border-border/20"
             >
               <Image src={item.url} alt="" fill className="object-cover" />
-              <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
-                <div className="absolute left-1 top-1 cursor-grab">
-                  <GripVerticalIcon className="size-4 text-white/70" />
-                </div>
-                <Badge variant="secondary" className="absolute bottom-1 left-1 text-xs">
-                  {index + 1}
-                </Badge>
-                <Button
+              <Badge
+                variant="secondary"
+                className="absolute left-1.5 top-1.5 text-xs shadow-md"
+              >
+                {index + 1}
+              </Badge>
+              <button
+                type="button"
+                aria-label="Usuń zdjęcie"
+                onClick={() => handleRemove(index)}
+                className="absolute right-1.5 top-1.5 inline-flex size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-destructive"
+              >
+                <XIcon className="size-4" />
+              </button>
+              <div className="absolute bottom-1.5 right-1.5 flex gap-1">
+                <button
                   type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="size-7"
-                  onClick={() => handleRemove(index)}
+                  aria-label="Przesuń wcześniej"
+                  disabled={index === 0}
+                  onClick={() => handleMove(index, index - 1)}
+                  className="inline-flex size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent disabled:opacity-30 disabled:hover:bg-black/70"
                 >
-                  <XIcon className="size-3.5" />
-                </Button>
+                  <ArrowLeftIcon className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Przesuń później"
+                  disabled={index === value.length - 1}
+                  onClick={() => handleMove(index, index + 1)}
+                  className="inline-flex size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent disabled:opacity-30 disabled:hover:bg-black/70"
+                >
+                  <ArrowRightIcon className="size-4" />
+                </button>
               </div>
             </div>
           ))}
