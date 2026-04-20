@@ -11,6 +11,7 @@ import {
   PencilIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
+  Trash2Icon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -93,25 +94,50 @@ export function SingleImageUpload({ value, onChange, label, required }: SingleIm
   return (
     <div className="flex flex-col gap-2">
       {value?.url ? (
-        <div className="relative aspect-video max-w-md overflow-hidden rounded-lg border border-border/20">
-          <Image src={value.url} alt="" fill className="object-cover" />
-          <div className="absolute right-2 top-2 flex gap-1.5">
+        <div className="flex flex-col gap-2 max-w-md">
+          <div className="relative aspect-video overflow-hidden rounded-lg border border-border/20">
+            <Image src={value.url} alt="" fill className="object-cover" />
+            {/* Desktop overlay controls */}
+            <div className="hidden sm:flex absolute right-2 top-2 gap-1.5">
+              <button
+                type="button"
+                aria-label="Zmień zdjęcie"
+                onClick={() => inputRef.current?.click()}
+                className="inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent"
+              >
+                <PencilIcon className="size-4" />
+              </button>
+              {!required && (
+                <button
+                  type="button"
+                  aria-label="Usuń zdjęcie"
+                  onClick={() => onChange(null)}
+                  className="inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-destructive"
+                >
+                  <XIcon className="size-4" />
+                </button>
+              )}
+            </div>
+          </div>
+          {/* Mobile controls below image */}
+          <div className="flex sm:hidden items-center justify-between gap-2">
             <button
               type="button"
               aria-label="Zmień zdjęcie"
               onClick={() => inputRef.current?.click()}
-              className="inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border/40 bg-background px-4 text-sm text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             >
               <PencilIcon className="size-4" />
+              Zmień
             </button>
             {!required && (
               <button
                 type="button"
                 aria-label="Usuń zdjęcie"
                 onClick={() => onChange(null)}
-                className="inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-destructive"
+                className="inline-flex size-10 items-center justify-center rounded-full border border-destructive/40 bg-background text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
               >
-                <XIcon className="size-4" />
+                <Trash2Icon className="size-4" />
               </button>
             )}
           </div>
@@ -224,47 +250,81 @@ export function GalleryUpload({ value, onChange }: GalleryUploadProps) {
       {value.length > 0 && (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {value.map((item, index) => (
-            <div
-              key={item.id}
-              draggable
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDragEnd={handleDragEnd}
-              className="relative aspect-square overflow-hidden rounded-lg border border-border/20"
-            >
-              <Image src={item.url} alt="" fill className="object-cover" />
-              <Badge
-                variant="secondary"
-                className="absolute left-1.5 top-1.5 text-xs shadow-md"
+            <div key={item.id} className="flex flex-col gap-2">
+              <div
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnd={handleDragEnd}
+                className="relative aspect-square overflow-hidden rounded-lg border border-border/20"
               >
-                {index + 1}
-              </Badge>
-              <button
-                type="button"
-                aria-label="Usuń zdjęcie"
-                onClick={() => handleRemove(index)}
-                className="absolute right-1.5 top-1.5 inline-flex size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-destructive"
-              >
-                <XIcon className="size-4" />
-              </button>
-              <div className="absolute bottom-1.5 right-1.5 flex gap-1">
+                <Image src={item.url} alt="" fill className="object-cover" />
+                <Badge
+                  variant="secondary"
+                  className="absolute left-1.5 top-1.5 text-xs shadow-md"
+                >
+                  {index + 1}
+                </Badge>
+                {/* Desktop overlay controls */}
                 <button
                   type="button"
-                  aria-label="Przesuń wcześniej"
-                  disabled={index === 0}
-                  onClick={() => handleMove(index, index - 1)}
-                  className="inline-flex size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent disabled:opacity-30 disabled:hover:bg-black/70"
+                  aria-label="Usuń zdjęcie"
+                  onClick={() => handleRemove(index)}
+                  className="hidden sm:inline-flex absolute right-1.5 top-1.5 size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-destructive"
                 >
-                  <ArrowLeftIcon className="size-4" />
+                  <XIcon className="size-4" />
                 </button>
+                <div className="hidden sm:flex absolute bottom-1.5 right-1.5 gap-1">
+                  <button
+                    type="button"
+                    aria-label="Przesuń wcześniej"
+                    disabled={index === 0}
+                    onClick={() => handleMove(index, index - 1)}
+                    className="inline-flex size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent disabled:opacity-30 disabled:hover:bg-black/70"
+                  >
+                    <ArrowLeftIcon className="size-4" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Przesuń później"
+                    disabled={index === value.length - 1}
+                    onClick={() => handleMove(index, index + 1)}
+                    className="inline-flex size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent disabled:opacity-30 disabled:hover:bg-black/70"
+                  >
+                    <ArrowRightIcon className="size-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Mobile controls (below image, larger tap targets) */}
+              <div className="flex sm:hidden items-center justify-between gap-2">
+                <div className="flex gap-1.5">
+                  <button
+                    type="button"
+                    aria-label="Przesuń wcześniej"
+                    disabled={index === 0}
+                    onClick={() => handleMove(index, index - 1)}
+                    className="inline-flex size-10 items-center justify-center rounded-full border border-border/40 bg-background text-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-30 disabled:hover:bg-background"
+                  >
+                    <ArrowLeftIcon className="size-4" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Przesuń później"
+                    disabled={index === value.length - 1}
+                    onClick={() => handleMove(index, index + 1)}
+                    className="inline-flex size-10 items-center justify-center rounded-full border border-border/40 bg-background text-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-30 disabled:hover:bg-background"
+                  >
+                    <ArrowRightIcon className="size-4" />
+                  </button>
+                </div>
                 <button
                   type="button"
-                  aria-label="Przesuń później"
-                  disabled={index === value.length - 1}
-                  onClick={() => handleMove(index, index + 1)}
-                  className="inline-flex size-8 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent disabled:opacity-30 disabled:hover:bg-black/70"
+                  aria-label="Usuń zdjęcie"
+                  onClick={() => handleRemove(index)}
+                  className="inline-flex size-10 items-center justify-center rounded-full border border-destructive/40 bg-background text-destructive transition-colors hover:bg-destructive hover:text-destructive-foreground"
                 >
-                  <ArrowRightIcon className="size-4" />
+                  <Trash2Icon className="size-4" />
                 </button>
               </div>
             </div>
