@@ -169,7 +169,7 @@ export function OffersListView({
           </Button>
         )}
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           {pagination && pagination.totalDocs > 0 && (
             <Badge variant="outline" className="text-xs text-muted-foreground">
               {pagination.totalDocs} {pagination.totalDocs === 1 ? 'oferta' : 'ofert'}
