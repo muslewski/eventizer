@@ -15,9 +15,13 @@ import {
   FieldDescription,
   FieldError,
 } from '@/components/ui/field'
-import { SparklesIcon } from 'lucide-react'
+import { SparklesIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
+import {
+  useAiGenerationHistory,
+  formatCooldown,
+} from '@/components/panel/wizard/useAiGenerationHistory'
 
 interface ShortDescriptionGeneratorProps {
   control: Control<OfferFormData>
@@ -47,7 +51,19 @@ export function ShortDescriptionGenerator({
     streamProtocol: 'text',
   })
 
+  const {
+    history,
+    cursor,
+    canGenerate,
+    resetInMs,
+    add: addHistoryEntry,
+    goBack,
+    goForward,
+    maxGenerations,
+  } = useAiGenerationHistory('ai-gen:short-desc')
+
   const handleGenerate = useCallback(async () => {
+    if (!canGenerate) return
     const result = await complete('', {
       body: {
         title,
@@ -60,33 +76,90 @@ export function ShortDescriptionGenerator({
 
     if (result) {
       onGenerated(result)
+      addHistoryEntry(result)
       setWasGenerated(true)
     }
-  }, [complete, title, category, price, address, content, onGenerated])
+  }, [canGenerate, complete, title, category, price, address, content, onGenerated, addHistoryEntry])
+
+  const handleBack = useCallback(() => {
+    const entry = goBack()
+    if (entry) {
+      onGenerated(entry.text)
+      setWasGenerated(true)
+    }
+  }, [goBack, onGenerated])
+
+  const handleForward = useCallback(() => {
+    const entry = goForward()
+    if (entry) {
+      onGenerated(entry.text)
+      setWasGenerated(true)
+    }
+  }, [goForward, onGenerated])
 
   return (
     <FieldGroup>
       <Field data-invalid={!!errors.shortDescription}>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <FieldLabel htmlFor="shortDescription">Krótki opis oferty</FieldLabel>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleGenerate}
-            disabled={isLoading || !title}
-            className="gap-1.5"
-          >
-            {isLoading ? (
-              <Spinner data-icon="inline-start" />
-            ) : (
-              <SparklesIcon data-icon="inline-start" />
+          <div className="flex items-center gap-1.5">
+            {history.length > 1 && (
+              <div className="flex items-center gap-1 mr-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Poprzednia generacja"
+                  onClick={handleBack}
+                  disabled={isLoading || cursor <= 0}
+                  className="size-8"
+                >
+                  <ChevronLeftIcon className="size-4" />
+                </Button>
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {cursor + 1}/{history.length}
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Następna generacja"
+                  onClick={handleForward}
+                  disabled={isLoading || cursor >= history.length - 1}
+                  className="size-8"
+                >
+                  <ChevronRightIcon className="size-4" />
+                </Button>
+              </div>
             )}
-            {wasGenerated ? 'Generuj ponownie' : 'Generuj z AI'}
-          </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleGenerate}
+              disabled={isLoading || !title || !canGenerate}
+              className="gap-1.5"
+            >
+              {isLoading ? (
+                <Spinner data-icon="inline-start" />
+              ) : (
+                <SparklesIcon data-icon="inline-start" />
+              )}
+              {wasGenerated ? 'Generuj ponownie' : 'Generuj z AI'}
+            </Button>
+          </div>
         </div>
         <FieldDescription>
           Podsumowanie widoczne na listach wyników i w kartach ofert.
+          {canGenerate ? (
+            <> Dostępnych generacji: {maxGenerations - history.length}/{maxGenerations}.</>
+          ) : (
+            <>
+              {' '}
+              Osiągnięto dzienny limit ({maxGenerations}). Dostępne{' '}
+              {resetInMs !== null ? formatCooldown(resetInMs) : 'wkrótce'}.
+            </>
+          )}
         </FieldDescription>
 
         {/* AI shimmer during generation */}

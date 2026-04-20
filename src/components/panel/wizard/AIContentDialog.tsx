@@ -14,7 +14,11 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Spinner } from '@/components/ui/spinner'
 import { Field, FieldGroup, FieldLabel, FieldDescription } from '@/components/ui/field'
-import { SparklesIcon } from 'lucide-react'
+import { SparklesIcon, HistoryIcon } from 'lucide-react'
+import {
+  useAiGenerationHistory,
+  formatCooldown,
+} from '@/components/panel/wizard/useAiGenerationHistory'
 
 interface AIContentDialogProps {
   open: boolean
@@ -41,7 +45,17 @@ export function AIContentDialog({
     streamProtocol: 'text',
   })
 
+  const {
+    history,
+    canGenerate,
+    remaining,
+    resetInMs,
+    add: addHistoryEntry,
+    maxGenerations,
+  } = useAiGenerationHistory('ai-gen:rich-content')
+
   const handleGenerate = useCallback(async () => {
+    if (!canGenerate) return
     const result = await complete('', {
       body: {
         title,
@@ -54,10 +68,19 @@ export function AIContentDialog({
     })
 
     if (result) {
+      addHistoryEntry(result)
       onGenerated(result)
       onOpenChange(false)
     }
-  }, [complete, title, category, uniqueFeatures, services, experience, additionalInfo, onGenerated, onOpenChange])
+  }, [canGenerate, complete, title, category, uniqueFeatures, services, experience, additionalInfo, addHistoryEntry, onGenerated, onOpenChange])
+
+  const handleApplyPrevious = useCallback(
+    (text: string) => {
+      onGenerated(text)
+      onOpenChange(false)
+    },
+    [onGenerated, onOpenChange],
+  )
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -137,17 +160,54 @@ export function AIContentDialog({
           </div>
         )}
 
+        {/* Previous generations */}
+        {history.length > 0 && !isLoading && (
+          <div className="flex flex-col gap-2 rounded-lg border border-border/40 p-3">
+            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+              <HistoryIcon className="size-3.5" />
+              Poprzednie generacje ({history.length}/{maxGenerations})
+            </div>
+            <div className="flex flex-col gap-1.5">
+              {history.map((entry, i) => (
+                <button
+                  key={entry.ts}
+                  type="button"
+                  onClick={() => handleApplyPrevious(entry.text)}
+                  className="flex items-start gap-2 rounded-md border border-border/30 bg-background p-2 text-left text-xs transition-colors hover:border-accent/40 hover:bg-accent/5"
+                >
+                  <span className="shrink-0 font-medium text-accent">#{i + 1}</span>
+                  <span className="line-clamp-2 text-muted-foreground">
+                    {entry.text.replace(/[#*_`>-]/g, '').slice(0, 160)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!canGenerate && (
+          <p className="text-xs text-muted-foreground">
+            Osiągnięto dzienny limit generacji ({maxGenerations}). Dostępne{' '}
+            {resetInMs !== null ? formatCooldown(resetInMs) : 'wkrótce'} — możesz zastosować jedną z
+            poprzednich generacji powyżej.
+          </p>
+        )}
+
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
             Anuluj
           </Button>
-          <Button type="button" onClick={handleGenerate} disabled={isLoading}>
+          <Button type="button" onClick={handleGenerate} disabled={isLoading || !canGenerate}>
             {isLoading ? (
               <Spinner data-icon="inline-start" />
             ) : (
               <SparklesIcon data-icon="inline-start" />
             )}
-            {isLoading ? 'Generowanie...' : 'Generuj treść'}
+            {isLoading
+              ? 'Generowanie...'
+              : canGenerate
+                ? `Generuj treść (${remaining}/${maxGenerations})`
+                : 'Limit osiągnięty'}
           </Button>
         </DialogFooter>
       </DialogContent>
