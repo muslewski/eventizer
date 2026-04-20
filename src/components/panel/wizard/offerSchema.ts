@@ -19,6 +19,13 @@ export const offerSchema = z
       .string()
       .optional()
       .or(z.literal('')),
+    website: z
+      .string()
+      .optional()
+      .default('')
+      .refine((v) => !v || /^https:\/\//i.test(v), {
+        message: 'Adres musi zaczynać się od https://',
+      }),
     facebook: z.string().optional().default(''),
     instagram: z.string().optional().default(''),
     tiktok: z.string().optional().default(''),

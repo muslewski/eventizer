@@ -19,6 +19,12 @@ const TikTokIcon = ({ className }: { className?: string }) => (
 
 const socialMediaConfig = [
   {
+    key: 'website' as const,
+    label: 'Strona internetowa',
+    icon: GlobeIcon,
+    hoverClass: 'hover:bg-foreground/10 hover:border-foreground/40',
+  },
+  {
     key: 'facebook' as const,
     label: 'Facebook',
     icon: GlobeIcon,

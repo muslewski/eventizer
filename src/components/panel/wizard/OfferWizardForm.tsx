@@ -105,6 +105,7 @@ export function OfferWizardForm({
       lng: initialData?.location?.lng ?? undefined,
       phone: initialData?.phone ?? '',
       email: initialData?.email ?? '',
+      website: initialData?.socialMedia?.website ?? '',
       facebook: initialData?.socialMedia?.facebook ?? '',
       instagram: initialData?.socialMedia?.instagram ?? '',
       tiktok: initialData?.socialMedia?.tiktok ?? '',
@@ -185,6 +186,7 @@ export function OfferWizardForm({
         phone: formData.phone,
         email: formData.email,
         socialMedia: {
+          website: formData.website,
           facebook: formData.facebook,
           instagram: formData.instagram,
           tiktok: formData.tiktok,

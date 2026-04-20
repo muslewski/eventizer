@@ -436,6 +436,7 @@ export interface Offer {
    * Add your social media links to help clients find you. (optional)
    */
   socialMedia?: {
+    website?: string | null;
     facebook?: string | null;
     instagram?: string | null;
     tiktok?: string | null;
@@ -1859,6 +1860,7 @@ export interface OffersSelect<T extends boolean = true> {
   socialMedia?:
     | T
     | {
+        website?: T;
         facebook?: T;
         instagram?: T;
         tiktok?: T;

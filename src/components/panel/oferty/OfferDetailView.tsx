@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { PencilIcon, ExternalLinkIcon, PhoneIcon, MailIcon } from 'lucide-react'
+import { PencilIcon, ExternalLinkIcon, PhoneIcon, MailIcon, GlobeIcon } from 'lucide-react'
 import { FaFacebook, FaInstagram, FaTiktok, FaLinkedin } from 'react-icons/fa6'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -209,6 +209,17 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
               {offer.email}
             </a>
           )}
+          {socialMedia?.website && (
+            <a
+              href={socialMedia.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm hover:underline"
+            >
+              <GlobeIcon className="size-4 shrink-0" />
+              Strona internetowa
+            </a>
+          )}
           {socialMedia?.facebook && (
             <a
               href={socialMedia.facebook}
@@ -255,6 +266,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
           )}
           {!offer.phone &&
             !offer.email &&
+            !socialMedia?.website &&
             !socialMedia?.facebook &&
             !socialMedia?.instagram &&
             !socialMedia?.tiktok &&

@@ -20,7 +20,7 @@ import {
   InputGroupInput,
   InputGroupAddon,
 } from '@/components/ui/input-group'
-import { Phone, Mail } from 'lucide-react'
+import { Phone, Mail, Globe } from 'lucide-react'
 import { FaFacebook, FaInstagram, FaTiktok, FaLinkedin } from 'react-icons/fa6'
 import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
 
@@ -85,6 +85,29 @@ export function StepDescription({
       {/* Social media */}
       <FieldSet>
         <FieldLegend>Media społecznościowe</FieldLegend>
+
+        <Field data-invalid={!!errors.website}>
+          <FieldLabel htmlFor="website">Strona internetowa</FieldLabel>
+          <InputGroup>
+            <InputGroupAddon>
+              <Globe className="size-4" />
+            </InputGroupAddon>
+            <Controller
+              name="website"
+              control={control}
+              render={({ field }) => (
+                <InputGroupInput
+                  id="website"
+                  type="url"
+                  inputMode="url"
+                  placeholder="https://..."
+                  {...field}
+                />
+              )}
+            />
+          </InputGroup>
+          <FieldError>{errors.website?.message}</FieldError>
+        </Field>
 
         <Field>
           <FieldLabel htmlFor="facebook">Facebook</FieldLabel>

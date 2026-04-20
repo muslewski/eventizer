@@ -511,6 +511,24 @@ export const offersFields: Field[] = [
             },
             fields: [
               {
+                name: 'website',
+                type: 'text',
+                label: {
+                  en: 'Website',
+                  pl: 'Strona internetowa',
+                },
+                admin: {
+                  placeholder: 'https://...',
+                },
+                validate: (value: string | null | undefined) => {
+                  if (!value) return true
+                  if (!/^https:\/\//i.test(value)) {
+                    return 'Adres musi zaczynać się od https://'
+                  }
+                  return true
+                },
+              },
+              {
                 name: 'facebook',
                 type: 'text',
                 label: 'Facebook',
