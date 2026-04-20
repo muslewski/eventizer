@@ -10,9 +10,10 @@ import Logo from '@/assets/eventizer-icon-1.png'
 
 interface HeaderLogoProps {
   variant?: 'header' | 'sticky' | 'footer'
+  onClick?: () => void
 }
 
-export default function HeaderLogo({ variant = 'header' }: HeaderLogoProps) {
+export default function HeaderLogo({ variant = 'header', onClick }: HeaderLogoProps) {
   const pathname = usePathname()
   const normalizedPathname = removeLocalePrefix(pathname)
   const isSticky = variant === 'sticky'
@@ -20,6 +21,8 @@ export default function HeaderLogo({ variant = 'header' }: HeaderLogoProps) {
   const isPanel = normalizedPathname.startsWith('/panel')
 
   const handleLogoClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    onClick?.()
+
     if (normalizedPathname !== '/') return
 
     event.preventDefault()
