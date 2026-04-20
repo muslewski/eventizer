@@ -4,8 +4,8 @@ import FooterList from '@/components/frontend/Footer/FooterList'
 import HeaderLogo from '@/components/frontend/Header/Logo'
 import { Button } from '@/components/ui/button'
 import { motion } from 'motion/react'
-import { Mail, MapPin, Phone } from 'lucide-react'
-import { FaInstagram, FaFacebook } from 'react-icons/fa'
+import { Mail, MapPin } from 'lucide-react'
+import { FaInstagram, FaFacebook, FaWhatsapp } from 'react-icons/fa'
 import Link from 'next/link'
 
 const containerVariants = {
@@ -118,7 +118,7 @@ export default function Footer() {
               },
               {
                 href: 'tel:+48696142827',
-                icon: Phone,
+                icon: FaWhatsapp,
                 text: '+48 696 142 827',
               },
               {
