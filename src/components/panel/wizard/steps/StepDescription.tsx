@@ -7,7 +7,6 @@ import {
   type UseFormWatch,
   type UseFormSetValue,
 } from 'react-hook-form'
-import { Input } from '@/components/ui/input'
 import {
   Field,
   FieldGroup,
@@ -22,6 +21,7 @@ import {
   InputGroupAddon,
 } from '@/components/ui/input-group'
 import { Phone, Mail } from 'lucide-react'
+import { FaFacebook, FaInstagram, FaTiktok, FaLinkedin } from 'react-icons/fa6'
 import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
 
 interface StepDescriptionProps {
@@ -88,62 +88,82 @@ export function StepDescription({
 
         <Field>
           <FieldLabel htmlFor="facebook">Facebook</FieldLabel>
-          <Controller
-            name="facebook"
-            control={control}
-            render={({ field }) => (
-              <Input
-                id="facebook"
-                placeholder="https://facebook.com/..."
-                {...field}
-              />
-            )}
-          />
+          <InputGroup>
+            <InputGroupAddon>
+              <FaFacebook className="size-4" />
+            </InputGroupAddon>
+            <Controller
+              name="facebook"
+              control={control}
+              render={({ field }) => (
+                <InputGroupInput
+                  id="facebook"
+                  placeholder="https://facebook.com/..."
+                  {...field}
+                />
+              )}
+            />
+          </InputGroup>
         </Field>
 
         <Field>
           <FieldLabel htmlFor="instagram">Instagram</FieldLabel>
-          <Controller
-            name="instagram"
-            control={control}
-            render={({ field }) => (
-              <Input
-                id="instagram"
-                placeholder="https://instagram.com/..."
-                {...field}
-              />
-            )}
-          />
+          <InputGroup>
+            <InputGroupAddon>
+              <FaInstagram className="size-4" />
+            </InputGroupAddon>
+            <Controller
+              name="instagram"
+              control={control}
+              render={({ field }) => (
+                <InputGroupInput
+                  id="instagram"
+                  placeholder="https://instagram.com/..."
+                  {...field}
+                />
+              )}
+            />
+          </InputGroup>
         </Field>
 
         <Field>
           <FieldLabel htmlFor="tiktok">TikTok</FieldLabel>
-          <Controller
-            name="tiktok"
-            control={control}
-            render={({ field }) => (
-              <Input
-                id="tiktok"
-                placeholder="https://tiktok.com/@..."
-                {...field}
-              />
-            )}
-          />
+          <InputGroup>
+            <InputGroupAddon>
+              <FaTiktok className="size-4" />
+            </InputGroupAddon>
+            <Controller
+              name="tiktok"
+              control={control}
+              render={({ field }) => (
+                <InputGroupInput
+                  id="tiktok"
+                  placeholder="https://tiktok.com/@..."
+                  {...field}
+                />
+              )}
+            />
+          </InputGroup>
         </Field>
 
         <Field>
           <FieldLabel htmlFor="linkedin">LinkedIn</FieldLabel>
-          <Controller
-            name="linkedin"
-            control={control}
-            render={({ field }) => (
-              <Input
-                id="linkedin"
-                placeholder="https://linkedin.com/in/..."
-                {...field}
-              />
-            )}
-          />
+          <InputGroup>
+            <InputGroupAddon>
+              <FaLinkedin className="size-4" />
+            </InputGroupAddon>
+            <Controller
+              name="linkedin"
+              control={control}
+              render={({ field }) => (
+                <InputGroupInput
+                  id="linkedin"
+                  placeholder="https://linkedin.com/in/..."
+                  {...field}
+                />
+              )}
+            />
+          </InputGroup>
         </Field>
       </FieldSet>
     </FieldGroup>

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { PencilIcon, ExternalLinkIcon, PhoneIcon, MailIcon, GlobeIcon } from 'lucide-react'
+import { PencilIcon, ExternalLinkIcon, PhoneIcon, MailIcon } from 'lucide-react'
+import { FaFacebook, FaInstagram, FaTiktok, FaLinkedin } from 'react-icons/fa6'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -215,7 +216,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm hover:underline"
             >
-              <GlobeIcon className="size-4 shrink-0" />
+              <FaFacebook className="size-4 shrink-0" />
               Facebook
             </a>
           )}
@@ -226,7 +227,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm hover:underline"
             >
-              <GlobeIcon className="size-4 shrink-0" />
+              <FaInstagram className="size-4 shrink-0" />
               Instagram
             </a>
           )}
@@ -237,14 +238,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm hover:underline"
             >
-              <svg
-                className="size-4 shrink-0"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.79 1.53V6.76a4.85 4.85 0 0 1-1.02-.07z" />
-              </svg>
+              <FaTiktok className="size-4 shrink-0" />
               TikTok
             </a>
           )}
@@ -255,7 +249,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm hover:underline"
             >
-              <GlobeIcon className="size-4 shrink-0" />
+              <FaLinkedin className="size-4 shrink-0" />
               LinkedIn
             </a>
           )}
