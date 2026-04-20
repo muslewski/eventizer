@@ -8,7 +8,7 @@ import { ClientDashboard } from '@/components/panel/dashboard/ClientDashboard'
 import { DashboardHero } from '@/components/panel/dashboard/DashboardHero'
 import { AdminDisclaimer } from '@/components/panel/AdminDisclaimer'
 
-export const metadata = { title: 'Dashboard' }
+export const metadata = { title: 'Panel główny' }
 
 export default async function DashboardPage({
   params,

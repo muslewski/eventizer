@@ -46,7 +46,7 @@ interface PanelNavProps {
 }
 
 const serviceProviderNav = [
-  { label: 'Dashboard', icon: LayoutDashboardIcon, route: '/panel/dashboard' },
+  { label: 'Panel główny', icon: LayoutDashboardIcon, route: '/panel/dashboard' },
   { label: 'Oferty', icon: FileTextIcon, route: '/panel/oferty' },
   { label: 'Plan subskrypcji', icon: CreditCardIcon, route: '/panel/plan-subskrypcji' },
   { label: 'Formularze', icon: InboxIcon, route: '/panel/formularze' },
@@ -54,7 +54,7 @@ const serviceProviderNav = [
 ]
 
 const clientNav = [
-  { label: 'Dashboard', icon: LayoutDashboardIcon, route: '/panel/dashboard' },
+  { label: 'Panel główny', icon: LayoutDashboardIcon, route: '/panel/dashboard' },
   { label: 'Ulubione', icon: HeartIcon, route: '/panel/ulubione' },
   { label: 'Pomoc', icon: HelpCircleIcon, route: '/panel/pomoc' },
   { label: 'Zostań usługodawcą', icon: StarIcon, route: '/panel/plan-subskrypcji' },

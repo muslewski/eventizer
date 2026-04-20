@@ -223,7 +223,7 @@ export function AvatarDropdown({
                     <DropdownMenuItem asChild>
                       <Link href="/panel/dashboard" prefetch className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
-                        Dashboard
+                        Panel główny
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
