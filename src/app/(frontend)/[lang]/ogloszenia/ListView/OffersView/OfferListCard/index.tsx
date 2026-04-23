@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardDescription } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ImageIcon } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { formatOfferPrice } from '@/lib/formatOfferPrice'
+import { PositionedImage } from '@/components/image-position/PositionedImage'
+import type { ImagePosition } from '@/components/image-position/types'
 
 interface OfferListCardProps {
   title: string
@@ -19,6 +20,7 @@ interface OfferListCardProps {
   price?: number | null
   hasPriceRange?: boolean
   imageUrl?: string
+  position?: Partial<ImagePosition> | null
   slug: string
 }
 
@@ -32,6 +34,7 @@ const OfferListCard = ({
   price,
   hasPriceRange,
   imageUrl,
+  position,
   slug,
 }: OfferListCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false)
@@ -57,12 +60,13 @@ const OfferListCard = ({
           </Skeleton>
         )}
         {imageUrl && (
-          <Image
+          <PositionedImage
             src={imageUrl}
             alt={title}
-            fill
+            position={position}
+            className="absolute inset-0"
+            imgClassName={`hover:scale-105 transition-all duration-300 ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className={`object-cover hover:scale-105 transition-all duration-300 ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}
           />
         )}

@@ -114,6 +114,15 @@ export default function OffersView({
                       ? (offer.mainImage?.url ?? undefined)
                       : undefined
                   }
+                  position={
+                    isExpandedDoc<OfferUpload>(offer.mainImage)
+                      ? {
+                          focalX: offer.mainImage.focalX ?? undefined,
+                          focalY: offer.mainImage.focalY ?? undefined,
+                          zoom: offer.mainImage.zoom ?? undefined,
+                        }
+                      : null
+                  }
                   title={offer.title}
                   description={offer.shortDescription}
                   // rating={4.5}
