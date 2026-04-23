@@ -1,5 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { PositionedImage } from '@/components/image-position/PositionedImage'
+import type { ImagePosition } from '@/components/image-position/types'
 import { PencilIcon, ExternalLinkIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -37,11 +39,12 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
       {/* Hero section */}
       <div className="relative aspect-[21/9] overflow-hidden rounded-xl">
         {mainImageUrl ? (
-          <Image
+          <PositionedImage
             src={mainImageUrl}
             alt={offer.title}
-            fill
-            className="object-cover"
+            position={typeof offer.mainImage === 'object' ? (offer.mainImage as Partial<ImagePosition>) : null}
+            className="absolute inset-0"
+            sizes="100vw"
           />
         ) : (
           <div className="size-full bg-muted" />
