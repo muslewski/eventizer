@@ -87,6 +87,7 @@ export function OfferWizardForm({
     control,
     watch,
     setValue,
+    setError,
     getValues,
     trigger,
     formState: { errors },
@@ -175,6 +176,18 @@ export function OfferWizardForm({
     startTransition(async () => {
       const formData = getValues()
 
+      // Client-side gate for publish-only required fields (Payload enforces
+      // shortDescription on publish; surface it inline instead of through a
+      // backend "To pole jest nieprawidłowe" toast).
+      if (status === 'published' && !formData.shortDescription?.trim()) {
+        setError('shortDescription', {
+          type: 'required',
+          message: 'Krótki opis jest wymagany przed publikacją',
+        })
+        toast.error('Wypełnij krótki opis przed publikacją')
+        return
+      }
+
       const offerData = {
         title: formData.title,
         category: formData.category,
@@ -241,7 +254,7 @@ export function OfferWizardForm({
       {/* Header with progress */}
       <PanelPageHeader
         title={mode === 'create' ? 'Nowa oferta' : 'Edytuj ofertę'}
-        description={`Krok ${currentStep + 1} z 5 — ${STEP_LABELS[currentStep]}`}
+        description={`Krok ${currentStep + 1} z ${STEP_COUNT} — ${STEP_LABELS[currentStep]}`}
         breadcrumbs={breadcrumbs}
         lang={lang}
         backgroundImageUrl={backgroundImageUrl}
