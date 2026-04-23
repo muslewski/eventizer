@@ -137,7 +137,16 @@ export function OfferWizardForm({
       return await trigger(fieldsToValidate)
     }
 
-    // Steps 3 (Media), 4 (Kontakt) — no blocking validation
+    if (currentStep === 3) {
+      // Media — main image is required before moving on.
+      if (!mainImage?.id) {
+        toast.error('Dodaj zdjęcie główne, aby przejść dalej')
+        return false
+      }
+      return true
+    }
+
+    // Step 4 (Kontakt) — no blocking validation
     return true
   }
 
