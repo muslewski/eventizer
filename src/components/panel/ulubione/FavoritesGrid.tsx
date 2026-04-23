@@ -23,6 +23,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { toggleFavorite } from '@/actions/panel/favorites'
+import { formatOfferPrice } from '@/lib/formatOfferPrice'
 import type { Offer, OfferUpload } from '@/payload-types'
 
 interface FavoritesGridProps {
@@ -31,13 +32,10 @@ interface FavoritesGridProps {
 }
 
 function formatPrice(offer: Offer): string {
-  if (offer.hasPriceRange && offer.priceFrom != null && offer.priceTo != null) {
-    return `${offer.priceFrom} – ${offer.priceTo} zł`
-  }
-  if (offer.price != null) {
-    return `${offer.price} zł`
-  }
-  return 'Cena do ustalenia'
+  const hasAnyPrice = offer.hasPriceRange
+    ? offer.priceFrom != null || offer.priceTo != null
+    : offer.price != null
+  return hasAnyPrice ? formatOfferPrice(offer) : 'Cena do ustalenia'
 }
 
 function getImageUrl(mainImage: number | OfferUpload): string | null {

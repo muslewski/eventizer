@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PencilIcon, ExternalLinkIcon, MapPinIcon, ImageIcon } from 'lucide-react'
+import { formatOfferPrice } from '@/lib/formatOfferPrice'
 import type { Offer } from '@/payload-types'
 
 interface OfferCardProps {
@@ -23,13 +24,10 @@ export function OfferCard({ offer, lang }: OfferCardProps) {
   const isPublished = offer._status === 'published'
   const city = typeof offer.location === 'object' ? offer.location?.city : null
 
-  const priceDisplay = offer.hasPriceRange
-    ? offer.priceFrom && offer.priceTo
-      ? `${offer.priceFrom} – ${offer.priceTo} zł`
-      : null
-    : offer.price
-      ? `${offer.price} zł`
-      : null
+  const hasAnyPrice = offer.hasPriceRange
+    ? offer.priceFrom != null || offer.priceTo != null
+    : offer.price != null
+  const priceDisplay = hasAnyPrice ? formatOfferPrice(offer) : null
 
   return (
     <Card className="group flex flex-col sm:flex-row bg-background border-border/20 overflow-hidden py-0 sm:py-0 gap-0">

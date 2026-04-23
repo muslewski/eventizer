@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/card'
 import { OfferStatusToggle } from '@/components/panel/oferty/OfferStatusToggle'
 import { DeleteOfferButton } from '@/components/panel/oferty/DeleteOfferButton'
+import { formatOfferPrice } from '@/lib/formatOfferPrice'
 import type { Offer } from '@/payload-types'
 
 interface OfferDetailViewProps {
@@ -28,13 +29,10 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
 
   const isPublished = offer._status === 'published'
 
-  const priceDisplay = offer.hasPriceRange
-    ? offer.priceFrom && offer.priceTo
-      ? `od ${offer.priceFrom} do ${offer.priceTo} PLN`
-      : null
-    : offer.price
-      ? `${offer.price} PLN`
-      : null
+  const hasAnyPrice = offer.hasPriceRange
+    ? offer.priceFrom != null || offer.priceTo != null
+    : offer.price != null
+  const priceDisplay = hasAnyPrice ? formatOfferPrice(offer) : null
 
   const gallery = offer.gallery ?? []
   const videoObj =

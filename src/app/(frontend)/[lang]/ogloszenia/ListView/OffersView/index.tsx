@@ -120,10 +120,10 @@ export default function OffersView({
                   // reviewCount={27}
                   categoryName={offer.categoryName ?? undefined}
                   city={offer.location?.city ?? undefined}
-                  priceMin={offer.priceFrom || 0}
-                  priceMax={offer.priceTo || 0}
-                  price={offer.price || undefined}
-                  hasPriceRange={offer.hasPriceRange || undefined}
+                  priceMin={offer.priceFrom ?? null}
+                  priceMax={offer.priceTo ?? null}
+                  price={offer.price ?? null}
+                  hasPriceRange={offer.hasPriceRange ?? false}
                   slug={offer.link}
                 />
               </motion.div>

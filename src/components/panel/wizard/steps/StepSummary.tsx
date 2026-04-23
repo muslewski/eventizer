@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { ShortDescriptionGenerator } from './ShortDescriptionGenerator'
+import { formatOfferPrice } from '@/lib/formatOfferPrice'
 import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
 
 interface StepSummaryProps {
@@ -30,9 +31,12 @@ export function StepSummary({
 }: StepSummaryProps) {
   const values = getValues()
 
-  const priceDisplay = values.hasPriceRange
-    ? `${values.priceFrom ?? '-'} – ${values.priceTo ?? '-'} PLN`
-    : `${values.price ?? '-'} PLN`
+  const priceDisplay = formatOfferPrice({
+    hasPriceRange: values.hasPriceRange,
+    price: values.price,
+    priceFrom: values.priceFrom,
+    priceTo: values.priceTo,
+  })
 
   return (
     <div className="flex flex-col gap-6">

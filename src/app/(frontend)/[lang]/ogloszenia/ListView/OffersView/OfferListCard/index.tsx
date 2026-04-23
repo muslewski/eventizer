@@ -7,15 +7,16 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { formatOfferPrice } from '@/lib/formatOfferPrice'
 
 interface OfferListCardProps {
   title: string
   description: string
   categoryName?: string
   city?: string
-  priceMin: number
-  priceMax: number
-  price?: number
+  priceMin: number | null
+  priceMax: number | null
+  price?: number | null
   hasPriceRange?: boolean
   imageUrl?: string
   slug: string
@@ -35,18 +36,13 @@ const OfferListCard = ({
 }: OfferListCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false)
 
-  const formatPrice = () => {
-    // Single price offer
-    if (!hasPriceRange) {
-      return `${(price ?? 0).toFixed(2)} zł`
-    }
-
-    // Price range offer
-    if (priceMin === priceMax) {
-      return `${priceMin.toFixed(2)} zł`
-    }
-    return `${priceMin.toFixed(2)} zł - ${priceMax.toFixed(2)} zł`
-  }
+  const formatPrice = () =>
+    formatOfferPrice({
+      hasPriceRange,
+      price,
+      priceFrom: priceMin,
+      priceTo: priceMax,
+    })
 
   return (
     <Card className="w-full flex xl:flex-row flex-col py-0 sm:py-0 min-h-120 sm:min-h-130 xl:min-h-48  items-center bg-transparent bg-linear-to-r from-stone-200 dark:from-stone-900/60 to-background/35 rounded-2xl overflow-hidden">

@@ -33,6 +33,8 @@ interface StepPricingProps {
 
 export function StepPricing({ control, errors, watch, setValue }: StepPricingProps) {
   const hasPriceRange = watch('hasPriceRange')
+  const priceFromValue = watch('priceFrom')
+  const priceToValue = watch('priceTo')
   const serviceRadius = watch('serviceRadius')
 
   return (
@@ -80,56 +82,67 @@ export function StepPricing({ control, errors, watch, setValue }: StepPricingPro
           <FieldError>{errors.price?.message}</FieldError>
         </Field>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
-          <Field data-invalid={!!errors.priceFrom}>
-            <FieldLabel htmlFor="priceFrom">Cena od</FieldLabel>
-            <InputGroup>
-              <Controller
-                name="priceFrom"
-                control={control}
-                render={({ field }) => (
-                  <InputGroupInput
-                    id="priceFrom"
-                    type="number"
-                    min={0}
-                    placeholder="0"
-                    value={field.value ?? ''}
-                    onChange={(e) =>
-                      field.onChange(e.target.value ? Number(e.target.value) : undefined)
-                    }
-                    aria-invalid={!!errors.priceFrom}
-                  />
-                )}
-              />
-              <InputGroupAddon align="inline-end">PLN</InputGroupAddon>
-            </InputGroup>
-            <FieldError>{errors.priceFrom?.message}</FieldError>
-          </Field>
+        <div className="flex flex-col gap-2">
+          <FieldDescription>
+            Wypełnij jedno lub oba pola — pozostaw puste, jeśli nie chcesz podawać tej granicy.
+          </FieldDescription>
+          <div className="grid grid-cols-2 gap-4">
+            <Field
+              data-invalid={!!errors.priceFrom}
+              className={priceFromValue == null ? 'opacity-70 focus-within:opacity-100 transition-opacity' : ''}
+            >
+              <FieldLabel htmlFor="priceFrom">Cena od</FieldLabel>
+              <InputGroup>
+                <Controller
+                  name="priceFrom"
+                  control={control}
+                  render={({ field }) => (
+                    <InputGroupInput
+                      id="priceFrom"
+                      type="number"
+                      min={0}
+                      placeholder="np. 100"
+                      value={field.value ?? ''}
+                      onChange={(e) =>
+                        field.onChange(e.target.value ? Number(e.target.value) : undefined)
+                      }
+                      aria-invalid={!!errors.priceFrom}
+                    />
+                  )}
+                />
+                <InputGroupAddon align="inline-end">PLN</InputGroupAddon>
+              </InputGroup>
+              <FieldError>{errors.priceFrom?.message}</FieldError>
+            </Field>
 
-          <Field data-invalid={!!errors.priceTo}>
-            <FieldLabel htmlFor="priceTo">Cena do</FieldLabel>
-            <InputGroup>
-              <Controller
-                name="priceTo"
-                control={control}
-                render={({ field }) => (
-                  <InputGroupInput
-                    id="priceTo"
-                    type="number"
-                    min={0}
-                    placeholder="0"
-                    value={field.value ?? ''}
-                    onChange={(e) =>
-                      field.onChange(e.target.value ? Number(e.target.value) : undefined)
-                    }
-                    aria-invalid={!!errors.priceTo}
-                  />
-                )}
-              />
-              <InputGroupAddon align="inline-end">PLN</InputGroupAddon>
-            </InputGroup>
-            <FieldError>{errors.priceTo?.message}</FieldError>
-          </Field>
+            <Field
+              data-invalid={!!errors.priceTo}
+              className={priceToValue == null ? 'opacity-70 focus-within:opacity-100 transition-opacity' : ''}
+            >
+              <FieldLabel htmlFor="priceTo">Cena do</FieldLabel>
+              <InputGroup>
+                <Controller
+                  name="priceTo"
+                  control={control}
+                  render={({ field }) => (
+                    <InputGroupInput
+                      id="priceTo"
+                      type="number"
+                      min={0}
+                      placeholder="np. 400"
+                      value={field.value ?? ''}
+                      onChange={(e) =>
+                        field.onChange(e.target.value ? Number(e.target.value) : undefined)
+                      }
+                      aria-invalid={!!errors.priceTo}
+                    />
+                  )}
+                />
+                <InputGroupAddon align="inline-end">PLN</InputGroupAddon>
+              </InputGroup>
+              <FieldError>{errors.priceTo?.message}</FieldError>
+            </Field>
+          </div>
         </div>
       )}
 

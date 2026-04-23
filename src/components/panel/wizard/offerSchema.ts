@@ -34,18 +34,11 @@ export const offerSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.hasPriceRange) {
-      if (!data.priceFrom) {
+      if (!data.priceFrom && !data.priceTo) {
         ctx.addIssue({
           code: 'custom',
           path: ['priceFrom'],
-          message: 'Cena od jest wymagana',
-        })
-      }
-      if (!data.priceTo) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['priceTo'],
-          message: 'Cena do jest wymagana',
+          message: 'Podaj przynajmniej jedną wartość (od lub do)',
         })
       }
       if (data.priceFrom && data.priceTo && data.priceFrom > data.priceTo) {
@@ -88,18 +81,11 @@ export const stepSchemas = [
     })
     .superRefine((data, ctx) => {
       if (data.hasPriceRange) {
-        if (!data.priceFrom) {
+        if (!data.priceFrom && !data.priceTo) {
           ctx.addIssue({
             code: 'custom',
             path: ['priceFrom'],
-            message: 'Cena od jest wymagana',
-          })
-        }
-        if (!data.priceTo) {
-          ctx.addIssue({
-            code: 'custom',
-            path: ['priceTo'],
-            message: 'Cena do jest wymagana',
+            message: 'Podaj przynajmniej jedną wartość (od lub do)',
           })
         }
         if (data.priceFrom && data.priceTo && data.priceFrom > data.priceTo) {
