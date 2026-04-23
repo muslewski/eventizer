@@ -110,3 +110,13 @@ Muzyka i rozrywka, Foto i wideo, Miejsce wydarzenia, Organizacja i planowanie, D
 - Polish is the primary language. All UI labels, page content, and user-facing text are in Polish.
 - English support is planned but deferred.
 - Payload i18n supports both `pl` and `en` locales.
+
+## Related operational skills
+
+This skill is the high-level map. For task-specific conventions, load the companion skill for the area you're touching:
+
+- **eventizer-offers-wizard** — anything inside the 6-step offer create/edit flow or `src/actions/panel/offers.ts`.
+- **eventizer-panel-conventions** — adding or modifying pages under `/panel/*` (auth guards, shell, headers, grids, Polish URL params).
+- **eventizer-server-actions** — writing any action in `src/actions/**` (auth, error shape, Payload drafts + overrideAccess, revalidate, client flow).
+- **eventizer-payload-migrations** — collection field changes or a Vercel build failing on "column does not exist".
+- **eventizer-design-tokens** — any visual / UI work: colors, fonts, motion timing, icon choice, dark mode.
