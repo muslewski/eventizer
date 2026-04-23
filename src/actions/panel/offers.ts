@@ -88,13 +88,14 @@ export async function createOffer(data: Partial<Offer>) {
     const user = await getAuthenticatedUser()
     const payload = await getPayload({ config })
 
+    const isDraft = (data as any)._status === 'draft' || !(data as any)._status
     const result = await payload.create({
       collection: 'offers',
       data: {
         ...data,
         user: Number(user.id),
       } as Offer,
-      draft: true,
+      draft: isDraft,
       overrideAccess: true,
     })
 
