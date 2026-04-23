@@ -64,8 +64,8 @@ const OfferListCard = ({
             src={imageUrl}
             alt={title}
             position={position}
-            className="absolute inset-0"
-            imgClassName={`hover:scale-105 transition-all duration-300 ease-in-out ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className="absolute inset-0 transition-transform duration-300 ease-in-out hover:scale-105"
+            imgClassName={`transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             onLoad={() => setImageLoaded(true)}
           />

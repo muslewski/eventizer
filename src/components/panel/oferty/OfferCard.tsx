@@ -47,8 +47,8 @@ export function OfferCard({ offer, lang }: OfferCardProps) {
             src={mainImageUrl}
             alt={offer.title}
             position={typeof offer.mainImage === 'object' ? (offer.mainImage as Partial<ImagePosition>) : null}
-            className="absolute inset-0"
-            imgClassName={`transition-transform duration-300 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className="absolute inset-0 transition-transform duration-300 group-hover:scale-105"
+            imgClassName={imageLoaded ? 'opacity-100' : 'opacity-0'}
             sizes="(max-width: 640px) 100vw, 224px"
             onLoad={() => setImageLoaded(true)}
           />
