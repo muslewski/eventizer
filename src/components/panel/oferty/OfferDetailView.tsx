@@ -1,19 +1,17 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { PencilIcon, ExternalLinkIcon, PhoneIcon, MailIcon, GlobeIcon } from 'lucide-react'
-import { FaFacebook, FaInstagram, FaTiktok, FaLinkedin } from 'react-icons/fa6'
+import { PencilIcon, ExternalLinkIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
 import { OfferStatusToggle } from '@/components/panel/oferty/OfferStatusToggle'
 import { DeleteOfferButton } from '@/components/panel/oferty/DeleteOfferButton'
-import { formatOfferPrice } from '@/lib/formatOfferPrice'
+import { InfoCardGrid } from '@/components/panel/oferty/detail/InfoCardGrid'
 import type { Offer } from '@/payload-types'
 
 interface OfferDetailViewProps {
@@ -29,17 +27,10 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
 
   const isPublished = offer._status === 'published'
 
-  const hasAnyPrice = offer.hasPriceRange
-    ? offer.priceFrom != null || offer.priceTo != null
-    : offer.price != null
-  const priceDisplay = hasAnyPrice ? formatOfferPrice(offer) : null
-
   const gallery = offer.gallery ?? []
   const videoObj =
     typeof offer.video === 'object' && offer.video ? offer.video : null
   const hasMedia = gallery.length > 0 || videoObj !== null
-
-  const { socialMedia } = offer
 
   return (
     <div className="flex flex-col gap-6">
@@ -70,80 +61,7 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
       </div>
 
       {/* Info grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Kategoria */}
-        <Card className="bg-background border-border/20">
-          <CardHeader>
-            <CardDescription>Kategoria</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {offer.categoryName ? (
-              <Badge
-                variant="outline"
-                className="h-auto max-w-full whitespace-normal break-words rounded-md text-left leading-snug"
-              >
-                {offer.categoryName}
-              </Badge>
-            ) : (
-              <span className="text-sm text-muted-foreground">Brak kategorii</span>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Cena */}
-        <Card className="bg-background border-border/20">
-          <CardHeader>
-            <CardDescription>Cena</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {priceDisplay ? (
-              <span className="font-medium">{priceDisplay}</span>
-            ) : (
-              <span className="text-sm text-muted-foreground">Nie podano</span>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Lokalizacja */}
-        <Card className="bg-background border-border/20">
-          <CardHeader>
-            <CardDescription>Lokalizacja</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm">
-              {offer.location.address}
-              {offer.location.city && offer.location.city !== offer.location.address
-                ? `, ${offer.location.city}`
-                : ''}
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Zasięg */}
-        <Card className="bg-background border-border/20">
-          <CardHeader>
-            <CardDescription>Zasięg</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <span className="font-medium">{offer.location.serviceRadius} km</span>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Description Card */}
-      <Card className="bg-background border-border/20">
-        <CardHeader>
-          <CardTitle>Opis</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          <p className="text-sm text-muted-foreground">{offer.shortDescription}</p>
-          {offer.content && (
-            <p className="text-xs text-muted-foreground italic">
-              Pełny opis dostępny na stronie oferty.
-            </p>
-          )}
-        </CardContent>
-      </Card>
+      <InfoCardGrid offer={offer} />
 
       {/* Media Card */}
       {hasMedia && (
@@ -188,99 +106,6 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
           </CardContent>
         </Card>
       )}
-
-      {/* Contact Card */}
-      <Card className="bg-background border-border/20">
-        <CardHeader>
-          <CardTitle>Kontakt</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          {offer.phone && (
-            <a
-              href={`tel:${offer.phone}`}
-              className="flex items-center gap-2 text-sm hover:underline"
-            >
-              <PhoneIcon className="size-4 shrink-0" />
-              {offer.phone}
-            </a>
-          )}
-          {offer.email && (
-            <a
-              href={`mailto:${offer.email}`}
-              className="flex items-center gap-2 text-sm hover:underline"
-            >
-              <MailIcon className="size-4 shrink-0" />
-              {offer.email}
-            </a>
-          )}
-          {socialMedia?.website && (
-            <a
-              href={socialMedia.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm hover:underline"
-            >
-              <GlobeIcon className="size-4 shrink-0" />
-              Strona internetowa
-            </a>
-          )}
-          {socialMedia?.facebook && (
-            <a
-              href={socialMedia.facebook}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm hover:underline"
-            >
-              <FaFacebook className="size-4 shrink-0" />
-              Facebook
-            </a>
-          )}
-          {socialMedia?.instagram && (
-            <a
-              href={socialMedia.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm hover:underline"
-            >
-              <FaInstagram className="size-4 shrink-0" />
-              Instagram
-            </a>
-          )}
-          {socialMedia?.tiktok && (
-            <a
-              href={socialMedia.tiktok}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm hover:underline"
-            >
-              <FaTiktok className="size-4 shrink-0" />
-              TikTok
-            </a>
-          )}
-          {socialMedia?.linkedin && (
-            <a
-              href={socialMedia.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm hover:underline"
-            >
-              <FaLinkedin className="size-4 shrink-0" />
-              LinkedIn
-            </a>
-          )}
-          {!offer.phone &&
-            !offer.email &&
-            !socialMedia?.website &&
-            !socialMedia?.facebook &&
-            !socialMedia?.instagram &&
-            !socialMedia?.tiktok &&
-            !socialMedia?.linkedin && (
-              <p className="text-sm text-muted-foreground">
-                Brak danych kontaktowych.
-              </p>
-            )}
-        </CardContent>
-      </Card>
 
       {/* Action buttons */}
       <div className="flex flex-wrap gap-3">
