@@ -352,6 +352,7 @@ export function OfferWizardForm({
             mainImageId={mainImage?.id ?? null}
             galleryIds={galleryImages.map((g) => g.id)}
             videoId={video?.id ?? null}
+            categories={categories}
           />
         )}
       </div>

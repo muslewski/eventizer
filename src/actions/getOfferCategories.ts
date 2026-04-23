@@ -234,7 +234,10 @@ export async function validateOfferCategory(categoryPath: string): Promise<{
       return { valid: false, error: result.error }
     }
 
-    const category = result.categories.find((cat) => cat.fullPath === categoryPath)
+    const { resolveCategoryByAnyFormat } = await import(
+      '@/collections/Offers/hooks/resolveCategory'
+    )
+    const category = resolveCategoryByAnyFormat(result.categories, categoryPath)
 
     if (!category) {
       return { valid: false, error: 'Category not found' }

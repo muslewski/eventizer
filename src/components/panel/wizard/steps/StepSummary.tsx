@@ -17,6 +17,24 @@ interface StepSummaryProps {
   mainImageId: number | null
   galleryIds: number[]
   videoId: number | null
+  categories?: any[]
+}
+
+function resolveCategoryLabel(tree: any[] | undefined, value: string | undefined): string {
+  if (!value) return '-'
+  // Legacy "Name > Name" or "Name → Name" — just show as-is, already friendly.
+  if (!value.includes('/')) return value
+  if (!tree?.length) return value
+  const segments = value.split('/')
+  const names: string[] = []
+  let level: any[] = tree
+  for (const seg of segments) {
+    const found = level?.find?.((c: any) => c.slug === seg)
+    if (!found) return value // fall back to raw slug path
+    names.push(found.name)
+    level = found.subcategory_level_1 || found.subcategory_level_2 || []
+  }
+  return names.join(' > ')
 }
 
 export function StepSummary({
@@ -28,6 +46,7 @@ export function StepSummary({
   mainImageId,
   galleryIds,
   videoId,
+  categories,
 }: StepSummaryProps) {
   const values = getValues()
 
@@ -37,6 +56,8 @@ export function StepSummary({
     priceFrom: values.priceFrom,
     priceTo: values.priceTo,
   })
+
+  const categoryLabel = resolveCategoryLabel(categories, values.category)
 
   return (
     <div className="flex flex-col gap-6">
@@ -70,7 +91,7 @@ export function StepSummary({
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Kategoria</span>
-                <span className="font-medium truncate ml-4">{values.category || '-'}</span>
+                <span className="font-medium truncate ml-4">{categoryLabel}</span>
               </div>
             </CardContent>
           </Card>
