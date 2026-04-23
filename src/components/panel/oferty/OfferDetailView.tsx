@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { OfferStatusToggle } from '@/components/panel/oferty/OfferStatusToggle'
+import { DeleteOfferButton } from '@/components/panel/oferty/DeleteOfferButton'
 import type { Offer } from '@/payload-types'
 
 interface OfferDetailViewProps {
@@ -301,6 +302,11 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
         <OfferStatusToggle
           offerId={offer.id}
           currentStatus={offer._status ?? 'draft'}
+        />
+        <DeleteOfferButton
+          offerId={offer.id}
+          offerTitle={offer.title ?? 'oferta'}
+          lang={lang}
         />
       </div>
     </div>

@@ -1,6 +1,7 @@
 'use server'
 
 import { headers } from 'next/headers'
+import { revalidatePath } from 'next/cache'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { auth } from '@/auth/auth'
@@ -124,6 +125,52 @@ export async function updateOffer(id: number, data: Partial<Offer>) {
   } catch (err) {
     console.error('[updateOffer]', err)
     return { success: false as const, error: 'Nie udało się zaktualizować oferty' }
+  }
+}
+
+export async function deleteOffer(id: number) {
+  try {
+    const sessionUser = await getAuthenticatedUser()
+    const payload = await getPayload({ config })
+
+    // Fetch full user (session user may lack role) and enforce access manually
+    // so we return a clean error rather than a Payload Forbidden throw.
+    const user = await payload.findByID({
+      collection: 'users',
+      id: Number(sessionUser.id),
+      depth: 0,
+    })
+    if (!user) return { success: false as const, error: 'Brak uprawnień' }
+
+    const existing = await payload.findByID({
+      collection: 'offers',
+      id,
+      depth: 0,
+      overrideAccess: true,
+      draft: true,
+    })
+
+    const isOwner =
+      existing && typeof existing.user === 'object'
+        ? existing.user?.id === user.id
+        : existing?.user === user.id
+    const isPrivileged = user.role === 'admin' || user.role === 'moderator'
+
+    if (!isOwner && !isPrivileged) {
+      return { success: false as const, error: 'Brak uprawnień do usunięcia oferty' }
+    }
+
+    await payload.delete({
+      collection: 'offers',
+      id,
+      overrideAccess: true,
+    })
+
+    revalidatePath('/panel/oferty')
+    return { success: true as const }
+  } catch (err) {
+    console.error('[deleteOffer]', err)
+    return { success: false as const, error: 'Nie udało się usunąć oferty' }
   }
 }
 
