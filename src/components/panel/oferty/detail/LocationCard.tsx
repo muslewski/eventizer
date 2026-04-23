@@ -20,12 +20,23 @@ export function LocationCard({ address, city, lat, lng }: LocationCardProps) {
   const mapUrl = buildStaticMapUrl({ lat, lng, apiKey: MAPS_API_KEY })
   const showMap = mapUrl !== null && !imageFailed
 
-  // When the map backdrop renders we flip title + description colors to stay
-  // legible against the dark image. Targets shadcn's data-slot attrs on
-  // CardTitle / CardDescription so we don't have to thread className props
-  // through InfoCardShell for every child.
+  // When the map backdrop renders we turn the shell's CardHeader into a
+  // frosted-glass "inner card" so the icon chip + title + description stay
+  // legible over any map tile. Targets shadcn's data-slot attrs so we don't
+  // have to thread className props through InfoCardShell for every child.
   const mapOverrides = showMap
-    ? '[&_[data-slot=card-title]]:text-white [&_[data-slot=card-description]]:text-white/75'
+    ? [
+        '[&_[data-slot=card-header]]:mx-3',
+        '[&_[data-slot=card-header]]:rounded-xl',
+        '[&_[data-slot=card-header]]:border',
+        '[&_[data-slot=card-header]]:border-white/10',
+        '[&_[data-slot=card-header]]:bg-black/40',
+        '[&_[data-slot=card-header]]:backdrop-blur-md',
+        '[&_[data-slot=card-header]]:px-4',
+        '[&_[data-slot=card-header]]:py-3',
+        '[&_[data-slot=card-title]]:text-white',
+        '[&_[data-slot=card-description]]:text-white/80',
+      ].join(' ')
     : ''
 
   return (
