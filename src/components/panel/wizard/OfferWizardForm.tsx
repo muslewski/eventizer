@@ -37,6 +37,7 @@ interface OfferWizardFormProps {
   backgroundImageUrl?: string | null
   breadcrumbs?: { label: string; href?: string }[]
   userServiceCategory?: string | null
+  userEmail?: string | null
 }
 
 export function OfferWizardForm({
@@ -48,6 +49,7 @@ export function OfferWizardForm({
   backgroundImageUrl,
   breadcrumbs,
   userServiceCategory,
+  userEmail,
 }: OfferWizardFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -104,7 +106,7 @@ export function OfferWizardForm({
       lat: initialData?.location?.lat ?? undefined,
       lng: initialData?.location?.lng ?? undefined,
       phone: initialData?.phone ?? '',
-      email: initialData?.email ?? '',
+      email: initialData?.email ?? userEmail ?? '',
       website: initialData?.socialMedia?.website ?? '',
       facebook: initialData?.socialMedia?.facebook ?? '',
       instagram: initialData?.socialMedia?.instagram ?? '',
@@ -146,7 +148,11 @@ export function OfferWizardForm({
       return true
     }
 
-    // Step 4 (Kontakt) — no blocking validation
+    if (currentStep === 4) {
+      // Kontakt — phone and email are required with proper format.
+      return await trigger(['phone', 'email'])
+    }
+
     return true
   }
 

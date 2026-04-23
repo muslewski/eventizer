@@ -56,6 +56,7 @@ export default async function NowaOfertaPage({
         { label: 'Nowa oferta' },
       ]}
       userServiceCategory={user.serviceCategory}
+      userEmail={user.email}
     />
   )
 }

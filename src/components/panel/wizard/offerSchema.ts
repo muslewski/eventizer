@@ -14,11 +14,20 @@ export const offerSchema = z
     city: z.string().optional().default(''),
     lat: z.number().optional(),
     lng: z.number().optional(),
-    phone: z.string().optional().default(''),
+    phone: z
+      .string()
+      .min(1, 'Telefon jest wymagany')
+      .refine(
+        (v) =>
+          // Accepts formats like: 123456789, 123 456 789, 123-456-789,
+          // +48 123 456 789, 0048123456789, +48123-456-789.
+          /^(?:\+?48[\s-]?|0048[\s-]?)?\d{3}[\s-]?\d{3}[\s-]?\d{3}$/.test(v.trim()),
+        { message: 'Nieprawidłowy numer telefonu (np. +48 123 456 789)' },
+      ),
     email: z
       .string()
-      .optional()
-      .or(z.literal('')),
+      .min(1, 'Email jest wymagany')
+      .email('Nieprawidłowy adres email'),
     website: z
       .string()
       .optional()

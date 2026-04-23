@@ -67,6 +67,7 @@ export default async function EdytujOfertePage({
         { label: offer.title, href: `/panel/oferty/${slug}` },
         { label: 'Edytuj' },
       ]}
+      userEmail={user.email}
     />
   )
 }
