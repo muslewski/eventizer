@@ -89,9 +89,27 @@ export const OfferUploads: CollectionConfig = {
         en: 'Title',
         pl: 'Tytuł',
       },
-      admin: { 
+      admin: {
         condition: (data, siblingData, { user }) => isClientRoleEqualOrHigher('moderator', user),
       }
+    },
+    {
+      name: 'zoom',
+      type: 'number',
+      defaultValue: 1,
+      min: 1,
+      max: 3,
+      label: {
+        en: 'Zoom',
+        pl: 'Przybliżenie',
+      },
+      admin: {
+        description: {
+          en: 'Scale multiplier for the stored focal point (1–3).',
+          pl: 'Mnożnik skali dla punktu głównego (1–3).',
+        },
+        step: 0.1,
+      },
     },
     // {
     //   name: 'description',

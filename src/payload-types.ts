@@ -472,6 +472,10 @@ export interface OfferUpload {
    */
   user?: (number | null) | User;
   title?: string | null;
+  /**
+   * Scale multiplier for the stored focal point (1–3).
+   */
+  zoom?: number | null;
   prefix?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -2059,6 +2063,7 @@ export interface ProfilePicturesSelect<T extends boolean = true> {
 export interface OfferUploadsSelect<T extends boolean = true> {
   user?: T;
   title?: T;
+  zoom?: T;
   prefix?: T;
   updatedAt?: T;
   createdAt?: T;
