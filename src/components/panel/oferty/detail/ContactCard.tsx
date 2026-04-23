@@ -1,4 +1,4 @@
-import { Phone, PhoneIcon, MailIcon, GlobeIcon } from 'lucide-react'
+import { Phone, MailIcon, GlobeIcon } from 'lucide-react'
 import { FaFacebook, FaInstagram, FaTiktok, FaLinkedin } from 'react-icons/fa6'
 import type { Offer } from '@/payload-types'
 import { InfoCardShell } from './InfoCardShell'
@@ -31,7 +31,7 @@ export function ContactCard({ offer }: ContactCardProps) {
               href={`tel:${offer.phone}`}
               className="flex items-center gap-2 text-sm hover:underline"
             >
-              <PhoneIcon className="size-4 shrink-0" />
+              <Phone className="size-4 shrink-0" />
               {offer.phone}
             </a>
           )}

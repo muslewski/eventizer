@@ -68,7 +68,7 @@ export function PriceCard({ hasPriceRange, price, priceFrom, priceTo }: PriceCar
         <motion.span>{toDisplay}</motion.span> zł
       </span>
     )
-  } else if (priceFrom != null && priceTo != null) {
+  } else if (priceFrom != null && priceFrom === priceTo) {
     body = (
       <span className="text-2xl font-semibold text-accent">
         <motion.span>{fromDisplay}</motion.span> zł

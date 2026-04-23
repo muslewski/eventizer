@@ -46,13 +46,13 @@ export function LocationCard({ address, city, lat, lng }: LocationCardProps) {
       description="Skąd świadczysz usługi"
       className={cn('relative isolate', mapOverrides)}
     >
-      {showMap && (
+      {mapUrl && !imageFailed && (
         <div
           aria-hidden="true"
           className="absolute inset-0 -z-10 overflow-hidden rounded-[inherit]"
         >
           <img
-            src={mapUrl!}
+            src={mapUrl}
             alt=""
             onError={() => setImageFailed(true)}
             className="h-full w-full object-cover"

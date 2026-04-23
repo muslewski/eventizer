@@ -12,7 +12,7 @@ interface InfoCardGridProps {
 }
 
 export function InfoCardGrid({ offer }: InfoCardGridProps) {
-  const location = typeof offer.location === 'object' ? offer.location : null
+  const { location } = offer
 
   return (
     <AnimatedCardGrid className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -29,14 +29,14 @@ export function InfoCardGrid({ offer }: InfoCardGridProps) {
       </AnimatedCard>
       <AnimatedCard delay={0.1}>
         <LocationCard
-          address={location?.address ?? null}
-          city={location?.city ?? null}
-          lat={location?.lat ?? null}
-          lng={location?.lng ?? null}
+          address={location.address}
+          city={location.city ?? null}
+          lat={location.lat ?? null}
+          lng={location.lng ?? null}
         />
       </AnimatedCard>
       <AnimatedCard delay={0.15}>
-        <RadiusCard radiusKm={location?.serviceRadius ?? null} />
+        <RadiusCard radiusKm={location.serviceRadius} />
       </AnimatedCard>
       <AnimatedCard delay={0.2} className="lg:col-span-2">
         <DescriptionCard shortDescription={offer.shortDescription} />
