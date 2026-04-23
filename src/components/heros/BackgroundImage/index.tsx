@@ -1,10 +1,16 @@
 'use client'
 
-import Image from 'next/image'
 import { Media } from '@/payload-types'
 import { useState } from 'react'
+import { PositionedImage } from '@/components/image-position/PositionedImage'
+import type { ImagePosition } from '@/components/image-position/types'
 
-export default function BackgroundImage({ backgroundImage }: { backgroundImage: Media }) {
+interface BackgroundImageProps {
+  backgroundImage: Media
+  position?: Partial<ImagePosition> | null
+}
+
+export default function BackgroundImage({ backgroundImage, position }: BackgroundImageProps) {
   const [isLoaded, setIsLoaded] = useState(false)
 
   return (
@@ -12,13 +18,13 @@ export default function BackgroundImage({ backgroundImage }: { backgroundImage: 
       className="absolute inset-0 z-0 animate-zoom-in will-change-transform transform-gpu backface-hidden"
       style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.3s ease-in-out' }}
     >
-      <Image
+      <PositionedImage
         src={backgroundImage.url || ''}
         alt={backgroundImage.alt || ''}
-        fill
+        position={position}
+        className="absolute inset-0"
         priority
         quality={90}
-        className="object-cover object-center"
         sizes="100vw"
         onLoad={() => setIsLoaded(true)}
       />

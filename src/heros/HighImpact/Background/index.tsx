@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import BackgroundImage from '@/components/heros/BackgroundImage'
 import { HorizontalLines, LineConfig } from '@/components/heros/HorizontalLines'
 import NoiseTexture from '@/components/heros/NoiseTexture'
+import type { ImagePosition } from '@/components/image-position/types'
 
 // Lazy load LightRays to prevent blocking initial render
 const LightRays = dynamic(() => import('@/components/react-bits/LightRays'))
@@ -14,6 +15,7 @@ interface BackgroundProps {
   backgroundVideo: Page['hero']['backgroundVideo']
   lightBackgroundImage?: Page['hero']['lightBackgroundImage']
   lightBackgroundVideo?: Page['hero']['lightBackgroundVideo']
+  backgroundImagePosition?: Partial<ImagePosition> | null
 }
 
 const lines: LineConfig[] = [
@@ -43,6 +45,7 @@ export const Background: React.FC<BackgroundProps> = ({
   backgroundVideo,
   lightBackgroundImage,
   lightBackgroundVideo,
+  backgroundImagePosition,
 }) => {
   const hasLightImage =
     lightBackgroundImage && isExpandedDoc<Media>(lightBackgroundImage)
@@ -55,7 +58,7 @@ export const Background: React.FC<BackgroundProps> = ({
       {/* Background image — hidden in light mode when any light variant is provided */}
       {backgroundImage && isExpandedDoc<Media>(backgroundImage) && (
         <div className={hasAnyLightBg ? 'contents dark:contents hidden' : 'contents'}>
-          <BackgroundImage backgroundImage={backgroundImage} />
+          <BackgroundImage backgroundImage={backgroundImage} position={backgroundImagePosition} />
         </div>
       )}
 

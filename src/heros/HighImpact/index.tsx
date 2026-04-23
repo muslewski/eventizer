@@ -2,10 +2,12 @@ import type { Page } from '@/payload-types'
 import { HighImpactHeroClient } from './index.client'
 import { Background } from './Background'
 import { Content } from './Content'
+import type { ImagePosition } from '@/components/image-position/types'
 
 type HighImpactHeroProps = Page['hero'] & {
   /** Optional custom content to replace the default Content component */
   children?: React.ReactNode
+  backgroundImagePosition?: Partial<ImagePosition> | null
 }
 
 export const HighImpactHero: React.FC<HighImpactHeroProps> = ({
@@ -17,6 +19,7 @@ export const HighImpactHero: React.FC<HighImpactHeroProps> = ({
   title,
   showScrollIndicator,
   children,
+  backgroundImagePosition,
 }) => {
   return (
     <HighImpactHeroClient>
@@ -25,6 +28,7 @@ export const HighImpactHero: React.FC<HighImpactHeroProps> = ({
         backgroundVideo={backgroundVideo}
         lightBackgroundImage={lightBackgroundImage}
         lightBackgroundVideo={lightBackgroundVideo}
+        backgroundImagePosition={backgroundImagePosition}
       />
       {children ? (
         children
