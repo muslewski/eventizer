@@ -1,8 +1,13 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { PositionedImage } from '@/components/image-position/PositionedImage'
 import type { ImagePosition } from '@/components/image-position/types'
-import { PencilIcon, ExternalLinkIcon } from 'lucide-react'
+import { CropIcon, PencilIcon, ExternalLinkIcon } from 'lucide-react'
+import { ImagePositionEditor } from '@/components/image-position/ImagePositionEditor'
+import { updateOfferUploadPosition } from '@/actions/panel/offer-uploads'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,6 +27,7 @@ interface OfferDetailViewProps {
 }
 
 export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
+  const router = useRouter()
   const mainImageUrl =
     typeof offer.mainImage === 'object' && offer.mainImage
       ? offer.mainImage.url
@@ -48,6 +54,35 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
           />
         ) : (
           <div className="size-full bg-muted" />
+        )}
+        {typeof offer.mainImage === 'object' && offer.mainImage && (
+          <ImagePositionEditor
+            imageUrl={offer.mainImage.url ?? ''}
+            initialPosition={{
+              focalX: offer.mainImage.focalX ?? undefined,
+              focalY: offer.mainImage.focalY ?? undefined,
+              zoom: offer.mainImage.zoom ?? undefined,
+            }}
+            onConfirm={async (position) => {
+              if (typeof offer.mainImage !== 'object' || !offer.mainImage) {
+                return { ok: false as const, error: 'Brak zdjęcia' }
+              }
+              const res = await updateOfferUploadPosition(offer.mainImage.id, position)
+              if (res.success) {
+                router.refresh()
+                return { ok: true as const }
+              }
+              return { ok: false as const, error: res.error }
+            }}
+          >
+            <button
+              type="button"
+              aria-label="Dostosuj kadr głównego zdjęcia"
+              className="absolute top-4 right-4 z-10 inline-flex size-10 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent"
+            >
+              <CropIcon className="size-5" />
+            </button>
+          </ImagePositionEditor>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="absolute bottom-0 left-0 flex flex-col gap-2 p-4 sm:p-6">
