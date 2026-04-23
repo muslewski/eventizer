@@ -18,6 +18,20 @@ import { StepDescription } from './steps/StepDescription'
 import { StepContent } from './steps/StepContent'
 import { StepSummary } from './steps/StepSummary'
 
+function isLexicalContentEmpty(content: any): boolean {
+  if (!content) return true
+  if (typeof content === 'string') return content.trim() === ''
+  const root = content?.root
+  if (!root || !Array.isArray(root.children) || root.children.length === 0) return true
+  const hasText = (node: any): boolean => {
+    if (!node) return false
+    if (typeof node.text === 'string' && node.text.trim() !== '') return true
+    if (Array.isArray(node.children)) return node.children.some(hasText)
+    return false
+  }
+  return !root.children.some(hasText)
+}
+
 const STEP_COUNT = 6
 const STEP_LABELS = [
   'Podstawowe',
@@ -125,7 +139,13 @@ export function OfferWizardForm({
     }
 
     if (currentStep === 1) {
-      // Treść oferty — no form fields to validate (content is separate state)
+      // Treść oferty — Lexical content is separate state, not in RHF.
+      // Enforce non-empty here so users see the error on this step rather
+      // than a cryptic backend "Główna Treść > Treść" toast at publish time.
+      if (isLexicalContentEmpty(content)) {
+        toast.error('Dodaj treść oferty, aby przejść dalej')
+        return false
+      }
       return true
     }
 
@@ -177,8 +197,12 @@ export function OfferWizardForm({
       const formData = getValues()
 
       // Client-side gate for publish-only required fields (Payload enforces
-      // shortDescription on publish; surface it inline instead of through a
-      // backend "To pole jest nieprawidłowe" toast).
+      // these on publish; surface them inline instead of through a backend
+      // "To pole jest nieprawidłowe" toast).
+      if (status === 'published' && isLexicalContentEmpty(content)) {
+        toast.error('Dodaj treść oferty przed publikacją')
+        return
+      }
       if (status === 'published' && !formData.shortDescription?.trim()) {
         setError('shortDescription', {
           type: 'required',
