@@ -70,11 +70,25 @@ export function OfferWizardForm({
   const [currentStep, setCurrentStep] = useState(0)
 
   // Media state (managed separately from form as UploadedFile objects)
-  interface UploadedFile { id: number; url: string; filename: string }
+  interface UploadedFile {
+    id: number
+    url: string
+    filename: string
+    focalX?: number | null
+    focalY?: number | null
+    zoom?: number | null
+  }
 
   const [mainImage, setMainImage] = useState<UploadedFile | null>(
     initialData?.mainImage && typeof initialData.mainImage === 'object'
-      ? { id: initialData.mainImage.id, url: initialData.mainImage.url ?? '', filename: initialData.mainImage.filename ?? '' }
+      ? {
+          id: initialData.mainImage.id,
+          url: initialData.mainImage.url ?? '',
+          filename: initialData.mainImage.filename ?? '',
+          focalX: initialData.mainImage.focalX ?? null,
+          focalY: initialData.mainImage.focalY ?? null,
+          zoom: initialData.mainImage.zoom ?? null,
+        }
       : null,
   )
   const [galleryImages, setGalleryImages] = useState<UploadedFile[]>(
@@ -92,7 +106,14 @@ export function OfferWizardForm({
   )
   const [backgroundImage, setBackgroundImage] = useState<UploadedFile | null>(
     initialData?.backgroundImage && typeof initialData.backgroundImage === 'object'
-      ? { id: initialData.backgroundImage.id, url: initialData.backgroundImage.url ?? '', filename: initialData.backgroundImage.filename ?? '' }
+      ? {
+          id: initialData.backgroundImage.id,
+          url: initialData.backgroundImage.url ?? '',
+          filename: initialData.backgroundImage.filename ?? '',
+          focalX: initialData.backgroundImage.focalX ?? null,
+          focalY: initialData.backgroundImage.focalY ?? null,
+          zoom: initialData.backgroundImage.zoom ?? null,
+        }
       : null,
   )
   const [content, setContent] = useState<any>(initialData?.content ?? '')

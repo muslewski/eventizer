@@ -12,10 +12,14 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   Trash2Icon,
+  CropIcon,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { ImagePositionEditor } from '@/components/image-position/ImagePositionEditor'
+import type { ImagePosition } from '@/components/image-position/types'
+import { updateOfferUploadPosition } from '@/actions/panel/offer-uploads'
 
 // ── Upload utility ───────────────────────────────────────────────────────────
 
@@ -23,6 +27,9 @@ interface UploadedFile {
   id: number
   url: string
   filename: string
+  focalX?: number | null
+  focalY?: number | null
+  zoom?: number | null
 }
 
 async function waitForDocument(collection: string, id: number, maxRetries = 12, delay = 250) {
@@ -64,9 +71,11 @@ interface SingleImageUploadProps {
   onChange: (file: UploadedFile | null) => void
   label?: string
   required?: boolean
+  /** Show the "Dostosuj kadr" button on the uploaded preview. */
+  allowEditPosition?: boolean
 }
 
-export function SingleImageUpload({ value, onChange, label, required }: SingleImageUploadProps) {
+export function SingleImageUpload({ value, onChange, label, required, allowEditPosition }: SingleImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -99,6 +108,37 @@ export function SingleImageUpload({ value, onChange, label, required }: SingleIm
             <Image src={value.url} alt="" fill className="object-cover" />
             {/* Desktop overlay controls */}
             <div className="hidden sm:flex absolute right-2 top-2 gap-1.5">
+              {allowEditPosition && value && (
+                <ImagePositionEditor
+                  imageUrl={value.url}
+                  initialPosition={{
+                    focalX: value.focalX ?? undefined,
+                    focalY: value.focalY ?? undefined,
+                    zoom: value.zoom ?? undefined,
+                  }}
+                  onConfirm={async (position: ImagePosition) => {
+                    const res = await updateOfferUploadPosition(value.id, position)
+                    if (res.success) {
+                      onChange({
+                        ...value,
+                        focalX: position.focalX,
+                        focalY: position.focalY,
+                        zoom: position.zoom,
+                      })
+                      return { ok: true as const }
+                    }
+                    return { ok: false as const, error: res.error }
+                  }}
+                >
+                  <button
+                    type="button"
+                    aria-label="Dostosuj kadr"
+                    className="inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white shadow-md backdrop-blur-sm transition-colors hover:bg-accent"
+                  >
+                    <CropIcon className="size-4" />
+                  </button>
+                </ImagePositionEditor>
+              )}
               <button
                 type="button"
                 aria-label="Zmień zdjęcie"
@@ -121,15 +161,49 @@ export function SingleImageUpload({ value, onChange, label, required }: SingleIm
           </div>
           {/* Mobile controls below image */}
           <div className="flex sm:hidden items-center justify-between gap-2">
-            <button
-              type="button"
-              aria-label="Zmień zdjęcie"
-              onClick={() => inputRef.current?.click()}
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border/40 bg-background px-4 text-sm text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-            >
-              <PencilIcon className="size-4" />
-              Zmień
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                aria-label="Zmień zdjęcie"
+                onClick={() => inputRef.current?.click()}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border/40 bg-background px-4 text-sm text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              >
+                <PencilIcon className="size-4" />
+                Zmień
+              </button>
+              {allowEditPosition && value && (
+                <ImagePositionEditor
+                  imageUrl={value.url}
+                  initialPosition={{
+                    focalX: value.focalX ?? undefined,
+                    focalY: value.focalY ?? undefined,
+                    zoom: value.zoom ?? undefined,
+                  }}
+                  onConfirm={async (position: ImagePosition) => {
+                    const res = await updateOfferUploadPosition(value.id, position)
+                    if (res.success) {
+                      onChange({
+                        ...value,
+                        focalX: position.focalX,
+                        focalY: position.focalY,
+                        zoom: position.zoom,
+                      })
+                      return { ok: true as const }
+                    }
+                    return { ok: false as const, error: res.error }
+                  }}
+                >
+                  <button
+                    type="button"
+                    aria-label="Dostosuj kadr"
+                    className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-border/40 bg-background px-4 text-sm text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                  >
+                    <CropIcon className="size-4" />
+                    Dostosuj kadr
+                  </button>
+                </ImagePositionEditor>
+              )}
+            </div>
             {!required && (
               <button
                 type="button"

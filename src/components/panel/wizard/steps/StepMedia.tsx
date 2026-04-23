@@ -49,6 +49,7 @@ export function StepMedia({
           onChange={onMainImageChange}
           label="Kliknij lub przeciągnij zdjęcie główne"
           required
+          allowEditPosition
         />
       </Field>
 
