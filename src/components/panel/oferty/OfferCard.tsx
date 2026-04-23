@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
+import { PositionedImage } from '@/components/image-position/PositionedImage'
+import type { ImagePosition } from '@/components/image-position/types'
 import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -42,12 +43,13 @@ export function OfferCard({ offer, lang }: OfferCardProps) {
           </Skeleton>
         )}
         {mainImageUrl ? (
-          <Image
+          <PositionedImage
             src={mainImageUrl}
             alt={offer.title}
-            fill
+            position={typeof offer.mainImage === 'object' ? (offer.mainImage as Partial<ImagePosition>) : null}
+            className="absolute inset-0"
+            imgClassName={`transition-transform duration-300 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             sizes="(max-width: 640px) 100vw, 224px"
-            className={`object-cover transition-all duration-300 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setImageLoaded(true)}
           />
         ) : (
