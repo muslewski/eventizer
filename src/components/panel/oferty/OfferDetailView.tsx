@@ -78,7 +78,12 @@ export function OfferDetailView({ offer, lang }: OfferDetailViewProps) {
           </CardHeader>
           <CardContent>
             {offer.categoryName ? (
-              <Badge variant="outline">{offer.categoryName}</Badge>
+              <Badge
+                variant="outline"
+                className="h-auto max-w-full whitespace-normal break-words rounded-md text-left leading-snug"
+              >
+                {offer.categoryName}
+              </Badge>
             ) : (
               <span className="text-sm text-muted-foreground">Brak kategorii</span>
             )}
