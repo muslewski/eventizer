@@ -48,17 +48,21 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
   const [selectedPath, setSelectedPath] = React.useState<CategoryItem[]>([])
   const [searchQuery, setSearchQuery] = React.useState('')
 
-  // Initialize from value if provided
+  // Initialize from value if provided. Accepts either the modern slug path
+  // ("muzyka/dj/dj-weselny") or legacy name path ("Muzyka > DJ > DJ Weselny")
+  // so offers created before the format change still round-trip.
   React.useEffect(() => {
     if (value && selectedPath.length === 0) {
-      // Try to reconstruct path from the stored category string (e.g., "Muzyka > DJ > DJ Weselny")
-      const parts = value.split(' > ')
+      const usesSlugPath = value.includes('/')
+      const parts = usesSlugPath ? value.split('/') : value.split(' > ')
       if (parts.length > 0) {
         const path: CategoryItem[] = []
         let currentItems: CategoryItem[] = categories
 
         for (const part of parts) {
-          const found = currentItems.find((c) => c.name === part)
+          const found =
+            currentItems.find((c) => c.slug === part) ??
+            currentItems.find((c) => c.name === part)
           if (found) {
             path.push(found)
             // Navigate to next level
@@ -131,8 +135,9 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
           : false
 
     if (!hasMore) {
-      // Build the category path string
-      const categoryPath = newPath.map((c) => c.name).join(' > ')
+      // Emit the slug path so it matches getOfferCategories().fullPath, which
+      // the offers beforeChange hook uses to look up categoryName/categorySlug.
+      const categoryPath = newPath.map((c) => c.slug).join('/')
       onChange(categoryPath)
     }
   }
