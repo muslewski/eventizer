@@ -106,9 +106,10 @@ export const HowItWorksClient: React.FC<HowItWorksClientProps> = ({
           <Image
             src={backgroundImage}
             className="object-cover opacity-50 dark:opacity-100 invert dark:invert-0"
-            alt="Background"
+            alt=""
             fill
-            priority
+            sizes="100vw"
+            loading="lazy"
           />
           <div className="absolute top-0 left-0 right-0 bottom-0 bg-linear-to-b from-background via-background/50 to-background" />
         </div>
