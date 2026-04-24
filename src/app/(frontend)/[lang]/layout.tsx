@@ -8,6 +8,7 @@ import Footer from '@/components/frontend/Footer'
 import { RootAuthProvider } from '@/providers/RootAuthProvider'
 import { Analytics } from '@vercel/analytics/next'
 import { SuppressHydrationWarnings } from '@/components/providers/SuppressHydrationWarnings'
+import { LenisProvider } from '@/components/providers/LenisProvider'
 
 export const metadata = {
   description: 'Eventizer - Event Management Platform',
@@ -57,16 +58,18 @@ export default async function RootLayout({
       <body className="bg-background h-full" suppressHydrationWarning>
         <SuppressHydrationWarnings />
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <RootAuthProvider>
-            <div className="w-full px-4 sm:px-8 transition-[padding] duration-900 ease-in-out">
-              <main className="w-full relative">
-                <Header />
-                <div className="w-full relative ease-in-out">{children}</div>
-              </main>
-            </div>
-            <Footer />
-            <Toaster />
-          </RootAuthProvider>
+          <LenisProvider>
+            <RootAuthProvider>
+              <div className="w-full px-4 sm:px-8 transition-[padding] duration-900 ease-in-out">
+                <main className="w-full relative">
+                  <Header />
+                  <div className="w-full relative ease-in-out">{children}</div>
+                </main>
+              </div>
+              <Footer />
+              <Toaster />
+            </RootAuthProvider>
+          </LenisProvider>
         </ThemeProvider>
         <Analytics />
       </body>
