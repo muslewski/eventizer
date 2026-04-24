@@ -1,43 +1,42 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import {
+  CalendarClock,
   CalendarDays,
   HelpCircle,
-  Wrench,
-  Send,
-  Loader2,
+  Mail,
   MapPin,
+  Send,
+  UserRound,
   Users,
-  CalendarClock,
-  CheckCircle2,
+  Wrench,
 } from 'lucide-react'
-import { motion, AnimatePresence } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent } from '@/components/ui/card'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
-import { cn } from '@/lib/utils'
 import {
   submitWebsiteContactForm,
   type WebsiteFormType,
 } from '@/actions/submitWebsiteContactForm'
+import { FormTextField } from '@/components/contact-form/FormTextField'
+import { FormTextareaField } from '@/components/contact-form/FormTextareaField'
+import { SendButton } from '@/components/contact-form/SendButton'
+import { SuccessPanel } from '@/components/contact-form/SuccessPanel'
+import {
+  TypeSelector,
+  type TypeOption,
+} from '@/components/contact-form/TypeSelector'
+import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
+import { Card, CardContent } from '@/components/ui/card'
+import { Form } from '@/components/ui/form'
 import type { ContactFormBlock as ContactFormBlockProps } from '@/payload-types'
 
 // ─── Zod schema ────────────────────────────────────────────────────────────────
+
+const MESSAGE_MAX = 3000
 
 const baseSchema = z.object({
   type: z.enum(['organization', 'question', 'service-problem']),
@@ -49,7 +48,7 @@ const baseSchema = z.object({
   message: z
     .string()
     .min(10, 'Wiadomość musi mieć co najmniej 10 znaków')
-    .max(3000, 'Wiadomość nie może przekraczać 3000 znaków'),
+    .max(MESSAGE_MAX, `Wiadomość nie może przekraczać ${MESSAGE_MAX} znaków`),
   eventDate: z.string().optional(),
   eventLocation: z.string().optional(),
   eventGuestCount: z.string().optional(),
@@ -57,18 +56,15 @@ const baseSchema = z.object({
 
 type FormValues = z.infer<typeof baseSchema>
 
-// ─── Type card config ──────────────────────────────────────────────────────────
-
-interface TypeCard {
-  value: WebsiteFormType
-  label: string
-  icon: React.ComponentType<{ className?: string }>
-}
+// ─── Per-type copy ─────────────────────────────────────────────────────────────
 
 const MESSAGE_PLACEHOLDERS: Record<WebsiteFormType, string> = {
-  organization: 'Opisz event, który chcesz zorganizować: rodzaj imprezy, atrakcje, styl, budżet, wszelkie dodatkowe życzenia…',
-  question: 'Wpisz swoje pytanie — chętnie wyjaśnimy wszystkie wątpliwości dotyczące platformy, ofert lub procesu rejestracji…',
-  'service-problem': 'Opisz problem, który napotkałeś(-aś): co się stało, kiedy, na jakim urządzeniu, jaki komunikat błędu widziałeś(-aś)…',
+  organization:
+    'Opisz event, który chcesz zorganizować: rodzaj imprezy, atrakcje, styl, budżet, wszelkie dodatkowe życzenia…',
+  question:
+    'Wpisz swoje pytanie — chętnie wyjaśnimy wszystkie wątpliwości dotyczące platformy, ofert lub procesu rejestracji…',
+  'service-problem':
+    'Opisz problem, który napotkałeś(-aś): co się stało, kiedy, na jakim urządzeniu, jaki komunikat błędu widziałeś(-aś)…',
 }
 
 // ─── Component ─────────────────────────────────────────────────────────────────
@@ -94,7 +90,7 @@ export const ContactFormClient: React.FC<
   const selectedType = form.watch('type') as WebsiteFormType
   const isOrganization = selectedType === 'organization'
 
-  const typeCards = useMemo<TypeCard[]>(
+  const typeOptions = useMemo<readonly TypeOption<WebsiteFormType>[]>(
     () => [
       {
         value: 'organization',
@@ -121,7 +117,9 @@ export const ContactFormClient: React.FC<
     if (result.success) {
       setSubmitted(true)
     } else {
-      form.setError('root', { message: result.error ?? 'Wystąpił błąd. Spróbuj ponownie.' })
+      form.setError('root', {
+        message: result.error ?? 'Wystąpił błąd. Spróbuj ponownie.',
+      })
     }
   }
 
@@ -143,246 +141,148 @@ export const ContactFormClient: React.FC<
       />
 
       <div className="mt-14 mx-auto w-full max-w-3xl">
-        <Card className="bg-transparent border-border/50 relative overflow-hidden">
-          <CardContent className="pt-6">
-          <AnimatePresence mode="wait">
-          {submitted ? (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="flex flex-col items-center justify-center gap-4 py-10 text-center"
-            >
-              <div className="size-16 rounded-full bg-emerald-500/15 flex items-center justify-center ring-1 ring-emerald-500/30">
-                <CheckCircle2 className="size-8 text-emerald-500" />
-              </div>
-              <div>
-                <p className="text-xl font-semibold mb-2">Formularz wysłany!</p>
-                <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                  Wrócimy do Ciebie najszybciej jak to możliwe — zazwyczaj w ciągu 1–2 dni
-                  roboczych. Sprawdź też swoją skrzynkę email.
-                </p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mt-1"
-                onClick={() => {
-                  setSubmitted(false)
-                  form.reset()
-                }}
-              >
-                Wyślij kolejną wiadomość
-              </Button>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-            >
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Type selector */}
-                <FormField
-                  control={form.control}
-                  name="type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Typ wiadomości</FormLabel>
-                      <FormControl>
-                        <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                          {typeCards.map((card) => {
-                            const CardIcon = card.icon
-                            const isActive = field.value === card.value
-
-                            return (
-                              <button
-                                key={card.value}
-                                type="button"
-                                onClick={() => field.onChange(card.value)}
-                                className={cn(
-                                  'flex flex-col items-center justify-center gap-2 rounded-lg border px-2 py-3 text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:scale-[1.03] active:scale-[0.97]',
-                                  isActive
-                                    ? 'border-primary bg-primary/10 text-primary shadow-sm shadow-primary/20'
-                                    : 'border-border/60 bg-background/40 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-foreground',
-                                )}
-                              >
-                                <CardIcon className="size-5 shrink-0" />
-                                <span className="text-xs font-medium leading-tight">{card.label}</span>
-                              </button>
-                            )
-                          })}
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+        <Card className="relative overflow-hidden border-border/30 bg-background/40 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_20px_40px_-20px_rgba(0,0,0,0.4)]">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"
+          />
+          <CardContent className="p-6 sm:p-8">
+            <AnimatePresence mode="wait">
+              {submitted ? (
+                <SuccessPanel
+                  key="success"
+                  title="Formularz wysłany!"
+                  description="Wrócimy do Ciebie najszybciej jak to możliwe — zazwyczaj w ciągu 1–2 dni roboczych. Sprawdź też swoją skrzynkę email."
+                  onReset={() => {
+                    setSubmitted(false)
+                    form.reset()
+                  }}
                 />
-
-                <AnimatePresence>
-                {isOrganization && (
-                  <motion.div
-                    key="org-hint"
-                    initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                    animate={{ opacity: 1, height: 'auto', marginTop: 0 }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    className="overflow-hidden"
-                  >
-                    <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-muted-foreground leading-relaxed">
-                      {organizationDescription ??
-                        'Zorganizujemy dla Ciebie niezapomniany event — powiedz nam gdzie, kiedy, ilu gości i czego potrzebujesz, a zajmiemy się resztą.'}
-                    </div>
-                  </motion.div>
-                )}
-                </AnimatePresence>
-
-                {/* Name + Email row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="senderName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Imię i nazwisko</FormLabel>
-                        <FormControl>
-                          <Input placeholder="np. Jan Kowalski" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="senderEmail"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Adres email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="kontakt@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Organization extra fields */}
-                <AnimatePresence>
-                {isOrganization && (
-                  <motion.div
-                    key="org-fields"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    className="overflow-hidden"
-                  >
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-lg border border-primary/20 bg-primary/5">
-                    <FormField
-                      control={form.control}
-                      name="eventDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-1.5">
-                            <CalendarClock className="size-3.5 text-primary" />
-                            Termin eventu
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="np. 15 czerwca 2025" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="eventLocation"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-1.5">
-                            <MapPin className="size-3.5 text-primary" />
-                            Lokalizacja
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="np. Warszawa" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="eventGuestCount"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="flex items-center gap-1.5">
-                            <Users className="size-3.5 text-primary" />
-                            Liczba gości
-                          </FormLabel>
-                          <FormControl>
-                            <Input placeholder="np. 50" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  </motion.div>
-                )}
-                </AnimatePresence>
-
-                {/* Message */}
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Wiadomość</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={MESSAGE_PLACEHOLDERS[selectedType]}
-                          rows={6}
-                          className="resize-none"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {form.formState.errors.root && (
-                  <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>
-                )}
-
-                <Button
-                  type="submit"
-                  disabled={form.formState.isSubmitting}
-                  className="w-full gap-2 max-w-fit"
+              ) : (
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  {form.formState.isSubmitting ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" />
-                      Wysyłanie…
-                    </>
-                  ) : (
-                    <>
-                      <Send className="size-4" />
-                      Wyślij wiadomość
-                    </>
-                  )}
-                </Button>
-              </form>
-            </Form>
-            </motion.div>
-          )}
-          </AnimatePresence>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-6"
+                    >
+                      <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground">Typ wiadomości</p>
+                        <TypeSelector
+                          options={typeOptions}
+                          value={selectedType}
+                          onChange={(v) => form.setValue('type', v)}
+                          layoutId="contact-website-type"
+                        />
+                      </div>
+
+                      <AnimatePresence initial={false}>
+                        {isOrganization && (
+                          <motion.div
+                            key="org-hint"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.25, ease: 'easeInOut' }}
+                            className="overflow-hidden"
+                          >
+                            <div className="rounded-xl border border-accent/20 bg-gradient-to-b from-accent/[0.06] to-accent/[0.02] p-4 text-sm leading-relaxed text-muted-foreground">
+                              {organizationDescription ??
+                                'Zorganizujemy dla Ciebie niezapomniany event — powiedz nam gdzie, kiedy, ilu gości i czego potrzebujesz, a zajmiemy się resztą.'}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <FormTextField
+                          control={form.control}
+                          name="senderName"
+                          label="Imię i nazwisko"
+                          placeholder="np. Jan Kowalski"
+                          icon={UserRound}
+                          autoComplete="name"
+                        />
+                        <FormTextField
+                          control={form.control}
+                          name="senderEmail"
+                          label="Adres email"
+                          placeholder="kontakt@example.com"
+                          type="email"
+                          icon={Mail}
+                          autoComplete="email"
+                        />
+                      </div>
+
+                      <AnimatePresence initial={false}>
+                        {isOrganization && (
+                          <motion.div
+                            key="org-fields"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3, ease: 'easeInOut' }}
+                            className="overflow-hidden"
+                          >
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 rounded-xl border border-accent/20 bg-gradient-to-b from-accent/[0.05] to-transparent p-4">
+                              <FormTextField
+                                control={form.control}
+                                name="eventDate"
+                                label="Termin eventu"
+                                placeholder="np. 15 czerwca 2025"
+                                icon={CalendarClock}
+                              />
+                              <FormTextField
+                                control={form.control}
+                                name="eventLocation"
+                                label="Lokalizacja"
+                                placeholder="np. Warszawa"
+                                icon={MapPin}
+                              />
+                              <FormTextField
+                                control={form.control}
+                                name="eventGuestCount"
+                                label="Liczba gości"
+                                placeholder="np. 50"
+                                icon={Users}
+                              />
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      <FormTextareaField
+                        control={form.control}
+                        name="message"
+                        label="Wiadomość"
+                        placeholder={MESSAGE_PLACEHOLDERS[selectedType]}
+                        rows={6}
+                        maxLength={MESSAGE_MAX}
+                        showCounter
+                      />
+
+                      {form.formState.errors.root && (
+                        <p
+                          role="alert"
+                          className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+                        >
+                          {form.formState.errors.root.message}
+                        </p>
+                      )}
+
+                      <div className="pt-1">
+                        <SendButton isSubmitting={form.formState.isSubmitting} />
+                      </div>
+                    </form>
+                  </Form>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </CardContent>
         </Card>
       </div>
