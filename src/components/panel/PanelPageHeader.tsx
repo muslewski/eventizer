@@ -45,7 +45,7 @@ export function PanelPageHeader({
       {/* Background image */}
       {backgroundImageUrl && (
         <div
-          className="absolute inset-0 z-0 will-change-transform transform-gpu backface-hidden"
+          className="absolute inset-0 z-0 animate-zoom-in will-change-transform transform-gpu backface-hidden"
           style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.6s ease-in-out' }}
         >
           <Image
