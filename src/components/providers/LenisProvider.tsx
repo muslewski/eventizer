@@ -1,6 +1,7 @@
 'use client'
 
-import { ReactLenis } from 'lenis/react'
+import { ReactLenis, useLenis } from 'lenis/react'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 const MOBILE_QUERY = '(min-width: 768px)'
@@ -16,6 +17,18 @@ function evaluateEligibility(): boolean {
   const classOptOut = document.documentElement.classList.contains('reduce-motion')
 
   return desktopViewport && precisePointer && motionOk && !classOptOut
+}
+
+function ScrollResetOnNavigate() {
+  const lenis = useLenis()
+  const pathname = usePathname()
+
+  useEffect(() => {
+    if (!lenis) return
+    lenis.scrollTo(0, { immediate: true, force: true })
+  }, [lenis, pathname])
+
+  return null
 }
 
 export function LenisProvider({ children }: { children: React.ReactNode }) {
@@ -53,6 +66,7 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
         smoothWheel: true,
       }}
     >
+      <ScrollResetOnNavigate />
       {children}
     </ReactLenis>
   )
