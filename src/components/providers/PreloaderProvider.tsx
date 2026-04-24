@@ -116,7 +116,7 @@ export function PreloaderProvider({ children }: { children: React.ReactNode }) {
           src={EventizerIcon}
           alt="Eventizer"
           priority
-          className="h-20 w-auto object-contain drop-shadow-[0_0_24px_rgba(210,140,8,0.35)]"
+          className="h-40 w-auto object-contain drop-shadow-[0_0_24px_rgba(210,140,8,0.35)]"
         />
       }
     >
