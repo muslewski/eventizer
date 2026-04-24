@@ -6,7 +6,7 @@ import { PanelNav } from '@/components/panel/PanelNav'
 import { PanelMobileHeader } from '@/components/panel/PanelMobileHeader'
 import type { User } from '@/payload-types'
 
-const LiquidLines = dynamic(() => import('@/components/react-bits/liquid-lines'), {
+const SquircleShift = dynamic(() => import('@/components/react-bits/squircle-shift'), {
   ssr: false,
 })
 
@@ -19,22 +19,17 @@ interface PanelShellProps {
 export function PanelShell({ user, lang, children }: PanelShellProps) {
   return (
     <>
-      {/* Fixed background — dark theme only */}
+      {/* Fixed background — dark theme only, desktop only */}
       <div className="fixed inset-0 z-0 pointer-events-none hidden dark:md:block">
-        <LiquidLines
+        <SquircleShift
           width="100%"
           height="100%"
-          // speed={0.2}
-          // iterations={3}
-          // waveFrequency={40}
-          // lineThickness={0.006}
-          // waveAmplitude={0.5}
-          brightness={0.5}
-          contrast={2.0}
-          // scale={0.25}
-          opacity={0.4}
-          darkBackground="#080808"
-          lineColor="#d28c08"
+          speed={0.4}
+          waveSpeed={0.45}
+          waveIntensity={0.65}
+          colorTint="#7d7aff"
+          darkBackground="#0b0d1d"
+          brightness={0.95}
         />
       </div>
 
@@ -42,7 +37,9 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
         <PanelNav user={user} lang={lang} />
         <SidebarInset className="bg-transparent">
           <PanelMobileHeader />
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-2 md:p-6 md:pt-28 lg:p-8 lg:pt-28">{children}</div>
+          <div className="flex flex-1 flex-col gap-4 p-4 pt-2 md:p-6 md:pt-28 lg:p-8 lg:pt-28">
+            {children}
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </>
