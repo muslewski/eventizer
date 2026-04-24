@@ -1,7 +1,9 @@
 'use client'
 
+import EventizerIcon from '@/assets/eventizer-icon-1.png'
 import Preloader from '@/components/react-bits/preloader'
 import { useLenis } from 'lenis/react'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
@@ -103,13 +105,20 @@ export function PreloaderProvider({ children }: { children: React.ReactNode }) {
       loading={loading}
       variant="curtain"
       position="fixed"
-      bgColor="#080808"
       loadingText=""
       duration={INITIAL_DURATION_MS}
       zIndex={100}
       respectReducedMotion
       reducedMotionFallback="fade"
       ariaLabel="Ładowanie strony"
+      centerContent={
+        <Image
+          src={EventizerIcon}
+          alt="Eventizer"
+          priority
+          className="h-20 w-auto object-contain drop-shadow-[0_0_24px_rgba(210,140,8,0.35)]"
+        />
+      }
     >
       {children}
     </Preloader>
