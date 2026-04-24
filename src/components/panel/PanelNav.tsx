@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
@@ -100,6 +100,7 @@ function CollapseButton() {
 
 export function PanelNav({ user, lang }: PanelNavProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const { scrollY } = useScroll()
 
   // Asymmetric sidebar height animation:
@@ -158,12 +159,20 @@ export function PanelNav({ user, lang }: PanelNavProps) {
   const navItems = isServiceProvider ? serviceProviderNav : clientNav
   const roleLabel = isServiceProvider ? 'Usługodawca' : 'Klient'
 
+  // Proactively warm up every panel route on mount so the router cache is
+  // primed before the user clicks (belt-and-suspenders alongside Link's own
+  // viewport prefetch).
+  useEffect(() => {
+    navItems.forEach((item) => router.prefetch(`/${lang}${item.route}`))
+    router.prefetch(`/${lang}/panel/konto`)
+  }, [router, lang, navItems])
+
   return (
     <Sidebar
       side="left"
       variant="floating"
       collapsible="icon"
-      className="bg-transparent dark:bg-transparent [&>[data-slot=sidebar-inner]]:bg-base-50 dark:[&>[data-slot=sidebar-inner]]:bg-base-950 [&>[data-slot=sidebar-inner]]:border-accent/20 [&>[data-slot=sidebar-inner]]:backdrop-blur-md"
+      className="bg-transparent dark:bg-transparent [&>[data-slot=sidebar-inner]]:bg-base-50/55 dark:[&>[data-slot=sidebar-inner]]:bg-base-950/55 [&>[data-slot=sidebar-inner]]:border-accent/20 [&>[data-slot=sidebar-inner]]:backdrop-blur-xl [&>[data-slot=sidebar-inner]]:shadow-[0_20px_40px_-20px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.04)]"
       style={{ height: sidebarHeight as unknown as string }}
     >
       <SidebarHeader>
