@@ -17,6 +17,7 @@ import { StepMedia } from './steps/StepMedia'
 import { StepDescription } from './steps/StepDescription'
 import { StepContent } from './steps/StepContent'
 import { StepSummary } from './steps/StepSummary'
+import { WizardStepIndicator, type WizardStep } from './WizardStepIndicator'
 
 function isLexicalContentEmpty(content: any): boolean {
   if (!content) return true
@@ -41,6 +42,48 @@ const STEP_LABELS = [
   'Kontakt',
   'Finalizacja',
 ]
+
+// Polish phone: optional +48, then 9 digits (with optional spaces between triplets).
+// Same shape as the zod rule in offerSchema.
+const PHONE_RE = /^(?:\+48)?\s*\d{3}(?:\s*\d{3}){2}$/
+const EMAIL_RE = /^\S+@\S+\.\S+$/
+
+/**
+ * Pure sync per-step validity check. Reads the same sources as the legacy
+ * validateCurrentStep() (form values + the out-of-RHF `content` and
+ * `mainImage`) but never calls trigger(), so it can run on every render.
+ */
+function computeStepValidity(
+  stepIndex: number,
+  values: OfferFormData,
+  content: unknown,
+  mainImageId: number | null | undefined,
+): boolean {
+  switch (stepIndex) {
+    case 0:
+      return !!values.title?.trim() && !!values.category?.trim()
+    case 1:
+      return !isLexicalContentEmpty(content)
+    case 2: {
+      if (!values.address?.trim()) return false
+      if (!values.serviceRadius) return false
+      if (values.hasPriceRange) {
+        return values.priceFrom != null || values.priceTo != null
+      }
+      return values.price != null && values.price > 0
+    }
+    case 3:
+      return !!mainImageId
+    case 4: {
+      const phoneOk = !!values.phone && PHONE_RE.test(values.phone)
+      const emailOk = !!values.email && EMAIL_RE.test(values.email)
+      return phoneOk && emailOk
+    }
+    case 5:
+    default:
+      return true
+  }
+}
 
 interface OfferWizardFormProps {
   mode: 'create' | 'edit'
@@ -68,6 +111,7 @@ export function OfferWizardForm({
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [currentStep, setCurrentStep] = useState(0)
+  const [visitedSteps, setVisitedSteps] = useState<Set<number>>(() => new Set([0]))
 
   // Media state (managed separately from form as UploadedFile objects)
   interface UploadedFile {
@@ -198,24 +242,54 @@ export function OfferWizardForm({
     return true
   }
 
-  const handleNext = async () => {
-    const isValid = await validateCurrentStep()
-    if (isValid && currentStep < STEP_COUNT - 1) {
-      setCurrentStep((prev) => prev + 1)
+  const goToStep = (index: number) => {
+    if (index < 0 || index >= STEP_COUNT || index === currentStep) return
+    setCurrentStep(index)
+    setVisitedSteps((prev) => {
+      if (prev.has(index)) return prev
+      const next = new Set(prev)
+      next.add(index)
+      return next
+    })
+    if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  const handleNext = async () => {
+    // Surface inline errors on the step being left, but don't block — dot
+    // navigation can bypass validation anyway, so Dalej is consistent.
+    await validateCurrentStep()
+    if (currentStep < STEP_COUNT - 1) {
+      goToStep(currentStep + 1)
     }
   }
 
   const handlePrev = () => {
     if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      goToStep(currentStep - 1)
     }
   }
 
   const handleFormSubmit = (status: 'published' | 'draft') => {
     startTransition(async () => {
       const formData = getValues()
+
+      // Publish-time: scan every step for validity and jump to the first
+      // one that fails, so errors aren't hidden on a pane the user can't
+      // see from Finalizacja.
+      if (status === 'published') {
+        for (let i = 0; i < STEP_COUNT; i++) {
+          if (!computeStepValidity(i, formData, content, mainImage?.id)) {
+            goToStep(i)
+            // Surface every RHF inline error at once so the user sees
+            // exactly what's wrong on the step we just landed on.
+            await trigger()
+            toast.error('Uzupełnij brakujące pola przed publikacją')
+            return
+          }
+        }
+      }
 
       // Client-side gate for publish-only required fields (Payload enforces
       // these on publish; surface them inline instead of through a backend
@@ -294,6 +368,17 @@ export function OfferWizardForm({
     })
   }
 
+  // Subscribe to every form value so the step indicator re-renders live
+  // as the user types (title filled → step 0 flips from red to green).
+  const watchedValues = watch() as OfferFormData
+  const stepStatuses: readonly WizardStep[] = STEP_LABELS.map((label, index) => {
+    if (index === currentStep) return { label, status: 'current' as const }
+    const valid = computeStepValidity(index, watchedValues, content, mainImage?.id)
+    if (!valid) return { label, status: 'invalid' as const }
+    if (visitedSteps.has(index)) return { label, status: 'valid' as const }
+    return { label, status: 'upcoming' as const }
+  })
+
   return (
     <div className="flex flex-col gap-6">
       {/* Header with progress */}
@@ -305,9 +390,11 @@ export function OfferWizardForm({
         backgroundImageUrl={backgroundImageUrl}
         progress={{
           value: ((currentStep + 1) / STEP_COUNT) * 100,
-          label: STEP_LABELS.map((label, i) => i === currentStep ? `● ${label}` : label).join('  ·  '),
         }}
       />
+
+      {/* Clickable step indicator — free navigation with live per-step validity */}
+      <WizardStepIndicator steps={stepStatuses} onStepClick={goToStep} />
 
       {/* Step content */}
       <h2 className="font-bebas text-2xl tracking-wide">
