@@ -50,7 +50,13 @@ export const Content: React.FC<ContentProps> = ({
       <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 2xl:gap-12">
         <h3 className="xl:text-5xl md:text-4xl sm:text-3xl text-2xl font-bebas max-w-7xl text-white mix-blend-difference transform-gpu">
           {/* Zaufali nam najlepsi */}
-          <BlurText text="Zaufali nam najlepsi" animateBy="letters" direction="bottom" delay={50} />
+          <BlurText
+            text="Zaufali nam najlepsi"
+            animateBy="letters"
+            direction="bottom"
+            delay={50}
+            startDelay={250}
+          />
         </h3>
 
         <div className="flex">
