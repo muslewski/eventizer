@@ -27,8 +27,8 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
           speed={0.4}
           waveSpeed={0.45}
           waveIntensity={0.65}
-          colorTint="#7d7aff"
-          darkBackground="#0b0d1d"
+          colorTint="#d28c08"
+          darkBackground="#080808"
           brightness={0.95}
         />
       </div>
