@@ -163,7 +163,7 @@ export function PanelNav({ user, lang }: PanelNavProps) {
       side="left"
       variant="floating"
       collapsible="icon"
-      className="bg-background dark:bg-background [&>[data-slot=sidebar-inner]]:bg-base-50 dark:[&>[data-slot=sidebar-inner]]:bg-base-950 [&>[data-slot=sidebar-inner]]:border-accent/20"
+      className="bg-transparent dark:bg-transparent [&>[data-slot=sidebar-inner]]:bg-base-50 dark:[&>[data-slot=sidebar-inner]]:bg-base-950 [&>[data-slot=sidebar-inner]]:border-accent/20 [&>[data-slot=sidebar-inner]]:backdrop-blur-md"
       style={{ height: sidebarHeight as unknown as string }}
     >
       <SidebarHeader>
