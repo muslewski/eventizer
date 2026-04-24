@@ -7,7 +7,7 @@ import NoiseTexture from '@/components/heros/NoiseTexture'
 import type { ImagePosition } from '@/components/image-position/types'
 
 // Lazy load LightRays to prevent blocking initial render
-const LightRays = dynamic(() => import('@/components/react-bits/LightRays'))
+const LightRays = dynamic(() => import('@/components/react-bits/LightRays'), { ssr: false })
 const BackgroundVideo = dynamic(() => import('@/components/heros/BackgroundVideo'))
 
 interface BackgroundProps {

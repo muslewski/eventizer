@@ -24,6 +24,8 @@ export function HowItWorksImage({ src, alt }: HowItWorksImageProps) {
           isLoaded ? 'opacity-100' : 'opacity-0',
         )}
         fill
+        sizes="(max-width: 640px) 100vw, (max-width: 768px) 12rem, (max-width: 1024px) 14rem, 20rem"
+        loading="lazy"
         onLoad={() => setIsLoaded(true)}
       />
     </div>
