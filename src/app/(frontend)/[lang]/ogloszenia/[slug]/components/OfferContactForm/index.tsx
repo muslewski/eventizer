@@ -1,32 +1,38 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  AlertTriangle,
+  Mail,
+  MessageCircleQuestion,
+  Send,
+  ShoppingCart,
+  UserRound,
+} from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ShoppingCart, MessageCircleQuestion, AlertTriangle, LockKeyhole, Send, Loader2, CheckCircle2 } from 'lucide-react'
-import { motion, AnimatePresence } from 'motion/react'
-import Link from 'next/link'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { cn } from '@/lib/utils'
-
-import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
 import { submitOfferForm, type FormType } from '@/actions/submitOfferForm'
+import { AuthOverlay } from '@/components/contact-form/AuthOverlay'
+import { FormTextField } from '@/components/contact-form/FormTextField'
+import { FormTextareaField } from '@/components/contact-form/FormTextareaField'
+import { SendButton } from '@/components/contact-form/SendButton'
+import { SuccessPanel } from '@/components/contact-form/SuccessPanel'
+import {
+  TypeSelector,
+  type TypeOption,
+} from '@/components/contact-form/TypeSelector'
+import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Form } from '@/components/ui/form'
+import { cn } from '@/lib/utils'
 import type { Offer } from '@/payload-types'
 
 // ─── Zod schema ────────────────────────────────────────────────────────────────
+
+const MESSAGE_MAX = 2000
 
 const formSchema = z.object({
   type: z.enum(['order', 'question', 'problem']),
@@ -38,39 +44,27 @@ const formSchema = z.object({
   message: z
     .string()
     .min(10, 'Wiadomość musi mieć co najmniej 10 znaków')
-    .max(2000, 'Wiadomość nie może przekraczać 2000 znaków'),
+    .max(MESSAGE_MAX, `Wiadomość nie może przekraczać ${MESSAGE_MAX} znaków`),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-// ─── Config per type ───────────────────────────────────────────────────────────
+// ─── Per-type copy ─────────────────────────────────────────────────────────────
 
-const typeConfig = {
-  order: {
-    label: 'Złóż zamówienie',
-    icon: ShoppingCart,
-    messagePlaceholder:
-      'Opisz szczegółowo swoje zamówienie: termin, liczba gości, lokalizacja eventu, dodatkowe wymagania…',
-    nameLabel: 'Twoje imię i nazwisko',
-    namePlaceholder: 'np. Jan Kowalski',
-  },
-  question: {
-    label: 'Zadaj pytanie',
-    icon: MessageCircleQuestion,
-    messagePlaceholder:
-      'Wpisz swoje pytanie dotyczące oferty, cen, dostępności lub zakresu usług…',
-    nameLabel: 'Twoje imię i nazwisko',
-    namePlaceholder: 'np. Anna Nowak',
-  },
-  problem: {
-    label: 'Zgłoś problem',
-    icon: AlertTriangle,
-    messagePlaceholder:
-      'Opisz problem, który napotkałeś(-aś): co się stało, kiedy, jakich usług dotyczył…',
-    nameLabel: 'Twoje imię i nazwisko',
-    namePlaceholder: 'np. Marek Wiśniewski',
-  },
-} satisfies Record<FormType, object>
+const TYPE_OPTIONS: readonly TypeOption<FormType>[] = [
+  { value: 'order', label: 'Złóż zamówienie', icon: ShoppingCart },
+  { value: 'question', label: 'Zadaj pytanie', icon: MessageCircleQuestion },
+  { value: 'problem', label: 'Zgłoś problem', icon: AlertTriangle },
+]
+
+const MESSAGE_PLACEHOLDERS: Record<FormType, string> = {
+  order:
+    'Opisz szczegółowo swoje zamówienie: termin, liczba gości, lokalizacja eventu, dodatkowe wymagania…',
+  question:
+    'Wpisz swoje pytanie dotyczące oferty, cen, dostępności lub zakresu usług…',
+  problem:
+    'Opisz problem, który napotkałeś(-aś): co się stało, kiedy, jakich usług dotyczył…',
+}
 
 // ─── Component ─────────────────────────────────────────────────────────────────
 
@@ -100,8 +94,6 @@ export const OfferContactForm: React.FC<OfferContactFormProps> = ({
   })
 
   const selectedType = form.watch('type') as FormType
-  const config = typeConfig[selectedType]
-  const Icon = config.icon
 
   const onSubmit = async (values: FormValues) => {
     const result = await submitOfferForm({
@@ -115,7 +107,9 @@ export const OfferContactForm: React.FC<OfferContactFormProps> = ({
     if (result.success) {
       setSubmitted(true)
     } else {
-      form.setError('root', { message: result.error ?? 'Wystąpił błąd. Spróbuj ponownie.' })
+      form.setError('root', {
+        message: result.error ?? 'Wystąpił błąd. Spróbuj ponownie.',
+      })
     }
   }
 
@@ -126,180 +120,120 @@ export const OfferContactForm: React.FC<OfferContactFormProps> = ({
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
-    <Card className="bg-transparent border-border/50 relative overflow-hidden">
-      <CardHeader className="border-b">
-        <CardTitle className="flex items-center font-normal gap-4 sm:gap-6 text-xl font-montserrat">
-          <Icon className="size-6 sm:size-8 text-primary" />
-          <SpanLikeH3 title="Skontaktuj się z usługodawcą" />
-        </CardTitle>
-      </CardHeader>
+      <Card className="relative overflow-hidden border-border/30 bg-background/40 backdrop-blur-md shadow-[0_1px_0_rgba(255,255,255,0.04)_inset,0_20px_40px_-20px_rgba(0,0,0,0.4)]">
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"
+        />
 
-      <div className="relative">
-        <CardContent className={`pt-6 ${!isAuthenticated ? 'select-none blur-sm pointer-events-none' : ''}`} aria-hidden={!isAuthenticated}>
-          <AnimatePresence mode="wait">
-          {submitted ? (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="flex flex-col items-center justify-center gap-3 py-10 text-center"
-            >
-              <div className="size-14 rounded-full bg-emerald-500/15 flex items-center justify-center ring-1 ring-emerald-500/30">
-                <CheckCircle2 className="size-7 text-emerald-500" />
-              </div>
-              <p className="text-lg font-medium">Wiadomość wysłana!</p>
-              <p className="text-sm text-muted-foreground max-w-sm">
-                Usługodawca wkrótce się z Tobą skontaktuje. Sprawdź swoją skrzynkę email — wysłaliśmy Ci potwierdzenie.
-              </p>
-              <Button variant="outline" size="sm" className="mt-2" onClick={() => { setSubmitted(false); form.reset() }}>
-                Wyślij kolejną wiadomość
-              </Button>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-            >
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Type selector */}
-                <FormField
-                  control={form.control}
-                  name="type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Typ wiadomości</FormLabel>
-                      <FormControl>
-                        <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                          {(Object.entries(typeConfig) as [FormType, (typeof typeConfig)[FormType]][]).map(
-                            ([value, cfg]) => {
-                              const TabIcon = cfg.icon
-                              const isActive = field.value === value
-                              return (
-                                <button
-                                  key={value}
-                                  type="button"
-                                  onClick={() => field.onChange(value)}
-                                  className={cn(
-                                    'flex flex-col items-center justify-center gap-2 rounded-lg border px-2 py-3 text-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:scale-[1.03] active:scale-[0.97]',
-                                    isActive
-                                      ? 'border-primary bg-primary/10 text-primary shadow-sm shadow-primary/20'
-                                      : 'border-border/60 bg-background/40 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-foreground',
-                                  )}
-                                >
-                                  <TabIcon className="size-5 shrink-0" />
-                                  <span className="text-xs font-medium leading-tight">
-                                    {cfg.label}
-                                  </span>
-                                </button>
-                              )
-                            },
-                          )}
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+        <CardHeader className="flex flex-row items-center gap-4 border-b border-border/40 pb-5">
+          <span
+            aria-hidden="true"
+            className="inline-flex size-11 shrink-0 items-center justify-center rounded-[12px] border border-accent/35 bg-gradient-to-b from-accent/20 to-accent/5 text-accent"
+          >
+            <Send className="size-5" />
+          </span>
+          <CardTitle className="flex flex-col gap-0.5 text-base font-montserrat font-normal">
+            <SpanLikeH3 title="Skontaktuj się z usługodawcą" />
+            <span className="text-xs text-muted-foreground">
+              Odpowiedź zwykle w ciągu 24 godzin
+            </span>
+          </CardTitle>
+        </CardHeader>
+
+        <div className="relative">
+          <CardContent
+            className={cn(
+              'p-6 sm:p-8',
+              !isAuthenticated && 'pointer-events-none select-none blur-sm',
+            )}
+            aria-hidden={!isAuthenticated}
+          >
+            <AnimatePresence mode="wait">
+              {submitted ? (
+                <SuccessPanel
+                  key="success"
+                  title="Wiadomość wysłana!"
+                  description="Usługodawca wkrótce się z Tobą skontaktuje. Sprawdź swoją skrzynkę email — wysłaliśmy Ci potwierdzenie."
+                  onReset={() => {
+                    setSubmitted(false)
+                    form.reset()
+                  }}
                 />
-
-                {/* Name */}
-                <FormField
-                  control={form.control}
-                  name="senderName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{config.nameLabel}</FormLabel>
-                      <FormControl>
-                        <Input placeholder={config.namePlaceholder} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Email */}
-                <FormField
-                  control={form.control}
-                  name="senderEmail"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Twój adres email</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="kontakt@example.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Message */}
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Wiadomość</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={config.messagePlaceholder}
-                          rows={5}
-                          className="resize-none"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Root error */}
-                {form.formState.errors.root && (
-                  <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>
-                )}
-
-                <Button
-                  type="submit"
-                  disabled={form.formState.isSubmitting}
-                  className="w-full gap-2 max-w-fit"
+              ) : (
+                <motion.div
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  {form.formState.isSubmitting ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" />
-                      Wysyłanie…
-                    </>
-                  ) : (
-                    <>
-                      <Send className="size-4" />
-                      Wyślij wiadomość
-                    </>
-                  )}
-                </Button>
-              </form>
-            </Form>
-            </motion.div>
-          )}
-          </AnimatePresence>
-        </CardContent>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="space-y-6"
+                    >
+                      <div className="space-y-2">
+                        <p className="text-sm text-muted-foreground">Typ wiadomości</p>
+                        <TypeSelector
+                          options={TYPE_OPTIONS}
+                          value={selectedType}
+                          onChange={(v) => form.setValue('type', v)}
+                          layoutId="contact-offer-type"
+                        />
+                      </div>
 
-        {/* Auth overlay */}
-        {!isAuthenticated && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-background/30 z-10">
-            <LockKeyhole className="size-8 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground font-medium text-center px-4">
-              Zaloguj się, aby skontaktować się z usługodawcą
-            </p>
-            <Button size="sm" asChild>
-              <Link href="/auth/sign-in">Zaloguj się</Link>
-            </Button>
-          </div>
-        )}
-      </div>
-    </Card>
+                      <FormTextField
+                        control={form.control}
+                        name="senderName"
+                        label="Twoje imię i nazwisko"
+                        placeholder="np. Jan Kowalski"
+                        icon={UserRound}
+                        autoComplete="name"
+                      />
+
+                      <FormTextField
+                        control={form.control}
+                        name="senderEmail"
+                        label="Twój adres email"
+                        placeholder="kontakt@example.com"
+                        type="email"
+                        icon={Mail}
+                        autoComplete="email"
+                      />
+
+                      <FormTextareaField
+                        control={form.control}
+                        name="message"
+                        label="Wiadomość"
+                        placeholder={MESSAGE_PLACEHOLDERS[selectedType]}
+                        rows={5}
+                        maxLength={MESSAGE_MAX}
+                        showCounter
+                      />
+
+                      {form.formState.errors.root && (
+                        <p
+                          role="alert"
+                          className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+                        >
+                          {form.formState.errors.root.message}
+                        </p>
+                      )}
+
+                      <div className="pt-1">
+                        <SendButton isSubmitting={form.formState.isSubmitting} />
+                      </div>
+                    </form>
+                  </Form>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </CardContent>
+
+          {!isAuthenticated && <AuthOverlay />}
+        </div>
+      </Card>
     </motion.div>
   )
 }
