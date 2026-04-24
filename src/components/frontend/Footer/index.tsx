@@ -228,7 +228,7 @@ export default function Footer() {
             {
               header: 'Dla użytkowników',
               links: [
-                { href: '/ogłoszenia', label: 'Ogłoszenia', todo: true },
+                { href: '/ogloszenia', label: 'Ogłoszenia' },
                 { href: '/auth/sign-in', label: 'Tworzenie konta klienta' },
                 { href: '/faq', label: 'Centrum Pomocy / FAQ', todo: true },
                 { href: '/app', label: 'Panel Klienta' },
