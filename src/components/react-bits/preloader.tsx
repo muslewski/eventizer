@@ -88,6 +88,9 @@ export interface PreloaderProps {
 
   /** Direction stairs move when revealing */
   stairsRevealDirection?: "up" | "down";
+
+  /** Content rendered centered above the variant (e.g. brand mark). Sits below loadingText. */
+  centerContent?: React.ReactNode;
 }
 
 const Preloader: React.FC<PreloaderProps> = ({
@@ -119,6 +122,7 @@ const Preloader: React.FC<PreloaderProps> = ({
   stairCount = 10,
   stairsRevealFrom = "left",
   stairsRevealDirection = "up",
+  centerContent,
 }) => {
   const [progress, setProgress] = useState(loading ? 0 : 100);
   const [showPreloader, setShowPreloader] = useState(loading);
@@ -240,6 +244,22 @@ const Preloader: React.FC<PreloaderProps> = ({
     showPreloader,
   ]);
 
+  const renderCenterContent = () => {
+    if (!centerContent) return null;
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.4, ease: [0.65, 0, 0.35, 1] }}
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{ zIndex: zIndex + 2 }}
+      >
+        {centerContent}
+      </motion.div>
+    );
+  };
+
   const renderLoadingText = () => {
     const words = loadingText.split(" ");
 
@@ -333,11 +353,12 @@ const Preloader: React.FC<PreloaderProps> = ({
             }}
           >
             {!bgColor && (
-              <div className="w-full h-full bg-black dark:bg-[#5227FF]" />
+              <div className="w-full h-full bg-white dark:bg-[#080808]" />
             )}
           </motion.div>
         ))}
         {renderLoadingText()}
+        {renderCenterContent()}
       </div>
     );
   };
@@ -446,7 +467,7 @@ const Preloader: React.FC<PreloaderProps> = ({
           }}
           className={cn(
             "rounded-full aspect-square",
-            bgColor ? "" : "bg-black dark:bg-[#5227FF]",
+            bgColor ? "" : "bg-white dark:bg-[#080808]",
           )}
           style={{
             width: "300vmax",
@@ -455,6 +476,7 @@ const Preloader: React.FC<PreloaderProps> = ({
           }}
         />
         {renderLoadingText()}
+        {renderCenterContent()}
       </div>
     );
   };
@@ -493,10 +515,11 @@ const Preloader: React.FC<PreloaderProps> = ({
           style={{ backgroundColor: bgColor || undefined }}
         >
           {!bgColor && (
-            <div className="w-full h-full bg-black dark:bg-[#5227FF]" />
+            <div className="w-full h-full bg-white dark:bg-[#080808]" />
           )}
         </motion.div>
         {renderLoadingText()}
+        {renderCenterContent()}
       </div>
     );
   };
@@ -536,7 +559,7 @@ const Preloader: React.FC<PreloaderProps> = ({
           style={{ backgroundColor: bgColor || undefined }}
         >
           {!bgColor && (
-            <div className="w-full h-full bg-black dark:bg-[#5227FF]" />
+            <div className="w-full h-full bg-white dark:bg-[#080808]" />
           )}
         </motion.div>
 
@@ -558,10 +581,11 @@ const Preloader: React.FC<PreloaderProps> = ({
           style={{ backgroundColor: bgColor || undefined }}
         >
           {!bgColor && (
-            <div className="w-full h-full bg-black dark:bg-[#5227FF]" />
+            <div className="w-full h-full bg-white dark:bg-[#080808]" />
           )}
         </motion.div>
         {renderLoadingText()}
+        {renderCenterContent()}
       </div>
     );
   };
