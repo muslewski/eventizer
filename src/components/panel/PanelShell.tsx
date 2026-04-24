@@ -24,12 +24,12 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
         <SquircleShift
           width="100%"
           height="100%"
-          speed={0.4}
-          waveSpeed={0.45}
-          waveIntensity={0.65}
+          speed={0.18}
+          waveSpeed={0.22}
+          waveIntensity={0.5}
           colorTint="#d28c08"
           darkBackground="#080808"
-          brightness={0.95}
+          brightness={0.85}
         />
       </div>
 
