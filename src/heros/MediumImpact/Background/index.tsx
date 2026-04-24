@@ -26,7 +26,7 @@ const lines: LineConfig[] = [
 // import dynamic from 'next/dynamic'
 
 // Lazy load LightRays to prevent blocking initial render
-const LightRays = dynamic(() => import('@/components/react-bits/LightRays'), { ssr: false })
+const LightRays = dynamic(() => import('@/components/react-bits/LightRays'))
 const BackgroundVideo = dynamic(() => import('@/components/heros/BackgroundVideo'))
 
 interface BackgroundProps {
