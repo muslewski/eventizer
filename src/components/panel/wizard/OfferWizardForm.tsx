@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
@@ -168,15 +168,7 @@ export function OfferWizardForm({
   )
   const [content, setContent] = useState<any>(initialData?.content ?? '')
 
-  const {
-    control,
-    watch,
-    setValue,
-    setError,
-    getValues,
-    trigger,
-    formState: { errors },
-  } = useForm<OfferFormData>({
+  const formMethods = useForm<OfferFormData>({
     resolver: zodResolver(offerSchema) as any,
     defaultValues: {
       title: initialData?.title ?? '',
@@ -202,6 +194,16 @@ export function OfferWizardForm({
       videoAspectRatio: initialData?.videoAspectRatio ?? '16:9',
     },
   })
+
+  const {
+    control,
+    watch,
+    setValue,
+    setError,
+    getValues,
+    trigger,
+    formState: { errors },
+  } = formMethods
 
   const validateCurrentStep = async (): Promise<boolean> => {
     const values = getValues()
@@ -391,6 +393,7 @@ export function OfferWizardForm({
   })
 
   return (
+    <FormProvider {...formMethods}>
     <div className="flex flex-col gap-6">
       {/* Header with progress */}
       <PanelPageHeader
@@ -519,5 +522,6 @@ export function OfferWizardForm({
         </div>
       </div>
     </div>
+    </FormProvider>
   )
 }
