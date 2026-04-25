@@ -2,50 +2,46 @@ import { Offer } from '@/payload-types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ExternalLink, GlobeIcon, LockKeyhole } from 'lucide-react'
+import { FaFacebook, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa6'
+import type { IconType } from 'react-icons'
+import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
 
-// TikTok icon (not available in lucide-react)
-const TikTokIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-  </svg>
-)
-
-const socialMediaConfig = [
+const socialMediaConfig: {
+  key: 'website' | 'facebook' | 'instagram' | 'tiktok' | 'linkedin'
+  label: string
+  icon: LucideIcon | IconType
+  hoverClass: string
+}[] = [
   {
-    key: 'website' as const,
+    key: 'website',
     label: 'Strona internetowa',
     icon: GlobeIcon,
     hoverClass: 'hover:bg-foreground/10 hover:border-foreground/40',
   },
   {
-    key: 'facebook' as const,
+    key: 'facebook',
     label: 'Facebook',
-    icon: GlobeIcon,
+    icon: FaFacebook,
     hoverClass: 'hover:bg-[#1877F2]/10 hover:border-[#1877F2]/40 hover:text-[#1877F2]',
   },
   {
-    key: 'instagram' as const,
+    key: 'instagram',
     label: 'Instagram',
-    icon: GlobeIcon,
+    icon: FaInstagram,
     hoverClass: 'hover:bg-[#E4405F]/10 hover:border-[#E4405F]/40 hover:text-[#E4405F]',
   },
   {
-    key: 'tiktok' as const,
+    key: 'tiktok',
     label: 'TikTok',
-    icon: TikTokIcon,
+    icon: FaTiktok,
     hoverClass: 'hover:bg-foreground/10 hover:border-foreground/40',
   },
   {
-    key: 'linkedin' as const,
+    key: 'linkedin',
     label: 'LinkedIn',
-    icon: GlobeIcon,
+    icon: FaLinkedin,
     hoverClass: 'hover:bg-[#0A66C2]/10 hover:border-[#0A66C2]/40 hover:text-[#0A66C2]',
   },
 ]
