@@ -35,9 +35,20 @@ export const VideoClient: React.FC<VideoClientProps> = ({
   const handlePlay = useCallback(() => {
     const video = videoRef.current
     if (!video) return
-    video.play()
     setIsPlaying(true)
     setHasStarted(true)
+    // play() returns a Promise that rejects with AbortError if the element
+    // unmounts mid-load (route nav, AnimatePresence exit, StrictMode double
+    // mount). Swallow expected aborts; surface the rest for debugging.
+    void video.play().catch((err: unknown) => {
+      const isAbort =
+        err instanceof DOMException &&
+        (err.name === 'AbortError' || err.name === 'NotAllowedError')
+      if (!isAbort) {
+        // eslint-disable-next-line no-console
+        console.warn('[VideoBlock] play() failed:', err)
+      }
+    })
   }, [])
 
   const handleVideoPause = useCallback(() => {
@@ -82,7 +93,7 @@ export const VideoClient: React.FC<VideoClientProps> = ({
                 onEnded={() => setIsPlaying(false)}
                 aria-label={videoTitle}
               >
-                <source src={`${videoUrl}#t=0.001`} type={mimeType} />
+                <source src={videoUrl} type={mimeType} />
                 Your browser does not support the video tag.
               </video>
             </AspectRatio>
