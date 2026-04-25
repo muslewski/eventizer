@@ -4,7 +4,7 @@ import { useMemo, useRef, useState, useCallback } from 'react'
 import type { Offer, OfferVideoUpload } from '@/payload-types'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import { Clapperboard, Play } from 'lucide-react'
-import { motion, AnimatePresence } from 'motion/react'
+import { AnimatePresence, motion, useInView } from 'motion/react'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { cn } from '@/lib/utils'
 import { getVideoAspectConfig } from '@/lib/getVideoAspectClasses'
@@ -15,10 +15,18 @@ interface OfferVideoProps {
 }
 
 export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
+  const sectionRef = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
   const [videoError, setVideoError] = useState(false)
+
+  // Defer mounting the <video> element (and therefore the proxy fetch +
+  // metadata download) until the section is within ~300px of the viewport.
+  // Heavy videos no longer block initial paint when they're far below the
+  // fold; once the user scrolls close, the first frame loads in time to
+  // read as a poster.
+  const isNearViewport = useInView(sectionRef, { once: true, margin: '300px' })
 
   const videoData = useMemo(() => {
     if (!offer.video) return null
@@ -82,6 +90,7 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
 
   return (
     <motion.section
+      ref={sectionRef}
       className="w-full flex flex-col items-center justify-center gap-5"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -115,6 +124,19 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
                 >
                   Spróbuj ponownie
                 </button>
+              </div>
+            </AspectRatio>
+          ) : !isNearViewport ? (
+            // Lazy placeholder — keeps layout stable but skips the proxy
+            // fetch + metadata download until the user scrolls close.
+            <AspectRatio ratio={numericRatio} className="relative bg-black flex items-center justify-center">
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-white/[0.02]"
+              />
+              <div className="relative flex flex-col items-center gap-2 text-white/40">
+                <Clapperboard className="size-10 sm:size-12" strokeWidth={1.4} />
+                <span className="text-xs uppercase tracking-widest">Film promocyjny</span>
               </div>
             </AspectRatio>
           ) : (
