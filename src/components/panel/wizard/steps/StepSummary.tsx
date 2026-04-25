@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { ShortDescriptionGenerator } from './ShortDescriptionGenerator'
+import { SlugField } from '@/components/panel/wizard/SlugField'
 import { formatOfferPrice } from '@/lib/formatOfferPrice'
 import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
 
@@ -18,6 +19,12 @@ interface StepSummaryProps {
   galleryIds: number[]
   videoId: number | null
   categories?: any[]
+  /** When editing, the existing offer id — passed through so SlugField's
+   *  live availability check can exclude the offer's own current link. */
+  offerId?: number
+  /** Subscribed title value, so SlugField can re-derive when the user
+   *  hasn't manually edited the slug. */
+  title?: string
 }
 
 function resolveCategoryLabel(tree: any[] | undefined, value: string | undefined): string {
@@ -47,8 +54,11 @@ export function StepSummary({
   galleryIds,
   videoId,
   categories,
+  offerId,
+  title,
 }: StepSummaryProps) {
   const values = getValues()
+  const liveTitle = title ?? values.title ?? ''
 
   const priceDisplay = formatOfferPrice({
     hasPriceRange: values.hasPriceRange,
@@ -61,6 +71,17 @@ export function StepSummary({
 
   return (
     <div className="flex flex-col gap-6">
+      {/* Public link (slug) — shown above the short description so the user
+          confirms the URL before they hit publish. */}
+      <SlugField
+        control={control}
+        name="link"
+        title={liveTitle}
+        currentOfferId={offerId}
+      />
+
+      <Separator />
+
       {/* AI-powered short description */}
       <ShortDescriptionGenerator
         control={control}

@@ -1,8 +1,15 @@
 import { z } from 'zod'
 
+const SLUG_REGEX = /^[a-z0-9]+(-[a-z0-9]+)*$/
+
 export const offerSchema = z
   .object({
     title: z.string().min(1, 'Tytuł jest wymagany').max(150, 'Tytuł jest za długi'),
+    link: z
+      .string()
+      .min(2, 'Link musi mieć co najmniej 2 znaki')
+      .max(80, 'Link nie może przekraczać 80 znaków')
+      .regex(SLUG_REGEX, 'Tylko małe litery, cyfry i myślniki (np. fotolustro-drewniane)'),
     category: z.string().min(1, 'Kategoria jest wymagana'),
     shortDescription: z.string().max(500, 'Maksymalnie 500 znaków').optional().default(''),
     hasPriceRange: z.boolean().default(false),
