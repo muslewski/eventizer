@@ -72,6 +72,8 @@ export function AvatarDropdown({
   const [firstOfferSlug, setFirstOfferSlug] = useState<string | null>(null)
   const [offerCount, setOfferCount] = useState<number>(0)
   const [adminView, setAdminView] = useState<'admin' | 'provider'>('admin')
+  const [open, setOpen] = useState(false)
+  const closeMenu = () => setOpen(false)
 
   const isClient = !isServiceProvider && !isModerator && !isAdmin
   // Base plural label on how many offers the user actually has
@@ -111,7 +113,7 @@ export function AvatarDropdown({
   const isAdminVariant = variant === 'admin'
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant={noBorder ? 'ghost' : 'outline'}
@@ -184,26 +186,26 @@ export function AvatarDropdown({
                 >
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
-                      <Link href="/app" prefetch className="cursor-pointer">
+                      <Link href="/app" prefetch onClick={closeMenu} className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
                         Dashboard
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/app/collections/offers" prefetch className="cursor-pointer">
+                      <Link href="/app/collections/offers" prefetch onClick={closeMenu} className="cursor-pointer">
                         <FileText className="mr-2 h-4 w-4" />
                         Oferty
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/app/collections/users" prefetch className="cursor-pointer">
+                      <Link href="/app/collections/users" prefetch onClick={closeMenu} className="cursor-pointer">
                         <Users className="mr-2 h-4 w-4" />
                         Użytkownicy
                       </Link>
                     </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem asChild>
-                        <Link href="/app/collections/pages" prefetch className="cursor-pointer">
+                        <Link href="/app/collections/pages" prefetch onClick={closeMenu} className="cursor-pointer">
                           <FileEdit className="mr-2 h-4 w-4" />
                           Strony
                         </Link>
@@ -221,19 +223,19 @@ export function AvatarDropdown({
                 >
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
-                      <Link href="/panel/dashboard" prefetch className="cursor-pointer">
+                      <Link href="/panel/dashboard" prefetch onClick={closeMenu} className="cursor-pointer">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
                         Panel główny
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/panel/oferty" prefetch className="cursor-pointer">
+                      <Link href="/panel/oferty" prefetch onClick={closeMenu} className="cursor-pointer">
                         <FileText className="mr-2 h-4 w-4" />
                         Oferty
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
+                      <Link href="/panel/plan-subskrypcji" prefetch onClick={closeMenu} className="cursor-pointer">
                         <Briefcase className="mr-2 h-4 w-4" />
                         Plan subskrypcji
                       </Link>
@@ -249,7 +251,7 @@ export function AvatarDropdown({
         {isServiceProvider && !isAdmin && !isModerator && (
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link href="/panel/dashboard" prefetch className="cursor-pointer">
+              <Link href="/panel/dashboard" prefetch onClick={closeMenu} className="cursor-pointer">
                 <LayoutDashboard className="mr-2 h-4 w-4" />
                 Panel główny
               </Link>
@@ -262,6 +264,7 @@ export function AvatarDropdown({
                     : '/panel/oferty'
                 }
                 prefetch
+                onClick={closeMenu}
                 className="cursor-pointer"
               >
                 <FileText className="mr-2 h-4 w-4" />
@@ -270,7 +273,7 @@ export function AvatarDropdown({
             </DropdownMenuItem>
             {hasActiveSubscription === true && (
               <DropdownMenuItem asChild>
-                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
+                <Link href="/panel/plan-subskrypcji" prefetch onClick={closeMenu} className="cursor-pointer">
                   <Briefcase className="mr-2 h-4 w-4" />
                   Zmień plan
                 </Link>
@@ -278,7 +281,7 @@ export function AvatarDropdown({
             )}
             {hasActiveSubscription === false && (
               <DropdownMenuItem asChild>
-                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer text-destructive focus:text-destructive">
+                <Link href="/panel/plan-subskrypcji" prefetch onClick={closeMenu} className="cursor-pointer text-destructive focus:text-destructive">
                   <RefreshCw className="mr-2 h-4 w-4" />
                   Wznów subskrypcję
                 </Link>
@@ -292,7 +295,7 @@ export function AvatarDropdown({
           <DropdownMenuGroup>
             {hasActiveSubscription === true && (
               <DropdownMenuItem asChild>
-                <Link href="/panel/dashboard" prefetch className="cursor-pointer">
+                <Link href="/panel/dashboard" prefetch onClick={closeMenu} className="cursor-pointer">
                   <Briefcase className="mr-2 h-4 w-4" />
                   Zarządzaj ofertami
                 </Link>
@@ -300,7 +303,7 @@ export function AvatarDropdown({
             )}
             {hasActiveSubscription !== true && !isReturning && (
               <DropdownMenuItem asChild>
-                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer">
+                <Link href="/panel/plan-subskrypcji" prefetch onClick={closeMenu} className="cursor-pointer">
                   <Briefcase className="mr-2 h-4 w-4" />
                   Zostań usługodawcą
                 </Link>
@@ -308,7 +311,7 @@ export function AvatarDropdown({
             )}
             {hasActiveSubscription === false && isReturning && (
               <DropdownMenuItem asChild>
-                <Link href="/panel/plan-subskrypcji" prefetch className="cursor-pointer text-destructive focus:text-destructive">
+                <Link href="/panel/plan-subskrypcji" prefetch onClick={closeMenu} className="cursor-pointer text-destructive focus:text-destructive">
                   <RefreshCw className="mr-2 h-4 w-4" />
                   Wznów subskrypcję
                 </Link>
@@ -323,26 +326,26 @@ export function AvatarDropdown({
         <DropdownMenuGroup>
           {showHomeLink && (
             <DropdownMenuItem asChild>
-              <Link href="/" prefetch className="cursor-pointer">
+              <Link href="/" prefetch onClick={closeMenu} className="cursor-pointer">
                 <Home className="mr-2 h-4 w-4" />
                 Strona główna
               </Link>
             </DropdownMenuItem>
           )}
           <DropdownMenuItem asChild>
-            <Link href="/ogloszenia#oferty" prefetch className="cursor-pointer">
+            <Link href="/ogloszenia#oferty" prefetch onClick={closeMenu} className="cursor-pointer">
               <Megaphone className="mr-2 h-4 w-4" />
               Lista ogłoszeń
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/panel/konto" prefetch className="cursor-pointer">
+            <Link href="/panel/konto" prefetch onClick={closeMenu} className="cursor-pointer">
               <Settings className="mr-2 h-4 w-4" />
               Konto
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/panel/pomoc" prefetch className="cursor-pointer">
+            <Link href="/panel/pomoc" prefetch onClick={closeMenu} className="cursor-pointer">
               <HelpCircle className="mr-2 h-4 w-4" />
               Pomoc
             </Link>
@@ -353,7 +356,10 @@ export function AvatarDropdown({
 
         {onLogout ? (
           <DropdownMenuItem
-            onClick={onLogout}
+            onClick={() => {
+              closeMenu()
+              onLogout()
+            }}
             className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950"
           >
             <LogOut className="mr-2 h-4 w-4" />
@@ -363,6 +369,7 @@ export function AvatarDropdown({
           <DropdownMenuItem asChild>
             <Link
               href="/app/sign-out-redirect"
+              onClick={closeMenu}
               className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950"
             >
               <LogOut className="mr-2 h-4 w-4" />
