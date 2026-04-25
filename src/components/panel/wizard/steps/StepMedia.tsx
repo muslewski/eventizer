@@ -67,6 +67,11 @@ export function StepMedia({
         <FieldLabel>Film promocyjny</FieldLabel>
         <FieldDescription>Krótki film promocyjny (max 50MB)</FieldDescription>
         <VideoUpload value={video} onChange={onVideoChange} />
+        <p className="text-xs text-muted-foreground/80 mt-2 leading-relaxed">
+          Wskazówka: filmy do <span className="font-medium text-foreground/80">5 MB</span> ładują
+          się najszybciej. Większe pliki mogą spowolnić ładowanie strony oferty —
+          rozważ kompresję, jeśli Twój film jest dużo cięższy.
+        </p>
       </Field>
 
       {/* Video aspect ratio — only when video is uploaded */}
