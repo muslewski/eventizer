@@ -13,6 +13,19 @@ async function getAuthenticatedUser() {
   return session.user
 }
 
+/**
+ * Map a Payload / Drizzle save error to a friendly Polish message. Today the
+ * only conflict that has a user-meaningful retry is the unique slug; the
+ * rest fall back to a generic message.
+ */
+function describeSaveError(err: unknown, fallback: string): string {
+  const raw = err instanceof Error ? `${err.message}\n${err.stack ?? ''}` : String(err)
+  if (/offers_link_idx|"link"|unique constraint.*link/i.test(raw)) {
+    return 'Ten link jest już zajęty — wybierz inny.'
+  }
+  return fallback
+}
+
 export async function getOffers(
   userId: number,
   page: number = 1,
@@ -102,9 +115,10 @@ export async function createOffer(data: Partial<Offer>) {
     return { success: true as const, data: result }
   } catch (err) {
     console.error('[createOffer]', err)
-    const message =
-      err instanceof Error ? err.message : 'Nie udało się utworzyć oferty'
-    return { success: false as const, error: message }
+    return {
+      success: false as const,
+      error: describeSaveError(err, 'Nie udało się utworzyć oferty'),
+    }
   }
 }
 
@@ -125,7 +139,10 @@ export async function updateOffer(id: number, data: Partial<Offer>) {
     return { success: true as const, data: result }
   } catch (err) {
     console.error('[updateOffer]', err)
-    return { success: false as const, error: 'Nie udało się zaktualizować oferty' }
+    return {
+      success: false as const,
+      error: describeSaveError(err, 'Nie udało się zaktualizować oferty'),
+    }
   }
 }
 

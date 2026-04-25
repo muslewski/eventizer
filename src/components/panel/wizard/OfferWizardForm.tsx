@@ -47,6 +47,7 @@ const STEP_LABELS = [
 // Same shape as the zod rule in offerSchema.
 const PHONE_RE = /^(?:\+48)?\s*\d{3}(?:\s*\d{3}){2}$/
 const EMAIL_RE = /^\S+@\S+\.\S+$/
+const LINK_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/
 
 /**
  * Pure sync per-step validity check. Reads the same sources as the legacy
@@ -79,7 +80,12 @@ function computeStepValidity(
       const emailOk = !!values.email && EMAIL_RE.test(values.email)
       return phoneOk && emailOk
     }
-    case 5:
+    case 5: {
+      // Finalizacja — slug must be present and well-formed. Uniqueness is
+      // checked live in SlugField + enforced by the backend on submit.
+      const link = values.link?.trim() ?? ''
+      return link.length >= 2 && LINK_RE.test(link)
+    }
     default:
       return true
   }
@@ -174,6 +180,7 @@ export function OfferWizardForm({
     resolver: zodResolver(offerSchema) as any,
     defaultValues: {
       title: initialData?.title ?? '',
+      link: initialData?.link ?? '',
       category: initialData?.category ?? userServiceCategory ?? '',
       shortDescription: initialData?.shortDescription ?? '',
       hasPriceRange: initialData?.hasPriceRange ?? false,
@@ -309,6 +316,10 @@ export function OfferWizardForm({
 
       const offerData = {
         title: formData.title,
+        link: formData.link,
+        // Tell Payload's slugField NOT to overwrite the slug we're sending —
+        // the user's edit on Finalizacja step is the source of truth.
+        generateSlug: false,
         category: formData.category,
         shortDescription: formData.shortDescription,
         hasPriceRange: formData.hasPriceRange,
@@ -461,6 +472,8 @@ export function OfferWizardForm({
             galleryIds={galleryImages.map((g) => g.id)}
             videoId={video?.id ?? null}
             categories={categories}
+            offerId={offerId}
+            title={watchedValues.title}
           />
         )}
       </div>
