@@ -20,11 +20,6 @@ const generateURL: GenerateURL<Page> = ({ doc }) => {
 export const plugins: Plugin[] = [
   vercelBlobStorage({
     clientUploads: true,
-    // Append a short random suffix to every uploaded filename so two users
-    // submitting the same file (e.g. IMG_1234.JPG, photo.jpg) don't collide
-    // inside a shared prefix. Original filename stays readable in the admin
-    // panel — only the stored blob URL gets the suffix.
-    addRandomSuffix: true,
     collections: {
       media: {
         prefix: 'Media',
