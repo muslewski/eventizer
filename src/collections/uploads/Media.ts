@@ -2,7 +2,6 @@ import { adminOrHigher, moderatorOrHigher, moderatorOrHigherOrSelf, publicAccess
 import { fieldRoleOrHigher, isClientRoleEqual, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
 import type { CollectionConfig } from 'payload'
-import { ad } from 'vitest/dist/chunks/reporters.d.DL9pg5DB.js'
 
 export const Media: CollectionConfig = {
   slug: 'media',
