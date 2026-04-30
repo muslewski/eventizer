@@ -63,12 +63,10 @@ export function PreloaderProvider({ children }: { children: React.ReactNode }) {
         return
       }
       if (dest.origin !== window.location.origin) return
-      if (
-        dest.pathname === window.location.pathname &&
-        dest.search === window.location.search
-      ) {
-        return
-      }
+      // Same-pathname clicks (pagination, filters, sort, anchor links) are
+      // in-page state changes — let the page-level handler manage them. The
+      // preloader is for navigations to a different page.
+      if (dest.pathname === window.location.pathname) return
 
       if (isPanelPath(dest.pathname) || isPanelPath(window.location.pathname)) {
         return
