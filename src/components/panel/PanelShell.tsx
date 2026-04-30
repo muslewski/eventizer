@@ -19,8 +19,10 @@ interface PanelShellProps {
 export function PanelShell({ user, lang, children }: PanelShellProps) {
   return (
     <>
-      {/* Fixed background — dark theme only, desktop only */}
-      <div className="fixed inset-0 z-0 pointer-events-none hidden dark:md:block">
+      {/* Fixed background — desktop only. SquircleShift switches its base
+          color internally based on resolvedTheme, so the same instance works
+          for light and dark. */}
+      <div className="fixed inset-0 z-0 pointer-events-none hidden md:block">
         <SquircleShift
           width="100%"
           height="100%"
@@ -28,6 +30,7 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
           waveSpeed={0.22}
           waveIntensity={0.5}
           colorTint="#d28c08"
+          lightBackground="#fafafa"
           darkBackground="#080808"
           brightness={0.85}
         />
