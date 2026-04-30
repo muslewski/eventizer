@@ -100,6 +100,21 @@ export const SubscriptionPlans: CollectionConfig = {
       },
     },
     {
+      name: 'maxOffers',
+      type: 'number',
+      required: false,
+      min: 1,
+      defaultValue: 1,
+      label: { en: 'Max Offers', pl: 'Limit Ofert' },
+      admin: {
+        position: 'sidebar',
+        description: {
+          en: 'How many offers a subscriber to this plan can own (drafts + published). Falls back to 1 if not set.',
+          pl: 'Ile ofert może mieć subskrybent tego planu (wersje robocze + opublikowane). Domyślnie 1, jeśli nie ustawione.',
+        },
+      },
+    },
+    {
       name: 'highlighted',
       type: 'checkbox',
       label: {
