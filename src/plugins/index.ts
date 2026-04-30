@@ -604,4 +604,54 @@ export const plugins: Plugin[] = [
       },
     },
   }),
+
+  /**
+   * Wraps the @payloadcms/plugin-stripe `afterDelete` hooks on Stripe-synced
+   * collections so they swallow "No such ..." errors. The plugin's own code
+   * acknowledges this gap (see node_modules/@payloadcms/plugin-stripe/dist/
+   * webhooks/handleDeleted.js): when a product.deleted webhook arrives, the
+   * plugin deletes the Payload doc, which fires the collection's afterDelete
+   * hook, which tries to delete the (already-gone) Stripe resource — Stripe
+   * 404s with "No such product" and the plugin throws an APIError that
+   * surfaces as an unhandled rejection. There's no skipSync escape for the
+   * delete path. We patch around it by replacing each afterDelete with a
+   * try/catch wrapper.
+   *
+   * Must run AFTER stripePlugin so we mutate the array stripePlugin produced.
+   */
+  (incomingConfig) => {
+    const STRIPE_SYNCED_SLUGS = ['subscription-plans', 'stripe-customers']
+    const isMissingResourceError = (err: unknown): boolean => {
+      const msg = err instanceof Error ? err.message : String(err)
+      return /No such (product|price|customer|plan|subscription|coupon)/i.test(msg)
+    }
+
+    return {
+      ...incomingConfig,
+      collections: incomingConfig.collections?.map((collection) => {
+        if (!STRIPE_SYNCED_SLUGS.includes(collection.slug)) return collection
+        const existing = collection.hooks?.afterDelete
+        if (!existing?.length) return collection
+        return {
+          ...collection,
+          hooks: {
+            ...collection.hooks,
+            afterDelete: existing.map((hook) => async (args: Parameters<typeof hook>[0]) => {
+              try {
+                return await hook(args)
+              } catch (err) {
+                if (isMissingResourceError(err)) {
+                  args.req?.payload?.logger?.info(
+                    `Stripe afterDelete on '${collection.slug}': resource already gone in Stripe, skipping (expected after a Stripe-initiated delete).`,
+                  )
+                  return
+                }
+                throw err
+              }
+            }),
+          },
+        }
+      }),
+    }
+  },
 ]
