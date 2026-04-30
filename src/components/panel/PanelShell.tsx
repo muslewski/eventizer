@@ -30,7 +30,7 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
           waveSpeed={0.22}
           waveIntensity={0.5}
           colorTint="#d28c08"
-          lightBackground="#fafafa"
+          lightBackground="#ffffff"
           darkBackground="#080808"
           brightness={0.85}
         />
