@@ -26,6 +26,33 @@ function describeSaveError(err: unknown, fallback: string): string {
   return fallback
 }
 
+async function isAtPublishedLimit(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  userId: number,
+  excludeOfferId?: number,
+): Promise<{ atLimit: boolean; max: number; published: number }> {
+  const user = await payload.findByID({
+    collection: 'users',
+    id: userId,
+    depth: 0,
+  })
+  const max = user?.maxOffers ?? 1
+
+  const published = await payload.find({
+    collection: 'offers',
+    where: {
+      user: { equals: userId },
+      _status: { equals: 'published' },
+      ...(excludeOfferId ? { id: { not_equals: excludeOfferId } } : {}),
+    },
+    limit: 0,
+    depth: 0,
+    overrideAccess: true,
+  })
+
+  return { atLimit: published.totalDocs >= max, max, published: published.totalDocs }
+}
+
 export async function getOffers(
   userId: number,
   page: number = 1,
@@ -101,7 +128,24 @@ export async function createOffer(data: Partial<Offer>) {
     const user = await getAuthenticatedUser()
     const payload = await getPayload({ config })
 
-    const isDraft = (data as any)._status === 'draft' || !(data as any)._status
+    const requestedStatus = (data as any)._status
+    const wantsPublish = requestedStatus === 'published'
+    let isDraft = requestedStatus === 'draft' || !requestedStatus
+
+    let savedAsDraftDueToLimit = false
+    let limitMax: number | null = null
+
+    // Pre-check: if user is publishing but already at the cap, save as draft
+    if (wantsPublish) {
+      const { atLimit, max } = await isAtPublishedLimit(payload, Number(user.id))
+      if (atLimit) {
+        savedAsDraftDueToLimit = true
+        limitMax = max
+        isDraft = true
+        ;(data as any)._status = 'draft'
+      }
+    }
+
     const result = await payload.create({
       collection: 'offers',
       data: {
@@ -111,6 +155,15 @@ export async function createOffer(data: Partial<Offer>) {
       draft: isDraft,
       overrideAccess: true,
     })
+
+    if (savedAsDraftDueToLimit) {
+      return {
+        success: true as const,
+        data: result,
+        savedAsDraftDueToLimit: true,
+        message: `Limit ofert opublikowanych (${limitMax}) został osiągnięty — oferta została zapisana jako wersja robocza.`,
+      }
+    }
 
     return { success: true as const, data: result }
   } catch (err) {
@@ -124,10 +177,31 @@ export async function createOffer(data: Partial<Offer>) {
 
 export async function updateOffer(id: number, data: Partial<Offer>) {
   try {
-    await getAuthenticatedUser()
+    const sessionUser = await getAuthenticatedUser()
     const payload = await getPayload({ config })
 
-    const isDraft = (data as any)._status === 'draft' || !(data as any)._status
+    const requestedStatus = (data as any)._status
+    const wantsPublish = requestedStatus === 'published'
+    let isDraft = requestedStatus === 'draft' || !requestedStatus
+
+    let savedAsDraftDueToLimit = false
+    let limitMax: number | null = null
+
+    if (wantsPublish) {
+      // Find owner. The action assumes the caller is updating their own offer.
+      const { atLimit, max } = await isAtPublishedLimit(
+        payload,
+        Number(sessionUser.id),
+        id,
+      )
+      if (atLimit) {
+        savedAsDraftDueToLimit = true
+        limitMax = max
+        isDraft = true
+        ;(data as any)._status = 'draft'
+      }
+    }
+
     const result = await payload.update({
       collection: 'offers',
       id,
@@ -135,6 +209,15 @@ export async function updateOffer(id: number, data: Partial<Offer>) {
       overrideAccess: true,
       draft: isDraft,
     })
+
+    if (savedAsDraftDueToLimit) {
+      return {
+        success: true as const,
+        data: result,
+        savedAsDraftDueToLimit: true,
+        message: `Limit ofert opublikowanych (${limitMax}) został osiągnięty — oferta została zapisana jako wersja robocza.`,
+      }
+    }
 
     return { success: true as const, data: result }
   } catch (err) {
@@ -194,17 +277,29 @@ export async function deleteOffer(id: number) {
 
 export async function toggleOfferStatus(id: number, currentStatus: string) {
   try {
-    await getAuthenticatedUser()
+    const sessionUser = await getAuthenticatedUser()
     const payload = await getPayload({ config })
 
     const newStatus = currentStatus === 'published' ? 'draft' : 'published'
 
+    if (newStatus === 'published') {
+      const { atLimit, max } = await isAtPublishedLimit(
+        payload,
+        Number(sessionUser.id),
+        id,
+      )
+      if (atLimit) {
+        return {
+          success: false as const,
+          error: `Limit ofert opublikowanych (${max}) został osiągnięty. Aby opublikować tę ofertę, najpierw przenieś inną do wersji roboczej.`,
+        }
+      }
+    }
+
     const result = await payload.update({
       collection: 'offers',
       id,
-      data: {
-        _status: newStatus,
-      } as Partial<Offer>,
+      data: { _status: newStatus } as Partial<Offer>,
       overrideAccess: true,
       draft: newStatus === 'draft',
     })
