@@ -6,6 +6,24 @@ import { getActiveSubscription } from '@/actions/stripe/getActiveSubscription'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
+type CategoryWriteData = {
+  serviceCategory?: string | null
+  serviceCategorySlug?: string | null
+}
+
+function buildCategoryWrite(
+  categoryNames: string[],
+  categorySlugs: string[],
+): CategoryWriteData {
+  if (categoryNames.length > 0 && categorySlugs.length > 0) {
+    return {
+      serviceCategory: categoryNames.join(' > '),
+      serviceCategorySlug: categorySlugs.join('/'),
+    }
+  }
+  return { serviceCategory: null, serviceCategorySlug: null }
+}
+
 export interface UpdateSubscriptionResult {
   success: boolean
   message: string
@@ -89,10 +107,7 @@ export async function updateSubscription({
         await payload.update({
           collection: 'users',
           id: userId,
-          data: {
-            serviceCategory: categoryNames.join(' > '),
-            serviceCategorySlug: categorySlugs.join('/'),
-          },
+          data: buildCategoryWrite(categoryNames, categorySlugs),
         })
 
         return {
@@ -106,10 +121,7 @@ export async function updateSubscription({
       await payload.update({
         collection: 'users',
         id: userId,
-        data: {
-          serviceCategory: categoryNames.join(' > '),
-          serviceCategorySlug: categorySlugs.join('/'),
-        },
+        data: buildCategoryWrite(categoryNames, categorySlugs),
       })
 
       return {
@@ -194,12 +206,13 @@ export async function updateSubscription({
     })
 
     // 8. Update user's category in database
+    const newMaxOffers = newPlan.docs[0]?.maxOffers ?? 1
     await payload.update({
       collection: 'users',
       id: userId,
       data: {
-        serviceCategory: categoryNames.join(' > '),
-        serviceCategorySlug: categorySlugs.join('/'),
+        ...buildCategoryWrite(categoryNames, categorySlugs),
+        maxOffers: newMaxOffers,
       },
     })
 
