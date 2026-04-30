@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useState } from 'react'
 import Image from 'next/image'
+import { motion, AnimatePresence, useReducedMotion, type Variants } from 'motion/react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -44,9 +45,18 @@ function CategoryIcon({ icon }: { icon?: { url?: string } | number | null }) {
   return <FolderIcon className="size-8 shrink-0 text-accent/60" />
 }
 
+// Card-sized spring used by AnimatedCard pattern.
+const cardSpring = { type: 'spring' as const, stiffness: 300, damping: 24, mass: 0.8 }
+// Snappier spring for small UI affordances.
+const snappySpring = { type: 'spring' as const, stiffness: 400, damping: 28, mass: 0.6 }
+
 export function CategoryPicker({ categories, value, onChange }: CategoryPickerProps) {
   const [selectedPath, setSelectedPath] = React.useState<CategoryItem[]>([])
   const [searchQuery, setSearchQuery] = React.useState('')
+  // Direction the user is moving through the hierarchy. Determines whether the
+  // outgoing list slides left (forward / drilling in) or right (back / reset).
+  const [navDirection, setNavDirection] = React.useState<'forward' | 'backward'>('forward')
+  const shouldReduceMotion = useReducedMotion()
 
   // Initialize from value if provided. Accepts either the modern slug path
   // ("muzyka/dj/dj-weselny") or legacy name path ("Muzyka > DJ > DJ Weselny")
@@ -121,6 +131,7 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
   }
 
   const handleCategorySelect = (category: CategoryItem) => {
+    setNavDirection('forward')
     const newPath = [...selectedPath, category]
     setSelectedPath(newPath)
     setSearchQuery('')
@@ -143,6 +154,7 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
   }
 
   const handleBreadcrumbClick = (index: number) => {
+    setNavDirection('backward')
     const newPath = selectedPath.slice(0, index)
     setSelectedPath(newPath)
     setSearchQuery('')
@@ -150,6 +162,7 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
   }
 
   const resetSelection = () => {
+    setNavDirection('backward')
     setSelectedPath([])
     setSearchQuery('')
     onChange('')
@@ -159,24 +172,95 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
     cat.name.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
+  // ===== Motion variants (no-op when reduced-motion is requested) =====
+
+  const listContainerVariants: Variants = shouldReduceMotion
+    ? {}
+    : {
+        enter: (dir: 'forward' | 'backward') => ({
+          opacity: 0,
+          x: dir === 'forward' ? 24 : -24,
+        }),
+        center: {
+          opacity: 1,
+          x: 0,
+          transition: { ...snappySpring, staggerChildren: 0.03, delayChildren: 0.04 },
+        },
+        exit: (dir: 'forward' | 'backward') => ({
+          opacity: 0,
+          x: dir === 'forward' ? -24 : 24,
+          transition: { duration: 0.18, ease: [0.25, 0.4, 0.25, 1] },
+        }),
+      }
+
+  const itemVariants: Variants = shouldReduceMotion
+    ? {}
+    : {
+        enter: { opacity: 0, y: 6, scale: 0.98 },
+        center: { opacity: 1, y: 0, scale: 1, transition: snappySpring },
+      }
+
+  // ===== Selection complete view =====
+
   if (isSelectionComplete()) {
     return (
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3">
+      <motion.div
+        layout
+        className="flex flex-col gap-3"
+        initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={cardSpring}
+      >
+        <motion.div
+          className="flex flex-wrap items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3"
+          initial="enter"
+          animate="center"
+          variants={
+            shouldReduceMotion
+              ? {}
+              : {
+                  enter: { transition: { staggerChildren: 0 } },
+                  center: { transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
+                }
+          }
+        >
           {selectedPath.map((category, index) => (
             <React.Fragment key={category.id}>
-              <Badge
-                variant="outline"
-                className="border-primary/40 px-3 py-1.5 text-sm font-medium text-primary"
+              <motion.div
+                variants={
+                  shouldReduceMotion
+                    ? {}
+                    : {
+                        enter: { opacity: 0, y: -6, scale: 0.9 },
+                        center: { opacity: 1, y: 0, scale: 1, transition: snappySpring },
+                      }
+                }
               >
-                {category.name}
-              </Badge>
+                <Badge
+                  variant="outline"
+                  className="border-primary/40 px-3 py-1.5 text-sm font-medium text-primary"
+                >
+                  {category.name}
+                </Badge>
+              </motion.div>
               {index < selectedPath.length - 1 && (
-                <ChevronRight className="size-4 text-primary/60" />
+                <motion.span
+                  variants={
+                    shouldReduceMotion
+                      ? {}
+                      : {
+                          enter: { opacity: 0, x: -4 },
+                          center: { opacity: 1, x: 0, transition: snappySpring },
+                        }
+                  }
+                  className="inline-flex"
+                >
+                  <ChevronRight className="size-4 text-primary/60" />
+                </motion.span>
               )}
             </React.Fragment>
           ))}
-        </div>
+        </motion.div>
         <Button
           type="button"
           variant="outline"
@@ -187,48 +271,71 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
           <RotateCcw className="size-4" data-icon="inline-start" />
           Zmień kategorię
         </Button>
-      </div>
+      </motion.div>
     )
   }
+
+  // ===== Browsing view =====
 
   return (
     <div className="flex flex-col gap-3">
       {/* Breadcrumb path */}
-      {selectedPath.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border p-3">
-          {selectedPath.map((category, index) => (
-            <React.Fragment key={category.id}>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => handleBreadcrumbClick(index)}
-                className="h-auto px-2 py-1 text-sm font-medium text-primary"
-              >
-                {category.name}
-              </Button>
-              {index < selectedPath.length - 1 && (
-                <ChevronRight className="size-4 text-muted-foreground" />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {selectedPath.length > 0 && (
+          <motion.div
+            key="breadcrumb"
+            layout
+            className="flex flex-wrap items-center gap-2 rounded-lg border p-3"
+            initial={shouldReduceMotion ? false : { opacity: 0, y: -6, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto' }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -6, height: 0 }}
+            transition={snappySpring}
+          >
+            {selectedPath.map((category, index) => (
+              <React.Fragment key={category.id}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleBreadcrumbClick(index)}
+                  className="h-auto px-2 py-1 text-sm font-medium text-primary"
+                >
+                  {category.name}
+                </Button>
+                {index < selectedPath.length - 1 && (
+                  <ChevronRight className="size-4 text-muted-foreground" />
+                )}
+              </React.Fragment>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Back button + Search */}
-      <div className="flex items-center gap-2">
-        {selectedPath.length > 0 && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => handleBreadcrumbClick(selectedPath.length - 1)}
-            className="shrink-0"
-          >
-            <ChevronLeft data-icon="inline-start" />
-            Wstecz
-          </Button>
-        )}
+      <motion.div layout className="flex items-center gap-2">
+        <AnimatePresence initial={false}>
+          {selectedPath.length > 0 && (
+            <motion.div
+              key="back-button"
+              initial={shouldReduceMotion ? false : { opacity: 0, x: -8, width: 0 }}
+              animate={{ opacity: 1, x: 0, width: 'auto' }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -8, width: 0 }}
+              transition={snappySpring}
+              className="overflow-hidden"
+            >
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handleBreadcrumbClick(selectedPath.length - 1)}
+                className="shrink-0"
+              >
+                <ChevronLeft data-icon="inline-start" />
+                Wstecz
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -238,52 +345,70 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
             className="pl-10"
           />
         </div>
-      </div>
+      </motion.div>
 
-      {/* Category list */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        {filteredCategories.length === 0 ? (
-          <div className="col-span-full py-8 text-center text-muted-foreground">
-            <Briefcase className="mx-auto mb-2 size-6 opacity-50" />
-            <p className="text-sm font-medium">Nie znaleziono kategorii</p>
-          </div>
-        ) : (
-          filteredCategories.map((category) => {
-            const catWithSubs = category as any
-            const hasSubcategories =
-              currentLevel === 0
-                ? catWithSubs.subcategory_level_1?.length > 0
-                : currentLevel === 1
-                  ? catWithSubs.subcategory_level_2?.length > 0
-                  : false
+      {/* Category list — slides between levels and stagger-fades items in */}
+      <AnimatePresence mode="wait" initial={false} custom={navDirection}>
+        <motion.div
+          key={`level-${currentLevel}-${searchQuery}`}
+          custom={navDirection}
+          variants={listContainerVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          className="grid grid-cols-1 sm:grid-cols-2 gap-2.5"
+        >
+          {filteredCategories.length === 0 ? (
+            <motion.div
+              variants={itemVariants}
+              className="col-span-full py-8 text-center text-muted-foreground"
+            >
+              <Briefcase className="mx-auto mb-2 size-6 opacity-50" />
+              <p className="text-sm font-medium">Nie znaleziono kategorii</p>
+            </motion.div>
+          ) : (
+            filteredCategories.map((category) => {
+              const catWithSubs = category as any
+              const hasSubcategories =
+                currentLevel === 0
+                  ? catWithSubs.subcategory_level_1?.length > 0
+                  : currentLevel === 1
+                    ? catWithSubs.subcategory_level_2?.length > 0
+                    : false
 
-            return (
-              <button
-                type="button"
-                key={category.id}
-                className={cn(
-                  'flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm transition-all',
-                  'bg-background border border-border/20 hover:border-accent/30 hover:bg-accent/5 hover:shadow-sm',
-                )}
-                onClick={() => handleCategorySelect(category)}
-              >
-                <CategoryIcon icon={category.icon} />
-                <div className="min-w-0 flex-1">
-                  <span className="truncate font-medium block">{category.name}</span>
-                  {category.description && (
-                    <span className="text-xs text-muted-foreground line-clamp-2 mt-0.5 block">{category.description}</span>
+              return (
+                <motion.button
+                  type="button"
+                  key={category.id}
+                  variants={itemVariants}
+                  whileHover={
+                    shouldReduceMotion ? undefined : { y: -2, transition: snappySpring }
+                  }
+                  whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                  className={cn(
+                    'flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm transition-colors',
+                    'bg-background border border-border/20 hover:border-accent/30 hover:bg-accent/5 hover:shadow-sm',
                   )}
-                </div>
-                {hasSubcategories ? (
-                  <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
-                ) : (
-                  <Check className="size-3.5 shrink-0 text-accent" />
-                )}
-              </button>
-            )
-          })
-        )}
-      </div>
+                  onClick={() => handleCategorySelect(category)}
+                >
+                  <CategoryIcon icon={category.icon} />
+                  <div className="min-w-0 flex-1">
+                    <span className="truncate font-medium block">{category.name}</span>
+                    {category.description && (
+                      <span className="text-xs text-muted-foreground line-clamp-2 mt-0.5 block">{category.description}</span>
+                    )}
+                  </div>
+                  {hasSubcategories ? (
+                    <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
+                  ) : (
+                    <Check className="size-3.5 shrink-0 text-accent" />
+                  )}
+                </motion.button>
+              )
+            })
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }
