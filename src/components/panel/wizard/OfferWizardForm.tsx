@@ -358,9 +358,13 @@ export function OfferWizardForm({
       if (mode === 'edit' && offerId) {
         const result = await updateOffer(offerId, offerData as any)
         if (result.success) {
-          toast.success(
-            status === 'published' ? 'Oferta opublikowana' : 'Oferta zapisana jako robocza',
-          )
+          if ('savedAsDraftDueToLimit' in result && result.savedAsDraftDueToLimit) {
+            toast.warning(result.message ?? 'Oferta zapisana jako wersja robocza.')
+          } else {
+            toast.success(
+              status === 'published' ? 'Oferta opublikowana' : 'Oferta zapisana jako robocza',
+            )
+          }
           router.push(`/${lang}/panel/oferty`)
           router.refresh()
         } else {
@@ -369,9 +373,13 @@ export function OfferWizardForm({
       } else {
         const result = await createOffer(offerData as any)
         if (result.success) {
-          toast.success(
-            status === 'published' ? 'Oferta utworzona i opublikowana' : 'Oferta zapisana jako robocza',
-          )
+          if ('savedAsDraftDueToLimit' in result && result.savedAsDraftDueToLimit) {
+            toast.warning(result.message ?? 'Oferta zapisana jako wersja robocza.')
+          } else {
+            toast.success(
+              status === 'published' ? 'Oferta utworzona i opublikowana' : 'Oferta zapisana jako robocza',
+            )
+          }
           router.push(`/${lang}/panel/oferty`)
           router.refresh()
         } else {
