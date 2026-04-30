@@ -200,85 +200,151 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
         center: { opacity: 1, y: 0, scale: 1, transition: snappySpring },
       }
 
-  // ===== Selection complete view =====
+  // ===== Single AnimatePresence wraps both views so transitions between
+  // "selection complete" and "browsing" (and vice versa) animate. =====
 
-  if (isSelectionComplete()) {
-    return (
-      <motion.div
-        layout
-        className="flex flex-col gap-3"
-        initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={cardSpring}
-      >
+  const viewKey = isSelectionComplete() ? 'complete' : 'browsing'
+
+  return (
+    <AnimatePresence mode="wait" initial={false} custom={navDirection}>
+      {viewKey === 'complete' ? (
         <motion.div
-          className="flex flex-wrap items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3"
-          initial="enter"
-          animate="center"
-          variants={
+          key="complete"
+          custom={navDirection}
+          className="flex flex-col gap-3"
+          initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.96, y: 8 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={
             shouldReduceMotion
-              ? {}
-              : {
-                  enter: { transition: { staggerChildren: 0 } },
-                  center: { transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
-                }
+              ? { opacity: 0 }
+              : { opacity: 0, scale: 0.96, y: -8, transition: { duration: 0.18, ease: [0.25, 0.4, 0.25, 1] } }
           }
+          transition={cardSpring}
         >
-          {selectedPath.map((category, index) => (
-            <React.Fragment key={category.id}>
-              <motion.div
-                variants={
-                  shouldReduceMotion
-                    ? {}
-                    : {
-                        enter: { opacity: 0, y: -6, scale: 0.9 },
-                        center: { opacity: 1, y: 0, scale: 1, transition: snappySpring },
-                      }
-                }
-              >
-                <Badge
-                  variant="outline"
-                  className="border-primary/40 px-3 py-1.5 text-sm font-medium text-primary"
-                >
-                  {category.name}
-                </Badge>
-              </motion.div>
-              {index < selectedPath.length - 1 && (
-                <motion.span
+          <motion.div
+            className="flex flex-wrap items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3"
+            initial="enter"
+            animate="center"
+            variants={
+              shouldReduceMotion
+                ? {}
+                : {
+                    enter: { transition: { staggerChildren: 0 } },
+                    center: { transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
+                  }
+            }
+          >
+            {selectedPath.map((category, index) => (
+              <React.Fragment key={category.id}>
+                <motion.div
                   variants={
                     shouldReduceMotion
                       ? {}
                       : {
-                          enter: { opacity: 0, x: -4 },
-                          center: { opacity: 1, x: 0, transition: snappySpring },
+                          enter: { opacity: 0, y: -6, scale: 0.9 },
+                          center: { opacity: 1, y: 0, scale: 1, transition: snappySpring },
                         }
                   }
-                  className="inline-flex"
                 >
-                  <ChevronRight className="size-4 text-primary/60" />
-                </motion.span>
-              )}
-            </React.Fragment>
-          ))}
+                  <Badge
+                    variant="outline"
+                    className="border-primary/40 px-3 py-1.5 text-sm font-medium text-primary"
+                  >
+                    {category.name}
+                  </Badge>
+                </motion.div>
+                {index < selectedPath.length - 1 && (
+                  <motion.span
+                    variants={
+                      shouldReduceMotion
+                        ? {}
+                        : {
+                            enter: { opacity: 0, x: -4 },
+                            center: { opacity: 1, x: 0, transition: snappySpring },
+                          }
+                    }
+                    className="inline-flex"
+                  >
+                    <ChevronRight className="size-4 text-primary/60" />
+                  </motion.span>
+                )}
+              </React.Fragment>
+            ))}
+          </motion.div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={resetSelection}
+            className="w-fit"
+          >
+            <RotateCcw className="size-4" data-icon="inline-start" />
+            Zmień kategorię
+          </Button>
         </motion.div>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={resetSelection}
-          className="w-fit"
-        >
-          <RotateCcw className="size-4" data-icon="inline-start" />
-          Zmień kategorię
-        </Button>
-      </motion.div>
-    )
-  }
+      ) : (
+        <BrowsingView
+          key="browsing"
+          shouldReduceMotion={shouldReduceMotion}
+          navDirection={navDirection}
+          selectedPath={selectedPath}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          currentLevel={currentLevel}
+          filteredCategories={filteredCategories}
+          listContainerVariants={listContainerVariants}
+          itemVariants={itemVariants}
+          handleCategorySelect={handleCategorySelect}
+          handleBreadcrumbClick={handleBreadcrumbClick}
+        />
+      )}
+    </AnimatePresence>
+  )
+}
 
-  // ===== Browsing view =====
+// ===== Browsing view extracted as a child component so we can mount/unmount
+// it cleanly inside AnimatePresence (the parent decides which variant key to
+// render — both branches now animate when toggled). =====
 
+interface BrowsingViewProps {
+  shouldReduceMotion: boolean | null
+  navDirection: 'forward' | 'backward'
+  selectedPath: CategoryItem[]
+  searchQuery: string
+  setSearchQuery: (q: string) => void
+  currentLevel: number
+  filteredCategories: CategoryItem[]
+  listContainerVariants: Variants
+  itemVariants: Variants
+  handleCategorySelect: (c: CategoryItem) => void
+  handleBreadcrumbClick: (i: number) => void
+}
+
+function BrowsingView({
+  shouldReduceMotion,
+  navDirection,
+  selectedPath,
+  searchQuery,
+  setSearchQuery,
+  currentLevel,
+  filteredCategories,
+  listContainerVariants,
+  itemVariants,
+  handleCategorySelect,
+  handleBreadcrumbClick,
+}: BrowsingViewProps) {
   return (
-    <div className="flex flex-col gap-3">
+    <motion.div
+      className="flex flex-col gap-3"
+      initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.98, y: 8 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={
+        shouldReduceMotion
+          ? { opacity: 0 }
+          : { opacity: 0, scale: 0.98, y: -8, transition: { duration: 0.18, ease: [0.25, 0.4, 0.25, 1] } }
+      }
+      transition={snappySpring}
+    >
       {/* Breadcrumb path */}
       <AnimatePresence initial={false}>
         {selectedPath.length > 0 && (
@@ -409,6 +475,6 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
           )}
         </motion.div>
       </AnimatePresence>
-    </div>
+    </motion.div>
   )
 }
