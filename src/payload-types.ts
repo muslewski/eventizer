@@ -258,7 +258,6 @@ export interface Media {
   id: number;
   user?: (number | null) | User;
   alt: string;
-  prefix?: string | null;
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -296,6 +295,10 @@ export interface User {
    * User activated the free beta plan instead of a paid Stripe subscription.
    */
   betaAccess?: boolean | null;
+  /**
+   * When set, the dashboard shows a one-time banner about offers auto-drafted due to a plan downgrade. Cleared when the user dismisses the banner.
+   */
+  downgradedDraftedAt?: string | null;
   favorites?: (number | Offer)[] | null;
   name: string;
   email: string;
@@ -320,7 +323,6 @@ export interface ProfilePicture {
    * Email of the user who uploaded the profile picture.
    */
   uploadedBy?: string | null;
-  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -476,7 +478,6 @@ export interface OfferUpload {
    * Scale multiplier for the stored focal point (1–3).
    */
   zoom?: number | null;
-  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -502,7 +503,6 @@ export interface OfferVideoUpload {
    */
   user?: (number | null) | User;
   title?: string | null;
-  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -1898,6 +1898,7 @@ export interface UsersSelect<T extends boolean = true> {
   serviceCategorySlug?: T;
   maxOffers?: T;
   betaAccess?: T;
+  downgradedDraftedAt?: T;
   favorites?: T;
   name?: T;
   email?: T;
@@ -2028,7 +2029,6 @@ export interface StripeCustomersSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   user?: T;
   alt?: T;
-  prefix?: T;
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2048,7 +2048,6 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProfilePicturesSelect<T extends boolean = true> {
   uploadedBy?: T;
-  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -2069,7 +2068,6 @@ export interface OfferUploadsSelect<T extends boolean = true> {
   user?: T;
   title?: T;
   zoom?: T;
-  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -2089,7 +2087,6 @@ export interface OfferUploadsSelect<T extends boolean = true> {
 export interface OfferVideoUploadsSelect<T extends boolean = true> {
   user?: T;
   title?: T;
-  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
