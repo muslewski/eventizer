@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { ChevronRight, ChevronLeft, Check, Search, RotateCcw, Briefcase, FolderIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -242,51 +241,49 @@ export function CategoryPicker({ categories, value, onChange }: CategoryPickerPr
       </div>
 
       {/* Category list */}
-      <ScrollArea className="h-[400px] w-full rounded-md">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pr-3 pb-1">
-          {filteredCategories.length === 0 ? (
-            <div className="col-span-full py-8 text-center text-muted-foreground">
-              <Briefcase className="mx-auto mb-2 size-6 opacity-50" />
-              <p className="text-sm font-medium">Nie znaleziono kategorii</p>
-            </div>
-          ) : (
-            filteredCategories.map((category) => {
-              const catWithSubs = category as any
-              const hasSubcategories =
-                currentLevel === 0
-                  ? catWithSubs.subcategory_level_1?.length > 0
-                  : currentLevel === 1
-                    ? catWithSubs.subcategory_level_2?.length > 0
-                    : false
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        {filteredCategories.length === 0 ? (
+          <div className="col-span-full py-8 text-center text-muted-foreground">
+            <Briefcase className="mx-auto mb-2 size-6 opacity-50" />
+            <p className="text-sm font-medium">Nie znaleziono kategorii</p>
+          </div>
+        ) : (
+          filteredCategories.map((category) => {
+            const catWithSubs = category as any
+            const hasSubcategories =
+              currentLevel === 0
+                ? catWithSubs.subcategory_level_1?.length > 0
+                : currentLevel === 1
+                  ? catWithSubs.subcategory_level_2?.length > 0
+                  : false
 
-              return (
-                <button
-                  type="button"
-                  key={category.id}
-                  className={cn(
-                    'flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm transition-all',
-                    'bg-background border border-border/20 hover:border-accent/30 hover:bg-accent/5 hover:shadow-sm',
+            return (
+              <button
+                type="button"
+                key={category.id}
+                className={cn(
+                  'flex items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm transition-all',
+                  'bg-background border border-border/20 hover:border-accent/30 hover:bg-accent/5 hover:shadow-sm',
+                )}
+                onClick={() => handleCategorySelect(category)}
+              >
+                <CategoryIcon icon={category.icon} />
+                <div className="min-w-0 flex-1">
+                  <span className="truncate font-medium block">{category.name}</span>
+                  {category.description && (
+                    <span className="text-xs text-muted-foreground line-clamp-2 mt-0.5 block">{category.description}</span>
                   )}
-                  onClick={() => handleCategorySelect(category)}
-                >
-                  <CategoryIcon icon={category.icon} />
-                  <div className="min-w-0 flex-1">
-                    <span className="truncate font-medium block">{category.name}</span>
-                    {category.description && (
-                      <span className="text-xs text-muted-foreground line-clamp-2 mt-0.5 block">{category.description}</span>
-                    )}
-                  </div>
-                  {hasSubcategories ? (
-                    <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
-                  ) : (
-                    <Check className="size-3.5 shrink-0 text-accent" />
-                  )}
-                </button>
-              )
-            })
-          )}
-        </div>
-      </ScrollArea>
+                </div>
+                {hasSubcategories ? (
+                  <ChevronRight className="size-3.5 shrink-0 text-muted-foreground" />
+                ) : (
+                  <Check className="size-3.5 shrink-0 text-accent" />
+                )}
+              </button>
+            )
+          })
+        )}
+      </div>
     </div>
   )
 }
