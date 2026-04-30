@@ -59,21 +59,48 @@ function deriveInitialView(user: User): ManagerView {
   return 'onboarding-mode'
 }
 
-function getRequiredPlanFromCategory(
+/**
+ * Walks the category tree along a path string and pulls out everything the
+ * wizard needs from a single traversal: the breadcrumb names, the slugs,
+ * and the deepest `requiredPlan` reference.
+ *
+ * Accepts two path formats:
+ *   - Modern slug-path emitted by CategoryPicker:  "muzyka/dj/dj-weselny"
+ *   - Legacy name-path stored on existing users:   "Muzyka > DJ > DJ Weselny"
+ *
+ * The previous helper assumed name-path and split on " > "; that broke
+ * for slug-paths because a slug-path like "muzyka/dj/dj-weselny" doesn't
+ * contain " > ", so it became a single-element array of garbage. The
+ * Single-mode `requiredPlan` lookup returned null, which collapsed the
+ * interval-picker step to just the Beta option.
+ */
+function walkCategoryPath(
   categories: ServiceCategory[],
-  categoryString: string,
-): SubscriptionPlan | null {
-  if (!categoryString) return null
-  const parts = categoryString.split(' > ')
-  let currentItems = categories
+  path: string,
+): { names: string[]; slugs: string[]; requiredPlan: SubscriptionPlan | null } {
+  if (!path) return { names: [], slugs: [], requiredPlan: null }
+
+  const usesSlugPath = path.includes('/')
+  const parts = usesSlugPath ? path.split('/') : path.split(' > ')
+
+  const names: string[] = []
+  const slugs: string[] = []
   let requiredPlan: SubscriptionPlan | null = null
+  let currentItems: ServiceCategory[] = categories
 
   for (const part of parts) {
-    const found = currentItems.find((c) => c.name === part) as any
+    const found = currentItems.find((c) =>
+      usesSlugPath ? c.slug === part : c.name === part,
+    ) as any
     if (!found) break
+
+    names.push(found.name)
+    slugs.push(found.slug)
+
     if (found.requiredPlan && typeof found.requiredPlan === 'object') {
       requiredPlan = found.requiredPlan as SubscriptionPlan
     }
+
     if (found.subcategory_level_1?.length) {
       currentItems = found.subcategory_level_1
     } else if (found.subcategory_level_2?.length) {
@@ -83,7 +110,7 @@ function getRequiredPlanFromCategory(
     }
   }
 
-  return requiredPlan
+  return { names, slugs, requiredPlan }
 }
 
 function formatPrice(amount: number, currency: string): string {
@@ -133,14 +160,15 @@ export function SubscriptionManager({
   const [isPricesLoading, setIsPricesLoading] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
 
-  const categoryNames = selectedCategory ? selectedCategory.split(' > ') : []
-  const categorySlugs = selectedCategory
-    ? selectedCategory.split(' > ').map((n) => n.toLowerCase().replace(/\s+/g, '-'))
-    : []
+  // Walk the chosen category path once to derive everything dependent on it.
+  // Memoize so the active-plan computation doesn't re-walk on every render.
+  const { categoryNames, categorySlugs, requiredPlan } = React.useMemo(() => {
+    const { names, slugs, requiredPlan } = walkCategoryPath(categories, selectedCategory)
+    return { categoryNames: names, categorySlugs: slugs, requiredPlan }
+  }, [categories, selectedCategory])
 
   // Resolve the active plan + product depending on mode
-  const activePlan: SubscriptionPlan | null =
-    mode === 'multi' ? selectedPlan : getRequiredPlanFromCategory(categories, selectedCategory)
+  const activePlan: SubscriptionPlan | null = mode === 'multi' ? selectedPlan : requiredPlan
   const stripeProductId = activePlan?.stripeID ?? null
 
   // Fetch Stripe prices when arriving at the price step
