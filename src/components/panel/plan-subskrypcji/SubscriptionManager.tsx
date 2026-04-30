@@ -12,6 +12,8 @@ import {
   TagIcon,
   CheckIcon,
   SparklesIcon,
+  UserIcon,
+  Building2Icon,
 } from 'lucide-react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -20,32 +22,43 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Progress } from '@/components/ui/progress'
 import { Spinner } from '@/components/ui/spinner'
 import { CategoryPicker } from '@/components/panel/wizard/CategoryPicker'
+import { PlanModeCard } from '@/components/panel/plan-subskrypcji/PlanModeCard'
+import { PlanPickerCard } from '@/components/panel/plan-subskrypcji/PlanPickerCard'
 import { createCheckoutSession } from '@/actions/stripe/createCheckoutSession'
 import { activateBetaAccess } from '@/actions/stripe/activateBetaAccess'
 import { createBillingPortalSession } from '@/actions/stripe/manageSubscription'
 import { getStripePrices, type StripePriceDetails } from '@/actions/stripe/products/getStripePrices'
+import type { PlanPriceSummary } from '@/actions/stripe/products/getPlanPriceSummary'
 import { cn } from '@/lib/utils'
 import type { User, SubscriptionPlan, ServiceCategory } from '@/payload-types'
 import type { CurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
 
 const BETA_PRICE_ID = 'BETA'
 
-type ManagerView = 'status' | 'onboarding-category' | 'onboarding-price'
+type ManagerView =
+  | 'status'
+  | 'onboarding-mode'
+  | 'onboarding-plan'
+  | 'onboarding-category'
+  | 'onboarding-price'
+
+type Mode = 'single' | 'multi'
 
 interface SubscriptionManagerProps {
   user: User
   subscription: CurrentSubscriptionDetails
   categories: ServiceCategory[]
+  multiPlans: SubscriptionPlan[]
+  planSummaries: Record<string, PlanPriceSummary>
   lang: string
   showBetaOption: boolean
 }
 
 function deriveInitialView(user: User): ManagerView {
   if (user.role === 'service-provider') return 'status'
-  return 'onboarding-category'
+  return 'onboarding-mode'
 }
 
-// Find the requiredPlan by traversing the category path
 function getRequiredPlanFromCategory(
   categories: ServiceCategory[],
   categoryString: string,
@@ -89,15 +102,31 @@ function getIntervalLabel(interval: string, intervalCount: number): string {
   return `Co ${intervalCount} ${interval}`
 }
 
+function viewToStep(view: ManagerView): number {
+  switch (view) {
+    case 'onboarding-mode': return 1
+    case 'onboarding-plan':
+    case 'onboarding-category': return 2
+    case 'onboarding-price': return 3
+    default: return 1
+  }
+}
+
+const TOTAL_STEPS = 3
+
 export function SubscriptionManager({
   user,
   subscription,
   categories,
+  multiPlans,
+  planSummaries,
   lang,
   showBetaOption,
 }: SubscriptionManagerProps) {
   const router = useRouter()
   const [view, setView] = React.useState<ManagerView>(() => deriveInitialView(user))
+  const [mode, setMode] = React.useState<Mode | null>(null)
+  const [selectedPlan, setSelectedPlan] = React.useState<SubscriptionPlan | null>(null)
   const [selectedCategory, setSelectedCategory] = React.useState<string>(user.serviceCategory ?? '')
   const [selectedPriceId, setSelectedPriceId] = React.useState<string | null>(null)
   const [availablePrices, setAvailablePrices] = React.useState<StripePriceDetails[]>([])
@@ -109,10 +138,12 @@ export function SubscriptionManager({
     ? selectedCategory.split(' > ').map((n) => n.toLowerCase().replace(/\s+/g, '-'))
     : []
 
-  const requiredPlan = getRequiredPlanFromCategory(categories, selectedCategory)
-  const stripeProductId = requiredPlan?.stripeID ?? null
+  // Resolve the active plan + product depending on mode
+  const activePlan: SubscriptionPlan | null =
+    mode === 'multi' ? selectedPlan : getRequiredPlanFromCategory(categories, selectedCategory)
+  const stripeProductId = activePlan?.stripeID ?? null
 
-  // Fetch prices when category changes and we have a product ID
+  // Fetch Stripe prices when arriving at the price step
   React.useEffect(() => {
     if (!stripeProductId || view !== 'onboarding-price') {
       setAvailablePrices([])
@@ -142,12 +173,22 @@ export function SubscriptionManager({
     return () => { cancelled = true }
   }, [stripeProductId, view])
 
-  const stepNumber = view === 'onboarding-category' ? 1 : 2
-  const isOnboarding = view === 'onboarding-category' || view === 'onboarding-price'
+  const stepNumber = viewToStep(view)
+  const isOnboarding = view !== 'status'
+  const progressValue = (stepNumber / TOTAL_STEPS) * 100
 
-  // ---- checkout ----
+  const stepHeading = (() => {
+    switch (view) {
+      case 'onboarding-mode': return 'Wybierz typ konta'
+      case 'onboarding-plan': return 'Wybierz plan'
+      case 'onboarding-category': return 'Wybierz kategorię'
+      case 'onboarding-price': return 'Wybierz okres rozliczeniowy'
+      default: return ''
+    }
+  })()
+
   function handleCheckout() {
-    if (!selectedPriceId) return
+    if (!selectedPriceId || !activePlan) return
 
     startTransition(async () => {
       try {
@@ -156,6 +197,7 @@ export function SubscriptionManager({
             userId: user.id,
             categoryNames,
             categorySlugs,
+            maxOffers: activePlan.maxOffers ?? 1,
           })
           if (result.success) {
             toast.success('Dostęp beta został aktywowany!')
@@ -187,27 +229,99 @@ export function SubscriptionManager({
     })
   }
 
-  // ---- renewal ----
   function handleRenew() {
+    setMode(null)
+    setSelectedPlan(null)
     setSelectedCategory(user.serviceCategory ?? '')
     setSelectedPriceId(null)
-    setView('onboarding-category')
+    setView('onboarding-mode')
   }
 
-  // ========== ONBOARDING VIEWS ==========
+  // ============ ONBOARDING VIEWS ============
   if (isOnboarding) {
     return (
       <div className="flex flex-col gap-6">
-        {/* Step progress */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>Krok {stepNumber} z 2</span>
-            <span>{view === 'onboarding-category' ? 'Wybierz kategorię' : 'Wybierz okres rozliczeniowy'}</span>
+            <span>Krok {stepNumber} z {TOTAL_STEPS}</span>
+            <span>{stepHeading}</span>
           </div>
-          <Progress value={stepNumber === 1 ? 50 : 100} />
+          <Progress value={progressValue} />
         </div>
 
-        {/* Step 1: Category */}
+        {view === 'onboarding-mode' && (
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-1">
+              <h2 className="font-bebas text-2xl tracking-wide">Ile ofert chcesz publikować?</h2>
+              <p className="text-sm text-muted-foreground">
+                Wybierz typ konta dopasowany do Twojej działalności.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <PlanModeCard
+                title="Jedno ogłoszenie wystarczy"
+                description="Świadczę jedną główną usługę (np. tylko jako DJ albo tylko catering). Idealne, jeśli skupiasz się na jednej specjalizacji."
+                icon={<UserIcon className="size-7" />}
+                selected={mode === 'single'}
+                onSelect={() => {
+                  setMode('single')
+                  setSelectedPlan(null)
+                  setView('onboarding-category')
+                }}
+              />
+              <PlanModeCard
+                title="Więcej ofert"
+                description="Świadczę kilka różnych usług (np. DJ + catering, fotograf + dekoracje). Najczęściej wybierane przez agencje i firmy oferujące wiele specjalizacji jednocześnie."
+                icon={<Building2Icon className="size-7" />}
+                selected={mode === 'multi'}
+                onSelect={() => {
+                  setMode('multi')
+                  setSelectedCategory('')
+                  setView('onboarding-plan')
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {view === 'onboarding-plan' && (
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-1">
+              <h2 className="font-bebas text-2xl tracking-wide">Wybierz plan</h2>
+              <p className="text-sm text-muted-foreground">
+                Wszystkie kategorie usług są dostępne w obu planach.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {multiPlans.map((plan) => (
+                <PlanPickerCard
+                  key={plan.id}
+                  plan={plan}
+                  priceSummary={planSummaries[plan.id] ?? { monthly: null, yearly: null }}
+                  selected={selectedPlan?.id === plan.id}
+                  onSelect={() => {
+                    setSelectedPlan(plan)
+                    setView('onboarding-price')
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="flex justify-between">
+              <Button
+                variant="outline"
+                disabled={isPending}
+                onClick={() => setView('onboarding-mode')}
+              >
+                <ChevronLeftIcon data-icon="inline-start" />
+                Wstecz
+              </Button>
+            </div>
+          </div>
+        )}
+
         {view === 'onboarding-category' && (
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-1">
@@ -223,7 +337,15 @@ export function SubscriptionManager({
               onChange={setSelectedCategory}
             />
 
-            <div className="flex justify-end">
+            <div className="flex justify-between">
+              <Button
+                variant="outline"
+                disabled={isPending}
+                onClick={() => setView('onboarding-mode')}
+              >
+                <ChevronLeftIcon data-icon="inline-start" />
+                Wstecz
+              </Button>
               <Button
                 disabled={!selectedCategory || isPending}
                 onClick={() => setView('onboarding-price')}
@@ -235,15 +357,24 @@ export function SubscriptionManager({
           </div>
         )}
 
-        {/* Step 2: Price / billing interval */}
         {view === 'onboarding-price' && (
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-1">
               <h2 className="font-bebas text-2xl tracking-wide">Wybierz okres rozliczeniowy</h2>
               <p className="text-sm text-muted-foreground">
-                Kategoria: <span className="font-medium text-foreground">{selectedCategory}</span>
-                {requiredPlan && (
-                  <> — Plan: <span className="font-medium text-foreground">{requiredPlan.name}</span></>
+                {mode === 'single' && (
+                  <>
+                    Kategoria: <span className="font-medium text-foreground">{selectedCategory}</span>
+                    {activePlan && (
+                      <> — Plan: <span className="font-medium text-foreground">{activePlan.name}</span></>
+                    )}
+                  </>
+                )}
+                {mode === 'multi' && activePlan && (
+                  <>
+                    Plan: <span className="font-medium text-foreground">{activePlan.name}</span>
+                    {' '}— do {activePlan.maxOffers ?? 1} ofert
+                  </>
                 )}
               </p>
             </div>
@@ -288,7 +419,6 @@ export function SubscriptionManager({
                   )
                 })}
 
-                {/* Beta option */}
                 {showBetaOption && (
                   <button
                     type="button"
@@ -323,7 +453,7 @@ export function SubscriptionManager({
               <Button
                 variant="outline"
                 disabled={isPending}
-                onClick={() => setView('onboarding-category')}
+                onClick={() => setView(mode === 'multi' ? 'onboarding-plan' : 'onboarding-category')}
               >
                 <ChevronLeftIcon data-icon="inline-start" />
                 Wstecz
@@ -344,13 +474,13 @@ export function SubscriptionManager({
     )
   }
 
-  // ========== STATUS VIEW ==========
+  // ============ STATUS VIEW ============
   const isExpired = user.role === 'service-provider' && !subscription.hasSubscription
   const isActive = user.role === 'service-provider' && subscription.hasSubscription
+  const isMultiClass = (subscription.currentPlan?.maxOffers ?? 1) > 1
 
   return (
     <div className="flex flex-col gap-6">
-      {/* EXPIRED */}
       {isExpired && (
         <>
           <Alert variant="destructive">
@@ -368,7 +498,6 @@ export function SubscriptionManager({
         </>
       )}
 
-      {/* ACTIVE */}
       {isActive && (
         <Card className="bg-background border-border/20">
           <CardHeader>
@@ -382,11 +511,11 @@ export function SubscriptionManager({
                 {subscription.cancelAtPeriodEnd ? 'Wygasa' : 'Aktywna'}
               </Badge>
             </div>
-            <CardDescription>
-              {user.serviceCategory && (
+            {user.serviceCategory && (
+              <CardDescription>
                 <span>Kategoria: {user.serviceCategory}</span>
-              )}
-            </CardDescription>
+              </CardDescription>
+            )}
           </CardHeader>
 
           <CardContent className="flex flex-col gap-4">
@@ -414,17 +543,20 @@ export function SubscriptionManager({
             )}
 
             <div className="flex flex-wrap gap-3">
-              <Button
-                variant="outline"
-                disabled={isPending}
-                onClick={() => {
-                  setSelectedCategory(user.serviceCategory ?? '')
-                  setView('onboarding-category')
-                }}
-              >
-                <TagIcon data-icon="inline-start" />
-                Zmień kategorię
-              </Button>
+              {!isMultiClass && (
+                <Button
+                  variant="outline"
+                  disabled={isPending}
+                  onClick={() => {
+                    setMode('single')
+                    setSelectedCategory(user.serviceCategory ?? '')
+                    setView('onboarding-category')
+                  }}
+                >
+                  <TagIcon data-icon="inline-start" />
+                  Zmień kategorię
+                </Button>
+              )}
 
               {!subscription.isBetaUser && (
                 <Button
