@@ -905,6 +905,10 @@ export interface SubscriptionPlan {
    * Defines the hierarchy of plans. Higher levels include access to lower level plans' features.
    */
   level: number;
+  /**
+   * How many offers a subscriber to this plan can own (drafts + published). Falls back to 1 if not set.
+   */
+  maxOffers?: number | null;
   highlighted?: boolean | null;
   features?:
     | {
@@ -1987,6 +1991,7 @@ export interface SubscriptionPlansSelect<T extends boolean = true> {
   slug?: T;
   description?: T;
   level?: T;
+  maxOffers?: T;
   highlighted?: T;
   features?:
     | T
