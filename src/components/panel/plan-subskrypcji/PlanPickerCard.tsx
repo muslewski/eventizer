@@ -38,7 +38,7 @@ export function PlanPickerCard({ plan, priceSummary, selected, onSelect }: PlanP
     >
       <CardHeader>
         <div className="flex items-center justify-between gap-2 flex-wrap">
-          <CardTitle className="font-bebas text-2xl tracking-wide">{plan.name}</CardTitle>
+          <CardTitle className="font-bebas font-normal text-2xl tracking-wide">{plan.name}</CardTitle>
           <Badge variant="secondary">{limitLabel}</Badge>
         </div>
         {plan.description && <CardDescription>{plan.description}</CardDescription>}
