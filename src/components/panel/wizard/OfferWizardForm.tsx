@@ -394,10 +394,9 @@ export function OfferWizardForm({
   const watchedValues = watch() as OfferFormData
   const stepStatuses: readonly WizardStep[] = STEP_LABELS.map((label, index) => {
     if (index === currentStep) return { label, status: 'current' as const }
+    if (!visitedSteps.has(index)) return { label, status: 'upcoming' as const }
     const valid = computeStepValidity(index, watchedValues, content, mainImage?.id)
-    if (!valid) return { label, status: 'invalid' as const }
-    if (visitedSteps.has(index)) return { label, status: 'valid' as const }
-    return { label, status: 'upcoming' as const }
+    return { label, status: valid ? ('valid' as const) : ('invalid' as const) }
   })
 
   return (
