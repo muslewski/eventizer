@@ -7,6 +7,7 @@ import { ServiceProviderDashboard } from '@/components/panel/dashboard/ServicePr
 import { ClientDashboard } from '@/components/panel/dashboard/ClientDashboard'
 import { DashboardHero } from '@/components/panel/dashboard/DashboardHero'
 import { AdminDisclaimer } from '@/components/panel/AdminDisclaimer'
+import { DowngradeDraftedBanner } from '@/components/panel/dashboard/DowngradeDraftedBanner'
 
 export const metadata = { title: 'Panel główny' }
 
@@ -54,6 +55,8 @@ export default async function DashboardPage({
       />
 
       <AdminDisclaimer role={role} variant="dashboard" />
+
+      {user.downgradedDraftedAt && <DowngradeDraftedBanner lang={lang} />}
 
       {!stats.success ? (
         <p className="text-muted-foreground">Nie udało się załadować danych. Spróbuj ponownie później.</p>

@@ -260,6 +260,7 @@ export function ServiceProviderOnboardingClient({
             userId: user.id,
             categoryNames,
             categorySlugs,
+            maxOffers: 1,
           })
 
           if (!betaResult.success) {
@@ -305,6 +306,7 @@ export function ServiceProviderOnboardingClient({
             userId: user.id,
             categoryNames,
             categorySlugs,
+            maxOffers: 1,
           })
 
           if (!betaResult.success) {

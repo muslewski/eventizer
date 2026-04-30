@@ -256,6 +256,24 @@ export const Users: CollectionConfig = {
               },
             },
             {
+              name: 'downgradedDraftedAt',
+              type: 'date',
+              label: {
+                en: 'Downgrade Draft Banner Set At',
+                pl: 'Banner Obniżenia Ustawiono O',
+              },
+              admin: {
+                position: 'sidebar',
+                readOnly: true,
+                description: {
+                  en: 'When set, the dashboard shows a one-time banner about offers auto-drafted due to a plan downgrade. Cleared when the user dismisses the banner.',
+                  pl: 'Gdy ustawione, pulpit pokazuje jednorazowy banner o automatycznym zapisaniu ofert jako wersje robocze po obniżeniu planu. Czyszczone po zamknięciu.',
+                },
+                condition: (_data, _siblingData, { user }) =>
+                  isClientRoleEqualOrHigher('moderator', user),
+              },
+            },
+            {
               name: 'favorites',
               type: 'relationship',
               relationTo: 'offers',
