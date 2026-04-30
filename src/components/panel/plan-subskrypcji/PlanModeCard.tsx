@@ -27,7 +27,7 @@ export function PlanModeCard({ title, description, icon, selected, onSelect }: P
         <div className="flex items-start gap-3">
           <div className="text-accent mt-1">{icon}</div>
           <div className="flex flex-col gap-1">
-            <CardTitle className="font-bebas text-2xl tracking-wide">{title}</CardTitle>
+            <CardTitle className="font-bebas font-normal text-2xl tracking-wide">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
         </div>
