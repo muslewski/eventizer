@@ -152,7 +152,7 @@ export async function checkSubscription(userId: number): Promise<SubscriptionSta
         plan = {
           id: product.id,
           name: plans.docs[0].name,
-          slug: plans.docs[0].slug,
+          slug: plans.docs[0].slug ?? undefined,
         }
       } else {
         plan = {
@@ -222,7 +222,7 @@ export async function hasAccessToPlan(userId: number, requiredPlanSlug: string):
       return false
     }
 
-    return userPlan.docs[0].level >= requiredPlan.docs[0].level
+    return (userPlan.docs[0].level ?? 0) >= (requiredPlan.docs[0].level ?? 0)
   } catch (error) {
     console.error('Error checking plan access:', error)
     return false

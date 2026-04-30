@@ -55,13 +55,13 @@ export const SubscriptionPlans: CollectionConfig = {
     {
       name: 'slug',
       type: 'text',
-      required: true,
+      required: false,
       unique: true,
       label: 'Slug',
       admin: {
         description: {
-          en: "Unique identifier (e.g., 'basic', 'pro', 'enterprise')",
-          pl: "Unikalny identyfikator (np. 'basic', 'pro', 'enterprise')",
+          en: "Unique identifier (e.g., 'basic', 'pro', 'enterprise'). Auto-created plans from Stripe sync arrive without a slug — set it here before the plan is referenced.",
+          pl: "Unikalny identyfikator (np. 'basic', 'pro', 'enterprise'). Plany utworzone automatycznie ze Stripe nie mają sluga — ustaw go tutaj przed użyciem planu.",
         },
       },
     },
@@ -89,13 +89,13 @@ export const SubscriptionPlans: CollectionConfig = {
     {
       name: 'level',
       type: 'number',
-      required: true,
+      required: false,
       min: 0,
       admin: {
         position: 'sidebar',
         description: {
-          en: "Defines the hierarchy of plans. Higher levels include access to lower level plans' features.",
-          pl: 'Definiuje hierarchię planów. Wyższe poziomy obejmują dostęp do funkcji planów o niższym poziomie.',
+          en: "Defines the hierarchy of plans. Higher levels include access to lower level plans' features. Auto-created plans from Stripe sync arrive without a level — set it here before the plan is referenced.",
+          pl: 'Definiuje hierarchię planów. Wyższe poziomy obejmują dostęp do funkcji planów o niższym poziomie. Plany utworzone automatycznie ze Stripe nie mają poziomu — ustaw go tutaj przed użyciem planu.',
         },
       },
     },

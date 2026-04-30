@@ -258,6 +258,7 @@ export interface Media {
   id: number;
   user?: (number | null) | User;
   alt: string;
+  prefix?: string | null;
   folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
@@ -323,6 +324,7 @@ export interface ProfilePicture {
    * Email of the user who uploaded the profile picture.
    */
   uploadedBy?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -478,6 +480,7 @@ export interface OfferUpload {
    * Scale multiplier for the stored focal point (1–3).
    */
   zoom?: number | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -503,6 +506,7 @@ export interface OfferVideoUpload {
    */
   user?: (number | null) | User;
   title?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -897,14 +901,14 @@ export interface SubscriptionPlan {
   id: number;
   name: string;
   /**
-   * Unique identifier (e.g., 'basic', 'pro', 'enterprise')
+   * Unique identifier (e.g., 'basic', 'pro', 'enterprise'). Auto-created plans from Stripe sync arrive without a slug — set it here before the plan is referenced.
    */
-  slug: string;
+  slug?: string | null;
   description?: string | null;
   /**
-   * Defines the hierarchy of plans. Higher levels include access to lower level plans' features.
+   * Defines the hierarchy of plans. Higher levels include access to lower level plans' features. Auto-created plans from Stripe sync arrive without a level — set it here before the plan is referenced.
    */
-  level: number;
+  level?: number | null;
   /**
    * How many offers a subscriber to this plan can own (drafts + published). Falls back to 1 if not set.
    */
@@ -2029,6 +2033,7 @@ export interface StripeCustomersSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   user?: T;
   alt?: T;
+  prefix?: T;
   folder?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2048,6 +2053,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface ProfilePicturesSelect<T extends boolean = true> {
   uploadedBy?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -2068,6 +2074,7 @@ export interface OfferUploadsSelect<T extends boolean = true> {
   user?: T;
   title?: T;
   zoom?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -2087,6 +2094,7 @@ export interface OfferUploadsSelect<T extends boolean = true> {
 export interface OfferVideoUploadsSelect<T extends boolean = true> {
   user?: T;
   title?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
