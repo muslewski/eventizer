@@ -3,6 +3,7 @@ import * as migration_20260420_204841_add_offer_website from './20260420_204841_
 import * as migration_20260423_120000_add_offer_upload_zoom from './20260423_120000_add_offer_upload_zoom';
 import * as migration_20260430_022634_add_billing_tier_fields from './20260430_022634_add_billing_tier_fields';
 import * as migration_20260430_164705_relax_subscription_plans_required_columns from './20260430_164705_relax_subscription_plans_required_columns';
+import * as migration_20260512_000000_processed_stripe_events_collection from './20260512_000000_processed_stripe_events_collection';
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20260430_164705_relax_subscription_plans_required_columns.up,
     down: migration_20260430_164705_relax_subscription_plans_required_columns.down,
     name: '20260430_164705_relax_subscription_plans_required_columns'
+  },
+  {
+    up: migration_20260512_000000_processed_stripe_events_collection.up,
+    down: migration_20260512_000000_processed_stripe_events_collection.down,
+    name: '20260512_000000_processed_stripe_events_collection'
   },
 ];

@@ -5,11 +5,9 @@ import config from '@payload-config'
 import { auth } from '@/auth/auth'
 import { getCurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
 import { getHeaderBackgroundUrl } from '@/actions/panel/getHeaderBackground'
-import { getPlanPriceSummary, type PlanPriceSummary } from '@/actions/stripe/products/getPlanPriceSummary'
 import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { SubscriptionManager } from '@/components/panel/plan-subskrypcji/SubscriptionManager'
 import { AdminDisclaimer } from '@/components/panel/AdminDisclaimer'
-import type { SubscriptionPlan } from '@/payload-types'
 
 export const metadata = { title: 'Plan subskrypcji' }
 
@@ -36,7 +34,7 @@ export default async function PlanSubskrypcjiPage({
     redirect(`/${lang}/auth/sign-in`)
   }
 
-  const [subscription, categoriesResult, bgUrl, multiPlansResult] = await Promise.all([
+  const [subscription, categoriesResult, plansResult, bgUrl] = await Promise.all([
     getCurrentSubscriptionDetails(user.id),
     payload.find({
       collection: 'service-categories',
@@ -44,26 +42,14 @@ export default async function PlanSubskrypcjiPage({
       sort: 'name',
       limit: 100,
     }),
-    getHeaderBackgroundUrl(),
     payload.find({
       collection: 'subscription-plans',
-      where: { maxOffers: { greater_than: 1 } },
+      limit: 100,
+      depth: 1,
       sort: 'level',
-      limit: 10,
     }),
+    getHeaderBackgroundUrl(),
   ])
-
-  const multiPlans = multiPlansResult.docs as SubscriptionPlan[]
-
-  // Fetch price summaries for all multi-class plans in parallel
-  const planSummaries: Record<string, PlanPriceSummary> = {}
-  await Promise.all(
-    multiPlans
-      .filter((p) => p.stripeID)
-      .map(async (p) => {
-        planSummaries[p.id] = await getPlanPriceSummary(p.stripeID as string)
-      }),
-  )
 
   const betaMode = process.env.BETA_MODE === 'true'
 
@@ -81,8 +67,7 @@ export default async function PlanSubskrypcjiPage({
         user={user}
         subscription={subscription}
         categories={categoriesResult.docs as any}
-        multiPlans={multiPlans}
-        planSummaries={planSummaries}
+        plans={plansResult.docs as any}
         lang={lang}
         showBetaOption={betaMode}
       />

@@ -23,6 +23,7 @@ import { customTranslations } from '@/translations/custom-translations'
 import { HelpTickets } from '@/collections/HelpTickets'
 import { SubmittedForms } from '@/collections/SubmittedForms'
 import { SubscriptionPlans } from '@/collections/SubscriptionPlans'
+import { ProcessedStripeEvents } from '@/collections/ProcessedStripeEvents'
 import { ServiceCategories } from '@/collections/ServiceCategories'
 import { StripeCustomers } from '@/collections/Customers'
 import { defaultLexical } from '@/fields/defaultLexical'
@@ -134,6 +135,7 @@ export default buildConfig({
     ServiceCategories,
     SubscriptionPlans,
     StripeCustomers,
+    ProcessedStripeEvents,
 
     // Uploads
     Media,

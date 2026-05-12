@@ -6,6 +6,9 @@ import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { getServerSideURL } from '@/utilities/getURL'
 import { Page } from '@/payload-types'
 import { stripe } from '@/lib/stripe'
+import { syncUserFromPlan } from '@/lib/subscriptions/syncUserFromPlan'
+import { draftOffersOnDowngrade } from '@/lib/subscriptions/draftOffersOnDowngrade'
+import { handleSubscriptionUpdated } from './handlers/handleSubscriptionUpdated'
 
 const generateTitle: GenerateTitle<Page> = ({ doc }) => {
   return doc?.title ? `${doc.title}` : 'Eventizer'
@@ -108,56 +111,75 @@ export const plugins: Plugin[] = [
         try {
           const numericUserId = Number(userId)
 
-          // Parse category data from metadata
-          const categoryNames = session.metadata?.categoryNames
+          // Parse category data from metadata (JSON-stringified arrays written by createCheckoutSession)
+          const categoryNames: string[] | undefined = session.metadata?.categoryNames
             ? JSON.parse(session.metadata.categoryNames)
-            : null
-          const categorySlugs = session.metadata?.categorySlugs
+            : undefined
+          const categorySlugs: string[] | undefined = session.metadata?.categorySlugs
             ? JSON.parse(session.metadata.categorySlugs)
-            : null
+            : undefined
 
-          // Build update data
-          const updateData: Record<string, unknown> = {
-            role: 'service-provider',
-          }
-
-          // Set category info if available from metadata
-          if (Array.isArray(categoryNames) && categoryNames.length > 0) {
-            updateData.serviceCategory = categoryNames.join(' > ')
-          }
-          if (Array.isArray(categorySlugs) && categorySlugs.length > 0) {
-            updateData.serviceCategorySlug = categorySlugs.join('/')
-          }
-
-          // Resolve maxOffers from the new subscription's product
-          if (session.subscription) {
-            try {
-              const stripeSub = await stripe.subscriptions.retrieve(session.subscription)
-              const productId =
-                typeof stripeSub.items.data[0]?.price.product === 'string'
-                  ? stripeSub.items.data[0].price.product
-                  : stripeSub.items.data[0]?.price.product?.id
-              if (productId) {
-                const plans = await payload.find({
-                  collection: 'subscription-plans',
-                  where: { stripeID: { equals: productId } },
-                  limit: 1,
-                })
-                const planMax = plans.docs[0]?.maxOffers ?? 1
-                updateData.maxOffers = planMax
-              }
-            } catch (subErr) {
-              console.error('checkout.session.completed: failed to resolve maxOffers', subErr)
-              // Fall through — user is still promoted, maxOffers stays at default 1
-            }
-          }
-
-          // Promote user to service-provider
+          // Promote user to service-provider (role only; category/maxOffers handled by syncUserFromPlan below)
           await payload.update({
             collection: 'users',
             id: numericUserId,
-            data: updateData,
+            data: { role: 'service-provider' },
           })
+
+          // Resolve subscription plan from the checkout's line item product
+          const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+            limit: 1,
+            expand: ['data.price.product'],
+          })
+          const lineItem = lineItems.data[0]
+          const productRef = lineItem?.price?.product
+          const productId = typeof productRef === 'string' ? productRef : productRef?.id
+
+          if (productId) {
+            const planResult = await payload.find({
+              collection: 'subscription-plans',
+              where: { stripeID: { equals: productId } },
+              limit: 1,
+            })
+            const newPlan = planResult.docs[0]
+            if (!newPlan) {
+              console.warn(
+                `checkout.session.completed: no subscription-plans match for product ${productId}`,
+              )
+            } else {
+              // Sync maxOffers + category fields from the plan
+              await syncUserFromPlan({
+                payload,
+                userId: numericUserId,
+                newPlan,
+                categoryNames,
+                categorySlugs,
+              })
+
+              // Beta loophole fix: draft excess published offers if the user has more than the new plan allows
+              const published = await payload.find({
+                collection: 'offers',
+                where: { user: { equals: numericUserId }, _status: { equals: 'published' } },
+                depth: 0,
+                limit: 0,
+              })
+              if ((published.totalDocs ?? 0) > (newPlan.maxOffers ?? 1)) {
+                await draftOffersOnDowngrade({
+                  payload,
+                  userId: numericUserId,
+                  newPlan: {
+                    level: newPlan.level ?? 0,
+                    maxOffers: newPlan.maxOffers ?? 1,
+                    slug: newPlan.slug ?? undefined,
+                  },
+                })
+              }
+            }
+          } else {
+            console.warn(
+              'checkout.session.completed: could not resolve product ID from line items; skipping syncUserFromPlan',
+            )
+          }
 
           // Safety net: ensure stripe-customers record is linked to the user
           if (session.customer) {
@@ -476,96 +498,11 @@ export const plugins: Plugin[] = [
           console.error('customer.subscription.created: Error promoting user:', error)
         }
       },
-
-      'customer.subscription.updated': async ({ event, payload }) => {
-        try {
-          const sub = event.data.object as {
-            id: string
-            customer: string | { id: string }
-            status: string
-            items: { data: Array<{ price: { product: string | { id: string } } }> }
-          }
-
-          if (sub.status !== 'active' && sub.status !== 'trialing') return
-
-          // Resolve user via stripe-customers
-          const customerId = typeof sub.customer === 'string' ? sub.customer : sub.customer?.id
-          if (!customerId) return
-          const customers = await payload.find({
-            collection: 'stripe-customers',
-            where: { stripeID: { equals: customerId } },
-            limit: 1,
-          })
-          const linkedUser = customers.docs[0]?.user
-          const userId = typeof linkedUser === 'object' ? linkedUser?.id : linkedUser
-          if (!userId) return
-
-          // Resolve product → plan → newMax
-          const item = sub.items?.data?.[0]
-          if (!item) return
-          const productId = typeof item.price.product === 'string' ? item.price.product : item.price.product.id
-          const plans = await payload.find({
-            collection: 'subscription-plans',
-            where: { stripeID: { equals: productId } },
-            limit: 1,
-          })
-          const newMax = plans.docs[0]?.maxOffers ?? 1
-
-          // Short-circuit if value unchanged — common case for non-product events
-          const user = await payload.findByID({ collection: 'users', id: userId, depth: 0 })
-          if (user.maxOffers === newMax) return
-
-          await payload.update({
-            collection: 'users',
-            id: userId,
-            data: { maxOffers: newMax },
-          })
-
-          // Drift correction: if currently published > newMax, draft the newest excess
-          const published = await payload.find({
-            collection: 'offers',
-            where: {
-              user: { equals: userId },
-              _status: { equals: 'published' },
-            },
-            sort: ['-createdAt', '-id'],
-            limit: 0,
-            depth: 0,
-          })
-
-          if (published.docs.length > newMax) {
-            const excess = published.docs.slice(0, published.docs.length - newMax)
-            const results = await Promise.allSettled(
-              excess.map((offer) =>
-                payload.update({
-                  collection: 'offers',
-                  id: offer.id,
-                  data: { _status: 'draft' },
-                }),
-              ),
-            )
-            const failed = results.filter((r) => r.status === 'rejected')
-            if (failed.length > 0) {
-              payload.logger.error(
-                `customer.subscription.updated: Failed to draft ${failed.length}/${excess.length} offers for user ${userId}: ${JSON.stringify(failed)}`,
-              )
-            }
-            payload.logger.info(
-              `customer.subscription.updated: Drafted ${excess.length - failed.length}/${excess.length} offers for user ${userId} (newMax=${newMax})`,
-            )
-
-            // Set the banner trigger
-            await payload.update({
-              collection: 'users',
-              id: userId,
-              data: { downgradedDraftedAt: new Date().toISOString() },
-            })
-          }
-        } catch (err) {
-          payload.logger.error(
-            `customer.subscription.updated handler failed: ${err instanceof Error ? err.message : String(err)}`,
-          )
-        }
+      // NOTE: The webhook route handler must export `maxDuration = 60` for downgrade
+      // processing on Vercel (default 10s on Hobby is insufficient). The route is
+      // owned by @payloadcms/plugin-stripe — locate or override as needed during deploy.
+      'customer.subscription.updated': async ({ event, payload }: any) => {
+        await handleSubscriptionUpdated({ payload, event })
       },
 
       'customer.deleted': async ({ event, payload }) => {
