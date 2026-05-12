@@ -108,10 +108,23 @@ export function ImpactSummaryStep({
   React.useEffect(() => {
     if (!newPlanId) return
     setError(null)
-    computePlanChangeImpact({ newPlanId, intervalKey }).then((r) => {
-      if (r.success) setImpact(r.data)
-      else setError(r.message)
-    })
+    let cancelled = false
+    computePlanChangeImpact({ newPlanId, intervalKey })
+      .then((r) => {
+        if (cancelled) return
+        if (r.success) setImpact(r.data)
+        else setError(r.message)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        console.error('computePlanChangeImpact threw:', err)
+        setError(
+          'Nie udało się obliczyć skutków zmiany. Sprawdź połączenie z internetem i spróbuj ponownie.',
+        )
+      })
+    return () => {
+      cancelled = true
+    }
   }, [newPlanId, intervalKey])
 
   function handleConfirm() {
@@ -126,27 +139,33 @@ export function ImpactSummaryStep({
         ? 'Kategoria została zaktualizowana.'
         : 'Plan został zaktualizowany.'
     startTransition(async () => {
-      const result = isBeta
-        ? await updateBetaUserPlan({ newPlanId, categoryNames, categorySlugs })
-        : await changePlan({
-            newPlanId,
-            intervalKey,
-            categoryNames,
-            categorySlugs,
-            expectedCurrentPlanId: subscription.currentPlan?.id ?? null,
-            keepScheduledCancel: keepScheduledCancel ?? true,
-          })
-      if (result.success) {
-        toast.success(successMessage)
-        onExit()
-        router.refresh()
-      } else {
+      try {
+        const result = isBeta
+          ? await updateBetaUserPlan({ newPlanId, categoryNames, categorySlugs })
+          : await changePlan({
+              newPlanId,
+              intervalKey,
+              categoryNames,
+              categorySlugs,
+              expectedCurrentPlanId: subscription.currentPlan?.id ?? null,
+              keepScheduledCancel: keepScheduledCancel ?? true,
+            })
+        if (result.success) {
+          toast.success(successMessage)
+          onExit()
+          router.refresh()
+          return
+        }
         if (result.error === 'STALE_PLAN') {
           toast.error('Plan zmienił się w innej karcie. Odświeżamy stronę…')
           router.refresh()
         } else {
           toast.error(result.message)
         }
+        setIsLocked(false)
+      } catch (err) {
+        console.error('handleConfirm threw:', err)
+        toast.error('Nie udało się zmienić planu. Sprawdź połączenie i spróbuj ponownie.')
         setIsLocked(false)
       }
     })
@@ -171,8 +190,16 @@ export function ImpactSummaryStep({
 
   if (!impact) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Spinner className="size-6" />
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-center py-12">
+          <Spinner className="size-6" />
+        </div>
+        {/* Always provide an escape hatch so the user is never stuck on a spinner. */}
+        <div className="flex justify-between">
+          <Button variant="outline" onClick={onBack}>
+            <ChevronLeftIcon /> Wstecz
+          </Button>
+        </div>
       </div>
     )
   }
