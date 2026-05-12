@@ -34,13 +34,18 @@ export default async function PlanSubskrypcjiPage({
     redirect(`/${lang}/auth/sign-in`)
   }
 
-  const [subscription, categoriesResult, bgUrl] = await Promise.all([
+  const [subscription, categoriesResult, plansResult, bgUrl] = await Promise.all([
     getCurrentSubscriptionDetails(user.id),
     payload.find({
       collection: 'service-categories',
       depth: 2,
       sort: 'name',
       limit: 100,
+    }),
+    payload.find({
+      collection: 'subscription-plans',
+      limit: 100,
+      depth: 1,
     }),
     getHeaderBackgroundUrl(),
   ])
@@ -61,6 +66,7 @@ export default async function PlanSubskrypcjiPage({
         user={user}
         subscription={subscription}
         categories={categoriesResult.docs as any}
+        plans={plansResult.docs as any}
         lang={lang}
         showBetaOption={betaMode}
       />
