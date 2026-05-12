@@ -28,7 +28,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Spinner } from '@/components/ui/spinner'
 import { SubscriptionWizard } from './SubscriptionWizard'
-import { getDisplayPlanName } from './lib/getDisplayPlanName'
+import { getDisplayPlanName, resolveCurrentPlanByMaxOffers } from './lib/getDisplayPlanName'
 import { createBillingPortalSession } from '@/actions/stripe/manageSubscription'
 import type { User, ServiceCategory, SubscriptionPlan } from '@/payload-types'
 import type { CurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
@@ -63,7 +63,12 @@ export function SubscriptionManager({
 
   const isExpired = user.role === 'service-provider' && !subscription.hasSubscription
   const isActive = user.role === 'service-provider' && subscription.hasSubscription
-  const isSinglePlan = (subscription.currentPlan?.maxOffers ?? 1) === 1
+  // Resolve the current plan from local user state (user.maxOffers) instead of
+  // Stripe's stale read. changePlan writes maxOffers synchronously; Stripe's
+  // subscriptions.list has a brief read-after-write inconsistency window.
+  const currentPlan =
+    resolveCurrentPlanByMaxOffers(user.maxOffers, plans) ?? subscription.currentPlan
+  const isSinglePlan = (currentPlan?.maxOffers ?? 1) === 1
 
   if (view === 'wizard-onboarding') {
     return (
@@ -131,7 +136,7 @@ export function SubscriptionManager({
               <CardTitle className="font-bebas text-2xl tracking-wide">
                 {subscription.isBetaUser
                   ? 'Plan Beta'
-                  : getDisplayPlanName(subscription.currentPlan) || 'Aktywna subskrypcja'}
+                  : getDisplayPlanName(currentPlan) || 'Aktywna subskrypcja'}
               </CardTitle>
               <Badge
                 variant={subscription.cancelAtPeriodEnd ? 'destructive' : 'secondary'}
