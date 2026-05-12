@@ -1,6 +1,7 @@
 import * as migration_20251217_102626_backup_before_switch from './20251217_102626_backup_before_switch';
 import * as migration_20260420_204841_add_offer_website from './20260420_204841_add_offer_website';
 import * as migration_20260423_120000_add_offer_upload_zoom from './20260423_120000_add_offer_upload_zoom';
+import * as migration_20260512_000000_processed_stripe_events_collection from './20260512_000000_processed_stripe_events_collection';
 
 export const migrations = [
   {
@@ -17,5 +18,10 @@ export const migrations = [
     up: migration_20260423_120000_add_offer_upload_zoom.up,
     down: migration_20260423_120000_add_offer_upload_zoom.down,
     name: '20260423_120000_add_offer_upload_zoom'
+  },
+  {
+    up: migration_20260512_000000_processed_stripe_events_collection.up,
+    down: migration_20260512_000000_processed_stripe_events_collection.down,
+    name: '20260512_000000_processed_stripe_events_collection'
   },
 ];

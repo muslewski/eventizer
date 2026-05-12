@@ -76,6 +76,7 @@ export interface Config {
     'service-categories': ServiceCategory;
     'subscription-plans': SubscriptionPlan;
     'stripe-customers': StripeCustomer;
+    'processed-stripe-events': ProcessedStripeEvent;
     media: Media;
     'profile-pictures': ProfilePicture;
     'offer-uploads': OfferUpload;
@@ -104,6 +105,7 @@ export interface Config {
     'service-categories': ServiceCategoriesSelect<false> | ServiceCategoriesSelect<true>;
     'subscription-plans': SubscriptionPlansSelect<false> | SubscriptionPlansSelect<true>;
     'stripe-customers': StripeCustomersSelect<false> | StripeCustomersSelect<true>;
+    'processed-stripe-events': ProcessedStripeEventsSelect<false> | ProcessedStripeEventsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'profile-pictures': ProfilePicturesSelect<false> | ProfilePicturesSelect<true>;
     'offer-uploads': OfferUploadsSelect<false> | OfferUploadsSelect<true>;
@@ -1169,6 +1171,29 @@ export interface StripeCustomer {
   createdAt: string;
 }
 /**
+ * Audit + idempotency record for Stripe subscription events. Cleaned daily after 30 days.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "processed-stripe-events".
+ */
+export interface ProcessedStripeEvent {
+  id: number;
+  eventId: string;
+  eventType: string;
+  user?: (number | null) | User;
+  subscriptionId?: string | null;
+  changeType?: ('upgrade' | 'downgrade' | 'lateral' | 'interval_only' | 'no_change' | 'other') | null;
+  prevPlanSlug?: string | null;
+  newPlanSlug?: string | null;
+  prevLevel?: number | null;
+  newLevel?: number | null;
+  draftedByCategory?: number | null;
+  draftedByLimit?: number | null;
+  processedAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "help-tickets".
  */
@@ -1372,6 +1397,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'stripe-customers';
         value: number | StripeCustomer;
+      } | null)
+    | ({
+        relationTo: 'processed-stripe-events';
+        value: number | ProcessedStripeEvent;
       } | null)
     | ({
         relationTo: 'media';
@@ -2018,6 +2047,26 @@ export interface StripeCustomersSelect<T extends boolean = true> {
   metadata?: T;
   stripeID?: T;
   skipSync?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "processed-stripe-events_select".
+ */
+export interface ProcessedStripeEventsSelect<T extends boolean = true> {
+  eventId?: T;
+  eventType?: T;
+  user?: T;
+  subscriptionId?: T;
+  changeType?: T;
+  prevPlanSlug?: T;
+  newPlanSlug?: T;
+  prevLevel?: T;
+  newLevel?: T;
+  draftedByCategory?: T;
+  draftedByLimit?: T;
+  processedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
