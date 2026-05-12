@@ -28,6 +28,7 @@ import { changePlan } from '@/actions/stripe/changePlan'
 import { updateBetaUserPlan } from '@/actions/stripe/updateBetaUserPlan'
 import { resolvePlanFromSelection } from '../lib/resolvePlanFromSelection'
 import { pluralizeOffers } from '../lib/pluralizeOffers'
+import { getDisplayPlanName } from '../lib/getDisplayPlanName'
 import type { WizardFormData } from '../lib/planChangeSchema'
 import type { User, SubscriptionPlan, ServiceCategory } from '@/payload-types'
 import type { CurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
@@ -188,8 +189,8 @@ export function ImpactSummaryStep({
       <h2 className="font-bebas text-2xl tracking-wide">Podsumowanie zmiany planu</h2>
       <p className="text-sm text-muted-foreground">
         Z planu{' '}
-        <span className="font-medium text-foreground">{impact.currentPlan.name}</span> na{' '}
-        <span className="font-medium text-foreground">{impact.newPlan.name}</span>
+        <span className="font-medium text-foreground">{getDisplayPlanName(impact.currentPlan)}</span> na{' '}
+        <span className="font-medium text-foreground">{getDisplayPlanName(impact.newPlan)}</span>
       </p>
 
       {impact.currencyMismatch && (
@@ -223,7 +224,7 @@ export function ImpactSummaryStep({
         <Alert>
           <AlertTitle>Zmiana profilu</AlertTitle>
           <AlertDescription>
-            Po przejściu na plan {impact.newPlan.name} Twoja kategoria zostanie usunięta z profilu
+            Po przejściu na plan {getDisplayPlanName(impact.newPlan)} Twoja kategoria zostanie usunięta z profilu
             — będziesz mógł oferować usługi we wszystkich kategoriach.
           </AlertDescription>
         </Alert>
@@ -241,12 +242,12 @@ export function ImpactSummaryStep({
               const byLimitCount = impact.offersToDraft.byLimit.length
               const maxOffers = impact.newPlan.maxOffers ?? 1
               if (byCategoryCount > 0 && byLimitCount === 0) {
-                return `${sentence} Plan ${impact.newPlan.name} obsługuje ograniczoną liczbę kategorii — wybrana kategoria nie jest w nim dostępna.`
+                return `${sentence} Plan ${getDisplayPlanName(impact.newPlan)} obsługuje ograniczoną liczbę kategorii — wybrana kategoria nie jest w nim dostępna.`
               }
               if (byCategoryCount === 0 && byLimitCount > 0) {
                 return `${sentence} Nowy plan pozwala opublikować maksymalnie ${maxOffers}.`
               }
-              return `${sentence} Część z powodu kategorii nieobsługiwanej przez plan ${impact.newPlan.name}, pozostałe ze względu na limit ${maxOffers}.`
+              return `${sentence} Część z powodu kategorii nieobsługiwanej przez plan ${getDisplayPlanName(impact.newPlan)}, pozostałe ze względu na limit ${maxOffers}.`
             })()}
           </AlertDescription>
         </Alert>

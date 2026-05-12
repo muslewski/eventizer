@@ -12,6 +12,7 @@ import {
   type WizardEntry,
 } from './lib/wizardSequence'
 import { resolvePlanFromSelection } from './lib/resolvePlanFromSelection'
+import { getDisplayPlanName } from './lib/getDisplayPlanName'
 import { PlanKindStep } from './steps/PlanKindStep'
 import { CategoryStep } from './steps/CategoryStep'
 import { TierStep } from './steps/TierStep'
@@ -298,7 +299,7 @@ function IntervalStepBridge({
       onSelectPriceId={handleSelectPrice}
       showBetaOption={showBetaOption}
       selectedCategory={categoryNames.join(' > ') || (kind === 'multi' ? 'Wszystkie kategorie' : '')}
-      requiredPlanName={resolved?.name}
+      requiredPlanName={getDisplayPlanName(resolved) || undefined}
       onBack={onBack}
       onNext={handleNext}
       isPending={isPending}
