@@ -67,7 +67,7 @@ export function SubscriptionWizard(props: SubscriptionWizardProps) {
     function onBeforeUnload(e: BeforeUnloadEvent) {
       if (!form.formState.isDirty || stepIdx === 0) return
       e.preventDefault()
-      e.returnValue = ''
+      // e.returnValue removed (deprecated); preventDefault() is sufficient in modern browsers
     }
     window.addEventListener('beforeunload', onBeforeUnload)
     return () => window.removeEventListener('beforeunload', onBeforeUnload)
