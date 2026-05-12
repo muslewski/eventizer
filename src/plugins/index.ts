@@ -8,6 +8,7 @@ import { Page } from '@/payload-types'
 import { stripe } from '@/lib/stripe'
 import { syncUserFromPlan } from '@/lib/subscriptions/syncUserFromPlan'
 import { draftOffersOnDowngrade } from '@/lib/subscriptions/draftOffersOnDowngrade'
+import { handleSubscriptionUpdated } from './handlers/handleSubscriptionUpdated'
 
 const generateTitle: GenerateTitle<Page> = ({ doc }) => {
   return doc?.title ? `${doc.title}` : 'Eventizer'
@@ -526,6 +527,13 @@ export const plugins: Plugin[] = [
           console.error('customer.subscription.created: Error promoting user:', error)
         }
       },
+      // NOTE: The webhook route handler must export `maxDuration = 60` for downgrade
+      // processing on Vercel (default 10s on Hobby is insufficient). The route is
+      // owned by @payloadcms/plugin-stripe — locate or override as needed during deploy.
+      'customer.subscription.updated': async ({ event, payload }: any) => {
+        await handleSubscriptionUpdated({ payload, event })
+      },
+
       'customer.deleted': async ({ event, payload }) => {
         const customer = event.data.object as { id: string }
 
