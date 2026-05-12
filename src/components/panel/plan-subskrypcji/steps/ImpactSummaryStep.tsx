@@ -115,8 +115,16 @@ export function ImpactSummaryStep({
   }, [newPlanId, intervalKey])
 
   function handleConfirm() {
-    if (!newPlanId) return
+    if (!newPlanId || !impact) return
     setIsLocked(true)
+    const isSameDisplay =
+      getDisplayPlanName(impact.currentPlan) === getDisplayPlanName(impact.newPlan)
+    const successMessage =
+      impact.changeType === 'interval_only'
+        ? 'Okres rozliczeniowy został zaktualizowany.'
+        : isSameDisplay
+        ? 'Kategoria została zaktualizowana.'
+        : 'Plan został zaktualizowany.'
     startTransition(async () => {
       const result = isBeta
         ? await updateBetaUserPlan({ newPlanId, categoryNames, categorySlugs })
@@ -129,10 +137,7 @@ export function ImpactSummaryStep({
             keepScheduledCancel: keepScheduledCancel ?? true,
           })
       if (result.success) {
-        toast.success(
-          'Zmiana planu została zlecona. Wkrótce zobaczysz aktualny status w sekcji oferty.',
-          { duration: 5000 },
-        )
+        toast.success(successMessage)
         onExit()
         router.refresh()
       } else {
