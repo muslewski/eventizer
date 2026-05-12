@@ -92,10 +92,16 @@ export function ImpactSummaryStep({
   })
   const newPlanId = resolvedPlan?.id
 
-  const categoryNames = selectedCategoryPath
-    ? selectedCategoryPath.split('/').map(slugToName)
+  // Category fields are meaningful ONLY on the Single path. For Multi/Agency the
+  // wizard skips category entirely; ignore any stale form value carried over from
+  // the user's previous Single-tier subscription.
+  const useCategoryFields = selectedKind === 'single' && !!selectedCategoryPath
+  const categoryNames = useCategoryFields
+    ? selectedCategoryPath!.split('/').map(slugToName)
     : undefined
-  const categorySlugs = selectedCategoryPath ? selectedCategoryPath.split('/') : undefined
+  const categorySlugs = useCategoryFields
+    ? selectedCategoryPath!.split('/')
+    : undefined
 
   const isBeta = user.betaAccess === true
 
