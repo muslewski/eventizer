@@ -6,6 +6,8 @@ import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { getServerSideURL } from '@/utilities/getURL'
 import { Page } from '@/payload-types'
 import { stripe } from '@/lib/stripe'
+import { syncUserFromPlan } from '@/lib/subscriptions/syncUserFromPlan'
+import { draftOffersOnDowngrade } from '@/lib/subscriptions/draftOffersOnDowngrade'
 
 const generateTitle: GenerateTitle<Page> = ({ doc }) => {
   return doc?.title ? `${doc.title}` : 'Eventizer'
@@ -108,33 +110,75 @@ export const plugins: Plugin[] = [
         try {
           const numericUserId = Number(userId)
 
-          // Parse category data from metadata
-          const categoryNames = session.metadata?.categoryNames
+          // Parse category data from metadata (JSON-stringified arrays written by createCheckoutSession)
+          const categoryNames: string[] | undefined = session.metadata?.categoryNames
             ? JSON.parse(session.metadata.categoryNames)
-            : null
-          const categorySlugs = session.metadata?.categorySlugs
+            : undefined
+          const categorySlugs: string[] | undefined = session.metadata?.categorySlugs
             ? JSON.parse(session.metadata.categorySlugs)
-            : null
+            : undefined
 
-          // Build update data
-          const updateData: Record<string, unknown> = {
-            role: 'service-provider',
-          }
-
-          // Set category info if available from metadata
-          if (categoryNames && Array.isArray(categoryNames)) {
-            updateData.serviceCategory = categoryNames.join(' > ')
-          }
-          if (categorySlugs && Array.isArray(categorySlugs)) {
-            updateData.serviceCategorySlug = categorySlugs.join('/')
-          }
-
-          // Promote user to service-provider
+          // Promote user to service-provider (role only; category/maxOffers handled by syncUserFromPlan below)
           await payload.update({
             collection: 'users',
             id: numericUserId,
-            data: updateData,
+            data: { role: 'service-provider' },
           })
+
+          // Resolve subscription plan from the checkout's line item product
+          const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+            limit: 1,
+            expand: ['data.price.product'],
+          })
+          const lineItem = lineItems.data[0]
+          const productRef = lineItem?.price?.product
+          const productId = typeof productRef === 'string' ? productRef : productRef?.id
+
+          if (productId) {
+            const planResult = await payload.find({
+              collection: 'subscription-plans',
+              where: { stripeID: { equals: productId } },
+              limit: 1,
+            })
+            const newPlan = planResult.docs[0]
+            if (!newPlan) {
+              console.warn(
+                `checkout.session.completed: no subscription-plans match for product ${productId}`,
+              )
+            } else {
+              // Sync maxOffers + category fields from the plan
+              await syncUserFromPlan({
+                payload,
+                userId: numericUserId,
+                newPlan,
+                categoryNames,
+                categorySlugs,
+              })
+
+              // Beta loophole fix: draft excess published offers if the user has more than the new plan allows
+              const published = await payload.find({
+                collection: 'offers',
+                where: { user: { equals: numericUserId }, _status: { equals: 'published' } },
+                depth: 0,
+                limit: 0,
+              })
+              if ((published.totalDocs ?? 0) > (newPlan.maxOffers ?? 1)) {
+                await draftOffersOnDowngrade({
+                  payload,
+                  userId: numericUserId,
+                  newPlan: {
+                    level: newPlan.level,
+                    maxOffers: newPlan.maxOffers ?? 1,
+                    slug: newPlan.slug,
+                  },
+                })
+              }
+            }
+          } else {
+            console.warn(
+              'checkout.session.completed: could not resolve product ID from line items; skipping syncUserFromPlan',
+            )
+          }
 
           // Safety net: ensure stripe-customers record is linked to the user
           if (session.customer) {
