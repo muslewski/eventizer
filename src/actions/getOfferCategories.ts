@@ -53,7 +53,7 @@ async function getUserPlanLevel(userId: number): Promise<{ level: number; name: 
     // Check if user has an active subscription
     if (subscriptionDetails.hasSubscription && subscriptionDetails.currentPlan) {
       return {
-        level: subscriptionDetails.currentPlan.level,
+        level: subscriptionDetails.currentPlan.level ?? 0,
         name: subscriptionDetails.currentPlan.name,
       }
     }
@@ -87,7 +87,7 @@ function buildCategoryTree(
 
     if (category.requiredPlan) {
       const plan = category.requiredPlan as SubscriptionPlan
-      if (typeof plan === 'object' && plan.level !== undefined) {
+      if (typeof plan === 'object' && plan.level != null) {
         requiredPlanLevel = plan.level
         requiredPlanName = plan.name || 'Premium'
       }

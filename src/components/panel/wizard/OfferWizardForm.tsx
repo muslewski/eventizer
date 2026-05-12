@@ -358,9 +358,13 @@ export function OfferWizardForm({
       if (mode === 'edit' && offerId) {
         const result = await updateOffer(offerId, offerData as any)
         if (result.success) {
-          toast.success(
-            status === 'published' ? 'Oferta opublikowana' : 'Oferta zapisana jako robocza',
-          )
+          if ('savedAsDraftDueToLimit' in result && result.savedAsDraftDueToLimit) {
+            toast.warning(result.message ?? 'Oferta zapisana jako wersja robocza.')
+          } else {
+            toast.success(
+              status === 'published' ? 'Oferta opublikowana' : 'Oferta zapisana jako robocza',
+            )
+          }
           router.push(`/${lang}/panel/oferty`)
           router.refresh()
         } else {
@@ -369,9 +373,13 @@ export function OfferWizardForm({
       } else {
         const result = await createOffer(offerData as any)
         if (result.success) {
-          toast.success(
-            status === 'published' ? 'Oferta utworzona i opublikowana' : 'Oferta zapisana jako robocza',
-          )
+          if ('savedAsDraftDueToLimit' in result && result.savedAsDraftDueToLimit) {
+            toast.warning(result.message ?? 'Oferta zapisana jako wersja robocza.')
+          } else {
+            toast.success(
+              status === 'published' ? 'Oferta utworzona i opublikowana' : 'Oferta zapisana jako robocza',
+            )
+          }
           router.push(`/${lang}/panel/oferty`)
           router.refresh()
         } else {
@@ -386,10 +394,9 @@ export function OfferWizardForm({
   const watchedValues = watch() as OfferFormData
   const stepStatuses: readonly WizardStep[] = STEP_LABELS.map((label, index) => {
     if (index === currentStep) return { label, status: 'current' as const }
+    if (!visitedSteps.has(index)) return { label, status: 'upcoming' as const }
     const valid = computeStepValidity(index, watchedValues, content, mainImage?.id)
-    if (!valid) return { label, status: 'invalid' as const }
-    if (visitedSteps.has(index)) return { label, status: 'valid' as const }
-    return { label, status: 'upcoming' as const }
+    return { label, status: valid ? ('valid' as const) : ('invalid' as const) }
   })
 
   return (

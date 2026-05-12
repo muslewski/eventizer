@@ -10,31 +10,34 @@ export interface ActivateBetaAccessResult {
 }
 
 /**
- * Activates beta (free) service-provider access for a user.
- * Skips Stripe entirely – updates the user role and service category directly.
+ * Activates beta (free) service-provider access for a user. Skips Stripe
+ * entirely. The caller passes `maxOffers` from the chosen plan so beta users
+ * on Multi/Agency get the correct cap (4 / 10) instead of the default 1.
  */
 export async function activateBetaAccess({
   userId,
   categoryNames,
   categorySlugs,
+  maxOffers,
 }: {
   userId: number
   categoryNames: string[]
   categorySlugs: string[]
+  maxOffers: number
 }): Promise<ActivateBetaAccessResult> {
   try {
-    // 1. Save the chosen service category
-    const categoryResult = await updateUserServiceCategory({
-      userId: String(userId),
-      categoryNames,
-      categorySlugs,
-    })
-
-    if (!categoryResult.success) {
-      return { success: false, error: categoryResult.error || 'Nie udało się zapisać kategorii.' }
+    // Save category only if the path is non-empty (Multi/Agency pass [])
+    if (categoryNames.length > 0 && categorySlugs.length > 0) {
+      const categoryResult = await updateUserServiceCategory({
+        userId: String(userId),
+        categoryNames,
+        categorySlugs,
+      })
+      if (!categoryResult.success) {
+        return { success: false, error: categoryResult.error || 'Nie udało się zapisać kategorii.' }
+      }
     }
 
-    // 2. Promote the user to service-provider
     const payload = await getPayload({ config })
 
     const user = await payload.findByID({
@@ -57,10 +60,14 @@ export async function activateBetaAccess({
     await payload.update({
       collection: 'users',
       id: userId,
-      data: { role: 'service-provider', betaAccess: true },
+      data: {
+        role: 'service-provider',
+        betaAccess: true,
+        maxOffers,
+      },
     })
 
-    payload.logger.info(`Beta access activated for user ${userId}`)
+    payload.logger.info(`Beta access activated for user ${userId} (maxOffers=${maxOffers})`)
 
     return { success: true }
   } catch (error) {

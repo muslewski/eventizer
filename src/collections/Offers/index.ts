@@ -10,6 +10,7 @@ import {
   populateCategoryData,
   revalidateOffer,
   revalidateOfferOnDelete,
+  enforceMaxPublishedOffers,
 } from './hooks'
 
 export const Offers: CollectionConfig = {
@@ -83,7 +84,7 @@ export const Offers: CollectionConfig = {
   hooks: {
     beforeOperation: [enforceMaxOffers],
     beforeValidate: [validateCategory],
-    beforeChange: [populateCategoryData],
+    beforeChange: [enforceMaxPublishedOffers, populateCategoryData],
     afterChange: [revalidateOffer],
     afterDelete: [revalidateOfferOnDelete],
   },

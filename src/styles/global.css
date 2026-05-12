@@ -17,7 +17,7 @@
 
 /* Global hero / panel-header zoom-in (lives here so it's available app-wide,
    not only where hero CSS files are imported). Mirrors the rule in
-   src/heros/*/styles.css. */
+   each hero's styles.css under src/heros. */
 @keyframes zoom-in {
   0% {
     transform: scale(1.35) rotate(4deg) rotateX(5deg);

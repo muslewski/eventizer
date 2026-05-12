@@ -168,9 +168,9 @@ export const plugins: Plugin[] = [
                   payload,
                   userId: numericUserId,
                   newPlan: {
-                    level: newPlan.level,
+                    level: newPlan.level ?? 0,
                     maxOffers: newPlan.maxOffers ?? 1,
-                    slug: newPlan.slug,
+                    slug: newPlan.slug ?? undefined,
                   },
                 })
               }
@@ -368,13 +368,7 @@ export const plugins: Plugin[] = [
           customer: string
           status: string
           metadata: Record<string, string> | null
-          items: {
-            data: Array<{
-              price: {
-                product: string | { id: string }
-              }
-            }>
-          }
+          items?: { data?: Array<{ price?: { product?: string | { id: string } } }> }
         }
 
         console.log(
@@ -426,11 +420,25 @@ export const plugins: Plugin[] = [
             role: 'service-provider',
           }
 
-          if (categoryNames && Array.isArray(categoryNames)) {
+          if (Array.isArray(categoryNames) && categoryNames.length > 0) {
             updateData.serviceCategory = categoryNames.join(' > ')
           }
-          if (categorySlugs && Array.isArray(categorySlugs)) {
+          if (Array.isArray(categorySlugs) && categorySlugs.length > 0) {
             updateData.serviceCategorySlug = categorySlugs.join('/')
+          }
+
+          // Resolve maxOffers from the subscription's product
+          const productId =
+            typeof subscription.items?.data?.[0]?.price?.product === 'string'
+              ? subscription.items.data[0].price.product
+              : subscription.items?.data?.[0]?.price?.product?.id
+          if (productId) {
+            const plans = await payload.find({
+              collection: 'subscription-plans',
+              where: { stripeID: { equals: productId } },
+              limit: 1,
+            })
+            updateData.maxOffers = plans.docs[0]?.maxOffers ?? 1
           }
 
           await payload.update({
@@ -438,43 +446,6 @@ export const plugins: Plugin[] = [
             id: numericUserId,
             data: updateData,
           })
-
-          // Sync user.maxOffers + category fields from new plan
-          const productId =
-            typeof subscription.items.data[0]?.price.product === 'string'
-              ? subscription.items.data[0].price.product
-              : subscription.items.data[0]?.price.product?.id
-
-          if (productId) {
-            const planResult = await payload.find({
-              collection: 'subscription-plans',
-              where: { stripeID: { equals: productId } },
-              limit: 1,
-            })
-            const newPlan = planResult.docs[0]
-            if (newPlan) {
-              const meta = subscription.metadata ?? {}
-              let categoryNames: string[] | undefined
-              let categorySlugs: string[] | undefined
-              try {
-                if (meta.categoryNames) categoryNames = JSON.parse(meta.categoryNames)
-                if (meta.categorySlugs) categorySlugs = JSON.parse(meta.categorySlugs)
-              } catch {
-                // malformed metadata — treat as absent
-              }
-              await syncUserFromPlan({
-                payload,
-                userId: numericUserId,
-                newPlan,
-                categoryNames,
-                categorySlugs,
-              })
-            } else {
-              console.warn(
-                `customer.subscription.created: no subscription-plans match for product ${productId}`,
-              )
-            }
-          }
 
           // Safety net: ensure stripe-customers record is linked
           const customerId =
@@ -570,4 +541,54 @@ export const plugins: Plugin[] = [
       },
     },
   }),
+
+  /**
+   * Wraps the @payloadcms/plugin-stripe `afterDelete` hooks on Stripe-synced
+   * collections so they swallow "No such ..." errors. The plugin's own code
+   * acknowledges this gap (see node_modules/@payloadcms/plugin-stripe/dist/
+   * webhooks/handleDeleted.js): when a product.deleted webhook arrives, the
+   * plugin deletes the Payload doc, which fires the collection's afterDelete
+   * hook, which tries to delete the (already-gone) Stripe resource — Stripe
+   * 404s with "No such product" and the plugin throws an APIError that
+   * surfaces as an unhandled rejection. There's no skipSync escape for the
+   * delete path. We patch around it by replacing each afterDelete with a
+   * try/catch wrapper.
+   *
+   * Must run AFTER stripePlugin so we mutate the array stripePlugin produced.
+   */
+  (incomingConfig) => {
+    const STRIPE_SYNCED_SLUGS = ['subscription-plans', 'stripe-customers']
+    const isMissingResourceError = (err: unknown): boolean => {
+      const msg = err instanceof Error ? err.message : String(err)
+      return /No such (product|price|customer|plan|subscription|coupon)/i.test(msg)
+    }
+
+    return {
+      ...incomingConfig,
+      collections: incomingConfig.collections?.map((collection) => {
+        if (!STRIPE_SYNCED_SLUGS.includes(collection.slug)) return collection
+        const existing = collection.hooks?.afterDelete
+        if (!existing?.length) return collection
+        return {
+          ...collection,
+          hooks: {
+            ...collection.hooks,
+            afterDelete: existing.map((hook) => async (args: Parameters<typeof hook>[0]) => {
+              try {
+                return await hook(args)
+              } catch (err) {
+                if (isMissingResourceError(err)) {
+                  args.req?.payload?.logger?.info(
+                    `Stripe afterDelete on '${collection.slug}': resource already gone in Stripe, skipping (expected after a Stripe-initiated delete).`,
+                  )
+                  return
+                }
+                throw err
+              }
+            }),
+          },
+        }
+      }),
+    }
+  },
 ]

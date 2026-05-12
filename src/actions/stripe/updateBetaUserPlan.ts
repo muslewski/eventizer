@@ -52,7 +52,7 @@ export async function updateBetaUserPlan({
     await draftOffersOnDowngrade({
       payload,
       userId: user.id,
-      newPlan: { level: newPlan.level, maxOffers: newMax, slug: newPlan.slug },
+      newPlan: { level: newPlan.level ?? 0, maxOffers: newMax, slug: newPlan.slug ?? undefined },
     })
   }
 

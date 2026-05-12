@@ -84,18 +84,20 @@ export async function computePlanChangeImpact({
 
   const samePlan = currentPlan.id === newPlan.id
   const samePrice = currentSubItem.price.id === newPrice.id
+  const newLevel = newPlan.level ?? 0
+  const currentLevel = currentPlan.level ?? 0
   let changeType: PlanChangeType
   if (samePlan && samePrice) changeType = 'no_change'
   else if (samePlan) changeType = 'interval_only'
-  else if (newPlan.level > currentPlan.level) changeType = 'upgrade'
-  else if (newPlan.level < currentPlan.level) changeType = 'downgrade'
+  else if (newLevel > currentLevel) changeType = 'upgrade'
+  else if (newLevel < currentLevel) changeType = 'downgrade'
   else changeType = 'lateral'
 
   const dryRunResult = changeType === 'downgrade'
     ? await draftOffersOnDowngrade({
         payload,
         userId: user.id,
-        newPlan: { level: newPlan.level, maxOffers: newPlan.maxOffers ?? 1, slug: newPlan.slug },
+        newPlan: { level: newLevel, maxOffers: newPlan.maxOffers ?? 1, slug: newPlan.slug ?? undefined },
         dryRun: true,
       })
     : { draftedByCategory: [], draftedByLimit: [], keptPublished: [] }

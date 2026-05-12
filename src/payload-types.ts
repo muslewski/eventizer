@@ -298,6 +298,10 @@ export interface User {
    * User activated the free beta plan instead of a paid Stripe subscription.
    */
   betaAccess?: boolean | null;
+  /**
+   * When set, the dashboard shows a one-time banner about offers auto-drafted due to a plan downgrade. Cleared when the user dismisses the banner.
+   */
+  downgradedDraftedAt?: string | null;
   favorites?: (number | Offer)[] | null;
   name: string;
   email: string;
@@ -899,14 +903,14 @@ export interface SubscriptionPlan {
   id: number;
   name: string;
   /**
-   * Unique identifier (e.g., 'basic', 'pro', 'enterprise')
+   * Unique identifier (e.g., 'basic', 'pro', 'enterprise'). Auto-created plans from Stripe sync arrive without a slug — set it here before the plan is referenced.
    */
-  slug: string;
+  slug?: string | null;
   description?: string | null;
   /**
-   * Defines the hierarchy of plans. Higher levels include access to lower level plans' features.
+   * Defines the hierarchy of plans. Higher levels include access to lower level plans' features. Auto-created plans from Stripe sync arrive without a level — set it here before the plan is referenced.
    */
-  level: number;
+  level?: number | null;
   /**
    * How many offers a subscriber to this plan can own (drafts + published). Falls back to 1 if not set.
    */
@@ -1927,6 +1931,7 @@ export interface UsersSelect<T extends boolean = true> {
   serviceCategorySlug?: T;
   maxOffers?: T;
   betaAccess?: T;
+  downgradedDraftedAt?: T;
   favorites?: T;
   name?: T;
   email?: T;

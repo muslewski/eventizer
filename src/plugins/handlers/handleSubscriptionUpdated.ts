@@ -71,8 +71,9 @@ export async function handleSubscriptionUpdated({
       await recordEvent(payload, event, audit)
       return
     }
-    audit.newPlanSlug = newPlan.slug
-    audit.newLevel = newPlan.level
+    const newLevel = newPlan.level ?? 0
+    audit.newPlanSlug = newPlan.slug ?? undefined
+    audit.newLevel = newLevel
 
     let previousPlan: { level: number; slug: string } | undefined
     const previousProductId = previousAttributes.items?.data?.[0]?.price?.product
@@ -84,8 +85,8 @@ export async function handleSubscriptionUpdated({
       })
       if (previousPlanResult.docs[0]) {
         previousPlan = {
-          level: previousPlanResult.docs[0].level,
-          slug: previousPlanResult.docs[0].slug,
+          level: previousPlanResult.docs[0].level ?? 0,
+          slug: previousPlanResult.docs[0].slug ?? '',
         }
         audit.prevPlanSlug = previousPlan.slug
         audit.prevLevel = previousPlan.level
@@ -93,8 +94,8 @@ export async function handleSubscriptionUpdated({
     }
 
     if (previousPlan) {
-      if (newPlan.level > previousPlan.level) audit.changeType = 'upgrade'
-      else if (newPlan.level < previousPlan.level) audit.changeType = 'downgrade'
+      if (newLevel > previousPlan.level) audit.changeType = 'upgrade'
+      else if (newLevel < previousPlan.level) audit.changeType = 'downgrade'
       else audit.changeType = 'lateral'
     }
 
@@ -119,18 +120,27 @@ export async function handleSubscriptionUpdated({
       preserveCategoryIfSingle: !hasMetadataCategory,
     })
 
-    if (previousPlan && newPlan.level < previousPlan.level) {
+    if (previousPlan && newLevel < previousPlan.level) {
       const result = await draftOffersOnDowngrade({
         payload,
         userId,
         newPlan: {
-          level: newPlan.level,
+          level: newLevel,
           maxOffers: newPlan.maxOffers ?? 1,
-          slug: newPlan.slug,
+          slug: newPlan.slug ?? undefined,
         },
       })
       audit.draftedByCategory = result.draftedByCategory.length
       audit.draftedByLimit = result.draftedByLimit.length
+
+      // Banner trigger: signals dashboard to show the "drafts after downgrade" notice
+      if (result.draftedByCategory.length + result.draftedByLimit.length > 0) {
+        await payload.update({
+          collection: 'users',
+          id: userId,
+          data: { downgradedDraftedAt: new Date().toISOString() },
+        })
+      }
     }
   } catch (err) {
     console.error(`customer.subscription.updated handler error (event ${event.id}):`, err)

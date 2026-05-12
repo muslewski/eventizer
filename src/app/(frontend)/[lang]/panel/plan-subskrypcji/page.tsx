@@ -46,6 +46,7 @@ export default async function PlanSubskrypcjiPage({
       collection: 'subscription-plans',
       limit: 100,
       depth: 1,
+      sort: 'level',
     }),
     getHeaderBackgroundUrl(),
   ])

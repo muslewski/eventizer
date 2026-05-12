@@ -43,7 +43,7 @@ interface SubscriptionWizardProps {
 export function SubscriptionWizard(props: SubscriptionWizardProps) {
   const { entry, user, subscription, categories, plans, lang, showBetaOption, onExit } = props
   const plansBySlug = React.useMemo(
-    () => new Map(plans.map((p) => [p.slug, p])),
+    () => new Map(plans.filter((p) => p.slug).map((p) => [p.slug as string, p])),
     [plans],
   )
 
@@ -252,6 +252,7 @@ function IntervalStepBridge({
               userId: user.id,
               categoryNames,
               categorySlugs,
+              maxOffers: resolved?.maxOffers ?? 1,
             })
             if (r.success) {
               toast.success('Dostęp beta został aktywowany!')

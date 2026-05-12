@@ -137,11 +137,13 @@ export async function changePlan({
     return { success: false, error: 'CURRENCY_MISMATCH', message: 'Niezgodność walut — skontaktuj się z pomocą.' }
   }
 
+  const newLevel = newPlan.level ?? 0
+  const currentLevel = currentPlan.level ?? 0
   const changeType =
     currentPlan.id === newPlan.id && currentSubItem.price.id === newPrice.id ? 'no_change' :
     currentPlan.id === newPlan.id ? 'interval_only' :
-    newPlan.level > currentPlan.level ? 'upgrade' :
-    newPlan.level < currentPlan.level ? 'downgrade' : 'lateral'
+    newLevel > currentLevel ? 'upgrade' :
+    newLevel < currentLevel ? 'downgrade' : 'lateral'
 
   if (changeType === 'no_change') {
     return { success: true, data: { changeType: 'no_change' } }
@@ -156,7 +158,7 @@ export async function changePlan({
     metadata: {
       categoryNames: JSON.stringify(categoryNames ?? []),
       categorySlugs: JSON.stringify(categorySlugs ?? []),
-      planSlug: newPlan.slug,
+      planSlug: newPlan.slug ?? '',
       changeType,
     },
   }
