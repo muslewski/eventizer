@@ -1,12 +1,18 @@
 'use client'
 
-import { ChevronRightIcon } from 'lucide-react'
+import { ChevronRightIcon, XIcon } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { CardPicker } from './_CardPicker'
 import type { WizardFormData } from '../lib/planChangeSchema'
 
-export function PlanKindStep({ onNext }: { onNext: () => void }) {
+export function PlanKindStep({
+  onNext,
+  onCancel,
+}: {
+  onNext: () => void
+  onCancel?: () => void
+}) {
   const form = useFormContext<WizardFormData>()
   const value = form.watch('selectedKind')
   const headingId = 'plan-kind-heading'
@@ -47,7 +53,14 @@ export function PlanKindStep({ onNext }: { onNext: () => void }) {
           },
         ]}
       />
-      <div className="flex justify-end">
+      <div className="flex justify-between">
+        {onCancel ? (
+          <Button variant="outline" onClick={onCancel}>
+            <XIcon data-icon="inline-start" /> Anuluj
+          </Button>
+        ) : (
+          <div />
+        )}
         <Button disabled={!value} onClick={onNext}>
           Dalej <ChevronRightIcon data-icon="inline-end" />
         </Button>

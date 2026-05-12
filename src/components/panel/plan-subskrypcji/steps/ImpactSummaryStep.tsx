@@ -48,6 +48,19 @@ function slugToName(slug: string): string {
     .join(' ')
 }
 
+/**
+ * Format a category slug path like "music/dj/dj-weselny" into a readable
+ * breadcrumb "Music > Dj > Dj weselny". When the path has only one segment,
+ * just title-case it.
+ */
+function formatCategoryPath(slugPath: string): string {
+  if (!slugPath) return ''
+  return slugPath
+    .split('/')
+    .map(slugToName)
+    .join(' > ')
+}
+
 export function ImpactSummaryStep({
   subscription,
   user,
@@ -223,9 +236,18 @@ export function ImpactSummaryStep({
           <AlertDescription>
             {(() => {
               const p = pluralizeOffers(totalDrafted)
-              return `${p.count} ${p.noun} ${p.verb} ${p.participle} do wersji roboczych.`
-            })()}{' '}
-            Nowy plan pozwala opublikować maksymalnie {impact.newPlan.maxOffers ?? 1}.
+              const sentence = `${p.count} ${p.noun} ${p.verb} ${p.participle} do wersji roboczych.`
+              const byCategoryCount = impact.offersToDraft.byCategory.length
+              const byLimitCount = impact.offersToDraft.byLimit.length
+              const maxOffers = impact.newPlan.maxOffers ?? 1
+              if (byCategoryCount > 0 && byLimitCount === 0) {
+                return `${sentence} Plan ${impact.newPlan.name} obsługuje ograniczoną liczbę kategorii — wybrana kategoria nie jest w nim dostępna.`
+              }
+              if (byCategoryCount === 0 && byLimitCount > 0) {
+                return `${sentence} Nowy plan pozwala opublikować maksymalnie ${maxOffers}.`
+              }
+              return `${sentence} Część z powodu kategorii nieobsługiwanej przez plan ${impact.newPlan.name}, pozostałe ze względu na limit ${maxOffers}.`
+            })()}
           </AlertDescription>
         </Alert>
       )}
@@ -265,7 +287,9 @@ export function ImpactSummaryStep({
             {impact.offersToDraft.byCategory.map((o) => (
               <li key={o.id}>
                 {o.title}{' '}
-                <span className="text-muted-foreground">— Kategoria spoza planu</span>
+                <span className="text-muted-foreground">
+                  — Kategoria „{formatCategoryPath(o.categorySlugPath)}" wymaga wyższego planu
+                </span>
               </li>
             ))}
             {impact.offersToDraft.byLimit.map((o) => (

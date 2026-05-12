@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { CategoryPicker } from '@/components/panel/wizard/CategoryPicker'
@@ -12,10 +12,11 @@ interface CategoryStepProps {
   categories: ServiceCategory[]
   plansBySlug: Map<string, SubscriptionPlan>
   onBack?: () => void
+  onCancel?: () => void
   onNext: () => void
 }
 
-export function CategoryStep({ categories, plansBySlug, onBack, onNext }: CategoryStepProps) {
+export function CategoryStep({ categories, plansBySlug, onBack, onCancel, onNext }: CategoryStepProps) {
   const form = useFormContext<WizardFormData>()
   const value = form.watch('selectedCategoryPath') ?? ''
   const resolved = resolvePlanFromSelection({
@@ -55,6 +56,10 @@ export function CategoryStep({ categories, plansBySlug, onBack, onNext }: Catego
         {onBack ? (
           <Button variant="outline" onClick={onBack}>
             <ChevronLeftIcon data-icon="inline-start" /> Wstecz
+          </Button>
+        ) : onCancel ? (
+          <Button variant="outline" onClick={onCancel}>
+            <XIcon data-icon="inline-start" /> Anuluj
           </Button>
         ) : (
           <div />
