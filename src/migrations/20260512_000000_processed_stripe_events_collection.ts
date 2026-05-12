@@ -37,10 +37,13 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     CREATE UNIQUE INDEX IF NOT EXISTS "processed_stripe_events_event_id_idx"
       ON "processed_stripe_events" ("event_id");
 
-    ALTER TABLE "processed_stripe_events"
-      ADD CONSTRAINT IF NOT EXISTS "processed_stripe_events_user_id_users_id_fk"
-      FOREIGN KEY ("user_id") REFERENCES "public"."users"("id")
-      ON DELETE SET NULL ON UPDATE NO ACTION;
+    DO $$ BEGIN
+      ALTER TABLE "processed_stripe_events"
+        ADD CONSTRAINT "processed_stripe_events_user_id_users_id_fk"
+        FOREIGN KEY ("user_id") REFERENCES "public"."users"("id")
+        ON DELETE SET NULL ON UPDATE NO ACTION;
+    EXCEPTION WHEN duplicate_object THEN NULL;
+    END $$;
   `)
 }
 
