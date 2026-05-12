@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Spinner } from '@/components/ui/spinner'
 import { SubscriptionWizard } from './SubscriptionWizard'
+import { getDisplayPlanName } from './lib/getDisplayPlanName'
 import { createBillingPortalSession } from '@/actions/stripe/manageSubscription'
 import type { User, ServiceCategory, SubscriptionPlan } from '@/payload-types'
 import type { CurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
@@ -130,7 +131,7 @@ export function SubscriptionManager({
               <CardTitle className="font-bebas text-2xl tracking-wide">
                 {subscription.isBetaUser
                   ? 'Plan Beta'
-                  : subscription.currentPlan?.name ?? 'Aktywna subskrypcja'}
+                  : getDisplayPlanName(subscription.currentPlan) || 'Aktywna subskrypcja'}
               </CardTitle>
               <Badge
                 variant={subscription.cancelAtPeriodEnd ? 'destructive' : 'secondary'}

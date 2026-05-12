@@ -5,6 +5,7 @@ import { useFormContext } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { CategoryPicker } from '@/components/panel/wizard/CategoryPicker'
 import { resolvePlanFromSelection } from '../lib/resolvePlanFromSelection'
+import { getDisplayPlanName } from '../lib/getDisplayPlanName'
 import type { WizardFormData } from '../lib/planChangeSchema'
 import type { ServiceCategory, SubscriptionPlan } from '@/payload-types'
 
@@ -46,7 +47,7 @@ export function CategoryStep({ categories, plansBySlug, onBack, onCancel, onNext
       <p className="text-sm text-muted-foreground">
         {resolved ? (
           <>
-            Plan: <span className="font-medium text-foreground">{resolved.name}</span>
+            <span className="font-medium text-foreground">{getDisplayPlanName(resolved)}</span>
           </>
         ) : (
           'Wybierz kategorię, aby zobaczyć dopasowany plan.'
