@@ -5,13 +5,10 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {
   AlertTriangleIcon,
-  ChevronLeftIcon,
   ChevronRightIcon,
   RefreshCwIcon,
   SettingsIcon,
   TagIcon,
-  CheckIcon,
-  SparklesIcon,
 } from 'lucide-react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -24,9 +21,9 @@ import { createCheckoutSession } from '@/actions/stripe/createCheckoutSession'
 import { activateBetaAccess } from '@/actions/stripe/activateBetaAccess'
 import { createBillingPortalSession } from '@/actions/stripe/manageSubscription'
 import { getStripePrices, type StripePriceDetails } from '@/actions/stripe/products/getStripePrices'
-import { cn } from '@/lib/utils'
 import type { User, SubscriptionPlan, ServiceCategory } from '@/payload-types'
 import type { CurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
+import { IntervalStep } from './steps/IntervalStep'
 
 const BETA_PRICE_ID = 'BETA'
 
@@ -71,22 +68,6 @@ function getRequiredPlanFromCategory(
   }
 
   return requiredPlan
-}
-
-function formatPrice(amount: number, currency: string): string {
-  return new Intl.NumberFormat('pl-PL', {
-    style: 'currency',
-    currency,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount / 100)
-}
-
-function getIntervalLabel(interval: string, intervalCount: number): string {
-  if (interval === 'month' && intervalCount === 1) return 'Miesięcznie'
-  if (interval === 'month' && intervalCount === 6) return 'Co 6 miesięcy'
-  if (interval === 'year' && intervalCount === 1) return 'Rocznie'
-  return `Co ${intervalCount} ${interval}`
 }
 
 export function SubscriptionManager({
@@ -237,108 +218,18 @@ export function SubscriptionManager({
 
         {/* Step 2: Price / billing interval */}
         {view === 'onboarding-price' && (
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-1">
-              <h2 className="font-bebas text-2xl tracking-wide">Wybierz okres rozliczeniowy</h2>
-              <p className="text-sm text-muted-foreground">
-                Kategoria: <span className="font-medium text-foreground">{selectedCategory}</span>
-                {requiredPlan && (
-                  <> — Plan: <span className="font-medium text-foreground">{requiredPlan.name}</span></>
-                )}
-              </p>
-            </div>
-
-            {isPricesLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <Spinner className="size-6" />
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {availablePrices.map((price) => {
-                  const isSelected = selectedPriceId === price.id
-                  const label = getIntervalLabel(
-                    price.recurring?.interval ?? 'month',
-                    price.recurring?.intervalCount ?? 1,
-                  )
-                  const formattedPrice = formatPrice(price.unitAmount ?? 0, price.currency)
-
-                  return (
-                    <button
-                      key={price.id}
-                      type="button"
-                      onClick={() => setSelectedPriceId(price.id)}
-                      className={cn(
-                        'flex items-center justify-between rounded-lg border px-4 py-3 text-left transition-colors',
-                        isSelected
-                          ? 'border-accent bg-accent/5'
-                          : 'border-border hover:border-accent/30',
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={cn(
-                          'flex size-5 items-center justify-center rounded-full border',
-                          isSelected ? 'border-accent bg-accent text-accent-foreground' : 'border-muted-foreground/30',
-                        )}>
-                          {isSelected && <CheckIcon className="size-3" />}
-                        </div>
-                        <span className="font-medium">{label}</span>
-                      </div>
-                      <span className="font-bebas text-xl tracking-wide">{formattedPrice}</span>
-                    </button>
-                  )
-                })}
-
-                {/* Beta option */}
-                {showBetaOption && (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedPriceId(BETA_PRICE_ID)}
-                    className={cn(
-                      'flex items-center justify-between rounded-lg border border-dashed px-4 py-3 text-left transition-colors',
-                      selectedPriceId === BETA_PRICE_ID
-                        ? 'border-accent bg-accent/5'
-                        : 'border-border hover:border-accent/30',
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={cn(
-                        'flex size-5 items-center justify-center rounded-full border',
-                        selectedPriceId === BETA_PRICE_ID ? 'border-accent bg-accent text-accent-foreground' : 'border-muted-foreground/30',
-                      )}>
-                        {selectedPriceId === BETA_PRICE_ID && <CheckIcon className="size-3" />}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <SparklesIcon className="size-4 text-accent" />
-                        <span className="font-medium">Dostęp Beta</span>
-                        <Badge variant="outline" className="text-accent border-accent/30">Za darmo</Badge>
-                      </div>
-                    </div>
-                    <span className="font-bebas text-xl tracking-wide text-accent">0 PLN</span>
-                  </button>
-                )}
-              </div>
-            )}
-
-            <div className="flex justify-between">
-              <Button
-                variant="outline"
-                disabled={isPending}
-                onClick={() => setView('onboarding-category')}
-              >
-                <ChevronLeftIcon data-icon="inline-start" />
-                Wstecz
-              </Button>
-
-              <Button
-                disabled={!selectedPriceId || isPending}
-                onClick={handleCheckout}
-              >
-                {isPending && <Spinner data-icon="inline-start" />}
-                {selectedPriceId === BETA_PRICE_ID ? 'Aktywuj dostęp beta' : 'Przejdź do płatności'}
-                <ChevronRightIcon data-icon="inline-end" />
-              </Button>
-            </div>
-          </div>
+          <IntervalStep
+            availablePrices={availablePrices}
+            isPricesLoading={isPricesLoading}
+            selectedPriceId={selectedPriceId}
+            onSelectPriceId={setSelectedPriceId}
+            showBetaOption={showBetaOption}
+            selectedCategory={selectedCategory}
+            requiredPlanName={requiredPlan?.name}
+            onBack={() => setView('onboarding-category')}
+            onNext={handleCheckout}
+            isPending={isPending}
+          />
         )}
       </div>
     )
