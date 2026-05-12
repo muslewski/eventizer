@@ -367,6 +367,13 @@ export const plugins: Plugin[] = [
           customer: string
           status: string
           metadata: Record<string, string> | null
+          items: {
+            data: Array<{
+              price: {
+                product: string | { id: string }
+              }
+            }>
+          }
         }
 
         console.log(
@@ -430,6 +437,43 @@ export const plugins: Plugin[] = [
             id: numericUserId,
             data: updateData,
           })
+
+          // Sync user.maxOffers + category fields from new plan
+          const productId =
+            typeof subscription.items.data[0]?.price.product === 'string'
+              ? subscription.items.data[0].price.product
+              : subscription.items.data[0]?.price.product?.id
+
+          if (productId) {
+            const planResult = await payload.find({
+              collection: 'subscription-plans',
+              where: { stripeID: { equals: productId } },
+              limit: 1,
+            })
+            const newPlan = planResult.docs[0]
+            if (newPlan) {
+              const meta = subscription.metadata ?? {}
+              let categoryNames: string[] | undefined
+              let categorySlugs: string[] | undefined
+              try {
+                if (meta.categoryNames) categoryNames = JSON.parse(meta.categoryNames)
+                if (meta.categorySlugs) categorySlugs = JSON.parse(meta.categorySlugs)
+              } catch {
+                // malformed metadata — treat as absent
+              }
+              await syncUserFromPlan({
+                payload,
+                userId: numericUserId,
+                newPlan,
+                categoryNames,
+                categorySlugs,
+              })
+            } else {
+              console.warn(
+                `customer.subscription.created: no subscription-plans match for product ${productId}`,
+              )
+            }
+          }
 
           // Safety net: ensure stripe-customers record is linked
           const customerId =
