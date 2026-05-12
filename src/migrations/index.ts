@@ -5,6 +5,7 @@ import * as migration_20260430_022634_add_billing_tier_fields from './20260430_0
 import * as migration_20260430_164705_relax_subscription_plans_required_columns from './20260430_164705_relax_subscription_plans_required_columns';
 import * as migration_20260512_000000_processed_stripe_events_collection from './20260512_000000_processed_stripe_events_collection';
 import * as migration_20260512_133000_add_processed_stripe_events_to_locked_documents from './20260512_133000_add_processed_stripe_events_to_locked_documents';
+import * as migration_20260512_135000_ensure_processed_stripe_events_schema from './20260512_135000_ensure_processed_stripe_events_schema';
 
 export const migrations = [
   {
@@ -41,5 +42,10 @@ export const migrations = [
     up: migration_20260512_133000_add_processed_stripe_events_to_locked_documents.up,
     down: migration_20260512_133000_add_processed_stripe_events_to_locked_documents.down,
     name: '20260512_133000_add_processed_stripe_events_to_locked_documents'
+  },
+  {
+    up: migration_20260512_135000_ensure_processed_stripe_events_schema.up,
+    down: migration_20260512_135000_ensure_processed_stripe_events_schema.down,
+    name: '20260512_135000_ensure_processed_stripe_events_schema'
   },
 ];
