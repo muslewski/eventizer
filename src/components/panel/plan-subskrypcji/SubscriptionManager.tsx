@@ -1,7 +1,6 @@
 'use client'
 
 import * as React from 'react'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import {
   AlertTriangleIcon,
@@ -56,7 +55,6 @@ export function SubscriptionManager({
   lang,
   showBetaOption,
 }: SubscriptionManagerProps) {
-  const _router = useRouter()
   const [view, setView] = React.useState<View>(() =>
     user.role === 'service-provider' ? 'status' : 'wizard-onboarding',
   )
