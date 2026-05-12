@@ -60,20 +60,23 @@ export async function changePlan({
     return { success: false, error: 'UNAUTHORIZED', message: 'Brak uprawnień.' }
   }
 
-  // Validate categorySlugs length + existence
+  // Validate categorySlugs length + that the ROOT category exists. Subcategories
+  // are nested arrays inside their parent service-categories doc, not separate
+  // rows, so only the root segment is queryable by slug. The deeper-path check
+  // happens implicitly through the resolvedPlan logic.
   if (categorySlugs && categorySlugs.length) {
     const totalLen = JSON.stringify(categorySlugs).length + JSON.stringify(categoryNames ?? []).length
     if (totalLen > 450) {
       return { success: false, error: 'CATEGORY_INVALID', message: 'Wybrana kategoria jest zbyt długa.' }
     }
-    const topSlugs = Array.from(new Set(categorySlugs.map(s => s.split('/')[0])))
+    const rootSlug = categorySlugs[0]
     const cats = await payload.find({
       collection: 'service-categories',
-      where: { slug: { in: topSlugs } },
-      limit: topSlugs.length,
+      where: { slug: { equals: rootSlug } },
+      limit: 1,
       depth: 0,
     })
-    if (cats.totalDocs < topSlugs.length) {
+    if (cats.totalDocs === 0) {
       return { success: false, error: 'CATEGORY_INVALID', message: 'Wybrana kategoria nie istnieje.' }
     }
   }
