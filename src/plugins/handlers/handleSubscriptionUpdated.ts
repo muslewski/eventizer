@@ -120,7 +120,15 @@ export async function handleSubscriptionUpdated({
     })
 
     if (previousPlan && newPlan.level < previousPlan.level) {
-      const result = await draftOffersOnDowngrade({ payload, userId, newPlan })
+      const result = await draftOffersOnDowngrade({
+        payload,
+        userId,
+        newPlan: {
+          level: newPlan.level,
+          maxOffers: newPlan.maxOffers ?? 1,
+          slug: newPlan.slug,
+        },
+      })
       audit.draftedByCategory = result.draftedByCategory.length
       audit.draftedByLimit = result.draftedByLimit.length
     }
