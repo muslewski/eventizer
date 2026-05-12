@@ -16,8 +16,9 @@ export const enforceMaxOffers: CollectionBeforeOperationHook = async ({ operatio
         user: {
           equals: req.user.id,
         },
+        _status: { equals: 'published' },
       },
-      limit: 1,
+      limit: 0,
     })
 
     if (existingOffers.totalDocs >= userMaxOffers) {
