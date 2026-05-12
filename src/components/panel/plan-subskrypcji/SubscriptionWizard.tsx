@@ -99,12 +99,18 @@ export function SubscriptionWizard(props: SubscriptionWizardProps) {
             }}
           />
         </nav>
-        {step === 'kind' && <PlanKindStep onNext={goNext} />}
+        {step === 'kind' && (
+          <PlanKindStep
+            onNext={goNext}
+            onCancel={entry !== 'onboarding' ? onExit : undefined}
+          />
+        )}
         {step === 'category' && (
           <CategoryStep
             categories={categories}
             plansBySlug={plansBySlug}
             onBack={stepIdx > 0 ? goBack : undefined}
+            onCancel={stepIdx === 0 && entry !== 'onboarding' ? onExit : undefined}
             onNext={goNext}
           />
         )}
