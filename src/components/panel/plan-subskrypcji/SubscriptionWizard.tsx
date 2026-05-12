@@ -298,8 +298,10 @@ function IntervalStepBridge({
       selectedPriceId={selectedPriceId}
       onSelectPriceId={handleSelectPrice}
       showBetaOption={showBetaOption}
-      selectedCategory={categoryNames.join(' > ') || (kind === 'multi' ? 'Wszystkie kategorie' : '')}
-      requiredPlanName={getDisplayPlanName(resolved) || undefined}
+      // Single path: show category (plan is implicit from category, hide it).
+      // Multi path: no category → show the chosen tier/plan name instead.
+      selectedCategory={kind === 'multi' ? '' : categoryNames.join(' > ')}
+      requiredPlanName={kind === 'multi' ? getDisplayPlanName(resolved) || undefined : undefined}
       onBack={onBack}
       onNext={handleNext}
       isPending={isPending}
