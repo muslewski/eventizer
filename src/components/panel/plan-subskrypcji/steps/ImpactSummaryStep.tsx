@@ -204,17 +204,13 @@ export function ImpactSummaryStep({
           ? 'Podsumowanie zmiany kategorii'
           : 'Podsumowanie zmiany planu'}
       </h2>
-      <p className="text-sm text-muted-foreground">
-        {isSameDisplayPlan ? (
-          <span className="font-medium text-foreground">{currentDisplay}</span>
-        ) : (
-          <>
-            Z planu{' '}
-            <span className="font-medium text-foreground">{currentDisplay}</span> na{' '}
-            <span className="font-medium text-foreground">{newDisplay}</span>
-          </>
-        )}
-      </p>
+      {!isSameDisplayPlan && (
+        <p className="text-sm text-muted-foreground">
+          Z planu{' '}
+          <span className="font-medium text-foreground">{currentDisplay}</span> na{' '}
+          <span className="font-medium text-foreground">{newDisplay}</span>
+        </p>
+      )}
 
       {impact.currencyMismatch && (
         <Alert variant="destructive">

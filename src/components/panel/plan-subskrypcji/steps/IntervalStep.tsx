@@ -57,10 +57,16 @@ export function IntervalStep({
       <div className="flex flex-col gap-1">
         <h2 className="font-bebas text-2xl tracking-wide">Wybierz okres rozliczeniowy</h2>
         <p className="text-sm text-muted-foreground">
-          Kategoria: <span className="font-medium text-foreground">{selectedCategory}</span>
-          {requiredPlanName && (
-            <> — Plan: <span className="font-medium text-foreground">{requiredPlanName}</span></>
-          )}
+          {selectedCategory ? (
+            <>
+              Kategoria:{' '}
+              <span className="font-medium text-foreground">{selectedCategory}</span>
+            </>
+          ) : requiredPlanName ? (
+            <>
+              Plan: <span className="font-medium text-foreground">{requiredPlanName}</span>
+            </>
+          ) : null}
         </p>
       </div>
 
