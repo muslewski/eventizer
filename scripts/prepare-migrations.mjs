@@ -109,8 +109,8 @@ try {
     }
     const insert = await pool.query(
       `INSERT INTO payload_migrations (name, batch, updated_at, created_at)
-       SELECT $1, 1, now(), now()
-       WHERE NOT EXISTS (SELECT 1 FROM payload_migrations WHERE name = $1)
+       SELECT $1::text, 1, now(), now()
+       WHERE NOT EXISTS (SELECT 1 FROM payload_migrations WHERE name = $1::text)
        RETURNING name`,
       [name],
     )
