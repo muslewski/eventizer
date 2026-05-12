@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { useFormContext } from 'react-hook-form'
 import { toast } from 'sonner'
-import { ChevronLeftIcon, AlertTriangleIcon } from 'lucide-react'
+import { ChevronLeftIcon, AlertTriangleIcon, InfoIcon } from 'lucide-react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -169,16 +169,27 @@ export function ImpactSummaryStep({
   const totalDrafted =
     impact.offersToDraft.byCategory.length + impact.offersToDraft.byLimit.length
 
-  const confirmLabel =
-    impact.changeType === 'upgrade'
-      ? 'Zmień plan i zapłać teraz'
-      : impact.changeType === 'downgrade'
-      ? 'Potwierdź zmianę planu'
-      : impact.changeType === 'interval_only'
-      ? 'Zmień okres rozliczeniowy'
-      : impact.changeType === 'lateral'
-      ? 'Potwierdź zmianę'
-      : 'Brak zmian do zapisania'
+  // Single tiers are presented as a single "Plan Single" to users; their internal
+  // tiering manifests only as different prices. So Single↔Single transitions
+  // should be framed as a CATEGORY change (different price tier), not a plan change.
+  // Multi↔Single, Single↔Agency etc. are real plan changes — keep that framing.
+  const currentDisplay = getDisplayPlanName(impact.currentPlan)
+  const newDisplay = getDisplayPlanName(impact.newPlan)
+  const isSameDisplayPlan = currentDisplay === newDisplay
+
+  const ct = impact.changeType
+  const confirmLabel = (() => {
+    if (ct === 'no_change') return 'Brak zmian do zapisania'
+    if (ct === 'interval_only') return 'Zmień okres rozliczeniowy'
+    if (isSameDisplayPlan) {
+      if (ct === 'upgrade') return 'Zmień kategorię i zapłać teraz'
+      if (ct === 'downgrade') return 'Potwierdź zmianę kategorii'
+      return 'Potwierdź zmianę'
+    }
+    if (ct === 'upgrade') return 'Zmień plan i zapłać teraz'
+    if (ct === 'downgrade') return 'Potwierdź zmianę planu'
+    return 'Potwierdź zmianę'
+  })()
 
   const isDestructive = impact.changeType === 'downgrade' || impact.currencyMismatch
   const confirmDisabled =
@@ -186,11 +197,23 @@ export function ImpactSummaryStep({
 
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="font-bebas text-2xl tracking-wide">Podsumowanie zmiany planu</h2>
+      <h2 className="font-bebas text-2xl tracking-wide">
+        {ct === 'interval_only'
+          ? 'Podsumowanie zmiany okresu rozliczeniowego'
+          : isSameDisplayPlan
+          ? 'Podsumowanie zmiany kategorii'
+          : 'Podsumowanie zmiany planu'}
+      </h2>
       <p className="text-sm text-muted-foreground">
-        Z planu{' '}
-        <span className="font-medium text-foreground">{getDisplayPlanName(impact.currentPlan)}</span> na{' '}
-        <span className="font-medium text-foreground">{getDisplayPlanName(impact.newPlan)}</span>
+        {isSameDisplayPlan ? (
+          <span className="font-medium text-foreground">{currentDisplay}</span>
+        ) : (
+          <>
+            Z planu{' '}
+            <span className="font-medium text-foreground">{currentDisplay}</span> na{' '}
+            <span className="font-medium text-foreground">{newDisplay}</span>
+          </>
+        )}
       </p>
 
       {impact.currencyMismatch && (
@@ -231,26 +254,42 @@ export function ImpactSummaryStep({
       )}
 
       {impact.changeType === 'downgrade' && totalDrafted > 0 && (
-        <Alert variant="destructive">
-          <AlertTriangleIcon />
-          <AlertTitle>Uwaga — zmiany ofert</AlertTitle>
-          <AlertDescription>
-            {(() => {
-              const p = pluralizeOffers(totalDrafted)
-              const sentence = `${p.count} ${p.noun} ${p.verb} ${p.participle} do wersji roboczych.`
-              const byCategoryCount = impact.offersToDraft.byCategory.length
-              const byLimitCount = impact.offersToDraft.byLimit.length
-              const maxOffers = impact.newPlan.maxOffers ?? 1
-              if (byCategoryCount > 0 && byLimitCount === 0) {
-                return `${sentence} ${getDisplayPlanName(impact.newPlan)} obsługuje ograniczoną liczbę kategorii — wybrana kategoria nie jest w nim dostępna.`
-              }
-              if (byCategoryCount === 0 && byLimitCount > 0) {
-                return `${sentence} Nowy plan pozwala opublikować maksymalnie ${maxOffers}.`
-              }
-              return `${sentence} Część z powodu kategorii nieobsługiwanej przez plan ${getDisplayPlanName(impact.newPlan)}, pozostałe ze względu na limit ${maxOffers}.`
-            })()}
-          </AlertDescription>
-        </Alert>
+        isSameDisplayPlan ? (
+          // Same display plan (e.g. Single→Single category change): informative tone,
+          // framed around category price tiers — there's no "plan" change to speak of.
+          <Alert>
+            <InfoIcon />
+            <AlertTitle>Zmiana kategorii</AlertTitle>
+            <AlertDescription>
+              {(() => {
+                const p = pluralizeOffers(totalDrafted)
+                return `Wybrana kategoria jest w niższej półce cenowej. ${p.count} ${p.noun} z kategoriami z wyższej półki ${p.verb} ${p.participle} do wersji roboczych.`
+              })()}
+            </AlertDescription>
+          </Alert>
+        ) : (
+          // Cross-plan downgrade (e.g. Multi → Single): keep destructive framing.
+          <Alert variant="destructive">
+            <AlertTriangleIcon />
+            <AlertTitle>Uwaga — zmiany ofert</AlertTitle>
+            <AlertDescription>
+              {(() => {
+                const p = pluralizeOffers(totalDrafted)
+                const sentence = `${p.count} ${p.noun} ${p.verb} ${p.participle} do wersji roboczych.`
+                const byCategoryCount = impact.offersToDraft.byCategory.length
+                const byLimitCount = impact.offersToDraft.byLimit.length
+                const maxOffers = impact.newPlan.maxOffers ?? 1
+                if (byCategoryCount > 0 && byLimitCount === 0) {
+                  return `${sentence} ${getDisplayPlanName(impact.newPlan)} obsługuje ograniczoną liczbę kategorii — wybrana kategoria nie jest w nim dostępna.`
+                }
+                if (byCategoryCount === 0 && byLimitCount > 0) {
+                  return `${sentence} Nowy plan pozwala opublikować maksymalnie ${maxOffers}.`
+                }
+                return `${sentence} Część z powodu kategorii nieobsługiwanej przez plan ${getDisplayPlanName(impact.newPlan)}, pozostałe ze względu na limit ${maxOffers}.`
+              })()}
+            </AlertDescription>
+          </Alert>
+        )
       )}
 
       {impact.changeType === 'no_change' && (
@@ -289,7 +328,10 @@ export function ImpactSummaryStep({
               <li key={o.id}>
                 {o.title}{' '}
                 <span className="text-muted-foreground">
-                  — Kategoria „{formatCategoryPath(o.categorySlugPath)}" wymaga wyższego planu
+                  — Kategoria „{formatCategoryPath(o.categorySlugPath)}"{' '}
+                  {isSameDisplayPlan
+                    ? 'jest z wyższej półki cenowej'
+                    : 'wymaga wyższego planu'}
                 </span>
               </li>
             ))}
@@ -313,7 +355,11 @@ export function ImpactSummaryStep({
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Czy na pewno chcesz zmienić plan?</AlertDialogTitle>
+                <AlertDialogTitle>
+                  {isSameDisplayPlan
+                    ? 'Czy na pewno chcesz zmienić kategorię?'
+                    : 'Czy na pewno chcesz zmienić plan?'}
+                </AlertDialogTitle>
                 <AlertDialogDescription>
                   {(() => {
                     const p = pluralizeOffers(totalDrafted)
