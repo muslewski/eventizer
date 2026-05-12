@@ -12,7 +12,8 @@ describe('pluralizeOffers', () => {
   })
 
   it.each([2, 3, 4, 22, 23, 24])('few-form for %i', (n) => {
-    expect(pluralizeOffers(n)).toMatchObject({
+    expect(pluralizeOffers(n)).toEqual({
+      count: String(n),
       noun: 'oferty',
       verb: 'zostaną',
       participle: 'przeniesione',
@@ -20,7 +21,8 @@ describe('pluralizeOffers', () => {
   })
 
   it.each([0, 5, 11, 12, 13, 14, 21, 25, 100])('many-form for %i', (n) => {
-    expect(pluralizeOffers(n)).toMatchObject({
+    expect(pluralizeOffers(n)).toEqual({
+      count: String(n),
       noun: 'ofert',
       verb: 'zostanie',
       participle: 'przeniesionych',
