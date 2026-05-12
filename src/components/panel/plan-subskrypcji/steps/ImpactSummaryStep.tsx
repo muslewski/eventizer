@@ -223,9 +223,18 @@ export function ImpactSummaryStep({
           <AlertDescription>
             {(() => {
               const p = pluralizeOffers(totalDrafted)
-              return `${p.count} ${p.noun} ${p.verb} ${p.participle} do wersji roboczych.`
-            })()}{' '}
-            Nowy plan pozwala opublikować maksymalnie {impact.newPlan.maxOffers ?? 1}.
+              const sentence = `${p.count} ${p.noun} ${p.verb} ${p.participle} do wersji roboczych.`
+              const byCategoryCount = impact.offersToDraft.byCategory.length
+              const byLimitCount = impact.offersToDraft.byLimit.length
+              const maxOffers = impact.newPlan.maxOffers ?? 1
+              if (byCategoryCount > 0 && byLimitCount === 0) {
+                return `${sentence} Wybrana kategoria nie jest obsługiwana w niższym planie ${impact.newPlan.name}.`
+              }
+              if (byCategoryCount === 0 && byLimitCount > 0) {
+                return `${sentence} Nowy plan pozwala opublikować maksymalnie ${maxOffers}.`
+              }
+              return `${sentence} Część z powodu kategorii spoza planu ${impact.newPlan.name}, pozostałe ze względu na limit ${maxOffers}.`
+            })()}
           </AlertDescription>
         </Alert>
       )}
