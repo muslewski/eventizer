@@ -88,7 +88,7 @@ describe('draftOffersOnDowngrade', () => {
 
   it('Offers with no resolvable category are left untouched by Pass A', async () => {
     const offers = [offer(1, 'deleted-cat', '2026-01-01')]
-    const categories = []
+    const categories: any[] = []
     const payload = makePayload(offers, categories)
 
     const result = await draftOffersOnDowngrade({
