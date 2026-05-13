@@ -21,7 +21,10 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
     <>
       {/* Fixed background — desktop only. SquircleShift switches its base
           color internally based on resolvedTheme, so the same instance works
-          for light and dark. */}
+          for light and dark.
+          Light mode reads loud against the white surface, so we drop the
+          brightness override well below the dark value to keep the panel
+          ambient instead of stage-lit. */}
       <div className="fixed inset-0 z-0 pointer-events-none hidden md:block">
         <SquircleShift
           width="100%"
@@ -33,6 +36,7 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
           lightBackground="#ffffff"
           darkBackground="#080808"
           brightness={0.85}
+          brightnessLight={0.35}
         />
       </div>
 

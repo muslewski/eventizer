@@ -42,8 +42,12 @@ export interface SquircleShiftProps {
   lightBackground?: string;
   /** Background color for dark mode */
   darkBackground?: string;
-  /** Overall brightness */
+  /** Overall brightness (used for both themes unless a per-theme override is set). */
   brightness?: number;
+  /** Optional light-mode brightness override. Falls back to `brightness`. */
+  brightnessLight?: number;
+  /** Optional dark-mode brightness override. Falls back to `brightness`. */
+  brightnessDark?: number;
   /** Grid phase offset */
   phaseOffset?: number;
 }
@@ -259,12 +263,19 @@ const SquircleShift: React.FC<SquircleShiftProps> = ({
   lightBackground = "#ffffff",
   darkBackground = "#000000",
   brightness = 1.5,
+  brightnessLight,
+  brightnessDark,
   phaseOffset = 10,
 }) => {
   const { resolvedTheme } = useTheme();
 
-  const backgroundColor =
-    resolvedTheme === "dark" ? darkBackground : lightBackground;
+  const isDark = resolvedTheme === "dark";
+  const backgroundColor = isDark ? darkBackground : lightBackground;
+  // Per-theme brightness overrides fall back to the shared `brightness`
+  // value when omitted, so existing callers keep their behaviour.
+  const effectiveBrightness = isDark
+    ? brightnessDark ?? brightness
+    : brightnessLight ?? brightness;
 
   const widthStyle = typeof width === "number" ? `${width}px` : width;
   const heightStyle = typeof height === "number" ? `${height}px` : height;
@@ -302,7 +313,7 @@ const SquircleShift: React.FC<SquircleShiftProps> = ({
           centerY={centerY}
           colorTint={colorTint}
           backgroundColor={backgroundColor}
-          brightness={brightness}
+          brightness={effectiveBrightness}
           phaseOffset={phaseOffset}
         />
       </Canvas>
