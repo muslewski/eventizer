@@ -10,8 +10,10 @@ import { cn } from '@/lib/utils'
  * card with an accent-tinted icon, optional eyebrow, title, tagline, bulleted
  * feature list, and an optional italic motivational footer line.
  *
- * Visual language matches `OfferCard` (panel/oferty) for codebase consistency:
- * - `bg-card border-border/30` base (genuine elevation in dark mode)
+ * Visual language matches `OfferCard` (panel/oferty) and `CategoryPicker`
+ * (panel/wizard) for codebase consistency:
+ * - `bg-background border-border/20` base — matches the darker near-black tone
+ *   used by the category picker tiles, so all wizard steps share one surface
  * - inset accent glow on hover/selected: `inset_0_0_0_1px_rgba(210,140,8,...)`
  * - `font-bebas` titles in tracking-wide caps
  * - accent-tinted icon square in the header (mirrors the OfferCard price pill)
@@ -96,12 +98,12 @@ export function RichCardPicker<V extends string>({
             onClick={() => onChange(opt.value)}
             onKeyDown={(e) => onKeyDown(e, idx)}
             className={cn(
-              'group relative flex flex-col gap-4 rounded-xl border bg-card p-5 sm:p-6 text-left shadow-sm',
-              'transition-[border-color,box-shadow,transform] duration-200 ease-out',
+              'group relative flex flex-col gap-4 rounded-xl border bg-background p-5 sm:p-6 text-left',
+              'transition-[border-color,box-shadow,transform,background-color] duration-200 ease-out',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
               isSelected
-                ? 'border-accent shadow-[inset_0_0_0_1px_rgba(210,140,8,0.18)]'
-                : 'border-border/30 hover:border-accent/40 hover:shadow-[inset_0_0_0_1px_rgba(210,140,8,0.08)] hover:-translate-y-0.5',
+                ? 'border-accent bg-accent/[0.03] shadow-[inset_0_0_0_1px_rgba(210,140,8,0.18)]'
+                : 'border-border/20 hover:border-accent/40 hover:bg-accent/[0.02] hover:shadow-[inset_0_0_0_1px_rgba(210,140,8,0.08)] hover:-translate-y-0.5',
             )}
           >
             {/* "Most popular" badge — overflows the top edge of the card */}
