@@ -1,6 +1,12 @@
 'use client'
 
-import { ChevronRightIcon, SparklesIcon, XIcon } from 'lucide-react'
+import {
+  ChevronRightIcon,
+  LayersIcon,
+  SparklesIcon,
+  TargetIcon,
+  XIcon,
+} from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { RichCardPicker } from './_RichCardPicker'
@@ -42,6 +48,7 @@ export function PlanKindStep({
         options={[
           {
             value: 'single',
+            icon: TargetIcon,
             title: 'Jedna oferta',
             tagline: 'Skup się na jednej usłudze',
             bullets: [
@@ -53,6 +60,7 @@ export function PlanKindStep({
           },
           {
             value: 'multi',
+            icon: LayersIcon,
             title: 'Wiele usług',
             tagline: 'Dla firm oferujących różne usługi',
             bullets: [
