@@ -4,22 +4,19 @@ import * as React from 'react'
 import { toast } from 'sonner'
 import {
   AlertTriangleIcon,
-  RefreshCwIcon,
-  SettingsIcon,
-  TagIcon,
-  RepeatIcon,
+  CalendarIcon,
+  CheckIcon,
   MoreHorizontalIcon,
+  QuoteIcon,
+  RefreshCwIcon,
+  RepeatIcon,
+  SettingsIcon,
+  SparklesIcon,
+  TagIcon,
 } from 'lucide-react'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +25,11 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Spinner } from '@/components/ui/spinner'
 import { SubscriptionWizard } from './SubscriptionWizard'
-import { getDisplayPlanName, resolveCurrentPlanByMaxOffers } from './lib/getDisplayPlanName'
+import {
+  getDisplayPlanName,
+  resolveCurrentPlanByMaxOffers,
+} from './lib/getDisplayPlanName'
+import { getPlanInfo } from './lib/getPlanInfo'
 import { createBillingPortalSession } from '@/actions/stripe/manageSubscription'
 import type { User, ServiceCategory, SubscriptionPlan } from '@/payload-types'
 import type { CurrentSubscriptionDetails } from '@/actions/stripe/getCurrentSubscriptionDetails'
@@ -69,6 +70,12 @@ export function SubscriptionManager({
   const currentPlan =
     resolveCurrentPlanByMaxOffers(user.maxOffers, plans) ?? subscription.currentPlan
   const isSinglePlan = (currentPlan?.maxOffers ?? 1) === 1
+  const isBeta = !!subscription.isBetaUser
+  const planInfo = getPlanInfo(currentPlan, isBeta)
+  const PlanIcon = planInfo.icon
+  const planTitle = isBeta
+    ? 'Plan Beta'
+    : getDisplayPlanName(currentPlan) || 'Aktywna subskrypcja'
 
   if (view === 'wizard-onboarding') {
     return (
@@ -130,76 +137,152 @@ export function SubscriptionManager({
         </>
       )}
       {isActive && (
-        <Card className="bg-background border-border/20">
-          <CardHeader>
-            <div className="flex items-center justify-between gap-3 flex-wrap">
-              <CardTitle className="font-bebas text-2xl tracking-wide">
-                {subscription.isBetaUser
-                  ? 'Plan Beta'
-                  : getDisplayPlanName(currentPlan) || 'Aktywna subskrypcja'}
-              </CardTitle>
+        <div className="flex flex-col gap-5 rounded-xl border border-border/20 bg-background p-5 sm:p-6">
+          {/* Header: icon square + title/tagline + status badges */}
+          <div className="flex items-start justify-between gap-3 flex-wrap">
+            <div className="flex items-start gap-3 sm:gap-4 min-w-0">
+              {/* Accent-tinted icon square — matches wizard cards */}
+              <div
+                aria-hidden="true"
+                className="flex size-11 sm:size-12 flex-shrink-0 items-center justify-center rounded-lg border bg-accent/[0.08] border-accent/20 text-accent/80"
+              >
+                <PlanIcon className="size-5 sm:size-6" strokeWidth={2} />
+              </div>
+              <div className="flex flex-col gap-1.5 min-w-0">
+                <h2 className="font-bebas text-2xl sm:text-3xl tracking-wide leading-none">
+                  {planTitle}
+                </h2>
+                <div className="flex items-start gap-1.5">
+                  <QuoteIcon
+                    aria-hidden="true"
+                    className="size-3 mt-1 flex-shrink-0 text-accent/60"
+                  />
+                  <span className="text-sm italic text-muted-foreground leading-snug">
+                    {planInfo.tagline}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {isBeta && (
+                <Badge
+                  variant="outline"
+                  className="border-accent/40 bg-accent/10 text-accent gap-1"
+                >
+                  <SparklesIcon className="size-3" />
+                  Beta
+                </Badge>
+              )}
               <Badge
                 variant={subscription.cancelAtPeriodEnd ? 'destructive' : 'secondary'}
               >
                 {subscription.cancelAtPeriodEnd ? 'Wygasa' : 'Aktywna'}
               </Badge>
             </div>
-            <CardDescription>
-              {user.serviceCategory && <span>Kategoria: {user.serviceCategory}</span>}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            {subscription.currentPeriodEnd && (
-              <p className="text-sm text-muted-foreground">
-                {subscription.cancelAtPeriodEnd ? 'Wygasa' : 'Odnowienie'}:{' '}
-                <span className="font-medium text-foreground">
-                  {new Date(subscription.currentPeriodEnd).toLocaleDateString('pl-PL', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-border/40" aria-hidden="true" />
+
+          {/* Short benefit reminder list */}
+          <ul className="flex flex-col gap-2 text-sm">
+            {planInfo.bullets.map((bullet, i) => (
+              <li key={i} className="flex items-start gap-2.5">
+                <span
+                  aria-hidden="true"
+                  className="flex size-5 mt-px flex-shrink-0 items-center justify-center rounded-full bg-accent/[0.08]"
+                >
+                  <CheckIcon className="size-3 text-accent/70" strokeWidth={3} />
                 </span>
-              </p>
-            )}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-fit">
-                  <MoreHorizontalIcon data-icon="inline-start" /> Zarządzaj subskrypcją
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem onClick={() => setView('wizard-change-plan')}>
-                  <RepeatIcon /> Zmień plan…
+                <span className="text-foreground/90 leading-snug">{bullet}</span>
+              </li>
+            ))}
+          </ul>
+
+          {/* Divider before meta info */}
+          {(user.serviceCategory || subscription.currentPeriodEnd) && (
+            <div className="h-px bg-border/40" aria-hidden="true" />
+          )}
+
+          {/* Meta info — category & renewal */}
+          {(user.serviceCategory || subscription.currentPeriodEnd) && (
+            <div className="flex flex-col gap-2 text-sm">
+              {user.serviceCategory && (
+                <div className="flex items-center gap-2">
+                  <TagIcon
+                    className="size-3.5 flex-shrink-0 text-accent/70"
+                    aria-hidden="true"
+                  />
+                  <span className="text-muted-foreground">Kategoria:</span>
+                  <span className="font-medium text-foreground">
+                    {user.serviceCategory}
+                  </span>
+                </div>
+              )}
+              {subscription.currentPeriodEnd && (
+                <div className="flex items-center gap-2">
+                  <CalendarIcon
+                    className="size-3.5 flex-shrink-0 text-accent/70"
+                    aria-hidden="true"
+                  />
+                  <span className="text-muted-foreground">
+                    {subscription.cancelAtPeriodEnd ? 'Wygasa:' : 'Odnowienie:'}
+                  </span>
+                  <span className="font-medium text-foreground">
+                    {new Date(subscription.currentPeriodEnd).toLocaleDateString(
+                      'pl-PL',
+                      {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      },
+                    )}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Manage subscription dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-fit">
+                <MoreHorizontalIcon data-icon="inline-start" /> Zarządzaj subskrypcją
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onClick={() => setView('wizard-change-plan')}>
+                <RepeatIcon /> Zmień plan…
+              </DropdownMenuItem>
+              {isSinglePlan && (
+                <DropdownMenuItem onClick={() => setView('wizard-change-category')}>
+                  <TagIcon /> Zmień kategorię…
                 </DropdownMenuItem>
-                {isSinglePlan && (
-                  <DropdownMenuItem onClick={() => setView('wizard-change-category')}>
-                    <TagIcon /> Zmień kategorię…
-                  </DropdownMenuItem>
-                )}
-                {!subscription.isBetaUser && (
-                  <DropdownMenuItem
-                    onClick={() => {
-                      startTransition(async () => {
-                        const r = await createBillingPortalSession(
-                          user.id,
-                          window.location.href,
+              )}
+              {!isBeta && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    startTransition(async () => {
+                      const r = await createBillingPortalSession(
+                        user.id,
+                        window.location.href,
+                      )
+                      if (r.success && r.url) window.open(r.url, '_blank')
+                      else
+                        toast.error(
+                          r.message || 'Nie można otworzyć portalu rozliczeniowego.',
                         )
-                        if (r.success && r.url) window.open(r.url, '_blank')
-                        else
-                          toast.error(
-                            r.message || 'Nie można otworzyć portalu rozliczeniowego.',
-                          )
-                      })
-                    }}
-                  >
-                    {isPending && <Spinner data-icon="inline-start" />}
-                    <SettingsIcon /> Zarządzaj płatnościami…
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </CardContent>
-        </Card>
+                    })
+                  }}
+                >
+                  {isPending && <Spinner data-icon="inline-start" />}
+                  <SettingsIcon /> Zarządzaj płatnościami…
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       )}
     </div>
   )
