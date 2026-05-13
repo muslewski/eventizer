@@ -1,9 +1,17 @@
 'use client'
 
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import {
+  BoxesIcon,
+  Building2Icon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  LightbulbIcon,
+  RocketIcon,
+} from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { CardPicker } from './_CardPicker'
+import { RichCardPicker } from './_RichCardPicker'
+import { WizardRoiHint } from './_WizardRoiHint'
 import type { WizardFormData } from '../lib/planChangeSchema'
 
 export function TierStep({
@@ -27,7 +35,8 @@ export function TierStep({
           Każdy pakiet różni się limitem ofert i zakresem kategorii.
         </p>
       </div>
-      <CardPicker
+
+      <RichCardPicker
         ariaLabelledBy={headingId}
         value={value}
         onChange={(v) => {
@@ -38,16 +47,46 @@ export function TierStep({
         options={[
           {
             value: 'multi',
-            label: 'Multi — do 4 ofert',
-            description: 'Publikuj do czterech ofert w dowolnych kategoriach.',
+            icon: BoxesIcon,
+            supertitle: 'Do 4 usług',
+            title: 'Plan Multi',
+            tagline: 'Dla firm oferujących kilka różnych usług',
+            popular: true,
+            bullets: [
+              'Do 4 różnych usług (np. DJ + fotobudka + dekoracje)',
+              'Każda usługa w osobnej kategorii',
+              'Jedno konto – pełniejsza oferta',
+              'Lepsza prezentacja Twojej działalności',
+              'Brak prowizji',
+            ],
+            footer: {
+              icon: LightbulbIcon,
+              text: 'Rozwijaj swoją ofertę i docieraj do różnych klientów.',
+            },
           },
           {
             value: 'agency',
-            label: 'Agency — do 10 ofert',
-            description: 'Najwyższy limit ofert — wybór agencji i większych firm.',
+            icon: Building2Icon,
+            supertitle: 'Do 10 usług',
+            title: 'Plan Agency',
+            tagline: 'Dla firm z szeroką ofertą usług',
+            bullets: [
+              'Do 10 różnych usług',
+              'Obecność w wielu kategoriach',
+              'Kompleksowa oferta w jednym miejscu',
+              'Idealne dla agencji i większych firm',
+              'Brak prowizji',
+            ],
+            footer: {
+              icon: RocketIcon,
+              text: 'Zbuduj pełną ofertę swojej firmy w Eventizer.',
+            },
           },
         ]}
       />
+
+      <WizardRoiHint>Jedno zlecenie może pokryć koszt subskrypcji.</WizardRoiHint>
+
       <div className="flex justify-between">
         <Button variant="outline" onClick={onBack}>
           <ChevronLeftIcon data-icon="inline-start" /> Wstecz
