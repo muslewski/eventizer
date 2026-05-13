@@ -12,8 +12,8 @@ import { cn } from '@/lib/utils'
  *
  * Visual language matches `OfferCard` (panel/oferty) and `CategoryPicker`
  * (panel/wizard) for codebase consistency:
- * - `bg-background border-border/20` base — matches the darker near-black tone
- *   used by the category picker tiles, so all wizard steps share one surface
+ * - `bg-card border-border/30` base — a slightly lighter gray surface that
+ *   lifts off the page, so the high-stakes plan choice has visual weight
  * - inset accent glow on hover/selected: `inset_0_0_0_1px_rgba(210,140,8,...)`
  * - `font-bebas` titles in tracking-wide caps
  * - accent-tinted icon square in the header (mirrors the OfferCard price pill)
@@ -76,7 +76,9 @@ export function RichCardPicker<V extends string>({
       role="radiogroup"
       aria-labelledby={ariaLabelledBy}
       className={cn(
-        'grid grid-cols-1 md:grid-cols-2 gap-4',
+        // Mobile stacks vertically, so it benefits from a bigger gap. Desktop
+        // sits side-by-side where less air between the columns reads better.
+        'grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-4',
         // Reserve space for the popular-badge that overflows the top edge of cards.
         hasAnyPopular && 'pt-3',
       )}
@@ -98,12 +100,12 @@ export function RichCardPicker<V extends string>({
             onClick={() => onChange(opt.value)}
             onKeyDown={(e) => onKeyDown(e, idx)}
             className={cn(
-              'group relative flex flex-col gap-4 rounded-xl border bg-background p-5 sm:p-6 text-left',
+              'group relative flex flex-col gap-4 rounded-xl border bg-card p-5 sm:p-6 text-left shadow-sm',
               'transition-[border-color,box-shadow,transform,background-color] duration-200 ease-out',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
               isSelected
-                ? 'border-accent bg-accent/[0.03] shadow-[inset_0_0_0_1px_rgba(210,140,8,0.18)]'
-                : 'border-border/20 hover:border-accent/40 hover:bg-accent/[0.02] hover:shadow-[inset_0_0_0_1px_rgba(210,140,8,0.08)] hover:-translate-y-0.5',
+                ? 'border-accent bg-accent/[0.06] shadow-[inset_0_0_0_1px_rgba(210,140,8,0.18)]'
+                : 'border-border/30 hover:border-accent/40 hover:bg-accent/[0.04] hover:shadow-[inset_0_0_0_1px_rgba(210,140,8,0.08)] hover:-translate-y-0.5',
             )}
           >
             {/* "Most popular" badge — overflows the top edge of the card */}
