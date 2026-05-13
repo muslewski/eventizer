@@ -11,6 +11,12 @@ import { SuppressHydrationWarnings } from '@/components/providers/SuppressHydrat
 import { LenisProvider } from '@/components/providers/LenisProvider'
 import { PreloaderProvider } from '@/components/providers/PreloaderProvider'
 
+/**
+ * Toggle for the Lenis smooth-scroll provider. Disabled for now; flip back to
+ * `true` to restore Lenis-driven smooth scrolling site-wide.
+ */
+const ENABLE_LENIS = false
+
 export const metadata = {
   description: 'Eventizer - Event Management Platform',
   title: 'Eventizer',
@@ -59,20 +65,23 @@ export default async function RootLayout({
       <body className="bg-background h-full" suppressHydrationWarning>
         <SuppressHydrationWarnings />
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <LenisProvider>
-            <PreloaderProvider>
-              <RootAuthProvider>
-                <div className="w-full px-4 sm:px-8 transition-[padding] duration-900 ease-in-out">
-                  <main className="w-full relative">
-                    <Header />
-                    <div className="w-full relative ease-in-out">{children}</div>
-                  </main>
-                </div>
-                <Footer />
-                <Toaster />
-              </RootAuthProvider>
-            </PreloaderProvider>
-          </LenisProvider>
+          {(() => {
+            const inner = (
+              <PreloaderProvider>
+                <RootAuthProvider>
+                  <div className="w-full px-4 sm:px-8 transition-[padding] duration-900 ease-in-out">
+                    <main className="w-full relative">
+                      <Header />
+                      <div className="w-full relative ease-in-out">{children}</div>
+                    </main>
+                  </div>
+                  <Footer />
+                  <Toaster />
+                </RootAuthProvider>
+              </PreloaderProvider>
+            )
+            return ENABLE_LENIS ? <LenisProvider>{inner}</LenisProvider> : inner
+          })()}
         </ThemeProvider>
         <Analytics />
       </body>
