@@ -4,10 +4,30 @@ import EventizerIcon from '@/assets/eventizer-icon-1.png'
 import Preloader from '@/components/react-bits/preloader'
 import { useLenis } from 'lenis/react'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-const MIN_DISPLAY_MS = 600
+/**
+ * Session-scoped preloader.
+ *
+ * Pattern: one brand-reveal moment per browser tab (sessionStorage gate),
+ * matching liceum7bydgoszcz's `SitePreloader`. The previous implementation
+ * intercepted every same-origin anchor click and re-played the curtain on
+ * each navigation — slick the first time, fatiguing every time after.
+ *
+ * Rules:
+ * 1. Skip entirely when landing directly on a `/panel` route — panel users
+ *    open the app to work, not to watch a logo.
+ * 2. Otherwise, on the first marketing-page entry in this tab, show the
+ *    preloader for `INITIAL_DURATION_MS`, then set the sessionStorage flag.
+ * 3. Any subsequent mount (reload, in-app nav back to a marketing page) in
+ *    the same tab reads the flag and short-circuits to `loading = false`.
+ *
+ * The Lenis stop/start guard is left intact so it works once Lenis is
+ * re-enabled site-wide; today `useLenis()` returns null and the effect
+ * no-ops.
+ */
+
+const STORAGE_KEY = 'eventizer-preloaded'
 const INITIAL_DURATION_MS = 1200
 const PANEL_PATH_RE = /^\/[a-z]{2}\/panel(\/|$)/
 
@@ -16,21 +36,38 @@ function isPanelPath(pathname: string): boolean {
 }
 
 export function PreloaderProvider({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
-  const pathname = usePathname()
   const lenis = useLenis()
-
   const [loading, setLoading] = useState(true)
-  const loadingStartRef = useRef<number>(Date.now())
-  const lastPathnameRef = useRef(pathname)
 
   useEffect(() => {
+    // Skip on panel pages — work context, no brand intro.
     if (isPanelPath(window.location.pathname)) {
       setLoading(false)
       return
     }
 
-    const t = setTimeout(() => setLoading(false), INITIAL_DURATION_MS)
+    // Session gate — only show once per tab.
+    let alreadyShown = false
+    try {
+      alreadyShown = sessionStorage.getItem(STORAGE_KEY) === '1'
+    } catch {
+      // Storage blocked (privacy mode / disabled cookies) — treat as shown so
+      // we don't bombard the user with a preloader on every page.
+      alreadyShown = true
+    }
+    if (alreadyShown) {
+      setLoading(false)
+      return
+    }
+
+    const t = setTimeout(() => {
+      setLoading(false)
+      try {
+        sessionStorage.setItem(STORAGE_KEY, '1')
+      } catch {
+        /* noop */
+      }
+    }, INITIAL_DURATION_MS)
     return () => clearTimeout(t)
   }, [])
 
@@ -39,64 +76,6 @@ export function PreloaderProvider({ children }: { children: React.ReactNode }) {
     if (loading) lenis.stop()
     else lenis.start()
   }, [lenis, loading])
-
-  useEffect(() => {
-    const onClick = (e: MouseEvent) => {
-      if (e.defaultPrevented) return
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-      if (e.button !== 0) return
-
-      const anchor = (e.target as HTMLElement | null)?.closest('a')
-      if (!anchor) return
-
-      const href = anchor.getAttribute('href')
-      if (!href) return
-      if (anchor.target && anchor.target !== '_self') return
-      if (anchor.hasAttribute('download')) return
-      if (href.startsWith('mailto:') || href.startsWith('tel:')) return
-      if (href.startsWith('#')) return
-
-      let dest: URL
-      try {
-        dest = new URL(href, window.location.href)
-      } catch {
-        return
-      }
-      if (dest.origin !== window.location.origin) return
-      // Same-pathname clicks (pagination, filters, sort, anchor links) are
-      // in-page state changes — let the page-level handler manage them. The
-      // preloader is for navigations to a different page.
-      if (dest.pathname === window.location.pathname) return
-
-      if (isPanelPath(dest.pathname) || isPanelPath(window.location.pathname)) {
-        return
-      }
-
-      e.preventDefault()
-      loadingStartRef.current = Date.now()
-      setLoading(true)
-      router.push(dest.pathname + dest.search + dest.hash)
-    }
-
-    document.addEventListener('click', onClick, true)
-    return () => document.removeEventListener('click', onClick, true)
-  }, [router])
-
-  useEffect(() => {
-    if (pathname === lastPathnameRef.current) return
-    lastPathnameRef.current = pathname
-
-    if (!loading) return
-    if (isPanelPath(pathname)) {
-      setLoading(false)
-      return
-    }
-
-    const elapsed = Date.now() - loadingStartRef.current
-    const remaining = Math.max(0, MIN_DISPLAY_MS - elapsed)
-    const t = setTimeout(() => setLoading(false), remaining)
-    return () => clearTimeout(t)
-  }, [pathname, loading])
 
   return (
     <Preloader
