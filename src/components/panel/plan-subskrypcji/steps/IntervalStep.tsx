@@ -128,17 +128,10 @@ export function IntervalStep({
         </p>
         {(selectedCategory || requiredPlanName) && (
           <p className="text-sm text-muted-foreground">
-            {selectedCategory ? (
-              <>
-                Kategoria:{' '}
-                <span className="font-medium text-foreground">{selectedCategory}</span>
-              </>
-            ) : requiredPlanName ? (
-              <>
-                Plan:{' '}
-                <span className="font-medium text-foreground">{requiredPlanName}</span>
-              </>
-            ) : null}
+            Wybrano:{' '}
+            <span className="font-medium text-foreground">
+              {selectedCategory || requiredPlanName}
+            </span>
           </p>
         )}
       </div>

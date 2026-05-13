@@ -111,12 +111,12 @@ export function RichCardPicker<V extends string>({
               <div
                 className={cn(
                   'absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10',
-                  'flex items-center gap-1 rounded-full bg-accent px-3 py-1 shadow-sm',
-                  'text-[11px] font-semibold uppercase tracking-wider text-accent-foreground',
+                  'flex items-center gap-1.5 rounded-full bg-accent px-4 py-1 shadow-sm',
+                  'text-xs font-semibold uppercase tracking-wider text-accent-foreground whitespace-nowrap',
                 )}
                 aria-label={popularLabel}
               >
-                <StarIcon className="size-3" fill="currentColor" strokeWidth={0} />
+                <StarIcon className="size-3.5" fill="currentColor" strokeWidth={0} />
                 <span>{popularLabel}</span>
               </div>
             )}
