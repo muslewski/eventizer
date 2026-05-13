@@ -1,13 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import { CheckIcon, QuoteIcon, type LucideIcon } from 'lucide-react'
+import { CheckIcon, QuoteIcon, StarIcon, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /**
  * A richer variant of `_CardPicker` for high-stakes onboarding choices. Same
  * `role="radiogroup"` + arrow-key semantics, but each option is a full marketing
- * card with an accent-tinted icon, title, tagline, and a bulleted feature list.
+ * card with an accent-tinted icon, optional eyebrow, title, tagline, bulleted
+ * feature list, and an optional italic motivational footer line.
  *
  * Visual language matches `OfferCard` (panel/oferty) for codebase consistency:
  * - `bg-card border-border/30` base (genuine elevation in dark mode)
@@ -15,17 +16,26 @@ import { cn } from '@/lib/utils'
  * - `font-bebas` titles in tracking-wide caps
  * - accent-tinted icon square in the header (mirrors the OfferCard price pill)
  *
- * Used by `PlanKindStep` for the Single-vs-Multi decision; will be reused in
- * subsequent wizard steps that need the same level of visual weight.
+ * Options may also be marked `popular` — renders a star-prefixed pill that
+ * overflows the top edge of the card (the classic "most popular plan" pattern).
  */
 
 export interface RichCardOption<V extends string> {
   value: V
+  /** Lucide icon rendered in the accent-tinted header square. */
+  icon: LucideIcon
+  /** Small uppercase eyebrow rendered above the title (e.g. "Do 4 usług"). */
+  supertitle?: string
   title: string
   tagline: string
   bullets: string[]
-  /** Lucide icon rendered in the accent-tinted header square. */
-  icon: LucideIcon
+  /** Optional italic motivational line rendered below bullets with its own icon. */
+  footer?: {
+    icon: LucideIcon
+    text: string
+  }
+  /** Highlights this option with a "most popular" star pill at the top edge. */
+  popular?: boolean
 }
 
 export interface RichCardPickerProps<V extends string> {
@@ -33,6 +43,8 @@ export interface RichCardPickerProps<V extends string> {
   value: V | undefined
   onChange: (v: V) => void
   ariaLabelledBy: string
+  /** Label for the "most popular" badge. Default: PL "Najczęściej wybierany". */
+  popularLabel?: string
 }
 
 export function RichCardPicker<V extends string>({
@@ -40,8 +52,10 @@ export function RichCardPicker<V extends string>({
   value,
   onChange,
   ariaLabelledBy,
+  popularLabel = 'Najczęściej wybierany',
 }: RichCardPickerProps<V>) {
   const refs = React.useRef<Array<HTMLButtonElement | null>>([])
+  const hasAnyPopular = options.some((o) => o.popular)
 
   function onKeyDown(e: React.KeyboardEvent, idx: number) {
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
@@ -59,11 +73,16 @@ export function RichCardPicker<V extends string>({
     <div
       role="radiogroup"
       aria-labelledby={ariaLabelledBy}
-      className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      className={cn(
+        'grid grid-cols-1 md:grid-cols-2 gap-4',
+        // Reserve space for the popular-badge that overflows the top edge of cards.
+        hasAnyPopular && 'pt-3',
+      )}
     >
       {options.map((opt, idx) => {
         const isSelected = value === opt.value
         const Icon = opt.icon
+        const FooterIcon = opt.footer?.icon
         return (
           <button
             key={opt.value}
@@ -85,6 +104,21 @@ export function RichCardPicker<V extends string>({
                 : 'border-border/30 hover:border-accent/40 hover:shadow-[inset_0_0_0_1px_rgba(210,140,8,0.08)] hover:-translate-y-0.5',
             )}
           >
+            {/* "Most popular" badge — overflows the top edge of the card */}
+            {opt.popular && (
+              <div
+                className={cn(
+                  'absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10',
+                  'flex items-center gap-1 rounded-full bg-accent px-3 py-1 shadow-sm',
+                  'text-[11px] font-semibold uppercase tracking-wider text-accent-foreground',
+                )}
+                aria-label={popularLabel}
+              >
+                <StarIcon className="size-3" fill="currentColor" strokeWidth={0} />
+                <span>{popularLabel}</span>
+              </div>
+            )}
+
             {/* Selected indicator badge (top-right corner) */}
             <div
               aria-hidden="true"
@@ -99,7 +133,7 @@ export function RichCardPicker<V extends string>({
               {isSelected && <CheckIcon className="size-3.5" strokeWidth={3} />}
             </div>
 
-            {/* Header: icon + title + tagline */}
+            {/* Header: icon + supertitle + title + tagline */}
             <div className="flex items-start gap-3 sm:gap-4 pr-10">
               {/* Accent-tinted icon square — mirrors the OfferCard price pill */}
               <div
@@ -115,6 +149,11 @@ export function RichCardPicker<V extends string>({
               </div>
 
               <div className="flex flex-col gap-1.5 min-w-0">
+                {opt.supertitle && (
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground font-medium leading-none">
+                    {opt.supertitle}
+                  </span>
+                )}
                 <h3 className="font-bebas text-2xl sm:text-3xl tracking-wide leading-none">
                   {opt.title}
                 </h3>
@@ -156,6 +195,25 @@ export function RichCardPicker<V extends string>({
                 </li>
               ))}
             </ul>
+
+            {/* Optional italic motivational footer */}
+            {opt.footer && FooterIcon && (
+              <>
+                <div className="h-px bg-border/40" aria-hidden="true" />
+                <div className="flex items-start gap-2">
+                  <FooterIcon
+                    aria-hidden="true"
+                    className={cn(
+                      'size-4 mt-0.5 flex-shrink-0 transition-colors',
+                      isSelected ? 'text-accent' : 'text-accent/75',
+                    )}
+                  />
+                  <span className="text-sm italic text-foreground/85 leading-snug">
+                    {opt.footer.text}
+                  </span>
+                </div>
+              </>
+            )}
           </button>
         )
       })}

@@ -1,15 +1,10 @@
 'use client'
 
-import {
-  ChevronRightIcon,
-  LayersIcon,
-  SparklesIcon,
-  TargetIcon,
-  XIcon,
-} from 'lucide-react'
+import { ChevronRightIcon, LayersIcon, TargetIcon, XIcon } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { RichCardPicker } from './_RichCardPicker'
+import { WizardRoiHint } from './_WizardRoiHint'
 import type { WizardFormData } from '../lib/planChangeSchema'
 
 export function PlanKindStep({
@@ -73,18 +68,9 @@ export function PlanKindStep({
         ]}
       />
 
-      {/* ROI nudge — centered, accent-tinted pill below the cards */}
-      <div className="flex justify-center px-2">
-        <div className="flex items-center gap-2.5 rounded-full border border-accent/20 bg-accent/[0.06] px-4 py-2 text-center">
-          <SparklesIcon
-            className="size-4 text-accent flex-shrink-0"
-            aria-hidden="true"
-          />
-          <span className="text-sm italic text-foreground/85">
-            Już jedna realizacja może zwrócić koszt korzystania z Eventizer.
-          </span>
-        </div>
-      </div>
+      <WizardRoiHint>
+        Już jedna realizacja może zwrócić koszt korzystania z Eventizer.
+      </WizardRoiHint>
 
       <div className="flex justify-between">
         {onCancel ? (
