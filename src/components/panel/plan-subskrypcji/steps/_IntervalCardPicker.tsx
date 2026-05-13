@@ -11,8 +11,9 @@ import { cn } from '@/lib/utils'
  * best deal") — renders an overflowing top-edge pill plus a stronger baseline
  * border so it stands out even before the user selects it.
  *
- * Same surface tokens as the other wizard pickers: `bg-background border-border/20`,
- * inset accent glow on hover/selected, `font-bebas` for title and price.
+ * Same surface tokens as the RichCardPicker: `bg-card border-border/30` plus
+ * shadow-sm so the cards lift off the page, inset accent glow on hover/selected,
+ * `font-bebas` for title and price.
  */
 
 export interface IntervalCardOption {
@@ -64,7 +65,9 @@ export function IntervalCardPicker({
       role="radiogroup"
       aria-labelledby={ariaLabelledBy}
       className={cn(
-        'grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4',
+        // Mobile stacks vertically — bump the gap for breathing room. From sm
+        // up the three columns sit side-by-side and gap-4 reads cleaner.
+        'grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-4',
         hasAnyHighlight && 'pt-3',
       )}
     >
@@ -85,16 +88,18 @@ export function IntervalCardPicker({
             onClick={() => onChange(opt.value)}
             onKeyDown={(e) => onKeyDown(e, idx)}
             className={cn(
-              'group relative flex flex-col gap-4 rounded-xl border bg-background p-5 text-left',
+              'group relative flex flex-col gap-4 rounded-xl border bg-card p-5 text-left shadow-sm',
               'transition-[border-color,box-shadow,transform,background-color] duration-200 ease-out',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
               isSelected
-                ? 'border-accent bg-accent/[0.03] shadow-[inset_0_0_0_1px_rgba(210,140,8,0.18)]'
+                ? 'border-accent bg-accent/[0.06] shadow-[inset_0_0_0_1px_rgba(210,140,8,0.18)]'
                 : cn(
-                    'hover:border-accent/40 hover:bg-accent/[0.02] hover:shadow-[inset_0_0_0_1px_rgba(210,140,8,0.08)] hover:-translate-y-0.5',
+                    'hover:border-accent/40 hover:bg-accent/[0.04] hover:shadow-[inset_0_0_0_1px_rgba(210,140,8,0.08)] hover:-translate-y-0.5',
                     // Highlighted cards keep a stronger baseline border so the
                     // "best deal" visual hint persists even without hover/select.
-                    isHighlighted ? 'border-accent/35' : 'border-border/20',
+                    // Bumped to /45 to stay distinct against the lighter bg-card
+                    // surface (default border now at /30 instead of /20).
+                    isHighlighted ? 'border-accent/45' : 'border-border/30',
                   ),
             )}
           >
