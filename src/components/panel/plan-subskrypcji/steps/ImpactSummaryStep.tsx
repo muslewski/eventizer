@@ -4,9 +4,19 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { useFormContext } from 'react-hook-form'
 import { toast } from 'sonner'
-import { ChevronLeftIcon, AlertTriangleIcon, InfoIcon } from 'lucide-react'
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+import {
+  ArrowRightIcon,
+  ChevronLeftIcon,
+  AlertTriangleIcon,
+  ClockIcon,
+  FileEditIcon,
+  InfoIcon,
+  RefreshCcwIcon,
+  SparklesIcon,
+  TagIcon,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { SummaryNotice } from './_SummaryNotice'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Spinner } from '@/components/ui/spinner'
 import {
@@ -173,15 +183,17 @@ export function ImpactSummaryStep({
 
   if (error) {
     return (
-      <div className="flex flex-col gap-4">
-        <Alert variant="destructive">
-          <AlertTriangleIcon />
-          <AlertTitle>Nie udało się obliczyć skutków zmiany planu.</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+      <div className="flex flex-col gap-6">
+        <SummaryNotice
+          icon={AlertTriangleIcon}
+          title="Nie udało się obliczyć skutków zmiany"
+          variant="destructive"
+        >
+          {error}
+        </SummaryNotice>
         <div className="flex justify-between">
           <Button variant="outline" onClick={onBack}>
-            <ChevronLeftIcon /> Wstecz
+            <ChevronLeftIcon data-icon="inline-start" /> Wstecz
           </Button>
         </div>
       </div>
@@ -197,7 +209,7 @@ export function ImpactSummaryStep({
         {/* Always provide an escape hatch so the user is never stuck on a spinner. */}
         <div className="flex justify-between">
           <Button variant="outline" onClick={onBack}>
-            <ChevronLeftIcon /> Wstecz
+            <ChevronLeftIcon data-icon="inline-start" /> Wstecz
           </Button>
         </div>
       </div>
@@ -235,111 +247,105 @@ export function ImpactSummaryStep({
 
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="font-bebas text-2xl tracking-wide">
-        {ct === 'interval_only'
-          ? 'Podsumowanie zmiany okresu rozliczeniowego'
-          : isSameDisplayPlan
-          ? 'Podsumowanie zmiany kategorii'
-          : 'Podsumowanie zmiany planu'}
-      </h2>
-      {!isSameDisplayPlan && (
-        <p className="text-sm text-muted-foreground">
-          Z planu{' '}
-          <span className="font-medium text-foreground">{currentDisplay}</span> na{' '}
-          <span className="font-medium text-foreground">{newDisplay}</span>
-        </p>
-      )}
+      <div className="flex flex-col gap-2">
+        <h2 className="font-bebas text-2xl tracking-wide">
+          {ct === 'interval_only'
+            ? 'Podsumowanie zmiany okresu rozliczeniowego'
+            : isSameDisplayPlan
+            ? 'Podsumowanie zmiany kategorii'
+            : 'Podsumowanie zmiany planu'}
+        </h2>
+        {!isSameDisplayPlan && (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-muted-foreground">Z planu</span>
+            <span className="font-bebas text-lg tracking-wide text-foreground/90">
+              {currentDisplay}
+            </span>
+            <ArrowRightIcon className="size-3.5 text-accent/70" aria-hidden="true" />
+            <span className="font-bebas text-lg tracking-wide text-accent">
+              {newDisplay}
+            </span>
+          </div>
+        )}
+      </div>
 
       {impact.currencyMismatch && (
-        <Alert variant="destructive">
-          <AlertTriangleIcon />
-          <AlertTitle>Nie możemy zmienić planu w tym momencie.</AlertTitle>
-          <AlertDescription>
-            Wybrana cena jest w innej walucie ({impact.newPrice.currency.toUpperCase()}) niż
-            Twoja obecna subskrypcja.{' '}
-            <Button variant="link" asChild className="px-1">
-              <a href="mailto:support@eventizer.pl?subject=Zmiana%20planu%20%E2%80%94%20niezgodno%C5%9B%C4%87%20waluty">
-                Skontaktuj się z pomocą
-              </a>
-            </Button>
-          </AlertDescription>
-        </Alert>
+        <SummaryNotice
+          icon={AlertTriangleIcon}
+          title="Nie możemy zmienić planu w tym momencie"
+          variant="destructive"
+        >
+          Wybrana cena jest w innej walucie ({impact.newPrice.currency.toUpperCase()}) niż
+          Twoja obecna subskrypcja.{' '}
+          <Button variant="link" asChild className="px-1">
+            <a href="mailto:support@eventizer.pl?subject=Zmiana%20planu%20%E2%80%94%20niezgodno%C5%9B%C4%87%20waluty">
+              Skontaktuj się z pomocą
+            </a>
+          </Button>
+        </SummaryNotice>
       )}
 
       {impact.isTrialing && impact.trialEnd && (
-        <Alert>
-          <AlertTitle>Okres próbny</AlertTitle>
-          <AlertDescription>
-            Korzystasz z okresu próbnego do{' '}
-            {new Date(impact.trialEnd).toLocaleDateString('pl-PL')}. Zmiana planu nie przerywa
-            tego okresu — opłata zostanie pobrana po jego zakończeniu.
-          </AlertDescription>
-        </Alert>
+        <SummaryNotice icon={ClockIcon} title="Okres próbny">
+          Korzystasz z okresu próbnego do{' '}
+          {new Date(impact.trialEnd).toLocaleDateString('pl-PL')}. Zmiana planu nie przerywa
+          tego okresu — opłata zostanie pobrana po jego zakończeniu.
+        </SummaryNotice>
       )}
 
       {impact.categoryWillBeCleared && (
-        <Alert>
-          <AlertTitle>Zmiana profilu</AlertTitle>
-          <AlertDescription>
-            Po przejściu na plan {getDisplayPlanName(impact.newPlan)} Twoja kategoria zostanie usunięta z profilu
-            — będziesz mógł oferować usługi we wszystkich kategoriach.
-          </AlertDescription>
-        </Alert>
+        <SummaryNotice icon={SparklesIcon} title="Zmiana profilu">
+          Po przejściu na plan {getDisplayPlanName(impact.newPlan)} Twoja kategoria
+          zostanie usunięta z profilu — będziesz mógł oferować usługi we wszystkich
+          kategoriach.
+        </SummaryNotice>
       )}
 
       {impact.changeType === 'downgrade' && totalDrafted > 0 && (
         isSameDisplayPlan ? (
           // Same display plan (e.g. Single→Single category change): informative tone,
           // framed around category price tiers — there's no "plan" change to speak of.
-          <Alert>
-            <InfoIcon />
-            <AlertTitle>Zmiana kategorii</AlertTitle>
-            <AlertDescription>
-              {(() => {
-                const p = pluralizeOffers(totalDrafted)
-                return `Wybrana kategoria jest w niższej półce cenowej. ${p.count} ${p.noun} z kategoriami z wyższej półki ${p.verb} ${p.participle} do wersji roboczych.`
-              })()}
-            </AlertDescription>
-          </Alert>
+          <SummaryNotice icon={InfoIcon} title="Zmiana kategorii">
+            {(() => {
+              const p = pluralizeOffers(totalDrafted)
+              return `Wybrana kategoria jest w niższej półce cenowej. ${p.count} ${p.noun} z kategoriami z wyższej półki ${p.verb} ${p.participle} do wersji roboczych.`
+            })()}
+          </SummaryNotice>
         ) : (
           // Cross-plan downgrade (e.g. Multi → Single): keep destructive framing.
-          <Alert variant="destructive">
-            <AlertTriangleIcon />
-            <AlertTitle>Uwaga — zmiany ofert</AlertTitle>
-            <AlertDescription>
-              {(() => {
-                const p = pluralizeOffers(totalDrafted)
-                const sentence = `${p.count} ${p.noun} ${p.verb} ${p.participle} do wersji roboczych.`
-                const byCategoryCount = impact.offersToDraft.byCategory.length
-                const byLimitCount = impact.offersToDraft.byLimit.length
-                const maxOffers = impact.newPlan.maxOffers ?? 1
-                if (byCategoryCount > 0 && byLimitCount === 0) {
-                  return `${sentence} ${getDisplayPlanName(impact.newPlan)} obsługuje ograniczoną liczbę kategorii — wybrana kategoria nie jest w nim dostępna.`
-                }
-                if (byCategoryCount === 0 && byLimitCount > 0) {
-                  return `${sentence} Nowy plan pozwala opublikować maksymalnie ${maxOffers}.`
-                }
-                return `${sentence} Część z powodu kategorii nieobsługiwanej przez plan ${getDisplayPlanName(impact.newPlan)}, pozostałe ze względu na limit ${maxOffers}.`
-              })()}
-            </AlertDescription>
-          </Alert>
+          <SummaryNotice
+            icon={AlertTriangleIcon}
+            title="Uwaga — zmiany ofert"
+            variant="destructive"
+          >
+            {(() => {
+              const p = pluralizeOffers(totalDrafted)
+              const sentence = `${p.count} ${p.noun} ${p.verb} ${p.participle} do wersji roboczych.`
+              const byCategoryCount = impact.offersToDraft.byCategory.length
+              const byLimitCount = impact.offersToDraft.byLimit.length
+              const maxOffers = impact.newPlan.maxOffers ?? 1
+              if (byCategoryCount > 0 && byLimitCount === 0) {
+                return `${sentence} ${getDisplayPlanName(impact.newPlan)} obsługuje ograniczoną liczbę kategorii — wybrana kategoria nie jest w nim dostępna.`
+              }
+              if (byCategoryCount === 0 && byLimitCount > 0) {
+                return `${sentence} Nowy plan pozwala opublikować maksymalnie ${maxOffers}.`
+              }
+              return `${sentence} Część z powodu kategorii nieobsługiwanej przez plan ${getDisplayPlanName(impact.newPlan)}, pozostałe ze względu na limit ${maxOffers}.`
+            })()}
+          </SummaryNotice>
         )
       )}
 
       {impact.changeType === 'no_change' && (
-        <Alert>
-          <AlertTitle>Nic do zmiany.</AlertTitle>
-          <AlertDescription>
-            Wybrany plan i okres rozliczeniowy są takie same jak obecny.
-          </AlertDescription>
-        </Alert>
+        <SummaryNotice icon={InfoIcon} title="Nic do zmiany">
+          Wybrany plan i okres rozliczeniowy są takie same jak obecny.
+        </SummaryNotice>
       )}
 
       {impact.changeType === 'interval_only' && (
-        <Alert>
-          <AlertTitle>Zmiana okresu rozliczeniowego</AlertTitle>
-          <AlertDescription>Twoje oferty pozostają bez zmian.</AlertDescription>
-        </Alert>
+        <SummaryNotice icon={RefreshCcwIcon} title="Zmiana okresu rozliczeniowego">
+          Twoje oferty pozostają bez zmian.
+        </SummaryNotice>
       )}
 
       {impact.hasScheduledCancel && (
@@ -353,25 +359,52 @@ export function ImpactSummaryStep({
       )}
 
       {totalDrafted > 0 && (
-        <div className="rounded-lg border p-4">
-          <h3 className="font-medium text-sm mb-2">
-            Oferty, które zostaną przeniesione do wersji roboczych ({totalDrafted}):
-          </h3>
-          <ul className="space-y-1 text-sm">
+        <div className="flex flex-col gap-3 rounded-xl border border-border/20 bg-background p-4 sm:p-5">
+          <div className="flex items-center gap-3">
+            <div
+              aria-hidden="true"
+              className="flex size-9 sm:size-10 flex-shrink-0 items-center justify-center rounded-lg border bg-accent/[0.08] border-accent/20 text-accent/80"
+            >
+              <FileEditIcon className="size-4 sm:size-5" strokeWidth={2} />
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <h3 className="font-bebas text-xl tracking-wide leading-none">
+                Oferty do wersji roboczych
+              </h3>
+              <span className="text-xs text-muted-foreground">
+                {totalDrafted}{' '}
+                {totalDrafted === 1 ? 'oferta zostanie' : 'ofert zostanie'} przeniesionych
+              </span>
+            </div>
+          </div>
+          <ul className="flex flex-col gap-1.5 text-sm pl-1">
             {impact.offersToDraft.byCategory.map((o) => (
-              <li key={o.id}>
-                {o.title}{' '}
-                <span className="text-muted-foreground">
-                  — Kategoria „{formatCategoryPath(o.categorySlugPath)}"{' '}
-                  {isSameDisplayPlan
-                    ? 'jest z wyższej półki cenowej'
-                    : 'wymaga wyższego planu'}
+              <li key={o.id} className="flex items-start gap-2">
+                <TagIcon
+                  className="size-3.5 mt-1 flex-shrink-0 text-accent/60"
+                  aria-hidden="true"
+                />
+                <span>
+                  <span className="font-medium">{o.title}</span>
+                  <span className="text-muted-foreground">
+                    {' '}— „{formatCategoryPath(o.categorySlugPath)}"{' '}
+                    {isSameDisplayPlan
+                      ? 'jest z wyższej półki cenowej'
+                      : 'wymaga wyższego planu'}
+                  </span>
                 </span>
               </li>
             ))}
             {impact.offersToDraft.byLimit.map((o) => (
-              <li key={o.id}>
-                {o.title} <span className="text-muted-foreground">— Limit ofert</span>
+              <li key={o.id} className="flex items-start gap-2">
+                <FileEditIcon
+                  className="size-3.5 mt-1 flex-shrink-0 text-accent/60"
+                  aria-hidden="true"
+                />
+                <span>
+                  <span className="font-medium">{o.title}</span>
+                  <span className="text-muted-foreground"> — Limit ofert</span>
+                </span>
               </li>
             ))}
           </ul>
@@ -380,7 +413,7 @@ export function ImpactSummaryStep({
 
       <div className="flex justify-between">
         <Button variant="outline" disabled={isLocked || isPending} onClick={onBack}>
-          <ChevronLeftIcon /> Wstecz
+          <ChevronLeftIcon data-icon="inline-start" /> Wstecz
         </Button>
         {isDestructive && !impact.currencyMismatch ? (
           <AlertDialog>
