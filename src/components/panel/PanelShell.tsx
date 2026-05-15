@@ -22,9 +22,11 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
       {/* Fixed background — desktop only. SquircleShift switches its base
           color internally based on resolvedTheme, so the same instance works
           for light and dark.
-          Light mode reads loud against the white surface, so we drop the
-          brightness override well below the dark value to keep the panel
-          ambient instead of stage-lit. */}
+          Light mode uses base-50 (#f7f5f0) instead of pure white — gold-on-
+          warm-beige has much lower chroma contrast than gold-on-white, so
+          the shader reads as ambient texture instead of a busy pattern. The
+          base-50 tone also unifies the panel surface with the rest of the
+          beige-leaning light palette (card-elevated at base-100, etc.). */}
       <div className="fixed inset-0 z-0 pointer-events-none hidden md:block">
         <SquircleShift
           width="100%"
@@ -33,7 +35,7 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
           waveSpeed={0.22}
           waveIntensity={0.5}
           colorTint="#d28c08"
-          lightBackground="#ffffff"
+          lightBackground="#f7f5f0"
           darkBackground="#080808"
           brightness={0.85}
           brightnessLight={0.35}
