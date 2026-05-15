@@ -7,6 +7,7 @@ import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { cn } from '@/lib/utils'
 import { getVideoAspectConfig } from '@/lib/getVideoAspectClasses'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
+import { PhoneFrame } from '@/components/video/PhoneFrame'
 
 interface VideoClientProps {
   heading: string
@@ -28,6 +29,7 @@ export const VideoClient: React.FC<VideoClientProps> = ({
   className,
 }) => {
   const { ratio: numericRatio, wrapperClass } = getVideoAspectConfig(aspectRatio)
+  const isPhoneFrame = aspectRatio === '9:16'
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
@@ -71,9 +73,9 @@ export const VideoClient: React.FC<VideoClientProps> = ({
       <BlockHeader heading={heading} description={description} gap lines />
 
       <div className={cn('w-full max-w-5xl mx-auto px-4 mt-16', wrapperClass)}>
-        {/* Outer border wrapper — never scaled, so border stays crisp */}
-        <div className="relative rounded-[0.8rem] overflow-hidden shadow-2xl">
-          {/* Inner content — scales on hover without affecting the border */}
+        {/* Outer wrapper — phone-shaped bezel for 9:16, simple rounded frame
+            otherwise. Inner motion.div handles the hover scale. */}
+        <FrameWrapper isPhoneFrame={isPhoneFrame}>
           <motion.div
             className="relative bg-black group transform-gpu"
             style={{ backfaceVisibility: 'hidden' }}
@@ -136,8 +138,25 @@ export const VideoClient: React.FC<VideoClientProps> = ({
               )}
             </AnimatePresence>
           </motion.div>
-        </div>
+        </FrameWrapper>
       </div>
     </motion.section>
+  )
+}
+
+/**
+ * Picks between the existing simple rounded wrapper and the new PhoneFrame
+ * based on whether the video is 9:16. Inlined here so the JSX stays readable.
+ */
+function FrameWrapper({
+  isPhoneFrame,
+  children,
+}: {
+  isPhoneFrame: boolean
+  children: React.ReactNode
+}) {
+  if (isPhoneFrame) return <PhoneFrame>{children}</PhoneFrame>
+  return (
+    <div className="relative rounded-[0.8rem] overflow-hidden shadow-2xl">{children}</div>
   )
 }

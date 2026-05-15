@@ -9,6 +9,7 @@ import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import { cn } from '@/lib/utils'
 import { getVideoAspectConfig } from '@/lib/getVideoAspectClasses'
 import { AspectRatio } from '@/components/ui/aspect-ratio'
+import { PhoneFrame } from '@/components/video/PhoneFrame'
 
 interface OfferVideoProps {
   offer: Offer
@@ -57,6 +58,7 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
   }, [offer.video, offer.title])
 
   const { ratio: numericRatio, wrapperClass } = getVideoAspectConfig(offer.videoAspectRatio)
+  const isPhoneFrame = offer.videoAspectRatio === '9:16'
 
   const handlePlay = useCallback(() => {
     const video = videoRef.current
@@ -105,9 +107,9 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
       />
 
       <div className={cn('w-full max-w-4xl mx-auto px-4 mt-16', wrapperClass)}>
-        {/* Outer border wrapper — never scaled, so border stays crisp */}
-        <div className="relative rounded-[0.8rem] overflow-hidden">
-          {/* Inner content — scales on hover without affecting the border */}
+        {/* Outer wrapper — phone-shaped bezel for 9:16, simple rounded frame
+            otherwise. Inner motion.div handles the hover scale. */}
+        <FrameWrapper isPhoneFrame={isPhoneFrame}>
           <motion.div
             className="relative bg-black group transform-gpu"
             style={{ backfaceVisibility: 'hidden' }}
@@ -200,8 +202,23 @@ export const OfferVideo: React.FC<OfferVideoProps> = ({ offer }) => {
             </>
           )}
           </motion.div>
-        </div>
+        </FrameWrapper>
       </div>
     </motion.section>
   )
+}
+
+/**
+ * Picks between the existing simple rounded wrapper and the new PhoneFrame
+ * based on whether the video is 9:16. Inlined here so the JSX stays readable.
+ */
+function FrameWrapper({
+  isPhoneFrame,
+  children,
+}: {
+  isPhoneFrame: boolean
+  children: React.ReactNode
+}) {
+  if (isPhoneFrame) return <PhoneFrame>{children}</PhoneFrame>
+  return <div className="relative rounded-[0.8rem] overflow-hidden">{children}</div>
 }
