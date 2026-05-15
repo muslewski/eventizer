@@ -55,7 +55,7 @@ export const Background: React.FC<BackgroundProps> = ({
     <>
       {/* Background image — hidden in light mode when any light variant is provided */}
       {backgroundImage && isExpandedDoc<Media>(backgroundImage) && (
-        <div className={hasAnyLightBg ? 'contents dark:contents hidden' : 'contents'}>
+        <div className={hasAnyLightBg ? 'hidden dark:contents' : 'contents'}>
           <BackgroundImage backgroundImage={backgroundImage} />
         </div>
       )}
@@ -69,7 +69,7 @@ export const Background: React.FC<BackgroundProps> = ({
 
       {/* Background video — hidden in light mode when any light variant is provided */}
       {backgroundVideo && isExpandedDoc<Media>(backgroundVideo) && (
-        <div className={hasAnyLightBg ? 'contents dark:contents hidden' : 'contents'}>
+        <div className={hasAnyLightBg ? 'hidden dark:contents' : 'contents'}>
           <BackgroundVideo backgroundVideo={backgroundVideo} />
         </div>
       )}
