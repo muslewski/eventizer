@@ -11,6 +11,7 @@ import {
   ContactInfo,
   OfferContactFormSection,
   MobileContactActions,
+  OtherOffersByProvider,
 } from './components'
 import type { Offer } from '@/payload-types' // adjust import path
 import { resolveCategoryIconUrl } from '@/actions/resolveCategoryIconUrl'
@@ -18,7 +19,8 @@ import { resolveCategoryIconUrl } from '@/actions/resolveCategoryIconUrl'
 export const LivePreviewOffer: React.FC<{
   initialData: Offer
   initialCategoryIconUrl?: string | null
-}> = ({ initialData, initialCategoryIconUrl }) => {
+  otherOffersByProvider?: Offer[]
+}> = ({ initialData, initialCategoryIconUrl, otherOffersByProvider = [] }) => {
   const { data } = useLivePreview<Offer>({
     initialData,
     serverURL: process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL ?? 'http://localhost:3000',
@@ -56,6 +58,8 @@ export const LivePreviewOffer: React.FC<{
         <ContactInfo offer={data} />
 
         <OfferContactFormSection offer={data} />
+
+        <OtherOffersByProvider offers={otherOffersByProvider} />
       </div>
 
       <MobileContactActions offer={data} />
