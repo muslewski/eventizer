@@ -11,9 +11,9 @@ import { cn } from '@/lib/utils'
  * best deal") — renders an overflowing top-edge pill plus a stronger baseline
  * border so it stands out even before the user selects it.
  *
- * Same surface tokens as the RichCardPicker: `bg-card border-border/30` plus
- * shadow-sm so the cards lift off the page, inset accent glow on hover/selected,
- * `font-bebas` for title and price.
+ * Same surface tokens as the RichCardPicker: `bg-card-elevated border-border/30`
+ * plus shadow-sm so the cards lift off the page (beige in light, gray in dark),
+ * inset accent glow on hover/selected, `font-bebas` for title and price.
  */
 
 export interface IntervalCardOption {
@@ -88,7 +88,7 @@ export function IntervalCardPicker({
             onClick={() => onChange(opt.value)}
             onKeyDown={(e) => onKeyDown(e, idx)}
             className={cn(
-              'group relative flex flex-col gap-4 rounded-xl border bg-card p-5 text-left shadow-sm',
+              'group relative flex flex-col gap-4 rounded-xl border bg-card-elevated p-5 text-left shadow-sm',
               'transition-[border-color,box-shadow,transform,background-color] duration-200 ease-out',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
               isSelected
