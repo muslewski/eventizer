@@ -12,8 +12,8 @@ import { cn } from '@/lib/utils'
  *
  * Visual language matches `OfferCard` (panel/oferty) and `CategoryPicker`
  * (panel/wizard) for codebase consistency:
- * - `bg-card border-border/30` base — a slightly lighter gray surface that
- *   lifts off the page, so the high-stakes plan choice has visual weight
+ * - `bg-card-elevated border-border/30` base — beige in light (warm,
+ *   deliberate "product card" feel) and gray in dark (the existing lift)
  * - inset accent glow on hover/selected: `inset_0_0_0_1px_rgba(210,140,8,...)`
  * - `font-bebas` titles in tracking-wide caps
  * - accent-tinted icon square in the header (mirrors the OfferCard price pill)
@@ -100,7 +100,7 @@ export function RichCardPicker<V extends string>({
             onClick={() => onChange(opt.value)}
             onKeyDown={(e) => onKeyDown(e, idx)}
             className={cn(
-              'group relative flex flex-col gap-4 rounded-xl border bg-card p-5 sm:p-6 text-left shadow-sm',
+              'group relative flex flex-col gap-4 rounded-xl border bg-card-elevated p-5 sm:p-6 text-left shadow-sm',
               'transition-[border-color,box-shadow,transform,background-color] duration-200 ease-out',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
               isSelected
