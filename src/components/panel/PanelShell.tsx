@@ -22,12 +22,13 @@ export function PanelShell({ user, lang, children }: PanelShellProps) {
       {/* Fixed background — desktop only. SquircleShift switches its base
           color internally based on resolvedTheme, so the same instance works
           for light and dark.
-          Light mode uses base-50 (#f7f5f0) instead of pure white — gold-on-
-          warm-beige has much lower chroma contrast than gold-on-white, so
-          the shader reads as ambient texture instead of a busy pattern. The
-          base-50 tone also unifies the panel surface with the rest of the
-          beige-leaning light palette (card-elevated at base-100, etc.). */}
-      <div className="fixed inset-0 z-0 pointer-events-none hidden md:block">
+          Light mode: opacity-50 lets the body bg (near-white) blend through
+          the shader so the gold pattern + beige tone wash out by half —
+          turning the background into faint ambient texture instead of a
+          visible pattern. brightnessLight=0.35 already dialed the pattern
+          down inside the shader; the wrapper opacity adds a second-stage
+          attenuation that's easy to tune. Dark mode stays at full opacity. */}
+      <div className="fixed inset-0 z-0 pointer-events-none hidden md:block opacity-50 dark:opacity-100">
         <SquircleShift
           width="100%"
           height="100%"
