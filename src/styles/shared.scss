@@ -143,11 +143,11 @@
   --foreground: var(--color-base-0);
   --card: var(--color-base-800);
   --card-foreground: var(--color-base-0);
-  /* Dark mode: cards sit on the same base-800 as --card — a discreet,
-     subdued surface that stays close to the near-black page (base-900 +
-     opacity layers). The earlier base-750 lift made them stage-lit; this
-     pulls them back so they read as quiet product cards. */
-  --card-elevated: var(--color-base-800);
+  /* Dark mode: cards drop one step darker than --card (base-800) onto
+     base-850. Reads as deliberately deeper than the default card surface
+     while still leaving ~23 units of lift against the near-black page
+     (base-900 = rgb 11, 11, 11). Quiet, almost recessed surface. */
+  --card-elevated: var(--color-base-850);
   /* Same opaque-blend strategy as light mode. */
   --card-elevated-hover: color-mix(in srgb, var(--card-elevated) 96%, var(--accent) 4%);
   --card-elevated-selected: color-mix(in srgb, var(--card-elevated) 92%, var(--accent) 8%);
