@@ -92,9 +92,9 @@ export function IntervalCardPicker({
               'transition-[border-color,box-shadow,transform,background-color] duration-200 ease-out',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
               isSelected
-                ? 'border-accent bg-accent/[0.06] shadow-[inset_0_0_0_1px_rgba(210,140,8,0.18)]'
+                ? 'border-accent bg-card-elevated-selected shadow-[inset_0_0_0_1px_rgba(210,140,8,0.18)]'
                 : cn(
-                    'hover:border-accent/40 hover:bg-accent/[0.04] hover:shadow-[inset_0_0_0_1px_rgba(210,140,8,0.08)] hover:-translate-y-0.5',
+                    'hover:border-accent/40 hover:bg-card-elevated-hover hover:shadow-[inset_0_0_0_1px_rgba(210,140,8,0.08)] hover:-translate-y-0.5',
                     // Highlighted cards keep a stronger baseline border so the
                     // "best deal" visual hint persists even without hover/select.
                     // Bumped to /45 to stay distinct against the lighter bg-card

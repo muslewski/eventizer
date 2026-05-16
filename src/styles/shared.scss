@@ -98,6 +98,12 @@
      (#f7f5f0 base-50 at 50% opacity ≈ near-white), but lighter than base-100
      so the cards stay airy instead of muddy. */
   --card-elevated: rgb(243, 240, 234);
+  /* Hover / selected variants blend the surface with the accent via color-mix
+     so the card stays a SOLID color (no see-through-to-page effect). 4% and
+     6% accent match the original translucent tints visually, but as opaque
+     fills they preserve the card's surface identity on hover/select. */
+  --card-elevated-hover: color-mix(in srgb, var(--card-elevated) 96%, var(--accent) 4%);
+  --card-elevated-selected: color-mix(in srgb, var(--card-elevated) 92%, var(--accent) 8%);
   --popover: var(--color-base-0);
   --popover-foreground: var(--color-base-900);
   --primary: var(--color-base-900);
@@ -140,6 +146,9 @@
      to base-750 — reads as clearly mid-gray against the near-black page
      instead of "just a touch lighter than the background". */
   --card-elevated: var(--color-base-750);
+  /* Same opaque-blend strategy as light mode. */
+  --card-elevated-hover: color-mix(in srgb, var(--card-elevated) 96%, var(--accent) 4%);
+  --card-elevated-selected: color-mix(in srgb, var(--card-elevated) 92%, var(--accent) 8%);
   --popover: var(--color-base-900);
   --popover-foreground: var(--color-base-0);
   --primary: var(--color-base-200);
@@ -228,6 +237,8 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-card-elevated: var(--card-elevated);
+  --color-card-elevated-hover: var(--card-elevated-hover);
+  --color-card-elevated-selected: var(--card-elevated-selected);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
