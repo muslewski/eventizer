@@ -93,11 +93,12 @@
   --card: var(--color-base-0);
   --card-foreground: var(--color-base-900);
   /* Elevated card surface — used by wizard picker cards (kind, tier, interval)
-     that need to lift off the page. A custom intermediate cream tone between
-     base-50 and base-100: warmer/beigier than the panel page surface
-     (#f7f5f0 base-50 at 50% opacity ≈ near-white), but lighter than base-100
-     so the cards stay airy instead of muddy. */
-  --card-elevated: rgb(243, 240, 234);
+     that need to lift off the page. Sits at base-50, an airy pale cream that
+     keeps the warm-beige character but reads ~25% lighter than the previous
+     custom rgb(243, 240, 234). Still clearly tinted darker than the effective
+     panel page bg (base-50 at opacity-50 over white body ≈ rgb(251, 250, 246)),
+     so cards retain their lift. */
+  --card-elevated: var(--color-base-50);
   /* Hover / selected variants blend the surface with the accent via color-mix
      so the card stays a SOLID color (no see-through-to-page effect). 4% and
      6% accent match the original translucent tints visually, but as opaque
@@ -142,10 +143,11 @@
   --foreground: var(--color-base-0);
   --card: var(--color-base-800);
   --card-foreground: var(--color-base-0);
-  /* Dark mode: bump elevated cards one step lighter than --card (base-800)
-     to base-750 — reads as clearly mid-gray against the near-black page
-     instead of "just a touch lighter than the background". */
-  --card-elevated: var(--color-base-750);
+  /* Dark mode: cards sit on the same base-800 as --card — a discreet,
+     subdued surface that stays close to the near-black page (base-900 +
+     opacity layers). The earlier base-750 lift made them stage-lit; this
+     pulls them back so they read as quiet product cards. */
+  --card-elevated: var(--color-base-800);
   /* Same opaque-blend strategy as light mode. */
   --card-elevated-hover: color-mix(in srgb, var(--card-elevated) 96%, var(--accent) 4%);
   --card-elevated-selected: color-mix(in srgb, var(--card-elevated) 92%, var(--accent) 8%);
