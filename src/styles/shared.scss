@@ -93,10 +93,11 @@
   --card: var(--color-base-0);
   --card-foreground: var(--color-base-900);
   /* Elevated card surface — used by wizard picker cards (kind, tier, interval)
-     that need to lift off the page. Beige in light to give a warmer, more
-     deliberate "this is a product card" feel; matches --card in dark mode
-     where the gray already provides the lift on its own. */
-  --card-elevated: var(--color-base-100);
+     that need to lift off the page. A custom intermediate cream tone between
+     base-50 and base-100: warmer/beigier than the panel page surface
+     (#f7f5f0 base-50 at 50% opacity ≈ near-white), but lighter than base-100
+     so the cards stay airy instead of muddy. */
+  --card-elevated: rgb(243, 240, 234);
   --popover: var(--color-base-0);
   --popover-foreground: var(--color-base-900);
   --primary: var(--color-base-900);
@@ -135,9 +136,10 @@
   --foreground: var(--color-base-0);
   --card: var(--color-base-800);
   --card-foreground: var(--color-base-0);
-  /* Dark mode: keep elevated cards on the same gray as --card — the gray
-     already lifts plenty against the near-black page background. */
-  --card-elevated: var(--color-base-800);
+  /* Dark mode: bump elevated cards one step lighter than --card (base-800)
+     to base-750 — reads as clearly mid-gray against the near-black page
+     instead of "just a touch lighter than the background". */
+  --card-elevated: var(--color-base-750);
   --popover: var(--color-base-900);
   --popover-foreground: var(--color-base-0);
   --primary: var(--color-base-200);
