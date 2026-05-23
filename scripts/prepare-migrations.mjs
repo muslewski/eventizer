@@ -55,6 +55,7 @@ if (!connectionString) {
  */
 const ALWAYS_RUN = new Set([
   '20260512_135000_ensure_processed_stripe_events_schema',
+  '20260523_180000_add_partners_block',
 ])
 
 const pool = new Pool({ connectionString })
