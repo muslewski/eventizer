@@ -7,6 +7,7 @@ import * as migration_20260512_000000_processed_stripe_events_collection from '.
 import * as migration_20260512_133000_add_processed_stripe_events_to_locked_documents from './20260512_133000_add_processed_stripe_events_to_locked_documents';
 import * as migration_20260512_135000_ensure_processed_stripe_events_schema from './20260512_135000_ensure_processed_stripe_events_schema';
 import * as migration_20260523_180000_add_partners_block from './20260523_180000_add_partners_block';
+import * as migration_20260523_190000_add_partners_upload_relationship_columns from './20260523_190000_add_partners_upload_relationship_columns';
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260523_180000_add_partners_block.up,
     down: migration_20260523_180000_add_partners_block.down,
     name: '20260523_180000_add_partners_block'
+  },
+  {
+    up: migration_20260523_190000_add_partners_upload_relationship_columns.up,
+    down: migration_20260523_190000_add_partners_upload_relationship_columns.down,
+    name: '20260523_190000_add_partners_upload_relationship_columns'
   },
 ];
