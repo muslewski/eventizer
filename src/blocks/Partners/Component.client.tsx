@@ -184,7 +184,7 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-60px' }}
-            className="flex items-center justify-center lg:justify-start gap-3 sm:gap-4 lg:gap-6 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0"
+            className="flex flex-wrap items-center justify-center lg:justify-start gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6 lg:gap-x-6 pb-2"
           >
             {partners.map((partner, index) => {
               const accent = resolveAccent(partner.accentColor)
@@ -285,7 +285,15 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                 transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
                 className="flex flex-col gap-5"
               >
-                <div className="flex flex-col gap-1">
+                {/*
+                  Reserve a fixed slot for the partner name + tagline so the
+                  layout below (quote, button) doesn't jump when rotating
+                  between short, single-line names and long, two-line ones.
+                  Content is pinned to the bottom of the reserved space via
+                  justify-end, so the visual relationship between name and
+                  tagline stays tight regardless of wrap.
+                */}
+                <div className="flex flex-col justify-end gap-1 min-h-[6rem] sm:min-h-[7.5rem] lg:min-h-[9rem]">
                   <h3
                     className={cn(
                       'font-bebas tracking-wide leading-[0.95] text-4xl sm:text-5xl lg:text-6xl',
