@@ -191,7 +191,7 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-60px' }}
-            className="flex flex-wrap items-center justify-center lg:justify-start gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6 lg:gap-x-6 pb-2"
+            className="flex flex-wrap items-center justify-center gap-x-3 gap-y-5 sm:gap-x-4 sm:gap-y-6 lg:gap-x-6 pb-2"
           >
             {partners.map((partner, index) => {
               const accent = resolveAccent(partner.accentColor)
