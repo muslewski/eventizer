@@ -306,12 +306,14 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   between short, single-line names and long, two-line ones.
                   Content is pinned to the bottom of the reserved space via
                   justify-end, so the visual relationship between name and
-                  tagline stays tight regardless of wrap.
+                  tagline stays tight regardless of wrap. Min-heights are
+                  generously sized: 2 lines of text-Nxl name + tagline +
+                  margin for browser font-metric variance.
                 */}
-                <div className="flex flex-col justify-end gap-1 min-h-[6rem] sm:min-h-[7.5rem] lg:min-h-[9rem]">
+                <div className="flex flex-col justify-end gap-1 min-h-[7.5rem] sm:min-h-[9rem] lg:min-h-[11rem]">
                   <h3
                     className={cn(
-                      'font-bebas tracking-wide leading-[0.95] text-4xl sm:text-5xl lg:text-6xl',
+                      'font-bebas tracking-wide leading-[0.95] text-4xl sm:text-5xl lg:text-6xl text-balance',
                       activeAccent.text,
                     )}
                   >
