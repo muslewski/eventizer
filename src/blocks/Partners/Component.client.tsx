@@ -296,8 +296,13 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
             })}
           </motion.div>
 
-          {/* --- Spotlight content (right) --- */}
-          <div className="flex flex-col justify-center text-left">
+          {/* --- Spotlight content (right) ---
+              min-h locks the cell height so it doesn't shrink/grow as the
+              motion.div inside swaps between partners (which can vary by
+              quote length and number of CTA buttons). Also keeps the cell
+              from collapsing during the AnimatePresence wait-mode frame
+              between old exit and new mount. */}
+          <div className="flex flex-col justify-center text-left min-h-[18rem] sm:min-h-[20rem] lg:min-h-[22rem]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`spotlight-${safeIndex}`}
@@ -360,30 +365,35 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   </p>
                 )}
 
-                {(active.offerHref || active.externalHref) && (
-                  <div className="pt-1 flex flex-wrap gap-3">
-                    {active.offerHref && (
-                      <Button asChild size="lg" className="group">
-                        <Link href={active.offerHref}>
-                          Zobacz ofertę
-                          <ArrowUpRight className="ml-1 size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                        </Link>
-                      </Button>
-                    )}
-                    {active.externalHref && (
-                      <Button asChild variant="outline" size="lg" className="group">
-                        <Link
-                          href={active.externalHref}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Odwiedź stronę
-                          <ArrowUpRight className="ml-1 size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                        </Link>
-                      </Button>
-                    )}
-                  </div>
-                )}
+                {/*
+                  Always render the button row so partners without any link
+                  (e.g. DJ SPDR) keep the same vertical footprint as ones
+                  with one or two buttons. min-h-[2.75rem] matches the lg
+                  button (h-10) + pt-1 so the reserved space exactly fits a
+                  real button when it's there.
+                */}
+                <div className="pt-1 flex flex-wrap gap-3 min-h-[2.75rem]">
+                  {active.offerHref && (
+                    <Button asChild size="lg" className="group">
+                      <Link href={active.offerHref}>
+                        Zobacz ofertę
+                        <ArrowUpRight className="ml-1 size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </Link>
+                    </Button>
+                  )}
+                  {active.externalHref && (
+                    <Button asChild variant="outline" size="lg" className="group">
+                      <Link
+                        href={active.externalHref}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Odwiedź stronę
+                        <ArrowUpRight className="ml-1 size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </Link>
+                    </Button>
+                  )}
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
