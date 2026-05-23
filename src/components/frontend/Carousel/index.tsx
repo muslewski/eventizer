@@ -1,6 +1,7 @@
 'use client'
 
 import Autoplay from 'embla-carousel-autoplay'
+import { motion } from 'motion/react'
 
 import {
   Carousel,
@@ -217,19 +218,41 @@ export default function ImageCarousel({
             </div>
           )}
 
-          <Image
-            key={lightboxIndex}
-            src={slides[lightboxIndex]!.imageUrl}
-            alt={slides[lightboxIndex]!.imageAlt}
-            fill
-            className={cn(
-              'object-contain transition-opacity duration-200',
-              lightboxLoading ? 'opacity-0' : 'opacity-100',
-            )}
-            sizes="100vw"
-            priority
-            onLoad={() => setLightboxLoading(false)}
-          />
+          <motion.div
+            className="absolute inset-0 touch-pan-y"
+            drag={slides.length > 1 ? 'x' : false}
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={1}
+            dragMomentum={false}
+            onDragEnd={(_, info) => {
+              const SWIPE_OFFSET = 50
+              const SWIPE_VELOCITY = 400
+              if (info.offset.x < -SWIPE_OFFSET || info.velocity.x < -SWIPE_VELOCITY) {
+                navigateLightbox((lightboxIndex + 1) % slides.length)
+              } else if (info.offset.x > SWIPE_OFFSET || info.velocity.x > SWIPE_VELOCITY) {
+                navigateLightbox((lightboxIndex - 1 + slides.length) % slides.length)
+              }
+            }}
+            onTap={(e) => {
+              // Close only when tapping the empty letterbox area, not the image itself
+              if (e.target === e.currentTarget) setLightboxIndex(null)
+            }}
+          >
+            <Image
+              key={lightboxIndex}
+              src={slides[lightboxIndex]!.imageUrl}
+              alt={slides[lightboxIndex]!.imageAlt}
+              fill
+              draggable={false}
+              className={cn(
+                'object-contain transition-opacity duration-200 select-none',
+                lightboxLoading ? 'opacity-0' : 'opacity-100',
+              )}
+              sizes="100vw"
+              priority
+              onLoad={() => setLightboxLoading(false)}
+            />
+          </motion.div>
 
           {/* Preload adjacent images (hidden, off-screen) */}
           {slides.length > 1 && prevLightboxIndex !== null && prevLightboxIndex !== lightboxIndex && (
