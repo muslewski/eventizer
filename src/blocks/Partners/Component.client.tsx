@@ -210,8 +210,11 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   <div
                     className={cn(
                       'relative flex h-14 w-14 sm:h-16 sm:w-16 lg:h-20 lg:w-20 items-center justify-center overflow-hidden rounded-full border transition-colors duration-500',
-                      isActive ? accent.bg : 'bg-card/60',
-                      isActive ? accent.border : 'border-border/30',
+                      // Always tint with the partner's accent color so the
+                      // logo-less placeholder still feels branded; just
+                      // brighter when active.
+                      isActive ? accent.bg : accent.bgSoft,
+                      isActive ? accent.border : 'border-border/20',
                     )}
                   >
                     {logoUrl ? (
@@ -226,14 +229,26 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                         )}
                       />
                     ) : (
-                      <span
-                        className={cn(
-                          'font-bebas tracking-wide text-2xl sm:text-3xl lg:text-4xl transition-colors',
-                          isActive ? accent.text : 'text-muted-foreground',
-                        )}
-                      >
-                        {getInitial(partner.name)}
-                      </span>
+                      <>
+                        {/* Decorative inner sweep — gives the placeholder
+                            some depth so it doesn't look like a flat letter. */}
+                        <span
+                          className={cn(
+                            'absolute inset-0 bg-gradient-to-br from-transparent via-transparent transition-opacity duration-500',
+                            isActive ? accent.bg : accent.bgSoft,
+                            isActive ? 'opacity-100' : 'opacity-60',
+                          )}
+                          aria-hidden
+                        />
+                        <span
+                          className={cn(
+                            'relative font-bebas tracking-wide text-2xl sm:text-3xl lg:text-4xl transition-colors',
+                            isActive ? accent.text : cn(accent.text, 'opacity-60'),
+                          )}
+                        >
+                          {getInitial(partner.name)}
+                        </span>
+                      </>
                     )}
                   </div>
 
@@ -309,7 +324,13 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   )}
                 </div>
 
-                {active.quote && (
+                {/*
+                  Always render a quote area — fallback to a friendly Polish
+                  placeholder when none is set. Rendering it unconditionally
+                  also keeps the spotlight layout stable when rotating between
+                  partners with and without a quote filled in.
+                */}
+                {active.quote ? (
                   <blockquote
                     className={cn(
                       'border-l-2 pl-4 text-foreground/85 text-base sm:text-lg leading-relaxed max-w-lg',
@@ -318,6 +339,16 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   >
                     {active.quote}
                   </blockquote>
+                ) : (
+                  <p
+                    className={cn(
+                      'border-l-2 pl-4 text-muted-foreground/70 text-base sm:text-lg leading-relaxed max-w-lg italic',
+                      activeAccent.border,
+                    )}
+                  >
+                    Opis tego partnera pojawi się wkrótce — w międzyczasie zachęcamy do
+                    bezpośredniego kontaktu lub zajrzenia na ich stronę.
+                  </p>
                 )}
 
                 {active.href && (
