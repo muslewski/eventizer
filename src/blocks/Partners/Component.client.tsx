@@ -121,15 +121,21 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
   const reduceMotion = useReducedMotion()
   const [activeIndex, setActiveIndex] = useState(0)
 
-  // Auto-rotate spotlight (disabled when reduce-motion is on or rotation === 0)
+  // Auto-rotate spotlight (disabled when reduce-motion is on or rotation === 0).
+  // activeIndex is part of the dep array on purpose: any change — auto or via
+  // user click — cancels the in-flight timer and starts a fresh full-duration
+  // countdown for the newly active partner. Without this, clicking an avatar
+  // mid-rotation only gives the new partner the leftover time before the next
+  // auto-advance (the progress ring restarts visually but the underlying
+  // setInterval keeps its original schedule, so the partner snaps away early).
   const rotationMs = (rotationSeconds ?? 8) * 1000
   useEffect(() => {
     if (reduceMotion || rotationMs <= 0 || partners.length <= 1) return
-    const timer = setInterval(() => {
+    const timer = setTimeout(() => {
       setActiveIndex((prev) => (prev + 1) % partners.length)
     }, rotationMs)
-    return () => clearInterval(timer)
-  }, [reduceMotion, rotationMs, partners.length])
+    return () => clearTimeout(timer)
+  }, [reduceMotion, rotationMs, partners.length, activeIndex])
 
   if (partners.length === 0) return null
 
