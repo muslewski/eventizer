@@ -181,8 +181,11 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
           badge={{ label: badge, variant: 'golden' }}
         />
 
-        {/* === Spotlight row === */}
-        <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16 items-center">
+        {/* === Spotlight row ===
+            Avatar picker on the left is kept narrow (20rem on lg+) so the
+            spotlight on the right has plenty of room for the partner's name,
+            quote, and up to two CTA buttons (Eventizer offer + website). */}
+        <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[20rem_1fr] lg:gap-16 items-center">
           {/* --- Avatar picker (left) --- */}
           <motion.div
             initial="hidden"
@@ -357,19 +360,28 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   </p>
                 )}
 
-                {active.href && (
-                  <div className="pt-1">
-                    <Button asChild variant="outline" size="lg" className="group">
-                      <Link
-                        href={active.href}
-                        {...(active.isExternal
-                          ? { target: '_blank', rel: 'noopener noreferrer' }
-                          : {})}
-                      >
-                        {active.linkType === 'offer' ? 'Zobacz ofertę' : 'Odwiedź stronę'}
-                        <ArrowUpRight className="ml-1 size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                      </Link>
-                    </Button>
+                {(active.offerHref || active.externalHref) && (
+                  <div className="pt-1 flex flex-wrap gap-3">
+                    {active.offerHref && (
+                      <Button asChild size="lg" className="group">
+                        <Link href={active.offerHref}>
+                          Zobacz ofertę
+                          <ArrowUpRight className="ml-1 size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        </Link>
+                      </Button>
+                    )}
+                    {active.externalHref && (
+                      <Button asChild variant="outline" size="lg" className="group">
+                        <Link
+                          href={active.externalHref}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Odwiedź stronę
+                          <ArrowUpRight className="ml-1 size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 )}
               </motion.div>

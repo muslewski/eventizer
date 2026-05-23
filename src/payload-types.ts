@@ -1133,11 +1133,13 @@ export interface PartnersBlock {
      */
     logo?: (number | null) | Media;
     accentColor?: ('primary' | 'accent' | 'blue' | 'emerald' | 'violet' | 'rose') | null;
-    linkType?: ('none' | 'offer' | 'external') | null;
     /**
-     * Pick the partner’s offer on Eventizer.
+     * Optional. Pick the partner’s offer to add a "Zobacz ofertę" button.
      */
     offer?: (number | null) | Offer;
+    /**
+     * Optional. Adds an "Odwiedź stronę" button linking to the partner's own site.
+     */
     externalUrl?: string | null;
     id?: string | null;
   }[];
@@ -1920,7 +1922,6 @@ export interface PartnersBlockSelect<T extends boolean = true> {
         quote?: T;
         logo?: T;
         accentColor?: T;
-        linkType?: T;
         offer?: T;
         externalUrl?: T;
         id?: T;

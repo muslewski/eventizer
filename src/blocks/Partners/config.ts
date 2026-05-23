@@ -148,35 +148,17 @@ export const Partners: Block = {
           ],
         },
         {
-          name: 'linkType',
-          type: 'radio',
-          defaultValue: 'none',
-          label: {
-            en: 'Link Type',
-            pl: 'Typ linku',
-          },
-          options: [
-            { label: { en: 'No link', pl: 'Brak linku' }, value: 'none' },
-            { label: { en: 'Offer on Eventizer', pl: 'Oferta na Eventizerze' }, value: 'offer' },
-            { label: { en: 'External URL', pl: 'Zewnętrzny URL' }, value: 'external' },
-          ],
-          admin: {
-            layout: 'horizontal',
-          },
-        },
-        {
           name: 'offer',
           type: 'relationship',
           relationTo: 'offers',
           label: {
-            en: 'Offer',
-            pl: 'Oferta',
+            en: 'Eventizer Offer',
+            pl: 'Oferta na Eventizerze',
           },
           admin: {
-            condition: (_, siblingData) => siblingData?.linkType === 'offer',
             description: {
-              en: 'Pick the partner’s offer on Eventizer.',
-              pl: 'Wybierz ofertę partnera na Eventizerze.',
+              en: 'Optional. Pick the partner’s offer to add a "Zobacz ofertę" button.',
+              pl: 'Opcjonalne. Wybierz ofertę partnera, aby pokazać przycisk "Zobacz ofertę".',
             },
           },
         },
@@ -184,11 +166,14 @@ export const Partners: Block = {
           name: 'externalUrl',
           type: 'text',
           label: {
-            en: 'External URL',
-            pl: 'Zewnętrzny URL',
+            en: 'Website URL',
+            pl: 'Strona internetowa',
           },
           admin: {
-            condition: (_, siblingData) => siblingData?.linkType === 'external',
+            description: {
+              en: 'Optional. Adds an "Odwiedź stronę" button linking to the partner\'s own site.',
+              pl: 'Opcjonalne. Dodaje przycisk "Odwiedź stronę" prowadzący do strony partnera.',
+            },
             placeholder: 'https://...',
           },
         },
@@ -196,39 +181,38 @@ export const Partners: Block = {
       defaultValue: [
         {
           name: 'SkyClub Białystok',
-          tagline: 'Białystok',
+          tagline: 'Klub muzyczny · Białystok',
           accentColor: 'primary',
-          linkType: 'none',
+          externalUrl: 'https://sky-club.pl/',
         },
         {
           name: 'Meetly',
-          tagline: 'Platforma eventowa',
+          tagline: 'E-zaproszenia online',
           accentColor: 'blue',
-          linkType: 'none',
+          externalUrl: 'https://meetly.com.pl/',
         },
         {
           name: 'Apartamenty Zielona Lipka',
-          tagline: 'Noclegi i eventy',
+          tagline: 'Mazury · jezioro Roś',
           accentColor: 'emerald',
-          linkType: 'none',
+          externalUrl: 'https://zielonalipka.pl/',
         },
         {
           name: 'Apartamenty pod Gromadzyniem',
-          tagline: 'Noclegi i eventy',
+          tagline: 'Bieszczady · Ustrzyki Dolne',
           accentColor: 'violet',
-          linkType: 'none',
+          externalUrl: 'https://www.facebook.com/apartamentypodgromadzyniem/',
         },
         {
           name: 'Princess Palace Gdańsk',
-          tagline: 'Gdańsk',
+          tagline: 'Willa eventowa · Gdańsk',
           accentColor: 'rose',
-          linkType: 'none',
+          externalUrl: 'https://princesspalace.pl/',
         },
         {
           name: 'DJ SPDR',
           tagline: 'Muzyka i rozrywka',
           accentColor: 'accent',
-          linkType: 'none',
         },
       ],
     },

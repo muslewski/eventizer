@@ -4,8 +4,10 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 
 export type ResolvedPartner = NonNullable<PartnersBlockProps['partners']>[number] & {
-  href: string | null
-  isExternal: boolean
+  /** Resolved /ogloszenia/<slug> URL when the partner's offer relationship is set + published. */
+  offerHref: string | null
+  /** Trimmed externalUrl from config, or null when not set. */
+  externalHref: string | null
 }
 
 export const PartnersBlock: React.FC<
@@ -14,10 +16,11 @@ export const PartnersBlock: React.FC<
     className?: string
   }
 > = async ({ badge, heading, description, rotationSeconds, partners, className }) => {
-  // Collect IDs of offers referenced by partners (linkType === 'offer')
+  // Collect IDs of offers referenced by partners (offer relationship can be set
+  // independently of externalUrl now — both, either, or neither may be present).
   const offerIds = (partners ?? [])
     .map((p) => {
-      if (p.linkType !== 'offer' || !p.offer) return null
+      if (!p.offer) return null
       return typeof p.offer === 'object' ? p.offer.id : p.offer
     })
     .filter((id): id is number => typeof id === 'number')
@@ -41,19 +44,14 @@ export const PartnersBlock: React.FC<
   }
 
   const resolvedPartners: ResolvedPartner[] = (partners ?? []).map((p) => {
-    let href: string | null = null
-    let isExternal = false
-
-    if (p.linkType === 'offer' && p.offer) {
+    let offerHref: string | null = null
+    if (p.offer) {
       const offerId = typeof p.offer === 'object' ? p.offer.id : p.offer
       const offer = offerMap.get(offerId)
-      if (offer?.link) href = `/ogloszenia/${offer.link}`
-    } else if (p.linkType === 'external' && p.externalUrl) {
-      href = p.externalUrl
-      isExternal = true
+      if (offer?.link) offerHref = `/ogloszenia/${offer.link}`
     }
-
-    return { ...p, href, isExternal }
+    const externalHref = p.externalUrl?.trim() ? p.externalUrl.trim() : null
+    return { ...p, offerHref, externalHref }
   })
 
   return (
