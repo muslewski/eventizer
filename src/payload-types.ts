@@ -231,6 +231,7 @@ export interface Page {
     | BetaBannerBlock
     | MissionBlock
     | InstallAppBlock
+    | PartnersBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1104,6 +1105,48 @@ export interface InstallAppBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnersBlock".
+ */
+export interface PartnersBlock {
+  badge: string;
+  heading: string;
+  description?: string | null;
+  /**
+   * How long each partner stays in the spotlight. Set to 0 to disable auto-rotation.
+   */
+  rotationSeconds?: number | null;
+  /**
+   * Each partner can optionally link to their offer on Eventizer or to an external website.
+   */
+  partners: {
+    name: string;
+    /**
+     * Short city/category descriptor shown next to the name, e.g. "Białystok" or "DJ na wesela".
+     */
+    tagline?: string | null;
+    /**
+     * Optional short blurb shown when this partner is in the spotlight.
+     */
+    quote?: string | null;
+    /**
+     * Optional. Falls back to a stylized initial if not provided.
+     */
+    logo?: (number | null) | Media;
+    accentColor?: ('primary' | 'accent' | 'blue' | 'emerald' | 'violet' | 'rose') | null;
+    linkType?: ('none' | 'offer' | 'external') | null;
+    /**
+     * Pick the partner’s offer on Eventizer.
+     */
+    offer?: (number | null) | Offer;
+    externalUrl?: string | null;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'partners';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-sessions".
  */
 export interface UserSession {
@@ -1531,6 +1574,7 @@ export interface PagesSelect<T extends boolean = true> {
         betaBanner?: T | BetaBannerBlockSelect<T>;
         mission?: T | MissionBlockSelect<T>;
         installApp?: T | InstallAppBlockSelect<T>;
+        partners?: T | PartnersBlockSelect<T>;
       };
   meta?:
     | T
@@ -1856,6 +1900,31 @@ export interface InstallAppBlockSelect<T extends boolean = true> {
         id?: T;
       };
   doneMessage?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnersBlock_select".
+ */
+export interface PartnersBlockSelect<T extends boolean = true> {
+  badge?: T;
+  heading?: T;
+  description?: T;
+  rotationSeconds?: T;
+  partners?:
+    | T
+    | {
+        name?: T;
+        tagline?: T;
+        quote?: T;
+        logo?: T;
+        accentColor?: T;
+        linkType?: T;
+        offer?: T;
+        externalUrl?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }

@@ -34,6 +34,7 @@ import { ContactFormBlock } from '@/blocks/ContactForm/config'
 import { BetaBanner } from '@/blocks/BetaBanner/config'
 import { Mission } from '@/blocks/Mission/config'
 import { InstallApp } from '@/blocks/InstallApp/config'
+import { Partners } from '@/blocks/Partners/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -105,6 +106,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 BetaBanner,
                 Mission,
                 InstallApp,
+                Partners,
               ],
               required: true,
               admin: {
