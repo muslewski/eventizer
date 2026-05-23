@@ -301,8 +301,10 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
               motion.div inside swaps between partners (which can vary by
               quote length and number of CTA buttons). Also keeps the cell
               from collapsing during the AnimatePresence wait-mode frame
-              between old exit and new mount. */}
-          <div className="flex flex-col justify-center text-left min-h-[18rem] sm:min-h-[20rem] lg:min-h-[22rem]">
+              between old exit and new mount.
+              text-center + items-center horizontally center everything
+              inside (name, tagline, quote, buttons). */}
+          <div className="flex flex-col items-center justify-center text-center min-h-[18rem] sm:min-h-[20rem] lg:min-h-[22rem]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`spotlight-${safeIndex}`}
@@ -310,7 +312,7 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="flex flex-col gap-5"
+                className="flex flex-col items-center gap-5"
               >
                 {/*
                   Reserve a fixed slot for the partner name + tagline so the
@@ -322,7 +324,7 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   generously sized: 2 lines of text-Nxl name + tagline +
                   margin for browser font-metric variance.
                 */}
-                <div className="flex flex-col justify-end gap-1 min-h-[7.5rem] sm:min-h-[9rem] lg:min-h-[11rem]">
+                <div className="flex flex-col items-center justify-end gap-1 min-h-[7.5rem] sm:min-h-[9rem] lg:min-h-[11rem]">
                   <h3
                     className={cn(
                       'font-bebas tracking-wide leading-[0.95] text-4xl sm:text-5xl lg:text-6xl text-balance',
@@ -345,21 +347,11 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   partners with and without a quote filled in.
                 */}
                 {active.quote ? (
-                  <blockquote
-                    className={cn(
-                      'border-l-2 pl-4 text-foreground/85 text-base sm:text-lg leading-relaxed max-w-lg',
-                      activeAccent.border,
-                    )}
-                  >
-                    {active.quote}
+                  <blockquote className="text-foreground/85 text-base sm:text-lg leading-relaxed max-w-lg">
+                    „{active.quote}"
                   </blockquote>
                 ) : (
-                  <p
-                    className={cn(
-                      'border-l-2 pl-4 text-muted-foreground/70 text-base sm:text-lg leading-relaxed max-w-lg italic',
-                      activeAccent.border,
-                    )}
-                  >
+                  <p className="text-muted-foreground/70 text-base sm:text-lg leading-relaxed max-w-lg italic">
                     Opis tego partnera pojawi się wkrótce — w międzyczasie zachęcamy do
                     bezpośredniego kontaktu lub zajrzenia na ich stronę.
                   </p>
@@ -372,7 +364,7 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   button (h-10) + pt-1 so the reserved space exactly fits a
                   real button when it's there.
                 */}
-                <div className="pt-1 flex flex-wrap gap-3 min-h-[2.75rem]">
+                <div className="pt-1 flex flex-wrap justify-center gap-3 min-h-[2.75rem]">
                   {active.offerHref && (
                     <Button asChild size="lg" className="group">
                       <Link href={active.offerHref}>
