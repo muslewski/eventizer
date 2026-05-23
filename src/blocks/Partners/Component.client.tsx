@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { AnimatePresence, motion, useReducedMotion, type Transition, type Variants } from 'motion/react'
-import { ArrowUpRight, Handshake } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
@@ -179,8 +179,6 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
           heading={heading}
           description={description ?? undefined}
           badge={{ label: badge, variant: 'golden' }}
-          icon={Handshake}
-          overflowHidden
         />
 
         {/* === Spotlight row === */}
