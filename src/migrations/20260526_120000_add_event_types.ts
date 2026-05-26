@@ -8,7 +8,6 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-vercel-postg
  *
  * Tables affected:
  *   • event_types               — main rows
- *   • event_types_rels          — for the icon upload (relationship to media)
  *   • offers_rels               — gains event_types_id column for the live relation
  *   • _offers_v_rels            — gains event_types_id column for the versioned relation
  *   • payload_locked_documents_rels — needs the column for cross-collection lock indexing
@@ -38,44 +37,12 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     CREATE INDEX IF NOT EXISTS "event_types_icon_idx"
       ON "event_types" USING btree ("icon_id");
 
-    -- 2. Relationship-link table for the icon upload
-    CREATE TABLE IF NOT EXISTS "event_types_rels" (
-      "id" serial PRIMARY KEY NOT NULL,
-      "order" integer,
-      "parent_id" integer NOT NULL,
-      "path" varchar NOT NULL,
-      "media_id" integer
-    );
-
-    CREATE INDEX IF NOT EXISTS "event_types_rels_parent_idx"
-      ON "event_types_rels" USING btree ("parent_id");
-    CREATE INDEX IF NOT EXISTS "event_types_rels_path_idx"
-      ON "event_types_rels" USING btree ("path");
-    CREATE INDEX IF NOT EXISTS "event_types_rels_media_id_idx"
-      ON "event_types_rels" USING btree ("media_id");
-
-    -- 3. FKs from event_types and event_types_rels
+    -- 3. FK from event_types.icon_id to media
     DO $$ BEGIN
       ALTER TABLE "event_types"
         ADD CONSTRAINT "event_types_icon_id_media_id_fk"
         FOREIGN KEY ("icon_id") REFERENCES "public"."media"("id")
         ON DELETE set null ON UPDATE no action;
-    EXCEPTION WHEN duplicate_object THEN NULL;
-    END $$;
-
-    DO $$ BEGIN
-      ALTER TABLE "event_types_rels"
-        ADD CONSTRAINT "event_types_rels_parent_fk"
-        FOREIGN KEY ("parent_id") REFERENCES "public"."event_types"("id")
-        ON DELETE cascade ON UPDATE no action;
-    EXCEPTION WHEN duplicate_object THEN NULL;
-    END $$;
-
-    DO $$ BEGIN
-      ALTER TABLE "event_types_rels"
-        ADD CONSTRAINT "event_types_rels_media_fk"
-        FOREIGN KEY ("media_id") REFERENCES "public"."media"("id")
-        ON DELETE cascade ON UPDATE no action;
     EXCEPTION WHEN duplicate_object THEN NULL;
     END $$;
 
@@ -195,7 +162,6 @@ export async function down({ db }: MigrateDownArgs): Promise<void> {
     ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "event_types_id";
     ALTER TABLE "_offers_v_rels" DROP COLUMN IF EXISTS "event_types_id";
     ALTER TABLE "offers_rels" DROP COLUMN IF EXISTS "event_types_id";
-    DROP TABLE IF EXISTS "event_types_rels";
     DROP TABLE IF EXISTS "event_types";
   `)
 }
