@@ -72,6 +72,21 @@ export const offersFields: Field[] = [
       },
     },
   },
+  {
+    name: 'eventTypes',
+    type: 'relationship',
+    relationTo: 'event-types',
+    hasMany: true,
+    required: false,
+    label: { en: 'Event Types', pl: 'Rodzaje eventów' },
+    filterOptions: () => ({ isActive: { equals: true } }),
+    admin: {
+      description: {
+        en: 'Which kinds of events this offer is suitable for. Leave empty to appear in every rodzaj filter.',
+        pl: 'Dla jakich rodzajów eventów ta oferta jest odpowiednia. Pozostaw puste, aby oferta pojawiała się dla wszystkich rodzajów.',
+      },
+    },
+  },
 
   {
     type: 'checkbox',

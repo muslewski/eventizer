@@ -357,6 +357,10 @@ export interface Offer {
    */
   category: string;
   /**
+   * Which kinds of events this offer is suitable for. Leave empty to appear in every rodzaj filter.
+   */
+  eventTypes?: (number | EventType)[] | null;
+  /**
    * Check if this offer has a price range instead of a fixed price.
    */
   hasPriceRange?: boolean | null;
@@ -467,6 +471,32 @@ export interface Offer {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Event types an offer can serve (wedding, corporate, etc.). Used by the offer wizard and the public listings filter.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-types".
+ */
+export interface EventType {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Unique identifier (e.g., 'wesele'). Used in the public URL filter `?rodzaj=`.
+   */
+  slug: string;
+  /**
+   * Optional icon image. Falls back to a Sparkles glyph when empty.
+   */
+  icon?: (number | null) | Media;
+  description?: string | null;
+  /**
+   * When unchecked, hidden from the wizard picker and the listings filter. Existing offers tagged with this type keep the tag.
+   */
+  isActive: boolean;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Upload and manage files related to offers.
@@ -1191,32 +1221,6 @@ export interface UserVerification {
   identifier: string;
   value: string;
   expiresAt: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Event types an offer can serve (wedding, corporate, etc.). Used by the offer wizard and the public listings filter.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "event-types".
- */
-export interface EventType {
-  id: number;
-  _order?: string | null;
-  name: string;
-  /**
-   * Unique identifier (e.g., 'wesele'). Used in the public URL filter `?rodzaj=`.
-   */
-  slug: string;
-  /**
-   * Optional icon image. Falls back to a Sparkles glyph when empty.
-   */
-  icon?: (number | null) | Media;
-  description?: string | null;
-  /**
-   * When unchecked, hidden from the wizard picker and the listings filter. Existing offers tagged with this type keep the tag.
-   */
-  isActive: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -1969,6 +1973,7 @@ export interface OffersSelect<T extends boolean = true> {
   user?: T;
   title?: T;
   category?: T;
+  eventTypes?: T;
   hasPriceRange?: T;
   price?: T;
   priceFrom?: T;
