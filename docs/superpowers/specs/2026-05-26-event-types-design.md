@@ -1,7 +1,7 @@
 # Event Types (Rodzaje Eventów) — Design
 
 **Date:** 2026-05-26
-**Status:** Awaiting user review
+**Status:** Approved for implementation planning (v2 — switched to pure relationship after Postgres-storage check)
 **Areas:** `/panel/oferty/*` (wizard), `/ogloszenia` (listings), Payload (new collection)
 
 ## 1. Problem
@@ -67,28 +67,23 @@ Seed leaves `icon` empty; admin uploads icons after deploy. The wizard and filte
 
 ## 4. Schema changes on `offers`
 
-Two new columns. Per the `eventizer-payload-migrations` skill, the SQL must be generated locally (`pnpm payload migrate:create`) before deploy so Vercel builds don't crash on missing columns when `/pl` SSGs query offers.
+One new field on `Offers`, plus the relationship-link columns that Payload's Postgres adapter requires for `hasMany` relationships. Per the `eventizer-payload-migrations` skill, the DDL must be hand-written as an idempotent migration before deploy so Vercel builds don't crash on missing columns when `/pl` SSGs query offers.
 
 - `eventTypes` — `relationship`, `hasMany: true`, `relationTo: 'event-types'`, optional. `filterOptions: () => ({ isActive: { equals: true } })`. Placed right after the existing `category` text field in `Offers/fields.ts`. Admin description: "Pozostaw puste, aby oferta pojawiała się dla wszystkich rodzajów eventów."
-- `eventTypeSlugs` — `text`, `hasMany: true`, `index: true`. `admin: { readOnly: true, position: 'sidebar', hidden: non-moderator }`. Hidden field denormalizing the slugs of the related event types, mirroring how `categorySlug` is denormalized today.
 
-`defaultPopulate` on `Offers` gains `eventTypes: true, eventTypeSlugs: true` so the listing card and detail page can render them at the standard depth.
+`defaultPopulate` on `Offers` gains `eventTypes: true` so the listing card and detail page can render them at the standard depth.
 
-### 4.1 New hook: `populateEventTypeSlugs`
+### 4.1 No denormalization, no extra hook
 
-Lives at `src/collections/Offers/hooks/populateEventTypeSlugs.ts`, registered in `Offers/index.ts` `beforeChange` after `populateCategoryData`:
+An earlier draft denormalized event-type slugs onto the offer to "avoid a JOIN at filter time". On Payload's Vercel Postgres adapter, both `relationship hasMany: true` and `text hasMany: true` are stored in child tables — the JOIN happens either way. Denormalization here would only add a maintenance hook (`populateEventTypeSlugs`) and a slug-drift bug (renaming an event type leaves stale rows on every offer until next save) with **zero** measurable benefit. We don't do it.
 
-- If `data.eventTypes` is `undefined` → leave `data.eventTypeSlugs` untouched (allow partial updates).
-- If `data.eventTypes` is `null` or an empty array → set `data.eventTypes = null` AND `data.eventTypeSlugs = null`. (Normalizing both fields to `null` keeps the "empty = all" semantics symmetrical: legacy offers, intentionally-cleared offers, and never-saved offers all look the same to the filter query in §6.4.)
-- If `data.eventTypes` is an array of IDs → fetch each via `req.payload.findByID`, passing `req` for transaction atomicity, and assign `data.eventTypeSlugs = docs.map(d => d.slug)`. Skip-on-error individual lookups; log a warning via `payload.logger.warn` for any missing ID.
+Filtering reads through the relationship directly via Payload's nested syntax: `{ 'eventTypes.slug': { equals: rodzaj } }` (see §6.4). Slug renames propagate instantly because the value is read live from `event_types.slug`.
 
-Re-exported from `Offers/hooks/index.ts` alongside the existing exports.
+### 4.2 "Empty = all" with no hook
 
-**UX consequence of the normalization:** a provider who deselects every chip in the wizard is treated identically to a provider who never touched the field — the offer remains visible under every `rodzaj` filter. This is intentional. If the product later wants "intentionally hidden from rodzaj filters" as a distinct state, it should be a separate explicit toggle rather than overloading "all unchecked".
+The "empty selection = matches all rodzaj filters" semantics is enforced entirely in the listing query (§6.4) using Payload's `exists` operator on the relationship. We do not normalize empty arrays to `null` in a hook — `{ eventTypes: { exists: false } }` matches both rows that have never had a related event-type AND rows whose relationship has been cleared, because Payload's `exists` on a `hasMany` relationship checks whether any link row is present.
 
-### 4.2 Re-slug propagation
-
-If an admin changes an event type's slug, all referencing offers' `eventTypeSlugs` become stale until the offer is next saved. We accept this — it's the same trade-off we already accept for `categorySlug` (renaming a category does not retroactively re-slug offers). Admins are warned in the slug field's `admin.description`. No background sync job in v1.
+If a provider deselects every chip in the wizard, the offer is treated identically to legacy offers — visible under every `rodzaj` filter. This is intentional. If the product later wants "intentionally hidden from rodzaj filters" as a distinct state, it should be a separate explicit toggle rather than overloading "all unchecked".
 
 ## 5. Wizard UX — `StepBasicInfo`
 
@@ -179,13 +174,13 @@ In `ListView/utils/conditions.ts`, when `params.rodzaj` is set:
 ```ts
 conditions.push({
   or: [
-    { eventTypeSlugs: { equals: params.rodzaj } },
-    { eventTypeSlugs: { exists: false } },
+    { 'eventTypes.slug': { equals: params.rodzaj } },
+    { eventTypes: { exists: false } },
   ],
 })
 ```
 
-That single `or` block expresses "the offer is tagged with this rodzaj, OR the offer has never been tagged" — preserving the legacy-offer guarantee from §2 with no migration on the `offers` table.
+That single `or` block expresses "the offer is tagged with this rodzaj, OR the offer has no event-type relations at all" — preserving the legacy-offer guarantee from §2 with no migration on existing offer rows.
 
 ### 6.5 `ActiveFilters` badge
 
@@ -205,21 +200,20 @@ That single `or` block expresses "the offer is tagged with this rodzaj, OR the o
 
 **New files**
 - `src/collections/EventTypes.ts`
-- `src/collections/Offers/hooks/populateEventTypeSlugs.ts`
 - `src/components/panel/wizard/EventTypePicker.tsx`
 - `src/app/(frontend)/[lang]/ogloszenia/ListView/EventTypeStrip/index.tsx`
-- `src/migrations/<timestamp>_seed_event_types.ts` (data seed)
-- `src/migrations/<timestamp>_add_event_types_schema.ts` (column / table DDL — generated by `pnpm payload migrate:create`)
+- `src/migrations/<timestamp>_add_event_types.ts` (DDL: new `event_types` table + relationship columns on `offers_rels` / `_offers_v_rels` / locked-docs / preferences rels tables)
+- `src/migrations/<timestamp>_seed_event_types.ts` (data seed, idempotent on slug)
 
 **Modified files**
 - `src/payload.config.ts` — register `EventTypes` in `collections`
-- `src/collections/Offers/fields.ts` — add `eventTypes` + `eventTypeSlugs`
-- `src/collections/Offers/index.ts` — register `populateEventTypeSlugs` in `beforeChange`, expand `defaultPopulate`
-- `src/collections/Offers/hooks/index.ts` — re-export new hook
+- `src/migrations/index.ts` — re-export both new migrations
+- `scripts/prepare-migrations.mjs` — add both new migration names to `ALWAYS_RUN`
+- `src/collections/Offers/fields.ts` — add `eventTypes` relationship field
+- `src/collections/Offers/index.ts` — expand `defaultPopulate` with `eventTypes`
 - `src/components/panel/wizard/offerSchema.ts` — extend `offerSchema` and `stepSchemas[0]`
 - `src/components/panel/wizard/OfferWizardForm.tsx` — thread `eventTypes` prop, default values, edit hydration, submit payload, pass to `StepBasicInfo`
 - `src/components/panel/wizard/steps/StepBasicInfo.tsx` — render `EventTypePicker`
-- `src/actions/panel/offers.ts` — accept + persist `eventTypes`
 - `src/app/(frontend)/[lang]/panel/oferty/nowa/page.tsx` — fetch event types
 - `src/app/(frontend)/[lang]/panel/oferty/[slug]/edytuj/page.tsx` — fetch event types
 - `src/app/(frontend)/[lang]/ogloszenia/page.tsx` — read `rodzaj`, forward
@@ -229,22 +223,25 @@ That single `or` block expresses "the offer is tagged with this rodzaj, OR the o
 - `src/app/(frontend)/[lang]/ogloszenia/ListView/utils/conditions.ts` — add the `or`-with-`exists` block
 - `src/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/index.tsx` — accept `eventTypes` prop, forward to `ActiveFilters`
 - `src/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar/ActiveFilters/index.tsx` — render rodzaj badge
-- `src/payload-types.ts` — regenerate via `pnpm payload generate:types`
+- `src/payload-types.ts` — regenerate via `pnpm generate:types`
+
+**Note on server actions (`src/actions/panel/offers.ts`):** `createOffer` / `updateOffer` both accept `Partial<Offer>` and spread it into the Payload call. Once `payload-types.ts` is regenerated, `eventTypes` becomes part of `Offer` and flows through without code change. Verify in Task 9 of the plan.
 
 ## 8. Risks & validation
 
-- **Build risk on Vercel.** Schema change adds one table + two columns. Per `eventizer-payload-migrations`, generate SQL via `pnpm payload migrate:create` locally and commit *before* deploy. Without this, `/pl` SSG fails on "column does not exist".
-- **Slug drift.** Renaming an event type's slug leaves `eventTypeSlugs` stale on existing offers until each is re-saved. Same trade-off as `categorySlug`. Mitigation: warning in admin description; no auto-resync in v1.
-- **Seed idempotency.** The seed migration must `INSERT … ON CONFLICT (slug) DO NOTHING` so re-running on a populated DB is safe. Inactive types are not re-activated by the seed.
-- **Listing performance.** `eventTypeSlugs` is indexed; the filter condition is one `or` of two predicates and does not add a join. Should be neutral vs current category-only filter.
-- **Hydration mismatch on edit.** `eventTypes` may come back as IDs or as expanded docs depending on `depth`; the normalization in §5.2 handles both. Test the edit flow specifically with `depth: 2` (current default).
+- **Build risk on Vercel.** Schema change adds one table + relationship columns on four `_rels` tables. Per `eventizer-payload-migrations`, hand-write idempotent ALTERs (with `IF NOT EXISTS`) and register the migration in both `src/migrations/index.ts` and the `ALWAYS_RUN` set in `scripts/prepare-migrations.mjs` so Vercel actually runs it instead of pre-marking it applied. Without this, `/pl` SSG fails on "column does not exist".
+- **Slug drift.** None — filter reads slugs live from `event_types.slug` via the relationship join. Renaming an event type's slug propagates instantly to listings.
+- **Seed idempotency.** The seed migration uses `INSERT … ON CONFLICT (slug) DO NOTHING` so re-running on a populated DB is safe. Inactive types are not re-activated by the seed (i.e. the seed doesn't `UPDATE`).
+- **Listing performance.** Filter adds one LEFT JOIN to `offers_rels → event_types` plus an OR with `exists` on the same relation. Comparable to today's `categorySlug` filter; should be neutral.
+- **Hydration mismatch on edit.** `eventTypes` may come back as IDs or as expanded docs depending on `depth`; the normalization in §5.2 handles both. Test the edit flow specifically with `depth: 2` (current default in `getOffer`).
 
 ## 9. Manual test checklist (post-implementation)
 
-- Create new offer; confirm all 11 event types pre-checked; deselect 2; publish; verify `eventTypeSlugs` written.
-- Edit existing pre-feature offer; confirm zero selected; save without changing; verify `eventTypeSlugs` stays empty/null and offer still appears under every `?rodzaj=` filter.
-- Filter `/ogloszenia?rodzaj=wesele`; verify the offer appears iff its `eventTypeSlugs` contains `wesele` OR is empty.
+- Create new offer; confirm all 11 event types pre-checked; deselect 2; publish; verify the relationship rows in `offers_rels` reflect the selection.
+- Edit existing pre-feature offer; confirm zero selected; save without changing; verify it still appears under every `?rodzaj=` filter (the `exists: false` branch).
+- Filter `/ogloszenia?rodzaj=wesele`; verify an offer appears iff at least one of its event types has slug `wesele` OR it has no event types at all.
 - Combine with `?kategoria=muzyka-rozrywka/dj`; verify both predicates AND.
 - Toggle a type to `isActive: false` in admin; verify it disappears from the wizard picker and the strip but existing tagged offers are unaffected.
+- Rename an event type's slug in admin; reload `/ogloszenia?rodzaj=<new-slug>`; verify previously-tagged offers immediately match the new slug (no offer-side resave needed).
 - Reduced-motion: toggle OS pref; verify chip hover does not animate.
 - Mobile: confirm the strip scrolls horizontally with snap and fade masks; the wizard chips wrap.
