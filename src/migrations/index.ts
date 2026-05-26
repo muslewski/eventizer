@@ -9,6 +9,7 @@ import * as migration_20260512_135000_ensure_processed_stripe_events_schema from
 import * as migration_20260523_180000_add_partners_block from './20260523_180000_add_partners_block';
 import * as migration_20260523_190000_add_partners_upload_relationship_columns from './20260523_190000_add_partners_upload_relationship_columns';
 import * as migration_20260526_120000_add_event_types from './20260526_120000_add_event_types';
+import * as migration_20260526_120500_seed_event_types from './20260526_120500_seed_event_types';
 
 export const migrations = [
   {
@@ -65,5 +66,10 @@ export const migrations = [
     up: migration_20260526_120000_add_event_types.up,
     down: migration_20260526_120000_add_event_types.down,
     name: '20260526_120000_add_event_types'
+  },
+  {
+    up: migration_20260526_120500_seed_event_types.up,
+    down: migration_20260526_120500_seed_event_types.down,
+    name: '20260526_120500_seed_event_types'
   },
 ];
