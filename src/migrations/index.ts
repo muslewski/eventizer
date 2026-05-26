@@ -8,6 +8,7 @@ import * as migration_20260512_133000_add_processed_stripe_events_to_locked_docu
 import * as migration_20260512_135000_ensure_processed_stripe_events_schema from './20260512_135000_ensure_processed_stripe_events_schema';
 import * as migration_20260523_180000_add_partners_block from './20260523_180000_add_partners_block';
 import * as migration_20260523_190000_add_partners_upload_relationship_columns from './20260523_190000_add_partners_upload_relationship_columns';
+import * as migration_20260526_120000_add_event_types from './20260526_120000_add_event_types';
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20260523_190000_add_partners_upload_relationship_columns.up,
     down: migration_20260523_190000_add_partners_upload_relationship_columns.down,
     name: '20260523_190000_add_partners_upload_relationship_columns'
+  },
+  {
+    up: migration_20260526_120000_add_event_types.up,
+    down: migration_20260526_120000_add_event_types.down,
+    name: '20260526_120000_add_event_types'
   },
 ];
