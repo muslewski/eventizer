@@ -1,3 +1,4 @@
+import { adminOrHigher, publicAccess } from '@/access'
 import { isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
 import { revalidatePath } from 'next/cache'
@@ -52,10 +53,10 @@ export const EventTypes: CollectionConfig = {
     },
   },
   access: {
-    read: () => true,
-    create: ({ req: { user } }) => isClientRoleEqualOrHigher('admin', user),
-    update: ({ req: { user } }) => isClientRoleEqualOrHigher('admin', user),
-    delete: ({ req: { user } }) => isClientRoleEqualOrHigher('admin', user),
+    read: publicAccess,
+    create: adminOrHigher,
+    update: adminOrHigher,
+    delete: adminOrHigher,
   },
   hooks: {
     afterChange: [revalidateEventTypes],
@@ -73,7 +74,6 @@ export const EventTypes: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
-      index: true,
       label: 'Slug',
       admin: {
         position: 'sidebar',
