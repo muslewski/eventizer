@@ -35,12 +35,19 @@ export default async function NowaOfertaPage({
     redirect(`/${lang}/panel/dashboard`)
   }
 
-  const [categoriesResult, bgUrl] = await Promise.all([
+  const [categoriesResult, eventTypesResult, bgUrl] = await Promise.all([
     payload.find({
       collection: 'service-categories',
       depth: 2,
       sort: 'name',
       limit: 100,
+    }),
+    payload.find({
+      collection: 'event-types',
+      where: { isActive: { equals: true } },
+      sort: '_order',
+      depth: 1,
+      limit: 0,
     }),
     getHeaderBackgroundUrl(),
   ])
@@ -49,6 +56,7 @@ export default async function NowaOfertaPage({
     <OfferWizardForm
       mode="create"
       categories={categoriesResult.docs}
+      eventTypes={eventTypesResult.docs as any}
       lang={lang}
       backgroundImageUrl={bgUrl}
       breadcrumbs={[
