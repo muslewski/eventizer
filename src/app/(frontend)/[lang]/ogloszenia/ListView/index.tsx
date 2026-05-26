@@ -8,6 +8,7 @@ interface ListViewProps {
   payload: BasePayload
   strona?: string
   kategoria?: string
+  rodzaj?: string
   szukaj?: string
   sortuj?: string
   lat?: string
@@ -27,18 +28,30 @@ export default async function ListView({ payload, ...searchParams }: ListViewPro
   // Query offers with all filters and sorting
   const { offers, pagination } = await queryOffers(payload, params)
 
-  // Fetch categories for sidebar
-  const categories = await payload.find({
-    collection: 'service-categories',
-    limit: 100,
-    depth: 0,
-    overrideAccess: true,
-  })
+  // Fetch categories and active event types in parallel
+  const [categories, eventTypes] = await Promise.all([
+    payload.find({
+      collection: 'service-categories',
+      limit: 100,
+      depth: 0,
+      overrideAccess: true,
+    }),
+    payload.find({
+      collection: 'event-types',
+      where: { isActive: { equals: true } },
+      sort: '_order',
+      depth: 1,
+      limit: 0,
+      overrideAccess: true,
+    }),
+  ])
 
   return (
     <ClientListView
       offers={offers}
       categoryData={categories.docs}
+      eventTypes={eventTypes.docs}
+      currentRodzaj={params.rodzaj}
       pagination={pagination}
       currentSort={params.sortuj}
       currentLat={params.lat}

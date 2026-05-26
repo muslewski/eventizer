@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Offer, ServiceCategory } from '@/payload-types'
+import { Offer, ServiceCategory, EventType } from '@/payload-types'
 import OffersView from '@/app/(frontend)/[lang]/ogloszenia/ListView/OffersView'
 import { usePathname } from 'next/navigation'
 import SearchBar from '@/app/(frontend)/[lang]/ogloszenia/ListView/SearchBar'
 import CategorySelection from '@/app/(frontend)/[lang]/ogloszenia/ListView/CategorySelection'
+import EventTypeStrip from '@/app/(frontend)/[lang]/ogloszenia/ListView/EventTypeStrip'
 import { SortOption } from '@/app/(frontend)/[lang]/ogloszenia/ListView/types'
 import { ListViewTransitionProvider } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 import { GoogleMapsProvider } from '@/components/providers/GoogleMapsProvider'
@@ -25,6 +26,8 @@ export interface PaginationInfo {
 interface ClientListViewProps {
   offers: Offer[] | null
   categoryData?: ServiceCategory[]
+  eventTypes: EventType[]
+  currentRodzaj?: string
   pagination: PaginationInfo
   currentSort: SortOption
   currentLat?: number
@@ -38,6 +41,8 @@ interface ClientListViewProps {
 export default function ClientListView({
   offers,
   categoryData,
+  eventTypes,
+  currentRodzaj,
   pagination,
   currentSort,
   currentLat,
@@ -49,7 +54,6 @@ export default function ClientListView({
 }: ClientListViewProps) {
   const pathname = usePathname()
 
-  // Persist the server-generated seed as a cookie so pagination keeps the same random order
   useEffect(() => {
     if (seed !== undefined) {
       document.cookie = `random-seed=${seed}; path=/; SameSite=Lax`
@@ -63,12 +67,9 @@ export default function ClientListView({
       className="flex flex-col md:flex-row w-full -mt-8 pt-8 gap-8 md:h-screen md:max-h-screen "
       id="oferty"
     >
-      {/* Category Selection */}
       <CategorySelection categoryData={categoryData} />
 
-      {/* Main Search bar and offers */}
       <div className="w-full max-w-575 h-full min-w-0 py-0 flex flex-col gap-4">
-        {/* Search Bar */}
         <div id="offers-search-anchor">
           <SearchBar
             currentSort={currentSort}
@@ -77,24 +78,15 @@ export default function ClientListView({
             currentDistance={currentDistance}
             minPrice={minCena}
             maxPrice={maxCena}
+            eventTypes={eventTypes}
+            currentRodzaj={currentRodzaj}
           />
         </div>
 
-        {/* Display offers */}
+        <EventTypeStrip eventTypes={eventTypes} currentRodzaj={currentRodzaj} />
+
         <OffersView offers={offers} pagination={pagination} pathname={pathname} />
       </div>
-
-      {/* right side with selected offers */}
-      {/* <div className="max-w-md hidden 2xl:flex w-full h-full border-l rounded-l-2xl p-8 flex-col gap-12">
-        <div>
-          <TitleH3 title={'Ogłoszenie'} />
-        </div>
-
-        //Special offer
-        <div className="mt-auto">
-          <TitleH3 title={'Oferta specjalna'} />
-        </div>
-      </div> */}
     </div>
     </ListViewTransitionProvider>
     </GoogleMapsProvider>
