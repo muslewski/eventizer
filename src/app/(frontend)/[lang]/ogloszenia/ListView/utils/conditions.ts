@@ -17,6 +17,15 @@ export function buildBaseConditions(params: ParsedSearchParams): Where[] {
     })
   }
 
+  if (params.rodzaj) {
+    conditions.push({
+      or: [
+        { 'eventTypes.slug': { equals: params.rodzaj } },
+        { eventTypes: { exists: false } },
+      ],
+    })
+  }
+
   // Add geo bounding box filter for location-based search
   if (params.lat !== undefined && params.lng !== undefined && params.odleglosc !== undefined) {
     // Use a generous bounding box (search radius + max possible service radius of 500km)
