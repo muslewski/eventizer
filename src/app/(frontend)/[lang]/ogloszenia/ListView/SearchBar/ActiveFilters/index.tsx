@@ -4,7 +4,8 @@ import { Badge } from '@/components/ui/badge'
 import { sortOptionLabels } from '@/app/(frontend)/[lang]/ogloszenia/ListView/utils'
 import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 import type { SortOption } from '@/app/(frontend)/[lang]/ogloszenia/ListView/types'
-import { MapPin, ArrowUpDown, DollarSign, Search, Tag, X } from 'lucide-react'
+import { MapPin, ArrowUpDown, DollarSign, Search, Tag, Sparkles, X } from 'lucide-react'
+import type { EventType } from '@/payload-types'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useCallback } from 'react'
 import { useGoogleMaps } from '@/components/providers/GoogleMapsProvider'
@@ -17,6 +18,8 @@ interface ActiveFiltersProps {
   currentDistance?: number
   minPrice?: number
   maxPrice?: number
+  eventTypes: EventType[]
+  currentRodzaj?: string
 }
 
 export default function ActiveFilters({
@@ -26,6 +29,8 @@ export default function ActiveFilters({
   currentDistance,
   minPrice,
   maxPrice,
+  eventTypes,
+  currentRodzaj,
 }: ActiveFiltersProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -35,6 +40,11 @@ export default function ActiveFilters({
 
   const currentSearch = searchParams.get('szukaj')
   const currentCategory = searchParams.get('kategoria')
+
+  const matchedRodzaj = currentRodzaj
+    ? eventTypes.find((t) => t.slug === currentRodzaj)
+    : undefined
+  const hasRodzaj = !!matchedRodzaj
 
   const { locationName } = useReverseGeocode({
     lat: currentLat,
@@ -63,7 +73,7 @@ export default function ActiveFilters({
   const hasCategory = !!currentCategory
   const hasNonDefaultSort = currentSort !== 'random'
 
-  const hasAnyFilter = hasLocation || hasPriceMin || hasPriceMax || hasSearch || hasCategory || hasNonDefaultSort
+  const hasAnyFilter = hasLocation || hasPriceMin || hasPriceMax || hasSearch || hasCategory || hasRodzaj || hasNonDefaultSort
 
   if (!hasAnyFilter) return null
 
@@ -92,6 +102,14 @@ export default function ActiveFilters({
           icon={<Tag className="size-3" />}
           label={formatCategoryLabel(currentCategory!)}
           onRemove={() => removeParam('kategoria')}
+        />
+      )}
+
+      {hasRodzaj && (
+        <FilterBadge
+          icon={<Sparkles className="size-3" />}
+          label={matchedRodzaj!.name}
+          onRemove={() => removeParam('rodzaj')}
         />
       )}
 
