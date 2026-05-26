@@ -12,6 +12,7 @@ import { PanelPageHeader } from '@/components/panel/PanelPageHeader'
 import { createOffer, updateOffer } from '@/actions/panel/offers'
 import { offerSchema, type OfferFormData } from './offerSchema'
 import { StepBasicInfo } from './steps/StepBasicInfo'
+import type { EventTypeItem } from './EventTypePicker'
 import { StepPricing } from './steps/StepPricing'
 import { StepMedia } from './steps/StepMedia'
 import { StepDescription } from './steps/StepDescription'
@@ -96,6 +97,7 @@ interface OfferWizardFormProps {
   initialData?: any
   offerId?: number
   categories: any[]
+  eventTypes: EventTypeItem[]
   lang: string
   backgroundImageUrl?: string | null
   breadcrumbs?: { label: string; href?: string }[]
@@ -108,6 +110,7 @@ export function OfferWizardForm({
   initialData,
   offerId,
   categories,
+  eventTypes,
   lang,
   backgroundImageUrl,
   breadcrumbs,
@@ -174,6 +177,12 @@ export function OfferWizardForm({
       title: initialData?.title ?? '',
       link: initialData?.link ?? '',
       category: initialData?.category ?? userServiceCategory ?? '',
+      eventTypes:
+        mode === 'edit'
+          ? Array.isArray(initialData?.eventTypes)
+            ? (initialData.eventTypes as any[]).map((t: any) => (typeof t === 'object' ? t.id : t))
+            : []
+          : eventTypes.map((t) => t.id),
       shortDescription: initialData?.shortDescription ?? '',
       hasPriceRange: initialData?.hasPriceRange ?? false,
       price: initialData?.price ?? undefined,
@@ -323,6 +332,7 @@ export function OfferWizardForm({
         // the user's edit on Finalizacja step is the source of truth.
         generateSlug: false,
         category: formData.category,
+        eventTypes: formData.eventTypes,
         shortDescription: formData.shortDescription,
         hasPriceRange: formData.hasPriceRange,
         price: formData.hasPriceRange ? undefined : formData.price,
@@ -430,6 +440,7 @@ export function OfferWizardForm({
             errors={errors}
             watch={watch}
             categories={categories}
+            eventTypes={eventTypes}
           />
         )}
         {currentStep === 1 && (

@@ -4,6 +4,7 @@ import { Controller, type Control, type FieldErrors, type UseFormWatch } from 'r
 import { Input } from '@/components/ui/input'
 import { Field, FieldGroup, FieldLabel, FieldError, FieldDescription } from '@/components/ui/field'
 import { CategoryPicker } from '@/components/panel/wizard/CategoryPicker'
+import { EventTypePicker, type EventTypeItem } from '@/components/panel/wizard/EventTypePicker'
 import type { OfferFormData } from '@/components/panel/wizard/offerSchema'
 
 interface StepBasicInfoProps {
@@ -11,9 +12,10 @@ interface StepBasicInfoProps {
   errors: FieldErrors<OfferFormData>
   watch: UseFormWatch<OfferFormData>
   categories: any[]
+  eventTypes: EventTypeItem[]
 }
 
-export function StepBasicInfo({ control, errors, categories }: StepBasicInfoProps) {
+export function StepBasicInfo({ control, errors, categories, eventTypes }: StepBasicInfoProps) {
   return (
     <FieldGroup>
       <Field data-invalid={!!errors.title}>
@@ -59,6 +61,23 @@ export function StepBasicInfo({ control, errors, categories }: StepBasicInfoProp
         <FieldError>{errors.category?.message}</FieldError>
       </Field>
 
+      <Field>
+        <FieldLabel>Rodzaje eventów</FieldLabel>
+        <FieldDescription>
+          Wybierz rodzaje eventów, na których świadczysz tę usługę. Pozostawienie wszystkich zaznaczonych = oferta pojawi się we wszystkich filtrach.
+        </FieldDescription>
+        <Controller
+          name="eventTypes"
+          control={control}
+          render={({ field }) => (
+            <EventTypePicker
+              eventTypes={eventTypes}
+              value={field.value ?? []}
+              onChange={field.onChange}
+            />
+          )}
+        />
+      </Field>
     </FieldGroup>
   )
 }
