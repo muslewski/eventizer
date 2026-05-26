@@ -26,7 +26,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
       "icon_id" integer,
       "description" varchar,
       "is_active" boolean DEFAULT true NOT NULL,
-      "_order" integer,
+      "_order" varchar,
       "updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
       "created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
     );
