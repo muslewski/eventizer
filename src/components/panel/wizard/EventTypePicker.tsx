@@ -6,13 +6,9 @@ import { motion, useReducedMotion } from 'motion/react'
 import { Sparkles, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import type { EventType } from '@/payload-types'
 
-export interface EventTypeItem {
-  id: number
-  name: string
-  slug: string
-  icon?: { url?: string | null } | number | null
-}
+export type EventTypeItem = Pick<EventType, 'id' | 'name' | 'slug' | 'icon'>
 
 interface EventTypePickerProps {
   eventTypes: EventTypeItem[]

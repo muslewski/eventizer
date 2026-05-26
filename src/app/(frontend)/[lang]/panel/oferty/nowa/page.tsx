@@ -56,7 +56,7 @@ export default async function NowaOfertaPage({
     <OfferWizardForm
       mode="create"
       categories={categoriesResult.docs}
-      eventTypes={eventTypesResult.docs as any}
+      eventTypes={eventTypesResult.docs}
       lang={lang}
       backgroundImageUrl={bgUrl}
       breadcrumbs={[

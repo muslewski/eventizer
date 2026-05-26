@@ -67,7 +67,7 @@ export default async function EdytujOfertePage({
       initialData={offer}
       offerId={offer.id}
       categories={categoriesResult.docs}
-      eventTypes={eventTypesResult.docs as any}
+      eventTypes={eventTypesResult.docs}
       lang={lang}
       backgroundImageUrl={bgUrl}
       breadcrumbs={[
