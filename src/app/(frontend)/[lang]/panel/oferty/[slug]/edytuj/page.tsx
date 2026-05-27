@@ -44,12 +44,19 @@ export default async function EdytujOfertePage({
 
   const offer = offerResult.data
 
-  const [categoriesResult, bgUrl] = await Promise.all([
+  const [categoriesResult, eventTypesResult, bgUrl] = await Promise.all([
     payload.find({
       collection: 'service-categories',
       depth: 2,
       sort: 'name',
       limit: 100,
+    }),
+    payload.find({
+      collection: 'event-types',
+      where: { isActive: { equals: true } },
+      sort: '_order',
+      depth: 1,
+      limit: 0,
     }),
     getHeaderBackgroundUrl(),
   ])
@@ -60,6 +67,7 @@ export default async function EdytujOfertePage({
       initialData={offer}
       offerId={offer.id}
       categories={categoriesResult.docs}
+      eventTypes={eventTypesResult.docs}
       lang={lang}
       backgroundImageUrl={bgUrl}
       breadcrumbs={[

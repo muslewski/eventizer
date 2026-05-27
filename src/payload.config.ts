@@ -25,6 +25,7 @@ import { SubmittedForms } from '@/collections/SubmittedForms'
 import { SubscriptionPlans } from '@/collections/SubscriptionPlans'
 import { ProcessedStripeEvents } from '@/collections/ProcessedStripeEvents'
 import { ServiceCategories } from '@/collections/ServiceCategories'
+import { EventTypes } from '@/collections/EventTypes'
 import { StripeCustomers } from '@/collections/Customers'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { Pages } from '@/collections/Pages'
@@ -133,6 +134,7 @@ export default buildConfig({
 
     // Settings
     ServiceCategories,
+    EventTypes,
     SubscriptionPlans,
     StripeCustomers,
     ProcessedStripeEvents,

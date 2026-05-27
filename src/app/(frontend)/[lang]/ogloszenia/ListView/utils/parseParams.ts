@@ -24,6 +24,7 @@ export function parseSearchParams(params: OfferSearchParams, seed?: number): Par
     page: Number(params.strona) || 1,
     limit: DEFAULT_LIMIT,
     kategoria: params.kategoria,
+    rodzaj: params.rodzaj,
     szukaj: params.szukaj,
     sortuj,
     lat: hasValidLocation ? lat : undefined,

@@ -60,6 +60,7 @@ export const Offers: CollectionConfig = {
     mainImage: true,
     categoryName: true,
     categorySlug: true,
+    eventTypes: true,
     shortDescription: true,
     priceFrom: true,
     priceTo: true,

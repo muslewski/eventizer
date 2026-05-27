@@ -11,6 +11,7 @@ export const offerSchema = z
       .max(80, 'Link nie może przekraczać 80 znaków')
       .regex(SLUG_REGEX, 'Tylko małe litery, cyfry i myślniki (np. fotolustro-drewniane)'),
     category: z.string().min(1, 'Kategoria jest wymagana'),
+    eventTypes: z.array(z.number()).optional().default([]),
     shortDescription: z.string().max(500, 'Maksymalnie 500 znaków').optional().default(''),
     hasPriceRange: z.boolean().default(false),
     price: z.number().min(0).optional(),
@@ -83,6 +84,7 @@ export const stepSchemas = [
   z.object({
     title: z.string().min(1, 'Tytuł jest wymagany').max(150, 'Tytuł jest za długi'),
     category: z.string().min(1, 'Kategoria jest wymagana'),
+    eventTypes: z.array(z.number()).optional().default([]),
     shortDescription: z.string().max(500, 'Maksymalnie 500 znaków').optional().default(''),
   }),
   // Step 2: Pricing & Location

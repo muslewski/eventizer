@@ -15,6 +15,7 @@ export type SortOption =
 export interface OfferSearchParams {
   strona?: string
   kategoria?: string
+  rodzaj?: string
   szukaj?: string
   sortuj?: SortOption
   lat?: string
@@ -28,6 +29,7 @@ export interface ParsedSearchParams {
   page: number
   limit: number
   kategoria?: string
+  rodzaj?: string
   szukaj?: string
   sortuj: SortOption
   lat?: number

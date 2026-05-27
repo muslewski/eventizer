@@ -12,6 +12,7 @@ type Args = {
   searchParams: Promise<{
     strona?: string
     kategoria?: string
+    rodzaj?: string
     szukaj?: string
     sortuj?: SortOption
     lat?: string
@@ -24,7 +25,7 @@ type Args = {
 
 export default async function Page({ params, searchParams }: Args) {
   const payload = await getPayload({ config })
-  const { strona, kategoria, szukaj, sortuj, lat, lng, odleglosc, minCena, maxCena } = await searchParams
+  const { strona, kategoria, rodzaj, szukaj, sortuj, lat, lng, odleglosc, minCena, maxCena } = await searchParams
 
   return (
     <>
@@ -33,6 +34,7 @@ export default async function Page({ params, searchParams }: Args) {
         payload={payload}
         strona={strona}
         kategoria={kategoria}
+        rodzaj={rodzaj}
         szukaj={szukaj}
         sortuj={sortuj}
         lat={lat}

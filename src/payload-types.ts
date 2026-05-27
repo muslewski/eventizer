@@ -74,6 +74,7 @@ export interface Config {
     'user-accounts': UserAccount;
     'user-verifications': UserVerification;
     'service-categories': ServiceCategory;
+    'event-types': EventType;
     'subscription-plans': SubscriptionPlan;
     'stripe-customers': StripeCustomer;
     'processed-stripe-events': ProcessedStripeEvent;
@@ -103,6 +104,7 @@ export interface Config {
     'user-accounts': UserAccountsSelect<false> | UserAccountsSelect<true>;
     'user-verifications': UserVerificationsSelect<false> | UserVerificationsSelect<true>;
     'service-categories': ServiceCategoriesSelect<false> | ServiceCategoriesSelect<true>;
+    'event-types': EventTypesSelect<false> | EventTypesSelect<true>;
     'subscription-plans': SubscriptionPlansSelect<false> | SubscriptionPlansSelect<true>;
     'stripe-customers': StripeCustomersSelect<false> | StripeCustomersSelect<true>;
     'processed-stripe-events': ProcessedStripeEventsSelect<false> | ProcessedStripeEventsSelect<true>;
@@ -355,6 +357,10 @@ export interface Offer {
    */
   category: string;
   /**
+   * Which kinds of events this offer is suitable for. Leave empty to appear in every rodzaj filter.
+   */
+  eventTypes?: (number | EventType)[] | null;
+  /**
    * Check if this offer has a price range instead of a fixed price.
    */
   hasPriceRange?: boolean | null;
@@ -465,6 +471,32 @@ export interface Offer {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * Event types an offer can serve (wedding, corporate, etc.). Used by the offer wizard and the public listings filter.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-types".
+ */
+export interface EventType {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Unique identifier (e.g., 'wesele'). Used in the public URL filter `?rodzaj=`.
+   */
+  slug: string;
+  /**
+   * Optional icon image. Falls back to a Sparkles glyph when empty.
+   */
+  icon?: (number | null) | Media;
+  description?: string | null;
+  /**
+   * When unchecked, hidden from the wizard picker and the listings filter. Existing offers tagged with this type keep the tag.
+   */
+  isActive: boolean;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Upload and manage files related to offers.
@@ -1440,6 +1472,10 @@ export interface PayloadLockedDocument {
         value: number | ServiceCategory;
       } | null)
     | ({
+        relationTo: 'event-types';
+        value: number | EventType;
+      } | null)
+    | ({
         relationTo: 'subscription-plans';
         value: number | SubscriptionPlan;
       } | null)
@@ -1937,6 +1973,7 @@ export interface OffersSelect<T extends boolean = true> {
   user?: T;
   title?: T;
   category?: T;
+  eventTypes?: T;
   hasPriceRange?: T;
   price?: T;
   priceFrom?: T;
@@ -2083,6 +2120,20 @@ export interface ServiceCategoriesSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-types_select".
+ */
+export interface EventTypesSelect<T extends boolean = true> {
+  _order?: T;
+  name?: T;
+  slug?: T;
+  icon?: T;
+  description?: T;
+  isActive?: T;
   updatedAt?: T;
   createdAt?: T;
 }

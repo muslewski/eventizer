@@ -57,6 +57,9 @@ const ALWAYS_RUN = new Set([
   '20260512_135000_ensure_processed_stripe_events_schema',
   '20260523_180000_add_partners_block',
   '20260523_190000_add_partners_upload_relationship_columns',
+  '20260526_120000_add_event_types',
+  '20260526_120500_seed_event_types',
+  '20260526_121000_fix_event_types_order_type',
 ])
 
 const pool = new Pool({ connectionString })
