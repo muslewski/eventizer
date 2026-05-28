@@ -10,8 +10,13 @@ const ScrollArea = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> & {
     viewportRef?: React.RefObject<HTMLDivElement>
     onScrollCapture?: React.UIEventHandler<HTMLDivElement>
+    /**
+     * Which scrollbar(s) to render. Defaults to 'vertical' so existing
+     * consumers are unchanged. Use 'horizontal' for chip strips / carousels.
+     */
+    orientation?: 'vertical' | 'horizontal' | 'both'
   }
->(({ className, children, viewportRef, onScrollCapture, ...props }, ref) => (
+>(({ className, children, viewportRef, onScrollCapture, orientation = 'vertical', ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
     data-shadcn
@@ -26,7 +31,10 @@ const ScrollArea = React.forwardRef<
     >
       {children}
     </ScrollAreaPrimitive.Viewport>
-    <ScrollBar />
+    {(orientation === 'vertical' || orientation === 'both') && <ScrollBar orientation="vertical" />}
+    {(orientation === 'horizontal' || orientation === 'both') && (
+      <ScrollBar orientation="horizontal" />
+    )}
     <ScrollAreaPrimitive.Corner />
   </ScrollAreaPrimitive.Root>
 ))
