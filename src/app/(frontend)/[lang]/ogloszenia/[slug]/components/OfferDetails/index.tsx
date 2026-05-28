@@ -1,5 +1,5 @@
 import React from 'react'
-import { Offer, OfferUpload, ProfilePicture, User } from '@/payload-types'
+import { EventType, Offer, ProfilePicture, User } from '@/payload-types'
 import { RichText } from '@/components/payload/RichText'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import Image from 'next/image'
@@ -9,6 +9,7 @@ import {
   Info,
   User as UserIcon,
   Tag,
+  Sparkles,
   Banknote,
   CalendarPlus,
   CalendarClock,
@@ -75,6 +76,14 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconU
       month: 'long',
       year: 'numeric',
     })
+
+  // At depth >= 1 these come back as full docs; filter to expanded ones so we
+  // can read names. Empty = the offer applies to every event type (the same
+  // "empty matches all" fallback the listings filter uses), surfaced here as
+  // an explicit "Wszystkie rodzaje" value.
+  const eventTypes: EventType[] = Array.isArray(offer.eventTypes)
+    ? offer.eventTypes.filter((t): t is EventType => typeof t === 'object' && t !== null)
+    : []
 
   return (
     <section className="mx-auto w-full min-w-0 space-y-6 sm:space-y-8 md:space-y-12">
@@ -155,6 +164,31 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconU
                   value={offer.categoryName}
                 />
               )}
+
+              {/* Event types — empty means the offer applies to every type */}
+              <InfoRow
+                iconContent={<Sparkles className="size-5 text-primary" />}
+                label="Rodzaje eventów"
+                value={
+                  eventTypes.length > 0 ? (
+                    <span className="flex flex-wrap gap-1.5 pt-1">
+                      {eventTypes.map((t) => (
+                        <span
+                          key={t.id}
+                          className="inline-flex items-center rounded-full border border-primary/30 bg-primary/5 px-2.5 py-0.5 text-sm font-medium text-primary"
+                        >
+                          {t.name}
+                        </span>
+                      ))}
+                    </span>
+                  ) : (
+                    'Wszystkie rodzaje'
+                  )
+                }
+                valueClassName={
+                  eventTypes.length > 0 ? '' : 'font-medium text-lg text-muted-foreground'
+                }
+              />
 
               {/* Price */}
               <InfoRow
