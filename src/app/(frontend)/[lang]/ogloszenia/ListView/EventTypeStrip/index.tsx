@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Sparkles } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { cn } from '@/lib/utils'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { useListViewTransition } from '@/app/(frontend)/[lang]/ogloszenia/ListView/TransitionContext'
 import type { EventType } from '@/payload-types'
 
@@ -72,7 +73,7 @@ export default function EventTypeStrip({ eventTypes, currentRodzaj }: EventTypeS
       whileTap={shouldReduceMotion ? undefined : { scale: 0.97 }}
       aria-pressed={opts.active}
       className={cn(
-        'flex shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+        'flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
         opts.active
           ? 'border-primary/40 bg-primary/10 text-primary shadow-sm'
           : 'border-border/30 bg-background/60 text-muted-foreground hover:border-accent/40 hover:bg-accent/5 hover:text-foreground',
@@ -84,18 +85,16 @@ export default function EventTypeStrip({ eventTypes, currentRodzaj }: EventTypeS
   )
 
   return (
-    <div
-      className="relative -mx-2 px-2 lg:mx-0 lg:px-0"
+    <ScrollArea
+      orientation="horizontal"
+      type="scroll"
+      className="w-full"
       role="region"
       aria-label="Filtruj po rodzaju eventu"
     >
-      <div
-        className={cn(
-          'flex gap-2 overflow-x-auto snap-x snap-mandatory py-1',
-          'lg:flex-wrap lg:overflow-visible',
-          '[mask-image:linear-gradient(to_right,transparent,black_1rem,black_calc(100%-1rem),transparent)] lg:[mask-image:none]',
-        )}
-      >
+      {/* w-max so the row sizes to its content and overflows the viewport;
+          pt-1 gives the hover-lift headroom, pb-3 leaves room for the bar. */}
+      <div className="flex w-max items-center gap-2 px-0.5 pt-1 pb-3">
         {chip({
           key: 'all',
           active: !currentRodzaj,
@@ -112,6 +111,6 @@ export default function EventTypeStrip({ eventTypes, currentRodzaj }: EventTypeS
           }),
         )}
       </div>
-    </div>
+    </ScrollArea>
   )
 }
