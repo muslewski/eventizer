@@ -4,7 +4,7 @@ import configPromise from '@payload-config'
 import { notFound } from 'next/navigation'
 import { OfferHero, OfferDetails, ContactInfo } from './components'
 import type { Metadata } from 'next'
-import type { Offer } from '@/payload-types'
+import type { EventType, Offer } from '@/payload-types'
 import { generateMeta } from '@/utilities/generateMeta'
 import { LivePreviewOffer } from './LivePreviewOffer'
 import { resolveCategoryIconUrl } from '@/actions/resolveCategoryIconUrl'
@@ -64,6 +64,10 @@ export default async function OfferPage({ params }: Args) {
 
   const categoryIconUrl = offer.category ? await resolveCategoryIconUrl(offer.category) : null
 
+  // Active event types power the "applies to all" rotation in the offer's
+  // info card (when the offer itself has no specific types selected).
+  const allEventTypes = await queryActiveEventTypes()
+
   // Surface this provider's other published offers below the contact form
   // so visitors who don't reach out here have somewhere natural to keep
   // browsing within the same seller's catalogue.
@@ -83,10 +87,25 @@ export default async function OfferPage({ params }: Args) {
         initialData={offer}
         initialCategoryIconUrl={categoryIconUrl}
         otherOffersByProvider={otherOffersByProvider}
+        allEventTypes={allEventTypes}
       />
     </article>
   )
 }
+
+const queryActiveEventTypes = cache(async (): Promise<EventType[]> => {
+  const payload = await getPayload({ config: configPromise })
+  const result = await payload.find({
+    collection: 'event-types',
+    where: { isActive: { equals: true } },
+    sort: '_order',
+    depth: 1,
+    limit: 0,
+    pagination: false,
+    overrideAccess: true,
+  })
+  return result.docs as EventType[]
+})
 
 const queryOfferPageBySlug = cache(async ({ slug, lang }: { slug: string; lang: Locale }) => {
   const payload = await getPayload({

@@ -17,6 +17,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { SpanLikeH3 } from '@/components/frontend/Content/SpanLikeH3'
 import { formatOfferPrice } from '@/lib/formatOfferPrice'
+import { EventTypeChips } from '../EventTypeChips'
 
 interface InfoRowProps {
   /** Icon or custom content rendered inside the circle */
@@ -58,9 +59,15 @@ interface OfferDetailsProps {
   offer: Offer
   /** Pre-resolved category icon URL (resolved server-side to avoid bundling payload in client) */
   categoryIconUrl?: string | null
+  /** All active event types — used to populate the "applies to all" chip row. */
+  allEventTypes?: EventType[]
 }
 
-export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconUrl }) => {
+export const OfferDetails: React.FC<OfferDetailsProps> = ({
+  offer,
+  categoryIconUrl,
+  allEventTypes = [],
+}) => {
   const author = isExpandedDoc<User>(offer.user) ? offer.user : null
 
   let authorImageUrl: string | null = null
@@ -84,6 +91,12 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconU
   const eventTypes: EventType[] = Array.isArray(offer.eventTypes)
     ? offer.eventTypes.filter((t): t is EventType => typeof t === 'object' && t !== null)
     : []
+
+  // No specific types selected = the offer applies to every event type, so we
+  // show the full active list (allMode); otherwise show the offer's own
+  // selection.
+  const isAllEventTypes = eventTypes.length === 0
+  const chipTypes = isAllEventTypes ? allEventTypes : eventTypes
 
   return (
     <section className="mx-auto w-full min-w-0 space-y-6 sm:space-y-8 md:space-y-12">
@@ -165,28 +178,21 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({ offer, categoryIconU
                 />
               )}
 
-              {/* Event types — empty means the offer applies to every type */}
+              {/* Event types — compact horizontal scroll row of chips. Empty
+                  selection = applies to every type, so we show the full active
+                  list prefixed with a "wszystkie ·" hint. */}
               <InfoRow
                 iconContent={<Sparkles className="size-5 text-primary" />}
                 label="Rodzaje eventów"
                 value={
-                  eventTypes.length > 0 ? (
-                    <span className="flex flex-wrap gap-1.5 pt-1">
-                      {eventTypes.map((t) => (
-                        <span
-                          key={t.id}
-                          className="inline-flex items-center rounded-full border border-primary/30 bg-primary/5 px-2.5 py-0.5 text-sm font-medium text-primary"
-                        >
-                          {t.name}
-                        </span>
-                      ))}
-                    </span>
+                  chipTypes.length > 0 ? (
+                    <EventTypeChips types={chipTypes} allMode={isAllEventTypes} />
                   ) : (
                     'Wszystkie rodzaje'
                   )
                 }
                 valueClassName={
-                  eventTypes.length > 0 ? '' : 'font-medium text-lg text-muted-foreground'
+                  chipTypes.length > 0 ? 'mt-0.5' : 'font-medium text-lg text-muted-foreground'
                 }
               />
 

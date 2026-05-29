@@ -13,14 +13,20 @@ import {
   MobileContactActions,
   OtherOffersByProvider,
 } from './components'
-import type { Offer } from '@/payload-types' // adjust import path
+import type { EventType, Offer } from '@/payload-types' // adjust import path
 import { resolveCategoryIconUrl } from '@/actions/resolveCategoryIconUrl'
 
 export const LivePreviewOffer: React.FC<{
   initialData: Offer
   initialCategoryIconUrl?: string | null
   otherOffersByProvider?: Offer[]
-}> = ({ initialData, initialCategoryIconUrl, otherOffersByProvider = [] }) => {
+  allEventTypes?: EventType[]
+}> = ({
+  initialData,
+  initialCategoryIconUrl,
+  otherOffersByProvider = [],
+  allEventTypes = [],
+}) => {
   const { data } = useLivePreview<Offer>({
     initialData,
     serverURL: process.env.NEXT_PUBLIC_PAYLOAD_SERVER_URL ?? 'http://localhost:3000',
@@ -51,7 +57,7 @@ export const LivePreviewOffer: React.FC<{
       <OfferGallery offer={data} />
 
       <OfferVideo offer={data} />
-        <OfferDetails offer={data} categoryIconUrl={categoryIconUrl} />
+        <OfferDetails offer={data} categoryIconUrl={categoryIconUrl} allEventTypes={allEventTypes} />
 
      
 
