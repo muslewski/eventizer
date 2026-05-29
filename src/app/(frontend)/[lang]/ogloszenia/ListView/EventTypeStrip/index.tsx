@@ -88,7 +88,13 @@ export default function EventTypeStrip({ eventTypes, currentRodzaj }: EventTypeS
     <ScrollArea
       orientation="horizontal"
       type="scroll"
-      className="w-full"
+      // `shrink-0` is load-bearing: this strip is a flex item in the listings'
+      // height-constrained `flex flex-col` column (ListView/index.client.tsx),
+      // and ScrollArea's root carries `overflow: hidden`. Per the flexbox spec,
+      // a flex item with non-visible overflow gets an automatic minimum size of
+      // 0, so without this the strip collapses to height 0 under pressure from
+      // the tall offers list and the chips vanish. Do not remove.
+      className="w-full shrink-0"
       role="region"
       aria-label="Filtruj po rodzaju eventu"
     >
