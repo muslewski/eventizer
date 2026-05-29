@@ -1,9 +1,61 @@
 import type { BasePayload, Where } from 'payload'
-import type { Offer } from '@/payload-types'
-import type { ParsedSearchParams, OffersQueryResult, PaginationInfo } from '../types'
+import type { Offer, OffersSelect } from '@/payload-types'
+import type { ParsedSearchParams, OffersQueryResult, PaginationInfo, SortOption } from '../types'
 import { getSortField, requiresInMemorySort, sortOffersInMemory } from './sorting'
 import { getBoundingBox, haversineDistance, filterByDistance } from './distance'
 import { buildBaseConditions, buildPriceConditions, buildSearchWhere } from './conditions'
+
+/**
+ * Two-phase fetch (phase 1 — "lite").
+ *
+ * The in-memory sort/geo paths must consider EVERY matching offer to order or
+ * distance-filter them, but they only ever display one page. Hydrating the
+ * whole catalogue at full depth (uploads + relationships) just to keep 10 rows
+ * is O(n) per page view. Instead, phase 1 fetches only the scalar columns the
+ * ordering/filtering actually reads, with `depth: 0` so no joins run. Phase 2
+ * (`hydrateOffersByIds`) then hydrates just the page's rows.
+ *
+ * - random sort → only `id` is needed (the shuffle is id-agnostic).
+ * - price sort → the price fields feed `calculateEffectivePrice`.
+ * - geo filter → the `location` group feeds the Haversine distance check.
+ */
+function liteSelect(sortuj: SortOption, geo: boolean): OffersSelect<true> {
+  const needsPrice = sortuj === 'price-asc' || sortuj === 'price-desc'
+  // `id` is always returned by Payload and is not a selectable key, so an empty
+  // select (the random case) still yields rows carrying their id.
+  return {
+    ...(needsPrice
+      ? { price: true, priceFrom: true, priceTo: true, hasPriceRange: true }
+      : {}),
+    ...(geo ? { location: true } : {}),
+  }
+}
+
+/**
+ * Two-phase fetch (phase 2 — "hydrate").
+ *
+ * Hydrate a specific, ordered set of offer IDs at the default depth and return
+ * them in the SAME order as `ids`. Postgres `IN (...)` does not preserve the
+ * argument order, so we re-map through the requested id sequence — this keeps
+ * the in-memory sort order (random shuffle, price, distance) intact for the
+ * rendered page.
+ */
+export async function hydrateOffersByIds(
+  payload: BasePayload,
+  ids: number[],
+): Promise<Offer[]> {
+  if (ids.length === 0) return []
+
+  const { docs } = await payload.find({
+    collection: 'offers',
+    where: { id: { in: ids } },
+    limit: ids.length,
+    overrideAccess: true,
+  })
+
+  const byId = new Map(docs.map((doc) => [doc.id, doc]))
+  return ids.map((id) => byId.get(id)).filter((doc): doc is Offer => Boolean(doc))
+}
 
 /**
  * Calculate pagination info from raw values
@@ -71,20 +123,26 @@ async function queryWithSearch(
 
   let offersData: Offer[] = []
 
-  // For in-memory sorting, we need to fetch all matching results
+  // For in-memory sorting, we need to consider every matching result. Phase 1
+  // fetches only the ordering columns (lite); phase 2 hydrates the page.
   if (needsInMemorySort) {
+    const select = liteSelect(sortuj, false)
     const [titleResults, allResults] = await Promise.all([
       payload.find({
         collection: 'offers',
         where: titleWhere,
         limit: 0, // Fetch all
+        depth: 0,
         overrideAccess: true,
+        select,
       }),
       payload.find({
         collection: 'offers',
         where: allMatchesWhere,
         limit: 0,
+        depth: 0,
         overrideAccess: true,
+        select,
       }),
     ])
 
@@ -92,11 +150,13 @@ async function queryWithSearch(
     const descOnlyResults = allResults.docs.filter((doc) => !titleIds.has(doc.id))
 
     // Sort each group separately, then combine (title matches first)
-    const sortedTitles = sortOffersInMemory(titleResults.docs, sortuj, params.seed)
-    const sortedDesc = sortOffersInMemory(descOnlyResults, sortuj, params.seed)
+    const sortedTitles = sortOffersInMemory(titleResults.docs as Offer[], sortuj, params.seed)
+    const sortedDesc = sortOffersInMemory(descOnlyResults as Offer[], sortuj, params.seed)
 
-    const allSorted = [...sortedTitles, ...sortedDesc]
-    offersData = allSorted.slice(offset, offset + limit)
+    const pageIds = [...sortedTitles, ...sortedDesc]
+      .slice(offset, offset + limit)
+      .map((doc) => doc.id)
+    offersData = await hydrateOffersByIds(payload, pageIds)
   } else {
     // Standard pagination with database sorting
     if (offset < titleTotal) {
@@ -174,20 +234,25 @@ async function queryWithoutSearch(
   const baseWhere: Where = baseConditions.length === 1 ? baseConditions[0] : { and: baseConditions }
 
   if (needsInMemorySort) {
-    // Fetch all for in-memory sorting
-    const result = await payload.find({
+    // Phase 1: fetch only the columns needed to order the full result set —
+    // no joins, no per-row hydration (see liteSelect / hydrateOffersByIds).
+    const lite = await payload.find({
       collection: 'offers',
       limit: 0,
+      depth: 0,
       overrideAccess: true,
       where: baseWhere,
+      select: liteSelect(sortuj, false),
     })
 
-    const sortedOffers = sortOffersInMemory(result.docs, sortuj, params.seed)
-    const pagination = calculatePagination(result.totalDocs, limit, page)
+    const sortedOffers = sortOffersInMemory(lite.docs as Offer[], sortuj, params.seed)
+    const pagination = calculatePagination(lite.totalDocs, limit, page)
     const offset = (pagination.currentPage - 1) * limit
+    const pageIds = sortedOffers.slice(offset, offset + limit).map((doc) => doc.id)
 
+    // Phase 2: hydrate only this page's rows, preserving the sorted order.
     return {
-      offers: sortedOffers.slice(offset, offset + limit),
+      offers: await hydrateOffersByIds(payload, pageIds),
       pagination,
     }
   }
@@ -269,28 +334,35 @@ async function queryWithGeoFilter(
     }
   }
 
-  // Fetch all bounding-box matches (limit: 0 = unlimited)
-  const result = await payload.find({
+  // Phase 1: fetch all bounding-box matches but only the columns needed to
+  // distance-filter and order them (id + location, plus price if price-sorted).
+  // The DB sort still applies for non-in-memory sorts even though those columns
+  // aren't selected. (limit: 0 = unlimited)
+  const lite = await payload.find({
     collection: 'offers',
     where,
     limit: 0,
+    depth: 0,
     sort: sortField,
     overrideAccess: true,
+    select: liteSelect(sortuj, true),
   })
 
   // Apply precise Haversine distance filter
-  let filtered = filterByDistance(result.docs, lat!, lng!, odleglosc!)
+  let filtered = filterByDistance(lite.docs as Offer[], lat!, lng!, odleglosc!)
 
-  // Apply in-memory sorting if needed
+  // Apply in-memory sorting if needed (otherwise the DB `sort` order is kept)
   if (requiresInMemorySort(sortuj)) {
     filtered = sortOffersInMemory(filtered, sortuj, params.seed)
   }
 
   const pagination = calculatePagination(filtered.length, limit, page)
   const offset = (pagination.currentPage - 1) * limit
+  const pageIds = filtered.slice(offset, offset + limit).map((doc) => doc.id)
 
+  // Phase 2: hydrate only this page's rows, preserving the filtered order.
   return {
-    offers: filtered.slice(offset, offset + limit),
+    offers: await hydrateOffersByIds(payload, pageIds),
     pagination,
   }
 }
