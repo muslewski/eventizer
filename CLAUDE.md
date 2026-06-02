@@ -2,9 +2,10 @@
 
 ## DEV RULE (highest priority): orient Mind-first, maintain on finish
 
-**Before working:** load `eventizer-mind/map/index.md` → open the relevant zone card in
-`eventizer-mind/map/zones/` → trace its `sources:` (the spec/decision that produced it). Don't
-work blind. The matching `eventizer-*` skill auto-loads with the procedural how-to.
+**Before working:** read `eventizer-mind/map/overview.md` (what Eventizer is & why) → load
+`eventizer-mind/map/index.md` → open the relevant zone card in `eventizer-mind/map/zones/` →
+trace its `sources:` (the spec/decision that produced it). Don't work blind. The matching
+`eventizer-*` skill auto-loads with the procedural how-to.
 
 **On finish (same change as the code, not a follow-up):**
 - Update any touched zone card and re-stamp its `verifiedAt` to the new HEAD (`git rev-parse HEAD`).

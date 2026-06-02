@@ -15,10 +15,11 @@ Resend · shadcn/ui + Tailwind 4 · Motion. Package manager: **pnpm**.
 
 The canonical, verified map lives in the vault. **Before changing code:**
 
-1. Read `eventizer-mind/map/index.md` (every zone + freshness).
-2. Open the zone card you're touching in `eventizer-mind/map/zones/` — purpose, anchors,
+1. Read `eventizer-mind/map/overview.md` — what Eventizer is, who it serves, the homepage story (the big picture).
+2. Read `eventizer-mind/map/index.md` (every zone + freshness).
+3. Open the zone card you're touching in `eventizer-mind/map/zones/` — purpose, anchors,
    invariants, and `sources:` (the why).
-3. Load the companion procedural skill for that zone (below).
+4. Load the companion procedural skill for that zone (below).
 
 ## Zone → companion skill
 
