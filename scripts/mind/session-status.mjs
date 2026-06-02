@@ -13,7 +13,7 @@ function countMd(dir, predicate) {
     .filter((f) => (predicate ? predicate(readFileSync(path.join(dir, f), 'utf8')) : true)).length
 }
 
-const zones = countMd(zonesDir)
+const zones = countMd(zonesDir, (c) => !/^status:\s*unmounted\s*$/m.test(c))
 const openDebt = countMd(debtDir, (c) => /^status:\s*open\s*$/m.test(c))
 console.log(
   `🧠 Mind: ${zones} zones · ${openDebt} open tech-debt — orient via eventizer-mind/map/index.md before coding.`,

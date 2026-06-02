@@ -5,7 +5,7 @@ tags: [auth, roles, access]
 status: active
 created: 2026-06-02
 updated: 2026-06-02
-related: ["[[better-auth-payload-user-sync]]"]
+related: ["[[better-auth-payload-user-sync]]", "[[access-control-test-coverage]]"]
 sources: ["[[2026-06-02-eventizer-mind-design]]"]
 owns:
   routes: ["/auth"]
@@ -19,7 +19,7 @@ owns:
 depends: []
 invariants:
   - rule: "Role hierarchy admin → moderator → service-provider/client is enforced via roleOrHigher / *OrSelf access factories."
-    enforcedBy: ["[[skill:eventizer-server-actions]]"]
+    enforcedBy: []
 verifiedAt: "32f283812d0ecc55e57c5b005fcaaaa2893d06ce"
 ---
 
@@ -46,3 +46,4 @@ password-reset flows use Resend for transactional email.
   inline role comparisons in ad-hoc code are forbidden.
 - Every protected server action and panel page must re-validate the session via `auth.api.getSession`;
   never trust a cached or prop-passed session for writes.
+- No automated test guards the role hierarchy yet — tracked as tech-debt (`[[access-control-test-coverage]]`).

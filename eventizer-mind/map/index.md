@@ -18,7 +18,7 @@
 
 ## ⚠ Verification gaps
 
-_None._
+- [auth] invariant has no enforcedBy: "Role hierarchy admin → moderator → service-provider/client is enforced via roleOrHigher / *OrSelf access factories."
 
 ## Attic (unmounted)
 
