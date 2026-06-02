@@ -29,32 +29,27 @@ function TypeIcon({ icon }: { icon: EventType['icon'] }) {
 }
 
 /**
- * Compact, horizontally-scrollable row of an offer's event types — one chip
- * per type. No auto-motion: the user scrolls at their own pace. The scrollbar
- * is hidden and the row edge-fades so it reads as content, not a control. When
- * `allMode` is set the row is prefixed with a small "wszystkie ·" hint.
+ * A flex-wrapped set of an offer's event types — one chip per type, all visible
+ * (no horizontal scroll). When `allMode` is set the set is prefixed with a small
+ * "wszystkie ·" hint (the offer applies to every event type).
  */
 export function EventTypeChips({ types, allMode = false }: EventTypeChipsProps) {
   if (types.length === 0) return null
 
   return (
-    <span className="flex min-w-0 items-center gap-2">
+    <span className="flex flex-wrap items-center gap-2">
       {allMode && (
-        <span className="shrink-0 text-xs text-muted-foreground">wszystkie&nbsp;·</span>
+        <span className="text-xs text-muted-foreground">wszystkie&nbsp;·</span>
       )}
-      <span
-        className="flex min-w-0 gap-1.5 overflow-x-auto py-0.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [mask-image:linear-gradient(to_right,transparent,black_0.5rem,black_calc(100%-0.75rem),transparent)]"
-      >
-        {types.map((t) => (
-          <span
-            key={t.id}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-2.5 py-0.5 text-sm font-medium text-primary"
-          >
-            <TypeIcon icon={t.icon} />
-            {t.name}
-          </span>
-        ))}
-      </span>
+      {types.map((t) => (
+        <span
+          key={t.id}
+          className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-2.5 py-0.5 text-sm font-medium text-primary"
+        >
+          <TypeIcon icon={t.icon} />
+          {t.name}
+        </span>
+      ))}
     </span>
   )
 }
