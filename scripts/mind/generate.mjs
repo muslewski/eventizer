@@ -126,7 +126,7 @@ function renderIndex(rows, gaps, attic) {
   out.push('')
   out.push('| Zone | Status | Freshness | Summary |')
   out.push('| --- | --- | --- | --- |')
-  for (const r of rows) out.push(`| [[${r.name}]] | ${r.status} | ${r.fresh} | ${r.summary} |`)
+  for (const r of rows) out.push(`| [[${r.name}]] | ${r.status} | ${r.fresh} | ${r.summary.replace(/\|/g, '\\|')} |`)
   out.push('')
   out.push('## ⚠ Verification gaps')
   out.push('')

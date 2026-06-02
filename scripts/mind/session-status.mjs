@@ -14,7 +14,7 @@ function countMd(dir, predicate) {
 }
 
 const zones = countMd(zonesDir)
-const openDebt = countMd(debtDir, (c) => /\bstatus:\s*open\b/.test(c))
+const openDebt = countMd(debtDir, (c) => /^status:\s*open\s*$/m.test(c))
 console.log(
   `🧠 Mind: ${zones} zones · ${openDebt} open tech-debt — orient via eventizer-mind/map/index.md before coding.`,
 )

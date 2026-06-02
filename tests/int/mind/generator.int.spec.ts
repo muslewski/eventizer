@@ -5,6 +5,7 @@ import {
   grepCode,
   routeExists,
   trackedFiles,
+  changedFilesSince,
 } from '../../../scripts/mind/lib.mjs'
 import { run } from '../../../scripts/mind/generate.mjs'
 
@@ -31,6 +32,31 @@ describe('mind generator lib', () => {
   it('routeExists finds a real route', () => {
     expect(routeExists('/panel')).toBe(true)
     expect(routeExists('/no-such-route')).toBe(false)
+  })
+
+  it('globToRegex: internal **/ matches zero or more segments', () => {
+    const rx = globToRegex('src/**/foo.ts')
+    expect(rx.test('src/foo.ts')).toBe(true)
+    expect(rx.test('src/a/foo.ts')).toBe(true)
+    expect(rx.test('src/a/b/foo.ts')).toBe(true)
+    expect(rx.test('src/foo.tsx')).toBe(false)
+  })
+
+  it('globToRegex: * stays within a single segment', () => {
+    const rx = globToRegex('src/*.ts')
+    expect(rx.test('src/a.ts')).toBe(true)
+    expect(rx.test('src/a/b.ts')).toBe(false)
+  })
+
+  it('routeExists: rejects a compound route whose leaf segment exists elsewhere', () => {
+    expect(routeExists('/panel')).toBe(true)
+    expect(routeExists('/totally/fake/panel')).toBe(false)
+  })
+
+  it('changedFilesSince: empty or invalid SHA returns null (treated as stale, never false-fresh)', () => {
+    expect(changedFilesSince('')).toBe(null)
+    expect(changedFilesSince('0000000000000000000000000000000000000000')).toBe(null)
+    expect(Array.isArray(changedFilesSince('HEAD'))).toBe(true)
   })
 })
 
