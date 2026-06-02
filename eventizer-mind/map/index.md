@@ -4,6 +4,16 @@
 
 | Zone | Status | Freshness | Summary |
 | --- | --- | --- | --- |
+| [[ai-content]] | active | ✅ fresh | AI-assisted authoring: the generate-content and generate-description API routes that feed the offer wizard (AI SDK + @ai-sdk/openai). |
+| [[auth]] | active | ✅ fresh | Better Auth (OAuth + email/password) sessions synced to a Payload Users collection; role hierarchy and access-control factories. |
+| [[billing]] | active | ✅ fresh | Stripe subscriptions: plan sync, customer portal, webhook-driven role transitions, plan-change wizard, downgrade drafting, event purge cron. |
+| [[content-blocks]] | active | ✅ fresh | CMS-driven page composition: Payload Pages collection, the block library (Hero, CTA, FeaturedOffers, HowItWorks, etc.), and hero variants. |
+| [[design-system]] | active | ✅ fresh | The visual system: shadcn/ui (new-york, stone base) primitives + the stone/brand SCSS token palette, fonts, motion baseline, icon split. |
+| [[media]] | active | ✅ fresh | Media handling: Payload upload collections on Vercel Blob, offer video processing/streaming, and the image-position (focal point) editor. |
+| [[offer-listing]] | active | ✅ fresh | Public offer browsing: ogloszenia list/hero views, search + filters (Polish params), category & event-type strips, offers map, featured carousel. |
+| [[offer-wizard]] | active | ✅ fresh | The 6-step create/edit offer wizard and its server actions: dual form state (RHF + useState), step-gated validation, publish vs draft. |
+| [[offers-data]] | active | ✅ fresh | The Offers collection: data model, hooks (category resolution, cache revalidation), access rules, drafts/versions. |
+| [[panel]] | active | ✅ fresh | The authenticated provider/client dashboard: PanelShell + sidebar, per-page auth+role guards, PanelPageHeader, AnimatedCard grids, Polish route segments. |
 | [[the-mind]] | active | ✅ fresh | The repository knowledge system itself: an Obsidian-compatible vault (Map + Ledger) plus a verifying generator and a SessionStart hook. Projections in .claude/ point into it, never copy it. |
 
 ## ⚠ Verification gaps
