@@ -3,6 +3,8 @@ name: eventizer-offers-wizard
 description: Use when modifying the Eventizer offer creation or edit wizard — any change to steps, validation, price/category/media/content handling, or the publish vs draft flow in src/components/panel/wizard/** and src/actions/panel/offers.ts.
 ---
 
+> **Canonical map:** [`eventizer-mind/map/zones/offer-wizard.md`](../../../eventizer-mind/map/zones/offer-wizard.md) — what this area is, its invariants, and the decisions behind it ([[wizard-dual-form-state]], [[draft-must-match-status]]). This skill is the *procedural projection*: how to work here without breaking things.
+
 # Offer Wizard
 
 The 6-step wizard in [OfferWizardForm.tsx](../../../src/components/panel/wizard/OfferWizardForm.tsx) creates and edits offers. Steps: `Podstawowe → Treść oferty → Cena i lokalizacja → Media → Kontakt → Finalizacja` (indices 0–5).

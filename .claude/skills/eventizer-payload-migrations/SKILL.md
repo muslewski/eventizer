@@ -3,6 +3,8 @@ name: eventizer-payload-migrations
 description: Use when Payload collection fields change in src/collections/**, or when diagnosing a Vercel build that fails with "column does not exist" / Drizzle SQL errors / missing-schema errors on /pl or any SSG page that queries offers.
 ---
 
+> **Canonical map:** [`eventizer-mind/map/zones/offers-data.md`](../../../eventizer-mind/map/zones/offers-data.md) + decision [`migrate-before-next-build`](../../../eventizer-mind/map/decisions/migrate-before-next-build.md). This skill is the *procedural projection*.
+
 # Payload Migrations in Eventizer
 
 ## The split: dev push vs prod migrate

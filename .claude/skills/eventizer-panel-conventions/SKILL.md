@@ -3,6 +3,8 @@ name: eventizer-panel-conventions
 description: Use when adding or modifying pages under src/app/(frontend)/[lang]/panel/** — auth guards, role redirects, PanelShell composition, PanelPageHeader with breadcrumbs, AnimatedCard grids, mobile sidebar, and Polish URL param naming.
 ---
 
+> **Canonical map:** [`eventizer-mind/map/zones/panel.md`](../../../eventizer-mind/map/zones/panel.md) — purpose, invariants, and lineage. This skill is the *procedural projection*.
+
 # Panel Conventions
 
 Anything under `/panel/*` is authenticated, shadcn-based, and follows a shared skeleton.

@@ -3,6 +3,8 @@ name: eventizer-server-actions
 description: Use when creating or modifying a server action in src/actions/** — authentication, error shape, Payload overrideAccess/draft handling, revalidatePath, and the toast + router.push + router.refresh UX pattern on the client side.
 ---
 
+> **Canonical map:** zones [`auth`](../../../eventizer-mind/map/zones/auth.md) / [`billing`](../../../eventizer-mind/map/zones/billing.md) and decision [`draft-must-match-status`](../../../eventizer-mind/map/decisions/draft-must-match-status.md). This skill is the *procedural projection* for any `src/actions/**` file.
+
 # Server Actions in Eventizer
 
 Server actions live under [src/actions/](../../../src/actions/), organized by surface (`panel/`, `stripe/`, top-level). Every file starts with `'use server'`.

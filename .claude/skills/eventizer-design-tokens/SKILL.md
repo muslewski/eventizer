@@ -3,6 +3,8 @@ name: eventizer-design-tokens
 description: Use when styling any Eventizer UI — colors, typography, motion timing, icon choice, hover/reduced-motion behavior, or dark-mode handling. Covers the stone+brand palette, Bebas/Montserrat fonts, motion/react defaults, and the lucide vs react-icons/fa6 split.
 ---
 
+> **Canonical map:** [`eventizer-mind/map/zones/design-system.md`](../../../eventizer-mind/map/zones/design-system.md). This skill is the *procedural projection*.
+
 # Design Tokens
 
 ## Colors
