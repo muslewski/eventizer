@@ -101,7 +101,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({
   return (
     <section className="mx-auto w-full min-w-0 space-y-6 sm:space-y-8 md:space-y-12">
       {/* Main content - Rich Text */}
-      <div className="flex flex-col-reverse lg:flex-row lg:items-start gap-6 sm:gap-8 lg:gap-12 w-full min-w-0 ">
+      <div className="flex flex-col lg:flex-row lg:items-start gap-6 sm:gap-8 lg:gap-12 w-full min-w-0 ">
         <div className="w-full min-w-0 lg:w-2/3 lg:sticky lg:top-24">
           <Card className="w-full min-w-0 overflow-hidden bg-primary/5 backdrop-blur-sm border-border/50">
             <CardHeader className="border-b pb-3">
@@ -116,9 +116,26 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({
                   data={offer.content}
                   enableGutter={false}
                   enableProse
-                    className="prose-lg max-w-none"
+                  className="prose-lg max-w-none"
                 />
               )}
+
+              {/* Event types — shown at the end of the description as a flex-wrap
+                  of all chips. Empty selection = applies to every type, so we show
+                  the full active list (allMode); the degenerate empty case falls
+                  back to a plain "Wszystkie rodzaje". */}
+              <Separator className="mt-6 sm:mt-8" />
+              <div className="mt-6 sm:mt-8 flex items-center gap-4 sm:gap-6">
+                <Sparkles className="size-6 sm:size-8 text-primary shrink-0" />
+                <SpanLikeH3 title="Rodzaje eventów" />
+              </div>
+              <div className="mt-4">
+                {chipTypes.length > 0 ? (
+                  <EventTypeChips types={chipTypes} allMode={isAllEventTypes} />
+                ) : (
+                  <p className="font-medium text-lg text-muted-foreground">Wszystkie rodzaje</p>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -177,24 +194,6 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({
                   value={offer.categoryName}
                 />
               )}
-
-              {/* Event types — compact horizontal scroll row of chips. Empty
-                  selection = applies to every type, so we show the full active
-                  list prefixed with a "wszystkie ·" hint. */}
-              <InfoRow
-                iconContent={<Sparkles className="size-5 text-primary" />}
-                label="Rodzaje eventów"
-                value={
-                  chipTypes.length > 0 ? (
-                    <EventTypeChips types={chipTypes} allMode={isAllEventTypes} />
-                  ) : (
-                    'Wszystkie rodzaje'
-                  )
-                }
-                valueClassName={
-                  chipTypes.length > 0 ? 'mt-0.5' : 'font-medium text-lg text-muted-foreground'
-                }
-              />
 
               {/* Price */}
               <InfoRow
