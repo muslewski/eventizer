@@ -4,6 +4,7 @@
 
 | Zone | Status | Freshness | Summary |
 | --- | --- | --- | --- |
+| [[the-mind]] | active | ✅ fresh | The repository knowledge system itself: an Obsidian-compatible vault (Map + Ledger) plus a verifying generator and a SessionStart hook. Projections in .claude/ point into it, never copy it. |
 
 ## ⚠ Verification gaps
 
