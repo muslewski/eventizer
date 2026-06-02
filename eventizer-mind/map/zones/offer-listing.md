@@ -18,7 +18,7 @@ depends: ["[[offers-data]]", "[[design-system]]"]
 invariants:
   - rule: "The two-phase fetch (filter-then-hydrate) for in-memory sort/geo paths preserves correct result hydration."
     enforcedBy: ["[[test:offersQueryHydration.int]]"]
-verifiedAt: "32f283812d0ecc55e57c5b005fcaaaa2893d06ce"
+verifiedAt: "4d3718e308cd47255975cfc140c44e2a600a59f0"
 ---
 
 # Offer Listing
