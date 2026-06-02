@@ -19,7 +19,7 @@ invariants:
     enforcedBy: ["[[test:generator.int]]"]
   - rule: "mind:check exits non-zero on any unresolved anchor or broken flow step."
     enforcedBy: ["[[test:generator.int]]"]
-verifiedAt: "125dbe7aa1125ebee4d5cc9e14d9acd3abb1a04c"
+verifiedAt: "0d4889b2122265b74883b227d2b04ae94cef906e"
 ---
 
 # The Mind
