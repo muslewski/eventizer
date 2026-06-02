@@ -6,6 +6,7 @@ import {
   routeExists,
   trackedFiles,
 } from '../../../scripts/mind/lib.mjs'
+import { run } from '../../../scripts/mind/generate.mjs'
 
 describe('mind generator lib', () => {
   it('globToRegex matches ** across path segments but not siblings', () => {
@@ -30,5 +31,15 @@ describe('mind generator lib', () => {
   it('routeExists finds a real route', () => {
     expect(routeExists('/panel')).toBe(true)
     expect(routeExists('/no-such-route')).toBe(false)
+  })
+})
+
+describe('mind generator run()', () => {
+  it('returns the result shape and does not throw on the current vault', () => {
+    const result = run()
+    expect(Array.isArray(result.errors)).toBe(true)
+    expect(Array.isArray(result.gaps)).toBe(true)
+    expect(Array.isArray(result.rows)).toBe(true)
+    expect(Array.isArray(result.attic)).toBe(true)
   })
 })
