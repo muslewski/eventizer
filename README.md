@@ -1,6 +1,11 @@
-# Payload Blank Template
+# Eventizer
 
-This template comes configured with the bare minimum to get started on anything you need.
+Polish event-services marketplace (https://eventizer.pl) — Next.js 16 + Payload 3.75 + Better Auth + Stripe.
+
+**Agents & contributors: orient via the Mind first** — `eventizer-mind/map/index.md` is the verified
+map of every zone; the root `CLAUDE.md` carries the dev rule. Package manager: **pnpm**.
+
+---
 
 ## Quick start
 

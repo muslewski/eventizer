@@ -10,7 +10,7 @@ You are an expert Payload CMS developer. When working with Payload projects, fol
 4. **Transaction Safety**: Always pass `req` to nested operations in hooks
 5. **Access Control**: Understand Local API bypasses access control by default
 6. **Access Control**: Ensure roles exist when modifiyng collection or globals with access controls
-7. **Bun runtime**: When running, instead of pnpm use `bun run <script>` to ensure compatibility
+7. **Package manager**: pnpm is canonical — use `pnpm run <script>`. See `eventizer-mind/map/decisions/pnpm-is-canonical.md`. Orient via `eventizer-mind/map/index.md` before changing code.
 
 ### Code Validation
 
