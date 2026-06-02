@@ -51,3 +51,7 @@ node_modules/
 
 # superpowers brainstorm workspace (mockups, server state)
 /.superpowers/
+
+# Obsidian per-user workspace state (commit shared .obsidian config, ignore workspace)
+eventizer-mind/.obsidian/workspace*.json
+eventizer-mind/.obsidian/cache
