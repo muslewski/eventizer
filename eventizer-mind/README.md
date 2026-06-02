@@ -17,6 +17,7 @@ the `sources:` (provenance) and `related:` (lateral) link properties.
 
 ## Resolution ladder — read the cheapest note that answers the question
 
+- `map/overview.md` — the **product overview**: what Eventizer is, who it serves, why. Read this first.
 - `map/index.md` — generated TOC: every zone, its status, freshness, essence.
 - `map/zones/<slug>.md` — the hinge: purpose, anchors, invariants, lineage, `verifiedAt`.
 - the code itself (+ optional `type: entity` intent notes on load-bearing parts).
@@ -36,6 +37,7 @@ Per-type extras:
 - **plan** → `implements`, `produced`.
 - **idea** → `maturity: seed|budding|evergreen`.
 - **debt** → `severity`, `effort`.
+- **product** → (no extra fields) — present-tense product/domain narrative: the abstract "what & why" (vision, values, model, voice). Lives in `map/` root; not anchor-verified by the generator.
 
 Anchors are `glob:<path>`, `route:<path>`, or `symbol:<name>` (this repo has no
 `data-testid`). The generator verifies they resolve in tracked code.
