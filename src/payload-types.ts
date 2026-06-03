@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     pages: Page;
+    partners: Partner;
     offers: Offer;
     users: User;
     'user-sessions': UserSession;
@@ -98,6 +99,7 @@ export interface Config {
   };
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
     offers: OffersSelect<false> | OffersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'user-sessions': UserSessionsSelect<false> | UserSessionsSelect<true>;
@@ -1180,6 +1182,40 @@ export interface PartnersBlock {
   blockType: 'partners';
 }
 /**
+ * Partners shown by the Partners (V2) block. Edit once here — reused across every page that picks them.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: number;
+  _order?: string | null;
+  name: string;
+  /**
+   * Short city/category descriptor shown next to the name, e.g. "Białystok" or "DJ na wesela".
+   */
+  tagline?: string | null;
+  /**
+   * Optional short blurb shown when this partner is in the spotlight.
+   */
+  quote?: string | null;
+  /**
+   * Optional. Falls back to a stylized initial if not provided.
+   */
+  logo?: (number | null) | Media;
+  accentColor?: ('primary' | 'accent' | 'blue' | 'emerald' | 'violet' | 'rose') | null;
+  /**
+   * Optional. Pick the partner’s offer to add a "Zobacz ofertę" button.
+   */
+  offer?: (number | null) | Offer;
+  /**
+   * Optional. Adds an "Odwiedź stronę" button linking to the partner's own site.
+   */
+  externalUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-sessions".
  */
@@ -1446,6 +1482,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'partners';
+        value: number | Partner;
       } | null)
     | ({
         relationTo: 'offers';
@@ -1964,6 +2004,22 @@ export interface PartnersBlockSelect<T extends boolean = true> {
       };
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  _order?: T;
+  name?: T;
+  tagline?: T;
+  quote?: T;
+  logo?: T;
+  accentColor?: T;
+  offer?: T;
+  externalUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
