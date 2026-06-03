@@ -8,7 +8,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
-import type { ResolvedPartner } from '@/blocks/Partners/Component'
+import type { ResolvedPartner } from '@/blocks/Partners/shared'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import type { Media } from '@/payload-types'
 
