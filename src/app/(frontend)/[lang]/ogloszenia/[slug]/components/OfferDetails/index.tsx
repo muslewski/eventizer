@@ -9,7 +9,7 @@ import {
   Info,
   User as UserIcon,
   Tag,
-  Sparkles,
+  PartyPopper,
   Banknote,
   CalendarPlus,
   CalendarClock,
@@ -126,7 +126,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({
                   back to a plain "Wszystkie rodzaje". */}
               <Separator className="mt-6 sm:mt-8" />
               <div className="mt-6 sm:mt-8 flex items-center gap-4 sm:gap-6">
-                <Sparkles className="size-6 sm:size-8 text-primary shrink-0" />
+                <PartyPopper className="size-6 sm:size-8 text-primary shrink-0" />
                 <SpanLikeH3 title="Rodzaje eventów" />
               </div>
               <div className="mt-4">

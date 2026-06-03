@@ -29,15 +29,16 @@ function TypeIcon({ icon }: { icon: EventType['icon'] }) {
 }
 
 /**
- * A flex-wrapped set of an offer's event types — one chip per type, all visible
- * (no horizontal scroll). When `allMode` is set the set is prefixed with a small
+ * A set of an offer's event types — one chip per type, all visible (no horizontal
+ * scroll). Stacks in a single column on mobile and becomes a flex-wrapped row from
+ * the `sm` breakpoint up. When `allMode` is set the set is prefixed with a small
  * "wszystkie ·" hint (the offer applies to every event type).
  */
 export function EventTypeChips({ types, allMode = false }: EventTypeChipsProps) {
   if (types.length === 0) return null
 
   return (
-    <span className="flex flex-wrap items-center gap-2">
+    <span className="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center">
       {allMode && (
         <span className="text-xs text-muted-foreground">wszystkie&nbsp;·</span>
       )}
