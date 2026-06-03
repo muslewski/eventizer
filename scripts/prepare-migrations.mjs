@@ -61,6 +61,7 @@ const ALWAYS_RUN = new Set([
   '20260526_120500_seed_event_types',
   '20260526_121000_fix_event_types_order_type',
   '20260603_120000_add_partners_collection_and_v2_block',
+  '20260603_120500_seed_partners',
 ])
 
 const pool = new Pool({ connectionString })

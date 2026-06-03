@@ -12,6 +12,7 @@ import * as migration_20260526_120000_add_event_types from './20260526_120000_ad
 import * as migration_20260526_120500_seed_event_types from './20260526_120500_seed_event_types';
 import * as migration_20260526_121000_fix_event_types_order_type from './20260526_121000_fix_event_types_order_type';
 import * as migration_20260603_120000_add_partners_collection_and_v2_block from './20260603_120000_add_partners_collection_and_v2_block';
+import * as migration_20260603_120500_seed_partners from './20260603_120500_seed_partners';
 
 export const migrations = [
   {
@@ -83,5 +84,10 @@ export const migrations = [
     up: migration_20260603_120000_add_partners_collection_and_v2_block.up,
     down: migration_20260603_120000_add_partners_collection_and_v2_block.down,
     name: '20260603_120000_add_partners_collection_and_v2_block'
+  },
+  {
+    up: migration_20260603_120500_seed_partners.up,
+    down: migration_20260603_120500_seed_partners.down,
+    name: '20260603_120500_seed_partners'
   },
 ];
