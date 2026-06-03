@@ -1,4 +1,6 @@
 import React from 'react'
+import type { Metadata } from 'next'
+import { getServerSideURL } from '@/utilities/getURL'
 import '@/styles/global.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/providers/Theme'
@@ -17,8 +19,12 @@ import { PreloaderProvider } from '@/components/providers/PreloaderProvider'
  */
 const ENABLE_LENIS = false
 
-export const metadata = {
-  description: 'Eventizer - Event Management Platform',
+export const metadata: Metadata = {
+  // metadataBase lets Next resolve relative URLs (icons, og:image fallbacks)
+  // against the real origin instead of localhost — and silences the build-time
+  // "metadataBase not set" warning.
+  metadataBase: new URL(getServerSideURL()),
+  description: 'Eventizer — łączymy ludzi z pasją do tworzenia niezapomnianych chwil.',
   title: 'Eventizer',
 }
 

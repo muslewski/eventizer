@@ -34,8 +34,15 @@ relation depth.
 
 ## Anchors
 - `src/app/(frontend)/[lang]/ogloszenia/` — route tree (ListView, HeroView, slug detail).
+- `src/app/(frontend)/[lang]/ogloszenia/[slug]/` — offer detail page (OfferHero, OfferDetails,
+  EventTypeChips, contact form). `generateMetadata` here drives the offer's social preview →
+  [[social-link-previews]].
 - `src/blocks/OffersMap/` — map block with Leaflet client component.
 - `src/blocks/FeaturedOffers/` — featured-offers carousel block.
+
+The detail page's "Rodzaje eventów" card (`EventTypeChips`) renders one chip per applicable event
+type. When an offer applies to every type it shows the full active list — no separate "wszystkie"
+badge, since the complete set already conveys "all".
 
 ## Invariants
 - URL params must use Polish keys (`strona`, `filtr`, `q`) — English equivalents break links shared

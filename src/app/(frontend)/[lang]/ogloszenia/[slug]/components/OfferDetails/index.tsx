@@ -93,8 +93,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({
     : []
 
   // No specific types selected = the offer applies to every event type, so we
-  // show the full active list (allMode); otherwise show the offer's own
-  // selection.
+  // show the full active list; otherwise show the offer's own selection.
   const isAllEventTypes = eventTypes.length === 0
   const chipTypes = isAllEventTypes ? allEventTypes : eventTypes
 
@@ -122,8 +121,8 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({
 
               {/* Event types — shown at the end of the description as a flex-wrap
                   of all chips. Empty selection = applies to every type, so we show
-                  the full active list (allMode); the degenerate empty case falls
-                  back to a plain "Wszystkie rodzaje". */}
+                  the full active list; the degenerate empty case falls back to a
+                  plain "Wszystkie rodzaje". */}
               <Separator className="mt-6 sm:mt-8" />
               <div className="mt-6 sm:mt-8 flex items-center gap-4 sm:gap-6">
                 <PartyPopper className="size-6 sm:size-8 text-primary shrink-0" />
@@ -131,7 +130,7 @@ export const OfferDetails: React.FC<OfferDetailsProps> = ({
               </div>
               <div className="mt-4">
                 {chipTypes.length > 0 ? (
-                  <EventTypeChips types={chipTypes} allMode={isAllEventTypes} />
+                  <EventTypeChips types={chipTypes} />
                 ) : (
                   <p className="font-medium text-lg text-muted-foreground">Wszystkie rodzaje</p>
                 )}
