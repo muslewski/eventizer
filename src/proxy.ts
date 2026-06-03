@@ -46,7 +46,12 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Skip all internal paths (_next), admin panel (/app)
-    '/((?!api|app|fonts|assets|images|my-favicon|_next/static|_next/image|favicon.ico).*)',
+    // Skip internal paths (_next), admin panel (/app), and any static asset.
+    // The trailing `.*\..*` clause excludes every path containing a dot — i.e.
+    // root-level files like `/og-image.png`, `/robots.txt`, `/sitemap.xml` —
+    // so the locale rewrite never turns them into `/pl/<file>` (which would
+    // fall through to the `[lang]/[slug]` page lookup and 404). Page/offer
+    // slugs never contain a dot, so they're unaffected.
+    '/((?!api|app|fonts|assets|images|my-favicon|_next/static|_next/image|favicon.ico|.*\\..*).*)',
   ],
 }

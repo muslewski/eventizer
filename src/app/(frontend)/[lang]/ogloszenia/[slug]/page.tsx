@@ -43,6 +43,9 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
 
   return generateMeta({
     doc: docWithFallbackImage as any,
+    // Offers are mounted under /ogloszenia/<link>; offer.link is just the slug,
+    // so build the full canonical here (otherwise og:url would be a 404 /<link>).
+    url: `/ogloszenia/${offer.link}`,
   })
 }
 

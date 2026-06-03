@@ -31,6 +31,11 @@ friends. Investigation found three compounding root causes in `src/utilities/gen
    So every page that *did* have an image (offers, pages with an SEO image) also failed.
 3. **WebP format.** Offer images are stored as WebP (`OfferUploads.formatOptions.format = 'webp'`),
    and crawlers render WebP inconsistently across clients — a third, format-level flake.
+4. **The locale proxy shadowed the static default** (found after deploy). `src/proxy.ts`'s
+   matcher excluded `my-favicon` etc. but not root-level files, so `/og-image.png` was rewritten to
+   `/pl/og-image.png`, fell through to the `[lang]/[slug]` page lookup, and 404'd — the brand-new
+   default never served. Plus `og:url` was wrong: the homepage emitted `/home` (not `/`) and offers
+   emitted `/<link>` (a 404; the real page is `/ogloszenia/<link>`).
 
 ## Decision
 - Ship a **real, crawler-safe branded default** at `public/og-image.png` (1200×630 PNG, dark brand
@@ -44,6 +49,11 @@ friends. Investigation found three compounding root causes in `src/utilities/gen
   also emits a `twitter: { card: 'summary_large_image' }` block.
 - The frontend root layout sets `metadataBase = new URL(getServerSideURL())` so relative metadata
   (icons, fallbacks) resolves to the real origin and Next's build warning goes away.
+- `src/proxy.ts`'s matcher excludes any dotted path (`.*\..*`) so static files at the site root
+  are served instead of being locale-rewritten into the page catch-all.
+- `generateMeta` emits a correct canonical `og:url` (`deriveCanonicalPath`: `home → /`; callers like
+  the offer page pass an explicit `/ogloszenia/<link>`), sets `alternates.canonical`, adds
+  `og:image:alt`, and no longer doubles "Eventizer" when the doc title already contains it.
 
 ## Why
 Crawlers silently drop a missing or malformed `og:image`, and the homepage had no SEO image set, so

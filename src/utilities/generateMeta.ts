@@ -53,30 +53,47 @@ const resolveOgImage = (
   return { ...DEFAULT_OG_IMAGE, url: serverUrl + DEFAULT_OG_IMAGE.url }
 }
 
+/**
+ * Canonical path for a doc, as a root-relative URL that `metadataBase` resolves
+ * to an absolute one. The homepage (`home`) is the site root `/`, not `/home`.
+ * Callers that know a different mount point (e.g. offers live under
+ * `/ogloszenia/<link>`) pass an explicit `url` instead of relying on this.
+ */
+const deriveCanonicalPath = (doc?: Partial<Page> | Partial<Offer> | null): string => {
+  const slug = doc && 'slug' in doc ? doc.slug : undefined
+  if (slug) {
+    const s = Array.isArray(slug) ? slug.join('/') : slug
+    if (s === 'home') return '/'
+    return '/' + String(s).replace(/^\/+/, '')
+  }
+  const link = doc && 'link' in doc ? doc.link : undefined
+  if (link) return '/' + String(link).replace(/^\/+/, '')
+  return '/'
+}
+
 export const generateMeta = async (args: {
   doc: Partial<Page> | Partial<Offer> | null
+  /** Explicit canonical path (root-relative or absolute); overrides the slug/link derivation. */
+  url?: string
 }): Promise<Metadata> => {
-  const { doc } = args
+  const { doc, url: explicitUrl } = args
 
   const ogImage = resolveOgImage(doc?.meta?.image)
 
-  const title = doc?.meta?.title ? doc?.meta?.title + ' | Eventizer' : 'Eventizer'
+  // Avoid a doubled "Eventizer | Eventizer" when the doc title already brands itself.
+  const rawTitle = doc?.meta?.title?.trim()
+  const title = rawTitle ? (/eventizer/i.test(rawTitle) ? rawTitle : rawTitle + ' | Eventizer') : 'Eventizer'
   const description = doc?.meta?.description || undefined
+  const url = explicitUrl ?? deriveCanonicalPath(doc)
 
   return {
     description,
+    alternates: { canonical: url },
     openGraph: mergeOpenGraph({
       description: description || '',
-      images: [ogImage],
+      images: [{ ...ogImage, alt: title }],
       title,
-      url:
-        doc && 'slug' in doc && doc.slug
-          ? Array.isArray(doc.slug)
-            ? doc.slug.join('/')
-            : doc.slug
-          : doc && 'link' in doc && doc.link
-            ? doc.link
-            : '/',
+      url,
     }),
     title,
     twitter: {
