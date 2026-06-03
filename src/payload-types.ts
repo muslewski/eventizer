@@ -236,6 +236,7 @@ export interface Page {
     | MissionBlock
     | InstallAppBlock
     | PartnersBlock
+    | PartnersV2Block
   )[];
   meta?: {
     title?: string | null;
@@ -1182,6 +1183,26 @@ export interface PartnersBlock {
   blockType: 'partners';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnersV2Block".
+ */
+export interface PartnersV2Block {
+  badge: string;
+  heading: string;
+  description?: string | null;
+  /**
+   * How long each partner stays in the spotlight. Set to 0 to disable auto-rotation.
+   */
+  rotationSeconds?: number | null;
+  /**
+   * Pick partners from the Partnerzy Eventizer collection. Order here = display order.
+   */
+  partners: (number | Partner)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'partnersV2';
+}
+/**
  * Partners shown by the Partners (V2) block. Edit once here — reused across every page that picks them.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1653,6 +1674,7 @@ export interface PagesSelect<T extends boolean = true> {
         mission?: T | MissionBlockSelect<T>;
         installApp?: T | InstallAppBlockSelect<T>;
         partners?: T | PartnersBlockSelect<T>;
+        partnersV2?: T | PartnersV2BlockSelect<T>;
       };
   meta?:
     | T
@@ -2002,6 +2024,19 @@ export interface PartnersBlockSelect<T extends boolean = true> {
         externalUrl?: T;
         id?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PartnersV2Block_select".
+ */
+export interface PartnersV2BlockSelect<T extends boolean = true> {
+  badge?: T;
+  heading?: T;
+  description?: T;
+  rotationSeconds?: T;
+  partners?: T;
   id?: T;
   blockName?: T;
 }

@@ -22,6 +22,7 @@ import { BetaBannerBlock } from '@/blocks/BetaBanner/Component'
 import { MissionBlock } from '@/blocks/Mission/Component'
 import { InstallAppBlock } from '@/blocks/InstallApp/Component'
 import { PartnersBlock } from '@/blocks/Partners/Component'
+import { PartnersV2Block } from '@/blocks/PartnersV2/Component'
 
 const blockComponents = {
   //   archive: ArchiveBlock,
@@ -39,6 +40,7 @@ const blockComponents = {
   mission: MissionBlock,
   installApp: InstallAppBlock,
   partners: PartnersBlock,
+  partnersV2: PartnersV2Block,
   content: ContentBlock,
   cta: CallToActionBlock,
   //   formBlock: FormBlock,
