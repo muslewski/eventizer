@@ -35,6 +35,7 @@ import { BetaBanner } from '@/blocks/BetaBanner/config'
 import { Mission } from '@/blocks/Mission/config'
 import { InstallApp } from '@/blocks/InstallApp/config'
 import { Partners } from '@/blocks/Partners/config'
+import { PartnersV2 } from '@/blocks/PartnersV2/config'
 
 export const Pages: CollectionConfig<'pages'> = {
   slug: 'pages',
@@ -107,6 +108,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 Mission,
                 InstallApp,
                 Partners,
+                PartnersV2,
               ],
               required: true,
               admin: {

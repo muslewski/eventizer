@@ -4,7 +4,7 @@ summary: "CMS-driven page composition: Payload Pages collection, the block libra
 tags: [cms, blocks, pages]
 status: active
 created: 2026-06-02
-updated: 2026-06-02
+updated: 2026-06-03
 related: []
 sources: ["[[2026-06-02-eventizer-mind-design]]"]
 owns:
@@ -13,10 +13,11 @@ owns:
   globs:
     - "src/blocks/**"
     - "src/collections/Pages/**"
+    - "src/collections/Partners.ts"
     - "src/heros/**"
-depends: ["[[design-system]]", "[[media]]"]
+depends: ["[[design-system]]", "[[media]]", "[[offers-data]]"]
 invariants: []
-verifiedAt: "32f283812d0ecc55e57c5b005fcaaaa2893d06ce"
+verifiedAt: "081abc645059b20df40e017117280683d15cd2ac"
 ---
 
 # Content Blocks
@@ -26,10 +27,17 @@ CMS-driven page composition for Eventizer's marketing and content pages. The Pay
 collection powers `[slug]` routes with a flexible block layout. The block library includes:
 `ArchiveBlock`, `Banner`, `BetaBanner`, `CallToAction`, `ComingSoon`, `ContactForm`, `Content`,
 `FeaturedOffers`, `HowItWorks`, `InstallApp`, `MediaBlock`, `Mission`, `OffersMap`, `Partners`,
-`ServiceCategories`, `SocialMedia`, `Video`. Hero variants (`HighImpact`, `MediumImpact`) are
-configured separately and rendered by `RenderHero`. `RenderBlocks` dispatches the correct
-component per block type. Page-level `revalidatePage` hook triggers Next.js cache revalidation
-on Payload save.
+`PartnersV2`, `ServiceCategories`, `SocialMedia`, `Video`. Hero variants (`HighImpact`,
+`MediumImpact`) are configured separately and rendered by `RenderHero`. `RenderBlocks` dispatches
+the correct component per block type. Page-level `revalidatePage` hook triggers Next.js cache
+revalidation on Payload save.
+
+The `partners` collection ("Partnerzy Eventizer") holds admin-curated partner content (logo,
+name, optional offer link) as a single source of truth. The `PartnersV2` block references it via
+a hasMany relationship and renders the picked partners through the **same** carousel client as v1
+(`Component.client.tsx`), sharing the `ResolvedPartner` type + `resolvePartners` helper extracted
+in `src/blocks/Partners/shared.ts`. v1 (`Partners`, inline per-page array) and v2 (`PartnersV2`,
+collection-backed) coexist — see [[partners-promoted-to-collection]].
 
 ## Anchors
 - `src/blocks/` — all block components and configs.

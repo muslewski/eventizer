@@ -29,6 +29,7 @@ import { EventTypes } from '@/collections/EventTypes'
 import { StripeCustomers } from '@/collections/Customers'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { Pages } from '@/collections/Pages'
+import { Partners } from '@/collections/Partners'
 import { plugins } from '@/plugins'
 
 const filename = fileURLToPath(import.meta.url)
@@ -122,6 +123,7 @@ export default buildConfig({
   collections: [
     // Website
     Pages,
+    Partners,
 
     // Marketplace
     Offers,
