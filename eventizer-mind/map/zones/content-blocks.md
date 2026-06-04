@@ -17,7 +17,7 @@ owns:
     - "src/heros/**"
 depends: ["[[design-system]]", "[[media]]", "[[offers-data]]"]
 invariants: []
-verifiedAt: "081abc645059b20df40e017117280683d15cd2ac"
+verifiedAt: "bb5c684b7bea6afcbc78a3a8af308309bcff65f1"
 ---
 
 # Content Blocks
