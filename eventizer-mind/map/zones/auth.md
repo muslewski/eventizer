@@ -20,7 +20,7 @@ depends: []
 invariants:
   - rule: "Role hierarchy admin → moderator → service-provider/client is enforced via roleOrHigher / *OrSelf access factories."
     enforcedBy: []
-verifiedAt: "32f283812d0ecc55e57c5b005fcaaaa2893d06ce"
+verifiedAt: "91602fa7c7723909b4f52ba1be5807fcd1e2c1d8"
 ---
 
 # Auth
