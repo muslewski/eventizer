@@ -135,10 +135,10 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
         />
 
         {/* === Spotlight row ===
-            Avatar picker on the left is kept narrow (20rem on lg+) so the
-            spotlight on the right has plenty of room for the partner's name,
-            quote, and up to two CTA buttons (Eventizer offer + website). */}
-        <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[20rem_1fr] lg:gap-16 items-center">
+            Avatar picker on the left is 26rem on lg+ (fits 4 avatars per row)
+            while the spotlight on the right keeps plenty of room for the
+            partner's name, quote, and up to two CTA buttons. */}
+        <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[26rem_1fr] lg:gap-16 items-center">
           {/* --- Avatar picker (left) --- */}
           <motion.div
             initial="hidden"
