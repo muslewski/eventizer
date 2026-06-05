@@ -32,11 +32,22 @@ enum names to hex, and assigns a curated unique palette **by partner id** (id is
 live name `Wesele na głowie` differs from the seed's `Wesela`). Per [[migrate-before-next-build]] it
 is idempotent and in `ALWAYS_RUN`.
 
+## v1 → v2 migration (home + o-nas)
+The live `home` and `o-nas` pages were still using the legacy v1 `Partners` block (an inline partner
+array with the OLD enum colors and no logos), not the collection. So two follow-ups were needed to
+actually surface the unique palette + logos:
+1. `normalizeHex` maps legacy enum names (`primary`→`#0B0B0B`, `blue`→`#3B82F6`, …) to hex, so the
+   shared carousel renders both v2 hex values and any remaining v1 enum strings (prevents an
+   all-gold regression on pages still on v1).
+2. Migration `20260605_140000_partners_v1_to_v2_home_onas.ts` switches both pages' carousels to the
+   collection-backed `partnersV2` block (local API; maps inline partner order → collection ids by
+   name; carries badge/heading/description/rotationSeconds; fail-safe per page). Now the homepage
+   carousel shows the unique hex palette AND the uploaded partner logos from the collection.
+
 ## Scope
-- The legacy v1 `Partners` inline block keeps its own enum `accentColor` field, but it is **not**
-  registered in the Pages block list (only `PartnersV2` is), so it is dormant — its enum strings
-  simply fall back to the gold default through the shared client. Not converted (YAGNI).
 - The sign-in "Zaufali nam najlepsi" logo row does not use `accentColor` and is unaffected.
+- The v1 `Partners` block remains registered for backward-compat but is no longer used by home/o-nas.
 
 ## Consequences
-No hard uniqueness constraint — admins pick freely; uniqueness was seeded once.
+No hard uniqueness constraint — admins pick freely; uniqueness was seeded once. The partners
+collection is now the single source for the carousel on home + o-nas (edit once).
