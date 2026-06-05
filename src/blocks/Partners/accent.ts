@@ -3,11 +3,27 @@ export const DEFAULT_ACCENT_HEX = '#E4A00B'
 
 const HEX_RE = /^#([0-9a-fA-F]{6})$/
 
-/** Normalize to #RRGGBB uppercase, or the gold default when invalid. */
+/**
+ * Legacy accent names from the v1 inline `Partners` block (still used on some
+ * pages) → their hex equivalents, so the shared carousel renders both the v2
+ * collection's hex values and v1's enum strings. Matches the migration mapping.
+ */
+const LEGACY_ENUM_HEX: Record<string, string> = {
+  primary: '#0B0B0B',
+  accent: '#E4A00B',
+  blue: '#3B82F6',
+  emerald: '#10B981',
+  violet: '#8B5CF6',
+  rose: '#F43F5E',
+}
+
+/** Normalize to #RRGGBB uppercase (mapping legacy v1 enum names), or gold default. */
 export function normalizeHex(hex?: string | null): string {
   if (typeof hex === 'string') {
     const trimmed = hex.trim()
     if (HEX_RE.test(trimmed)) return trimmed.toUpperCase()
+    const legacy = LEGACY_ENUM_HEX[trimmed.toLowerCase()]
+    if (legacy) return legacy
   }
   return DEFAULT_ACCENT_HEX
 }

@@ -11,6 +11,14 @@ describe('normalizeHex', () => {
     expect(normalizeHex('#10b981')).toBe('#10B981')
     expect(normalizeHex('  #3B82F6  ')).toBe('#3B82F6')
   })
+  it('maps legacy v1 enum names (case-insensitive) to hex', () => {
+    expect(normalizeHex('primary')).toBe('#0B0B0B')
+    expect(normalizeHex('accent')).toBe('#E4A00B')
+    expect(normalizeHex('blue')).toBe('#3B82F6')
+    expect(normalizeHex('emerald')).toBe('#10B981')
+    expect(normalizeHex('violet')).toBe('#8B5CF6')
+    expect(normalizeHex('ROSE')).toBe('#F43F5E')
+  })
   it('falls back to the gold default for invalid/empty/null/undefined/shorthand', () => {
     expect(normalizeHex('')).toBe(DEFAULT_ACCENT_HEX)
     expect(normalizeHex('#fff')).toBe(DEFAULT_ACCENT_HEX)
