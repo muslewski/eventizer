@@ -14,6 +14,7 @@ import * as migration_20260526_121000_fix_event_types_order_type from './2026052
 import * as migration_20260603_120000_add_partners_collection_and_v2_block from './20260603_120000_add_partners_collection_and_v2_block';
 import * as migration_20260603_120500_seed_partners from './20260603_120500_seed_partners';
 import * as migration_20260605_120000_add_partner_show_on_sign_in from './20260605_120000_add_partner_show_on_sign_in';
+import * as migration_20260605_130000_partner_accent_hex from './20260605_130000_partner_accent_hex';
 
 export const migrations = [
   {
@@ -95,5 +96,10 @@ export const migrations = [
     up: migration_20260605_120000_add_partner_show_on_sign_in.up,
     down: migration_20260605_120000_add_partner_show_on_sign_in.down,
     name: '20260605_120000_add_partner_show_on_sign_in'
+  },
+  {
+    up: migration_20260605_130000_partner_accent_hex.up,
+    down: migration_20260605_130000_partner_accent_hex.down,
+    name: '20260605_130000_partner_accent_hex'
   },
 ];
