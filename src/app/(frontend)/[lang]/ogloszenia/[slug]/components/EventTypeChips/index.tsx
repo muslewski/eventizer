@@ -16,14 +16,14 @@ function TypeIcon({ icon }: { icon: EventType['icon'] }) {
       <Image
         src={icon.url}
         alt=""
-        width={16}
-        height={16}
-        className="size-4 shrink-0 rounded-sm object-contain dark:invert"
+        width={24}
+        height={24}
+        className="size-6 shrink-0 rounded-sm object-contain dark:invert"
         onError={() => setFailed(true)}
       />
     )
   }
-  return <Sparkles className="size-4 shrink-0 text-primary/70" />
+  return <Sparkles className="size-6 shrink-0 text-primary/70" />
 }
 
 /**
@@ -36,11 +36,11 @@ export function EventTypeChips({ types }: EventTypeChipsProps) {
   if (types.length === 0) return null
 
   return (
-    <span className="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+    <span className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center">
       {types.map((t) => (
         <span
           key={t.id}
-          className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/5 px-2.5 py-0.5 text-sm font-medium text-primary"
+          className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-5 py-2 text-base font-medium text-primary"
         >
           <TypeIcon icon={t.icon} />
           {t.name}
