@@ -1224,7 +1224,10 @@ export interface Partner {
    * Optional. Falls back to a stylized initial if not provided.
    */
   logo?: (number | null) | Media;
-  accentColor?: ('primary' | 'accent' | 'blue' | 'emerald' | 'violet' | 'rose') | null;
+  /**
+   * Brand accent color (hex) used to tint this partner in the Partners carousel.
+   */
+  accentColor?: string | null;
   /**
    * Optional. Pick the partner’s offer to add a "Zobacz ofertę" button.
    */

@@ -99,17 +99,24 @@ export const Partners: CollectionConfig = {
     },
     {
       name: 'accentColor',
-      type: 'select',
-      defaultValue: 'primary',
-      label: { en: 'Accent Color', pl: 'Kolor akcentu' },
-      options: [
-        { label: 'Primary (gold)', value: 'primary' },
-        { label: 'Accent', value: 'accent' },
-        { label: 'Blue', value: 'blue' },
-        { label: 'Emerald', value: 'emerald' },
-        { label: 'Violet', value: 'violet' },
-        { label: 'Rose', value: 'rose' },
-      ],
+      type: 'text',
+      defaultValue: '#E4A00B',
+      label: { en: 'Accent color', pl: 'Kolor akcentu' },
+      validate: (val: string | null | undefined) => {
+        if (val == null || val === '') return true
+        return /^#([0-9a-fA-F]{6})$/.test(val)
+          ? true
+          : 'Podaj kolor w formacie #RRGGBB (np. #10B981).'
+      },
+      admin: {
+        components: {
+          Field: '/components/payload/fields/AccentColorField',
+        },
+        description: {
+          en: 'Brand accent color (hex) used to tint this partner in the Partners carousel.',
+          pl: 'Kolor akcentu marki (hex) używany do podświetlenia partnera w karuzeli Partnerów.',
+        },
+      },
     },
     {
       name: 'offer',
