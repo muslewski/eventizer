@@ -17,6 +17,7 @@ import * as migration_20260605_120000_add_partner_show_on_sign_in from './202606
 import * as migration_20260605_130000_partner_accent_hex from './20260605_130000_partner_accent_hex';
 import * as migration_20260605_140000_partners_v1_to_v2_home_onas from './20260605_140000_partners_v1_to_v2_home_onas';
 import * as migration_20260605_150000_add_partner_powod_do_usmiechu from './20260605_150000_add_partner_powod_do_usmiechu';
+import * as migration_20260605_160000_sync_onas_carousel_to_home from './20260605_160000_sync_onas_carousel_to_home';
 
 export const migrations = [
   {
@@ -113,5 +114,10 @@ export const migrations = [
     up: migration_20260605_150000_add_partner_powod_do_usmiechu.up,
     down: migration_20260605_150000_add_partner_powod_do_usmiechu.down,
     name: '20260605_150000_add_partner_powod_do_usmiechu'
+  },
+  {
+    up: migration_20260605_160000_sync_onas_carousel_to_home.up,
+    down: migration_20260605_160000_sync_onas_carousel_to_home.down,
+    name: '20260605_160000_sync_onas_carousel_to_home'
   },
 ];

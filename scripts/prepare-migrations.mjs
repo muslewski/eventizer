@@ -66,6 +66,7 @@ const ALWAYS_RUN = new Set([
   '20260605_130000_partner_accent_hex',
   '20260605_140000_partners_v1_to_v2_home_onas',
   '20260605_150000_add_partner_powod_do_usmiechu',
+  '20260605_160000_sync_onas_carousel_to_home',
 ])
 
 const pool = new Pool({ connectionString })
