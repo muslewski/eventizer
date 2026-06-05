@@ -35,9 +35,18 @@ const stripItem: Variants = {
 
 // --- Helpers ---
 
+/**
+ * Force the stylized first-letter avatars instead of partner logos in this
+ * carousel. The logo upload + resolution stays wired (flip to `false` to use
+ * logos again); we just prefer the initials here. The sign-in "Zaufali nam
+ * najlepsi" row is a separate component and keeps its logos.
+ */
+const DISABLE_LOGO = true
+
 const getInitial = (name: string) => name.trim().charAt(0).toUpperCase() || '·'
 
 const partnerLogoUrl = (partner: ResolvedPartner): string | null => {
+  if (DISABLE_LOGO) return null
   if (!partner.logo) return null
   if (isExpandedDoc<Media>(partner.logo)) return partner.logo.url ?? null
   return null
