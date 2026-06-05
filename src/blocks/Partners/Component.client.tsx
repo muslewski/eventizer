@@ -11,61 +11,7 @@ import { BlockHeader } from '@/components/frontend/Content/BlockHeader'
 import type { ResolvedPartner } from '@/blocks/Partners/shared'
 import { isExpandedDoc } from '@/lib/isExpandedDoc'
 import type { Media } from '@/payload-types'
-
-// --- Accent color mapping ---
-
-type AccentKey = 'primary' | 'accent' | 'blue' | 'emerald' | 'violet' | 'rose'
-
-const accentMap: Record<
-  AccentKey,
-  { bg: string; bgSoft: string; text: string; border: string; ringStroke: string }
-> = {
-  primary: {
-    bg: 'bg-primary/20',
-    bgSoft: 'bg-primary/5',
-    text: 'text-primary',
-    border: 'border-primary/30',
-    ringStroke: 'var(--color-primary)',
-  },
-  accent: {
-    bg: 'bg-accent/20',
-    bgSoft: 'bg-accent/5',
-    text: 'text-accent-foreground',
-    border: 'border-accent/30',
-    ringStroke: 'var(--color-accent)',
-  },
-  blue: {
-    bg: 'bg-blue-500/20',
-    bgSoft: 'bg-blue-500/5',
-    text: 'text-blue-500',
-    border: 'border-blue-500/30',
-    ringStroke: 'rgb(59, 130, 246)',
-  },
-  emerald: {
-    bg: 'bg-emerald-500/20',
-    bgSoft: 'bg-emerald-500/5',
-    text: 'text-emerald-500',
-    border: 'border-emerald-500/30',
-    ringStroke: 'rgb(16, 185, 129)',
-  },
-  violet: {
-    bg: 'bg-violet-500/20',
-    bgSoft: 'bg-violet-500/5',
-    text: 'text-violet-500',
-    border: 'border-violet-500/30',
-    ringStroke: 'rgb(139, 92, 246)',
-  },
-  rose: {
-    bg: 'bg-rose-500/20',
-    bgSoft: 'bg-rose-500/5',
-    text: 'text-rose-500',
-    border: 'border-rose-500/30',
-    ringStroke: 'rgb(244, 63, 94)',
-  },
-}
-
-const resolveAccent = (key?: string | null) =>
-  accentMap[(key as AccentKey) ?? 'primary'] ?? accentMap.primary
+import { resolveAccent } from '@/blocks/Partners/accent'
 
 // --- Motion variants ---
 
@@ -158,10 +104,8 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className={cn(
-            'absolute top-1/3 left-1/2 -translate-x-1/2 w-[640px] h-[420px] rounded-full blur-3xl',
-            activeAccent.bgSoft,
-          )}
+          className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[640px] h-[420px] rounded-full blur-3xl"
+          style={{ backgroundColor: activeAccent.bgSoft }}
         />
         {/* Subtle dot grid */}
         <div
@@ -217,12 +161,14 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                   <div
                     className={cn(
                       'relative flex h-14 w-14 sm:h-16 sm:w-16 lg:h-20 lg:w-20 items-center justify-center overflow-hidden rounded-full border transition-colors duration-500',
-                      // Always tint with the partner's accent color so the
-                      // logo-less placeholder still feels branded; just
-                      // brighter when active.
-                      isActive ? accent.bg : accent.bgSoft,
-                      isActive ? accent.border : 'border-border/20',
+                      // Tint comes from the partner's hex (inline style below);
+                      // keep the neutral border only when inactive.
+                      !isActive && 'border-border/20',
                     )}
+                    style={{
+                      backgroundColor: isActive ? accent.bg : accent.bgSoft,
+                      borderColor: isActive ? accent.border : undefined,
+                    }}
                   >
                     {logoUrl ? (
                       <Image
@@ -241,17 +187,18 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                             some depth so it doesn't look like a flat letter. */}
                         <span
                           className={cn(
-                            'absolute inset-0 bg-gradient-to-br from-transparent via-transparent transition-opacity duration-500',
-                            isActive ? accent.bg : accent.bgSoft,
+                            'absolute inset-0 transition-opacity duration-500',
                             isActive ? 'opacity-100' : 'opacity-60',
                           )}
+                          style={{ backgroundColor: isActive ? accent.bg : accent.bgSoft }}
                           aria-hidden
                         />
                         <span
                           className={cn(
                             'relative font-bebas tracking-wide text-2xl sm:text-3xl lg:text-4xl transition-colors',
-                            isActive ? accent.text : cn(accent.text, 'opacity-60'),
+                            !isActive && 'opacity-60',
                           )}
+                          style={{ color: accent.solid }}
                         >
                           {getInitial(partner.name)}
                         </span>
@@ -271,7 +218,7 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                         cy="50"
                         r="48"
                         fill="none"
-                        stroke={accent.ringStroke}
+                        stroke={accent.solid}
                         strokeWidth="1.5"
                         opacity="0.2"
                       />
@@ -281,7 +228,7 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                         cy="50"
                         r="48"
                         fill="none"
-                        stroke={accent.ringStroke}
+                        stroke={accent.solid}
                         strokeWidth="1.5"
                         strokeDasharray={`${2 * Math.PI * 48}`}
                         initial={{ strokeDashoffset: 2 * Math.PI * 48 }}
@@ -326,10 +273,8 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                 */}
                 <div className="flex flex-col items-center justify-end gap-1 min-h-[7.5rem] sm:min-h-[9rem] lg:min-h-[11rem]">
                   <h3
-                    className={cn(
-                      'font-bebas tracking-wide leading-[0.95] text-4xl sm:text-5xl lg:text-6xl text-balance',
-                      activeAccent.text,
-                    )}
+                    className="font-bebas tracking-wide leading-[0.95] text-4xl sm:text-5xl lg:text-6xl text-balance"
+                    style={{ color: activeAccent.solid }}
                   >
                     {active.name}
                   </h3>
@@ -410,10 +355,9 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                 <span
                   className={cn(
                     'font-bebas tracking-wide text-xl sm:text-2xl lg:text-3xl whitespace-nowrap transition-all duration-300',
-                    isActive
-                      ? cn(accent.text, 'opacity-100')
-                      : 'text-muted-foreground/70 hover:text-foreground',
+                    isActive ? 'opacity-100' : 'text-muted-foreground/70 hover:text-foreground',
                   )}
+                  style={isActive ? { color: accent.solid } : undefined}
                 >
                   {partner.name}
                 </span>
