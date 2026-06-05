@@ -1233,6 +1233,10 @@ export interface Partner {
    * Optional. Adds an "Odwiedź stronę" button linking to the partner's own site.
    */
   externalUrl?: string | null;
+  /**
+   * Show this partner in the "Zaufali nam najlepsi" row on the sign-in screens. Only partners with a logo appear; max 4, ordered by the list drag-order.
+   */
+  showOnSignIn?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2053,6 +2057,7 @@ export interface PartnersSelect<T extends boolean = true> {
   accentColor?: T;
   offer?: T;
   externalUrl?: T;
+  showOnSignIn?: T;
   updatedAt?: T;
   createdAt?: T;
 }

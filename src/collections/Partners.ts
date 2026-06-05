@@ -135,5 +135,17 @@ export const Partners: CollectionConfig = {
         placeholder: 'https://...',
       },
     },
+    {
+      name: 'showOnSignIn',
+      type: 'checkbox',
+      defaultValue: false,
+      label: { en: 'Show on sign-in screen', pl: 'Pokaż na ekranie logowania' },
+      admin: {
+        description: {
+          en: 'Show this partner in the "Zaufali nam najlepsi" row on the sign-in screens. Only partners with a logo appear; max 4, ordered by the list drag-order.',
+          pl: 'Pokaż tego partnera w sekcji "Zaufali nam najlepsi" na ekranach logowania. Wyświetlani są tylko partnerzy z logo; maks. 4, w kolejności z listy.',
+        },
+      },
+    },
   ],
 }
