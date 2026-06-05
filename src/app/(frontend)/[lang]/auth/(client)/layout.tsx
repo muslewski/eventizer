@@ -58,9 +58,9 @@ const Layout = async ({ children }: LayoutProps) => {
       backgroundImage={backgroundImage}
       backgroundVideo={backgroundVideo}
       lightBackgroundImage={lightBackgroundImage}
-      informationTitle1="70K+"
+      informationTitle1="100+"
       informationValue1="Aktywnych usług"
-      informationTitle2="120+"
+      informationTitle2="10"
       informationValue2="Branż eventowych"
       customReactComponent={<AuthProvider>{children}</AuthProvider>}
     />
