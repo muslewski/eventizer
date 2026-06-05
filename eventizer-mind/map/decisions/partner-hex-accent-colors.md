@@ -44,6 +44,12 @@ actually surface the unique palette + logos:
    name; carries badge/heading/description/rotationSeconds; fail-safe per page). Now the homepage
    carousel shows the unique hex palette AND the uploaded partner logos from the collection.
 
+## Carousel prefers initials (DISABLE_LOGO)
+`Component.client.tsx` has a `DISABLE_LOGO = true` toggle that forces the stylized first-letter
+avatars instead of partner logos in the carousel — we preferred the initials look. The logo upload
++ resolution stays wired (flip to `false` to use logos). The sign-in "Zaufali nam najlepsi" row is a
+separate component (`TrustedPartners`) and still shows logos.
+
 ## Scope
 - The sign-in "Zaufali nam najlepsi" logo row does not use `accentColor` and is unaffected.
 - The v1 `Partners` block remains registered for backward-compat but is no longer used by home/o-nas.
