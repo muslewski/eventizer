@@ -2,7 +2,7 @@ import type { Page } from '@/payload-types'
 import { CMSLink } from '@/components/payload/Link'
 import { ArrowDown } from 'lucide-react'
 import { Stats } from '@/heros/MediumImpact/Content/Stats'
-import BlurText from '@/components/react-bits/BlurText'
+import { TrustedPartners } from './TrustedPartners'
 // import Header from '@/heros/HighImpact/Content/Header'
 
 interface ContentProps {
@@ -46,26 +46,8 @@ export const Content: React.FC<ContentProps> = ({
         infoValue2={infoValue2}
       />
 
-      {/* Trusted Us */}
-      <div className="flex flex-col gap-4 sm:gap-6 md:gap-8 2xl:gap-12">
-        <h3 className="xl:text-5xl md:text-4xl sm:text-3xl text-2xl font-bebas max-w-7xl text-white dark:mix-blend-difference transform-gpu">
-          {/* Zaufali nam najlepsi */}
-          <BlurText
-            text="Zaufali nam najlepsi"
-            animateBy="letters"
-            direction="bottom"
-            delay={50}
-            startDelay={250}
-          />
-        </h3>
-
-        <div className="flex">
-          <div className="size-16 md:size-24 bg-white/15 mix-blend-difference rounded-full" />
-          <div className="size-16 md:size-24 bg-white/15 mix-blend-difference rounded-full -ml-4 md:-ml-6" />
-          <div className="size-16 md:size-24 bg-white/15 mix-blend-difference rounded-full -ml-4 md:-ml-6" />
-          <div className="size-16 md:size-24 bg-white/15 mix-blend-difference rounded-full -ml-4 md:-ml-6" />
-        </div>
-      </div>
+      {/* Trusted Us — real partner logos (showOnSignIn) */}
+      <TrustedPartners />
 
       <div className="w-full justify-between gap-6 flex border-white/10 border-t pt-8">
         <div className="flex gap-4">
