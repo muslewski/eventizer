@@ -17,7 +17,7 @@ owns:
     - "src/heros/**"
 depends: ["[[design-system]]", "[[media]]", "[[offers-data]]"]
 invariants: []
-verifiedAt: "754e95fbe6f9e9db7697855c1b743b58c207834e"
+verifiedAt: "ff448bbfe6acbe32f2ae17dd811c66be4f0723ba"
 ---
 
 # Content Blocks
@@ -37,7 +37,9 @@ name, optional offer link) as a single source of truth. The `PartnersV2` block r
 a hasMany relationship and renders the picked partners through the **same** carousel client as v1
 (`Component.client.tsx`), sharing the `ResolvedPartner` type + `resolvePartners` helper extracted
 in `src/blocks/Partners/shared.ts`. v1 (`Partners`, inline per-page array) and v2 (`PartnersV2`,
-collection-backed) coexist — see [[partners-promoted-to-collection]].
+collection-backed) coexist — see [[partners-promoted-to-collection]]. The collection also carries
+a `showOnSignIn` flag consumed by `src/heros/MediumImpact/Content/TrustedPartners.tsx` to render
+the sign-in "Zaufali nam najlepsi" logo row — see [[partner-show-on-sign-in]].
 
 ## Anchors
 - `src/blocks/` — all block components and configs.

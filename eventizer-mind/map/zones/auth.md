@@ -5,7 +5,7 @@ tags: [auth, roles, access]
 status: active
 created: 2026-06-02
 updated: 2026-06-02
-related: ["[[better-auth-payload-user-sync]]", "[[access-control-test-coverage]]"]
+related: ["[[better-auth-payload-user-sync]]", "[[access-control-test-coverage]]", "[[partner-show-on-sign-in]]"]
 sources: ["[[2026-06-02-eventizer-mind-design]]"]
 owns:
   routes: ["/auth"]
@@ -20,7 +20,7 @@ depends: []
 invariants:
   - rule: "Role hierarchy admin → moderator → service-provider/client is enforced via roleOrHigher / *OrSelf access factories."
     enforcedBy: []
-verifiedAt: "91602fa7c7723909b4f52ba1be5807fcd1e2c1d8"
+verifiedAt: "ff448bbfe6acbe32f2ae17dd811c66be4f0723ba"
 ---
 
 # Auth
@@ -39,7 +39,9 @@ password-reset flows use Resend for transactional email.
 - `src/collections/auth/` — Payload collections: Users, Accounts, Sessions, Verifications.
 - `src/access/` — access factory utilities (`roleOrHigher`, `authenticated`, `authenticatedOrPublished`).
 - `src/app/api/auth/` — Better Auth API handler routes.
-- `src/app/(frontend)/[lang]/auth/` — sign-in, sign-up, forgot/reset password pages.
+- `src/app/(frontend)/[lang]/auth/` — sign-in, sign-up, forgot/reset password pages. The two
+  sign-in layouts feed the `MediumImpact` hero honest beta stats and a `showOnSignIn`-driven
+  partner-logo trust row (see [[partner-show-on-sign-in]]).
 
 ## Invariants
 - `roleOrHigher` / `*OrSelf` factories are the single source of truth for role-based access;
