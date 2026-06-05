@@ -17,7 +17,7 @@ owns:
     - "src/heros/**"
 depends: ["[[design-system]]", "[[media]]", "[[offers-data]]"]
 invariants: []
-verifiedAt: "ff448bbfe6acbe32f2ae17dd811c66be4f0723ba"
+verifiedAt: "7cc5a85713b409646daaad0046f98b6fc7ec4ae6"
 ---
 
 # Content Blocks
@@ -39,7 +39,9 @@ a hasMany relationship and renders the picked partners through the **same** caro
 in `src/blocks/Partners/shared.ts`. v1 (`Partners`, inline per-page array) and v2 (`PartnersV2`,
 collection-backed) coexist — see [[partners-promoted-to-collection]]. The collection also carries
 a `showOnSignIn` flag consumed by `src/heros/MediumImpact/Content/TrustedPartners.tsx` to render
-the sign-in "Zaufali nam najlepsi" logo row — see [[partner-show-on-sign-in]].
+the sign-in "Zaufali nam najlepsi" logo row — see [[partner-show-on-sign-in]]. Its `accentColor` is
+a free hex (swatch+hex admin field) that the carousel tints from via inline styles through
+`src/blocks/Partners/accent.ts` — see [[partner-hex-accent-colors]].
 
 ## Anchors
 - `src/blocks/` — all block components and configs.
