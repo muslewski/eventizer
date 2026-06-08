@@ -1,0 +1,71 @@
+# Ledger — tech-debt board · decisions log · spec → plan pipeline.
+# Filters use the bare property name `type` (matching the obsidian-bases skill's
+# examples). `type` is the one ambiguous case: if Obsidian shows all notes or
+# errors on the filter, switch every `type == "..."` to `note.type == "..."`
+# (the explicit, always-valid form). Nothing else needs changing.
+formulas:
+  sev_label: 'if(severity == "critical", "1 · critical", if(severity == "high", "2 · high", if(severity == "medium", "3 · medium", "4 · low")))'
+
+properties:
+  severity:
+    displayName: Severity
+  effort:
+    displayName: Effort
+  status:
+    displayName: Status
+  decided:
+    displayName: Decided
+  zones:
+    displayName: Zones
+  updated:
+    displayName: Updated
+  summary:
+    displayName: Summary
+  formula.sev_label:
+    displayName: Urgency
+
+views:
+  - type: table
+    name: "Tech-debt board"
+    filters:
+      and:
+        - 'type == "debt"'
+        - 'status != "done"'
+        - 'status != "wontfix"'
+    order:
+      - file.name
+      - severity
+      - effort
+      - status
+      - summary
+    groupBy:
+      property: formula.sev_label
+      direction: ASC
+
+  - type: table
+    name: "Decisions log"
+    filters:
+      and:
+        - 'type == "decision"'
+    order:
+      - file.name
+      - decided
+      - status
+      - zones
+      - summary
+
+  - type: table
+    name: "Spec → Plan pipeline"
+    filters:
+      or:
+        - 'type == "spec"'
+        - 'type == "plan"'
+    order:
+      - file.name
+      - type
+      - status
+      - updated
+      - summary
+    groupBy:
+      property: status
+      direction: ASC

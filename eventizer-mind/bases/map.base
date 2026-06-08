@@ -1,0 +1,31 @@
+# Map — zone atlas. Browse-and-filter only; staleness stays the generator's job
+# (Bases cannot diff verifiedAt against git HEAD).
+# Filter uses the bare property name `type`. If Obsidian shows all notes or errors
+# on the filter, switch `type == "zone"` to `note.type == "zone"` (the explicit,
+# always-valid form).
+filters:
+  and:
+    - 'type == "zone"'
+
+properties:
+  status:
+    displayName: Status
+  summary:
+    displayName: Summary
+  depends:
+    displayName: Depends on
+  tags:
+    displayName: Tags
+
+views:
+  - type: table
+    name: "Atlas"
+    order:
+      - file.name
+      - status
+      - summary
+      - depends
+      - tags
+    groupBy:
+      property: status
+      direction: ASC

@@ -23,6 +23,15 @@ trace its `sources:` (the spec/decision that produced it). Don't work blind. The
 
 - Entry ramp: the `eventizer-architecture` skill → routes to the right zone + companion skill.
 - The Mind's own schema + resolution ladder: `eventizer-mind/README.md`.
+- **File-format craft:** the obsidian-skills (`obsidian-markdown`, `obsidian-bases`, `json-canvas`,
+  `obsidian-cli`, `defuddle`) are third-party practice for the vault's *own* file formats — reach for
+  them when authoring any Mind note or a `.base`/`.canvas` dashboard. Vendored verbatim from
+  [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) into `.agents/skills/` and
+  symlinked into `.claude/skills/` (provenance + MIT in `.agents/skills/obsidian-skills.NOTICE.md`).
+- **Bases guardrail:** `eventizer-mind/bases/` holds hand-authored, frontmatter-driven views
+  (`ledger.base`, `map.base`) over the typed-note corpus — they *complement* the generator, never
+  replace it. `pnpm mind:check` verifies code; Bases only aggregate frontmatter, and `.base`/`.canvas`
+  files live outside `map/` and outside every generator glob (it processes only `*.md`).
 
 ## Toolset
 

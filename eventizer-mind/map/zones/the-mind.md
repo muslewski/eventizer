@@ -38,3 +38,9 @@ SessionStart hook are projections into it. The generator keeps the Map honest ag
 ## Invariants
 - Globs here name the implementation files, not the markdown they generate.
 - A broken anchor fails `pnpm mind:check` loudly (the local gate, since there is no CI).
+
+## Craft
+Author vault files with the vendored obsidian-skills (`obsidian-markdown`, `obsidian-bases`,
+`json-canvas`, `obsidian-cli`, `defuddle`) — third-party practice for the Mind's *own* formats, not
+Eventizer code. The `bases/` dashboards (`ledger.base`, `map.base`) aggregate the typed-note corpus
+and live outside this zone's globs, so editing them never makes the Mind show stale.

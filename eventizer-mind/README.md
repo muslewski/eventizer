@@ -4,6 +4,13 @@ The single source of truth for understanding Eventizer. Everything in `.claude/`
 (CLAUDE.md, skills, the generator, the SessionStart hook) is a **projection** of
 this vault or a **pointer** into it — never a copy.
 
+## Dashboards
+
+Live, frontmatter-driven views over the structured corpus (open in Obsidian; require the **Bases** core plugin). They aggregate the `type:`-tagged notes and complement the code-verifying generator — they never replace it.
+
+- `bases/ledger.base` — tech-debt board · decisions log · spec → plan pipeline
+- `bases/map.base` — zone atlas (by status)
+
 ## Two kinds of knowledge, never conflated
 
 | THE MAP (`map/`) | THE LEDGER (`specs/ plans/ ideas/ tech-debt/`) |
