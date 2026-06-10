@@ -4,8 +4,8 @@ summary: "The Offers collection: data model, hooks (category resolution, cache r
 tags: [offers, payload, data]
 status: active
 created: 2026-06-02
-updated: 2026-06-02
-related: ["[[migrate-before-next-build]]"]
+updated: 2026-06-10
+related: ["[[migrate-before-next-build]]", "[[server-actions-enforce-ownership]]"]
 sources: ["[[2026-06-02-eventizer-mind-design]]"]
 owns:
   routes: []
@@ -16,7 +16,9 @@ depends: ["[[media]]", "[[billing]]"]
 invariants:
   - rule: "Any Offers field change ships an idempotent migration touching BOTH `offers` and `_offers_v` (version_<field>)."
     enforcedBy: ["[[skill:eventizer-payload-migrations]]"]
-verifiedAt: "32f283812d0ecc55e57c5b005fcaaaa2893d06ce"
+  - rule: "Anonymous read access resolves to `_status: published` only — never `true`, which would leak drafts via ?draft=true REST reads."
+    enforcedBy: ["test:offersReadAccess"]
+verifiedAt: "65085a725ed5d2977d7d9fa4877622e35fea2924"
 ---
 
 # Offers Data
@@ -26,8 +28,9 @@ The Offers collection is Eventizer's core data model. It stores service-provider
 title, category (3-level hierarchy), price (single or range), location, media (main image, gallery,
 video, background), contact details, and Lexical rich-text description. Payload draft/publish
 versioning is enabled (`_offers_v` table). Hooks enforce category resolution, offer limits per
-plan, and Next.js cache revalidation on change. Access rules use `offersAccess` factories
-(adminOrHigherOrSelf for writes, public for published reads).
+plan, and Next.js cache revalidation on change. Access rules use `offersAccess` factories:
+anonymous readers see published offers only, authenticated non-moderators see their own
+(admin list behavior), writes are moderatorOrHigherOrSelf/adminOrHigherOrSelf.
 
 ## Anchors
 - `src/collections/Offers/hooks/populateCategoryData.ts` — `populateCategoryData` `beforeChange`

@@ -4,7 +4,7 @@ summary: "Stripe subscriptions: plan sync, customer portal, webhook-driven role 
 tags: [billing, stripe, subscriptions]
 status: active
 created: 2026-06-02
-updated: 2026-06-02
+updated: 2026-06-10
 related: []
 sources: ["[[2026-06-02-eventizer-mind-design]]"]
 owns:
@@ -21,7 +21,9 @@ invariants:
     enforcedBy: ["[[test:stripe-webhooks.int]]"]
   - rule: "Plan downgrade drafts offers beyond the new plan's limit/category access."
     enforcedBy: ["[[test:draftOffersOnDowngrade.int]]"]
-verifiedAt: "32f283812d0ecc55e57c5b005fcaaaa2893d06ce"
+  - rule: "The purge cron rejects all requests when CRON_SECRET is unset and purges via one bulk delete (no per-doc await loop)."
+    enforcedBy: ["test:purgeStripeEventsCron"]
+verifiedAt: "65085a725ed5d2977d7d9fa4877622e35fea2924"
 ---
 
 # Billing

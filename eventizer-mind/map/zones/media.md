@@ -4,7 +4,7 @@ summary: "Media handling: Payload upload collections on Vercel Blob, offer video
 tags: [media, uploads, video]
 status: active
 created: 2026-06-02
-updated: 2026-06-02
+updated: 2026-06-10
 related: []
 sources: ["[[2026-06-02-eventizer-mind-design]]"]
 owns:
@@ -19,7 +19,9 @@ depends: []
 invariants:
   - rule: "Image position-style computation stays identical across server render and client editor."
     enforcedBy: ["[[test:position-styles.int]]"]
-verifiedAt: "32f283812d0ecc55e57c5b005fcaaaa2893d06ce"
+  - rule: "Upload collections (OfferUploads, OfferVideoUploads, ProfilePictures) require an authenticated session to create — anonymous Blob writes are rejected."
+    enforcedBy: ["test:uploadCreateAccess"]
+verifiedAt: "65085a725ed5d2977d7d9fa4877622e35fea2924"
 ---
 
 # Media

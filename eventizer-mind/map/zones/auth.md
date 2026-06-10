@@ -4,7 +4,7 @@ summary: "Better Auth (OAuth + email/password) sessions synced to a Payload User
 tags: [auth, roles, access]
 status: active
 created: 2026-06-02
-updated: 2026-06-02
+updated: 2026-06-10
 related: ["[[better-auth-payload-user-sync]]", "[[access-control-test-coverage]]", "[[partner-show-on-sign-in]]"]
 sources: ["[[2026-06-02-eventizer-mind-design]]"]
 owns:
@@ -20,7 +20,7 @@ depends: []
 invariants:
   - rule: "Role hierarchy admin → moderator → service-provider/client is enforced via roleOrHigher / *OrSelf access factories."
     enforcedBy: []
-verifiedAt: "ff448bbfe6acbe32f2ae17dd811c66be4f0723ba"
+verifiedAt: "65085a725ed5d2977d7d9fa4877622e35fea2924"
 ---
 
 # Auth
@@ -48,4 +48,9 @@ password-reset flows use Resend for transactional email.
   inline role comparisons in ad-hoc code are forbidden.
 - Every protected server action and panel page must re-validate the session via `auth.api.getSession`;
   never trust a cached or prop-passed session for writes.
-- No automated test guards the role hierarchy yet — tracked as tech-debt (`[[access-control-test-coverage]]`).
+- No automated test guards the role hierarchy factories yet — tracked as tech-debt
+  (`[[access-control-test-coverage]]`). Partial progress 2026-06-10: offers read access, upload
+  create access, and offer-action ownership now have regression tests (`tests/int/access/`,
+  `tests/int/actions/`); the factories themselves remain uncovered.
+- The Resend client in `src/auth/email/sendEmail.ts` is lazily constructed — importing the
+  auth/config chain must never throw when RESEND_API_KEY is absent (tests, CI).

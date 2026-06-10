@@ -17,7 +17,7 @@ depends: ["[[auth]]", "[[design-system]]"]
 invariants:
   - rule: "Every panel page re-checks the session + loads the Payload user + applies its role redirect (never trusts a stale session)."
     enforcedBy: ["[[skill:eventizer-panel-conventions]]"]
-verifiedAt: "32f283812d0ecc55e57c5b005fcaaaa2893d06ce"
+verifiedAt: "65085a725ed5d2977d7d9fa4877622e35fea2924"
 ---
 
 # Panel
