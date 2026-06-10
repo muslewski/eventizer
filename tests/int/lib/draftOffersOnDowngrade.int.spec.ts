@@ -1,14 +1,16 @@
 import { describe, it, expect, vi } from 'vitest'
 import { draftOffersOnDowngrade } from '@/lib/subscriptions/draftOffersOnDowngrade'
 
-const makePayload = (offers: any[], categories: any[]) => ({
-  find: vi.fn(async ({ collection }) => {
-    if (collection === 'offers') return { docs: offers, totalDocs: offers.length }
-    if (collection === 'service-categories') return { docs: categories, totalDocs: categories.length }
-    return { docs: [], totalDocs: 0 }
-  }),
-  update: vi.fn(async () => ({})),
-})
+const makePayload = (offers: any[], categories: any[]) =>
+  ({
+    find: vi.fn(async ({ collection }: { collection: string }) => {
+      if (collection === 'offers') return { docs: offers, totalDocs: offers.length }
+      if (collection === 'service-categories')
+        return { docs: categories, totalDocs: categories.length }
+      return { docs: [], totalDocs: 0 }
+    }),
+    update: vi.fn(async () => ({})),
+  }) as any
 
 const planT1 = { level: 1, maxOffers: 1, slug: 'single' }
 const planT4 = { level: 4, maxOffers: 4, slug: 'multi' }

@@ -1,4 +1,5 @@
-import { adminOrHigherOrSelfByEmail, publicAccess } from '@/access'
+import { adminOrHigherOrSelfByEmail } from '@/access'
+import { authenticated } from '@/access/authenticated'
 import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
 import type { CollectionConfig } from 'payload'
@@ -55,7 +56,7 @@ export const OfferVideoUploads: CollectionConfig = {
         },
       }
     },
-    create: publicAccess,
+    create: authenticated,
     update: adminOrHigherOrSelfByEmail('uploadedBy'),
     delete: adminOrHigherOrSelfByEmail('uploadedBy'),
   },

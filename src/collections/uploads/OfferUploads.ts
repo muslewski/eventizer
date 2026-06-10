@@ -1,4 +1,5 @@
-import { adminOrHigherOrSelfByEmail, moderatorOrHigherOrSelf, publicAccess } from '@/access'
+import { adminOrHigherOrSelfByEmail } from '@/access'
+import { authenticated } from '@/access/authenticated'
 import { fieldRoleOrHigher, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
 import { ClientUser } from 'node_modules/payload/dist/auth/types'
@@ -51,7 +52,7 @@ export const OfferUploads: CollectionConfig = {
         },
       }
     },
-    create: publicAccess,
+    create: authenticated,
     // update: moderatorOrHigherOrSelf('user'),
     // delete: moderatorOrHigherOrSelf('user'),
     update: adminOrHigherOrSelfByEmail('uploadedBy'),

@@ -1,5 +1,16 @@
 import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
+import { z } from 'zod'
+import { guardAiGeneration } from '@/lib/ai/guard'
+
+const bodySchema = z.object({
+  title: z.string().max(200).optional(),
+  category: z.string().max(120).optional(),
+  price: z.union([z.string().max(50), z.number()]).optional(),
+  address: z.string().max(300).optional(),
+  // Lexical SerializedEditorState; walked defensively and capped below.
+  content: z.unknown().optional(),
+})
 
 // Extract plain text from Lexical SerializedEditorState JSON
 function extractTextFromLexical(content: any): string {
@@ -23,10 +34,17 @@ function extractTextFromLexical(content: any): string {
 }
 
 export async function POST(req: Request) {
-  const body = await req.json()
+  const guard = await guardAiGeneration()
+  if (!guard.ok) return guard.response
+
+  let body: z.infer<typeof bodySchema>
+  try {
+    body = bodySchema.parse(await req.json())
+  } catch {
+    return Response.json({ error: 'Nieprawidłowe dane wejściowe' }, { status: 400 })
+  }
   const { title, category, price, address, content } = body
   const contentText = extractTextFromLexical(content)
-  console.log('[API generate-description] received:', { title, category, price, address, contentText: contentText.slice(0, 100) })
 
   const result = streamText({
     model: openai('gpt-4o-mini'),

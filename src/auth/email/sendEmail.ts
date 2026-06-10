@@ -11,7 +11,13 @@ import type { WebsiteFormType } from '@/actions/submitWebsiteContactForm'
 import React from 'react'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Lazy so that merely importing this module (e.g. via the payload config
+// import chain in tests) doesn't throw when RESEND_API_KEY is absent.
+let resendClient: Resend | null = null
+function getResend(): Resend {
+  if (!resendClient) resendClient = new Resend(process.env.RESEND_API_KEY)
+  return resendClient
+}
 
 const MAX_RETRIES = 3
 const RETRY_DELAY_MS = 1500
@@ -29,7 +35,7 @@ async function sendEmailWithRetry(
   attempt = 1,
 ): Promise<void> {
   try {
-    const { error } = await resend.emails.send(params)
+    const { error } = await getResend().emails.send(params)
     if (error) {
       throw new Error(error.message)
     }

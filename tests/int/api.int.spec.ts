@@ -5,7 +5,8 @@ import { describe, it, beforeAll, expect } from 'vitest'
 
 let payload: Payload
 
-describe('API', () => {
+// Requires a live database; skipped when POSTGRES_URL is not configured (CI).
+describe.skipIf(!process.env.POSTGRES_URL)('API', () => {
   beforeAll(async () => {
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })

@@ -5,8 +5,8 @@ import {
   moderatorOrHigher,
   moderatorOrHigherOrSelf,
   moderatorOrHigherOrSelfByEmail,
-  publicAccess,
 } from '@/access'
+import { authenticated } from '@/access/authenticated'
 import { fieldRoleOrHigher, isClientRoleEqual, isClientRoleEqualOrHigher } from '@/access/utilities'
 import { adminGroups } from '@/lib/adminGroups'
 import { CollectionConfig } from 'payload'
@@ -61,7 +61,7 @@ export const ProfilePictures: CollectionConfig = {
     },
     update: adminOrHigherOrSelfByEmail('uploadedBy'),
     delete: adminOrHigherOrSelfByEmail('uploadedBy'),
-    create: publicAccess,
+    create: authenticated,
   },
   fields: [
     {

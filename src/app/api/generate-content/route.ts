@@ -1,8 +1,28 @@
 import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
+import { z } from 'zod'
+import { guardAiGeneration } from '@/lib/ai/guard'
+
+const bodySchema = z.object({
+  title: z.string().max(200).optional(),
+  category: z.string().max(120).optional(),
+  uniqueFeatures: z.string().max(1000).optional(),
+  services: z.string().max(1000).optional(),
+  experience: z.string().max(1000).optional(),
+  additionalInfo: z.string().max(1000).optional(),
+})
 
 export async function POST(req: Request) {
-  const { title, category, uniqueFeatures, services, experience, additionalInfo } = await req.json()
+  const guard = await guardAiGeneration()
+  if (!guard.ok) return guard.response
+
+  let body: z.infer<typeof bodySchema>
+  try {
+    body = bodySchema.parse(await req.json())
+  } catch {
+    return Response.json({ error: 'Nieprawidłowe dane wejściowe' }, { status: 400 })
+  }
+  const { title, category, uniqueFeatures, services, experience, additionalInfo } = body
 
   const result = streamText({
     model: openai('gpt-4o-mini'),

@@ -26,6 +26,53 @@ function describeSaveError(err: unknown, fallback: string): string {
   return fallback
 }
 
+type PayloadClient = Awaited<ReturnType<typeof getPayload>>
+
+/**
+ * Session user may lack a fresh `role`; load the full Payload user whenever a
+ * role or ownership decision is made.
+ */
+async function getFullUser(payload: PayloadClient, sessionUserId: number | string) {
+  return payload.findByID({
+    collection: 'users',
+    id: Number(sessionUserId),
+    depth: 0,
+  })
+}
+
+function isPrivileged(user: { role?: string | null }): boolean {
+  return user.role === 'admin' || user.role === 'moderator'
+}
+
+function offerOwnerId(offer: { user?: number | { id: number } | null }): number | null {
+  if (typeof offer.user === 'object') return offer.user?.id ?? null
+  return offer.user ?? null
+}
+
+/**
+ * Every mutation here uses `overrideAccess: true`, so ownership must be
+ * enforced in-action: load the offer, and require owner or moderator+.
+ */
+async function assertOfferOwnership(
+  payload: PayloadClient,
+  offerId: number,
+  user: { id: number; role?: string | null },
+): Promise<{ ok: true; offer: Offer } | { ok: false }> {
+  const existing = await payload.findByID({
+    collection: 'offers',
+    id: offerId,
+    depth: 0,
+    draft: true,
+    overrideAccess: true,
+  })
+  if (!existing) return { ok: false }
+
+  const isOwner = offerOwnerId(existing) === user.id
+  if (!isOwner && !isPrivileged(user)) return { ok: false }
+
+  return { ok: true, offer: existing }
+}
+
 async function isAtPublishedLimit(
   payload: Awaited<ReturnType<typeof getPayload>>,
   userId: number,
@@ -60,9 +107,17 @@ export async function getOffers(
   statusFilter?: 'published' | 'draft',
 ) {
   try {
+    const sessionUser = await getAuthenticatedUser()
     const payload = await getPayload({ config })
 
-    const where: any = { user: { equals: userId } }
+    const user = await getFullUser(payload, sessionUser.id)
+    if (!user) return { success: false as const, error: 'Brak uprawnień' }
+
+    // Moderators+ may inspect another provider's offers (admin-views-provider);
+    // everyone else is scoped to their own regardless of the requested id.
+    const targetUserId = isPrivileged(user) ? userId : user.id
+
+    const where: any = { user: { equals: targetUserId } }
     if (statusFilter) {
       where._status = { equals: statusFilter }
     }
@@ -97,13 +152,19 @@ export async function getOffers(
 
 export async function getOffer(slug: string, userId: number) {
   try {
+    const sessionUser = await getAuthenticatedUser()
     const payload = await getPayload({ config })
+
+    const user = await getFullUser(payload, sessionUser.id)
+    if (!user) return { success: false as const, error: 'Brak uprawnień' }
+
+    const targetUserId = isPrivileged(user) ? userId : user.id
 
     const result = await payload.find({
       collection: 'offers',
       where: {
         link: { equals: slug },
-        user: { equals: userId },
+        user: { equals: targetUserId },
       },
       limit: 1,
       depth: 2,
@@ -180,7 +241,18 @@ export async function updateOffer(id: number, data: Partial<Offer>) {
     const sessionUser = await getAuthenticatedUser()
     const payload = await getPayload({ config })
 
-    const requestedStatus = (data as any)._status
+    const user = await getFullUser(payload, Number(sessionUser.id))
+    if (!user) return { success: false as const, error: 'Brak uprawnień' }
+
+    const ownership = await assertOfferOwnership(payload, id, user)
+    if (!ownership.ok) {
+      return { success: false as const, error: 'Brak uprawnień do edycji oferty' }
+    }
+
+    // Owners must not reassign their offer; reassignment is admin-UI territory.
+    const { user: _ignoredUser, ...safeData } = data
+
+    const requestedStatus = (safeData as any)._status
     const wantsPublish = requestedStatus === 'published'
     let isDraft = requestedStatus === 'draft' || !requestedStatus
 
@@ -188,24 +260,25 @@ export async function updateOffer(id: number, data: Partial<Offer>) {
     let limitMax: number | null = null
 
     if (wantsPublish) {
-      // Find owner. The action assumes the caller is updating their own offer.
+      // The published-offer cap belongs to the offer's owner, not the caller
+      // (a moderator publishing on someone's behalf counts against the owner).
       const { atLimit, max } = await isAtPublishedLimit(
         payload,
-        Number(sessionUser.id),
+        offerOwnerId(ownership.offer) ?? user.id,
         id,
       )
       if (atLimit) {
         savedAsDraftDueToLimit = true
         limitMax = max
         isDraft = true
-        ;(data as any)._status = 'draft'
+        ;(safeData as any)._status = 'draft'
       }
     }
 
     const result = await payload.update({
       collection: 'offers',
       id,
-      data: data as Offer,
+      data: safeData as Offer,
       overrideAccess: true,
       draft: isDraft,
     })
@@ -234,30 +307,11 @@ export async function deleteOffer(id: number) {
     const sessionUser = await getAuthenticatedUser()
     const payload = await getPayload({ config })
 
-    // Fetch full user (session user may lack role) and enforce access manually
-    // so we return a clean error rather than a Payload Forbidden throw.
-    const user = await payload.findByID({
-      collection: 'users',
-      id: Number(sessionUser.id),
-      depth: 0,
-    })
+    const user = await getFullUser(payload, Number(sessionUser.id))
     if (!user) return { success: false as const, error: 'Brak uprawnień' }
 
-    const existing = await payload.findByID({
-      collection: 'offers',
-      id,
-      depth: 0,
-      overrideAccess: true,
-      draft: true,
-    })
-
-    const isOwner =
-      existing && typeof existing.user === 'object'
-        ? existing.user?.id === user.id
-        : existing?.user === user.id
-    const isPrivileged = user.role === 'admin' || user.role === 'moderator'
-
-    if (!isOwner && !isPrivileged) {
+    const ownership = await assertOfferOwnership(payload, id, user)
+    if (!ownership.ok) {
       return { success: false as const, error: 'Brak uprawnień do usunięcia oferty' }
     }
 
@@ -280,12 +334,20 @@ export async function toggleOfferStatus(id: number, currentStatus: string) {
     const sessionUser = await getAuthenticatedUser()
     const payload = await getPayload({ config })
 
+    const user = await getFullUser(payload, Number(sessionUser.id))
+    if (!user) return { success: false as const, error: 'Brak uprawnień' }
+
+    const ownership = await assertOfferOwnership(payload, id, user)
+    if (!ownership.ok) {
+      return { success: false as const, error: 'Brak uprawnień do zmiany statusu oferty' }
+    }
+
     const newStatus = currentStatus === 'published' ? 'draft' : 'published'
 
     if (newStatus === 'published') {
       const { atLimit, max } = await isAtPublishedLimit(
         payload,
-        Number(sessionUser.id),
+        offerOwnerId(ownership.offer) ?? user.id,
         id,
       )
       if (atLimit) {

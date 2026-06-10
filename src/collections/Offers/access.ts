@@ -1,13 +1,14 @@
-import type { CollectionConfig } from 'payload'
+import type { AccessResult, CollectionConfig } from 'payload'
 import { adminOrHigherOrSelf, moderatorOrHigherOrSelf, providerOrHigher } from '@/access'
 import { isClientRoleEqualOrHigher } from '@/access/utilities'
 
 export const offersAccess: CollectionConfig['access'] = {
   // admin see everything
   create: providerOrHigher, // providers and highers can create
-  read: ({ req: { user } }) => {
-    // If no user, allow public read (for viewing images)
-    if (!user) return true
+  read: ({ req: { user } }): AccessResult => {
+    // Anonymous readers only ever see published offers — Offers has drafts
+    // enabled, and a bare `true` would let `?draft=true` REST reads leak them.
+    if (!user) return { _status: { equals: 'published' } }
 
     // Moderators and above can see all
     if (isClientRoleEqualOrHigher('moderator', user)) return true
