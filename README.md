@@ -7,66 +7,57 @@ map of every zone; the root `CLAUDE.md` carries the dev rule. Package manager: *
 
 ---
 
+## Stack
+
+Next.js 16 (App Router, Turbopack) · Payload CMS 3.75 · **Vercel Postgres** (Drizzle adapter) ·
+Better Auth (email/password + Google/Facebook) · Stripe subscriptions · Vercel Blob uploads ·
+Resend email · shadcn/ui + Tailwind 4 · Motion · AI SDK (OpenAI) for offer-content generation.
+
 ## Quick start
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+```bash
+pnpm install
+cp .env.example .env        # fill in the values — see comments in the file
+docker compose up -d        # local Postgres on :5432 (or point POSTGRES_URL at Vercel Postgres)
+pnpm payload migrate        # apply database migrations
+pnpm dev                    # http://localhost:3000  (admin: /admin)
+```
 
-## Quick Start - local setup
+The production build (`pnpm build`) normalizes migration state via
+`scripts/prepare-migrations.mjs`, runs `payload migrate`, then `next build --turbopack`.
 
-To spin up this template locally, follow these steps:
+## Scripts
 
-### Clone
+| Script | What it does |
+| --- | --- |
+| `pnpm dev` | Dev server (Turbopack) |
+| `pnpm build` / `pnpm start` | Production build / serve |
+| `pnpm lint` | ESLint (CI gate — errors fail) |
+| `pnpm typecheck` | `tsc --noEmit` (CI gate) |
+| `pnpm test:int` | Vitest integration tests — no DB needed; DB-backed suites skip without `POSTGRES_URL` |
+| `pnpm test:e2e` | Playwright — expects the dev server (`pnpm dev`) to be reachable |
+| `pnpm test` | int + e2e |
+| `pnpm mind:check` | Validate + regenerate the Mind index (CI gate) |
+| `pnpm generate:types` | Regenerate `payload-types.ts` after schema changes |
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+CI (`.github/workflows/ci.yml`) runs lint → typecheck → test:int → mind:check on every PR.
 
-### Development
+## Project layout
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+| Path | Contents |
+| --- | --- |
+| `src/app/(frontend)/[lang]/` | Public site + provider panel (`/panel`), Polish route segments |
+| `src/app/(payload)/` | Payload admin |
+| `src/collections/` | Payload collections (Offers, Users, Pages, uploads…) |
+| `src/blocks/` | CMS page blocks rendered by `RenderBlocks` |
+| `src/actions/` | Server actions (`panel/`, `stripe/`, `user/`) |
+| `src/access/` | Role-hierarchy access-control factories |
+| `src/plugins/` | Blob storage, SEO, and Stripe webhook handlers |
+| `eventizer-mind/` | The Mind: verified zone map, decisions, specs, tech-debt |
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+## Database & migrations
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
-
-#### Docker (Optional)
-
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
-
-To do so, follow these steps:
-
-- Modify the `MONGODB_URI` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URI` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
-
-## How it works
-
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
-
-### Collections
-
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
-
-- #### Users (Authentication)
-
-  Users are auth-enabled collections that have access to the admin panel.
-
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
-
-- #### Media
-
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
-
-### Docker
-
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
-
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
-
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
-
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+Payload runs on **Vercel Postgres** (`POSTGRES_URL`). After changing any collection schema:
+`pnpm generate:types`, create a migration (`pnpm payload migrate:create`), and commit both —
+see the `eventizer-payload-migrations` skill / `eventizer-mind/map/zones/offers-data.md` for the
+full procedure and the Vercel-build failure modes it prevents.

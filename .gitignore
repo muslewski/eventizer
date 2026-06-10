@@ -48,6 +48,7 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/.playwright-mcp/
 
 # superpowers brainstorm workspace (mockups, server state)
 /.superpowers/

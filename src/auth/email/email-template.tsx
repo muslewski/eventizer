@@ -32,7 +32,7 @@ export function EmailFormConfirmationToClientTemplate({
         <p style={{ fontSize: '16px', marginBottom: '8px' }}>{`Cześć ${senderName}! 👋`}</p>
         <p style={{ fontSize: '15px', lineHeight: '1.6', marginBottom: '8px' }}>
           Twoja wiadomość (<strong>{formTypeLabels[type]}</strong>) dotycząca oferty{' '}
-          <strong>„{offerTitle}"</strong> została pomyślnie wysłana do usługodawcy.
+          <strong>„{offerTitle}”</strong> została pomyślnie wysłana do usługodawcy.
         </p>
         <p style={{ fontSize: '15px', lineHeight: '1.6' }}>
           Usługodawca wkrótce się z Tobą skontaktuje. W razie pytań odwiedź{' '}
@@ -73,7 +73,7 @@ export function EmailFormNotificationToProviderTemplate({
         <p style={{ fontSize: '15px', lineHeight: '1.6', marginBottom: '8px' }}>
           Otrzymałeś nowe zapytanie (<strong>{formTypeLabels[type]}</strong>) ze strony{' '}
           <strong>Eventizer</strong> dotyczące Twojej oferty{' '}
-          <strong>„{offerTitle}"</strong>.
+          <strong>„{offerTitle}”</strong>.
         </p>
         <table
           style={{

@@ -302,7 +302,7 @@ export const PartnersClient: React.FC<PartnersClientProps> = ({
                 */}
                 {active.quote ? (
                   <blockquote className="text-foreground/85 text-base sm:text-lg leading-relaxed max-w-lg">
-                    „{active.quote}"
+                    „{active.quote}”
                   </blockquote>
                 ) : (
                   <p className="text-muted-foreground/70 text-base sm:text-lg leading-relaxed max-w-lg italic">

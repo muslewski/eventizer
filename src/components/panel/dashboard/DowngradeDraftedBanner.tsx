@@ -31,7 +31,7 @@ export function DowngradeDraftedBanner({ lang }: { lang: string }) {
         <AlertTitle>Twoja subskrypcja została obniżona</AlertTitle>
         <AlertDescription>
           Część Twoich ofert została automatycznie zapisana jako wersje robocze, aby zmieścić się
-          w limicie nowego planu. Możesz je przejrzeć w sekcji „Oferty" i wybrać, które chcesz
+          w limicie nowego planu. Możesz je przejrzeć w sekcji „Oferty” i wybrać, które chcesz
           opublikować ponownie.
         </AlertDescription>
         <div className="flex flex-wrap gap-2 mt-2">

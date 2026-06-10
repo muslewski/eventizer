@@ -387,7 +387,7 @@ export function ImpactSummaryStep({
                 <span>
                   <span className="font-medium">{o.title}</span>
                   <span className="text-muted-foreground">
-                    {' '}— „{formatCategoryPath(o.categorySlugPath)}"{' '}
+                    {' '}— „{formatCategoryPath(o.categorySlugPath)}”{' '}
                     {isSameDisplayPlan
                       ? 'jest z wyższej półki cenowej'
                       : 'wymaga wyższego planu'}
